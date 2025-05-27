@@ -1,3 +1,5 @@
+parameters:
+    env(ELASTICSEARCH_HOST): 'http://app:!ChangeMe!@elasticsearch:9200'
 api_platform:
     title: Hello API Platform
     version: 1.0.0
@@ -9,3 +11,7 @@ api_platform:
         stateless: true
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
+
+    elasticsearch:
+        hosts: ['%env(ELASTICSEARCH_HOST)%']
+
