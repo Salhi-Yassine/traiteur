@@ -8,7 +8,7 @@ framework:
     trusted_headers: [ 'x-forwarded-for', 'x-forwarded-proto' ]
 
     # Note that the session will be started ONLY if you read or write from it.
-    #session: true
+    session: true
 
     #esi: true
     #fragments: true

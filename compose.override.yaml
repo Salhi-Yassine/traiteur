@@ -43,3 +43,19 @@ services:
 
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
+
+  pgadmin:
+      image: dpage/pgadmin4
+      restart: always
+      environment:
+      # You should definitely change the password in production
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:-admin123}
+      ports:
+        - "8080:80"
+
+  mailcatcher:
+      image: schickling/mailcatcher
+      ports:
+      - "1025:1025"   # SMTP
+      - "1080:1080"   # Web UI
