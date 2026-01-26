@@ -1,132 +1,147 @@
-# Executables (local)
-DOCKER_COMP = docker compose
+# 🌐 GLOBAL CONFIG
 
-# Docker containers
-PHP_CONT = $(DOCKER_COMP) exec php
+DOCKER_COMPOSE = docker compose
+PROJECT        = php        # Service name in docker-compose.yaml
+PROJECT_DIR    = api        # Symfony project directory
+EXEC_PHP       = $(DOCKER_COMPOSE) exec $(PROJECT)
 
-# Executables
-PHP      = $(PHP_CONT) php
-COMPOSER = $(PHP_CONT) composer
-SYMFONY  = $(PHP) bin/console
+PHP            = $(EXEC_PHP) php
+CONSOLE        = $(EXEC_PHP) bin/console
+SYMFONY        = $(CONSOLE)
+COMPOSER       = $(EXEC_PHP) composer
 
-# Executables: vendors
-PHP_CS_FIXER  = $(PHP_CONT) ./vendor/bin/php-cs-fixer
-PHPSTAN       = $(PHP_CONT) ./vendor/bin/phpstan
+PHP_CS_FIXER   = $(EXEC_PHP) vendor/bin/php-cs-fixer
+PHPSTAN        = $(EXEC_PHP) vendor/bin/phpstan
 
-# Misc
-.DEFAULT_GOAL = help
+.DEFAULT_GOAL := help
 
-## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ————————————————————————————————————————————————————————————
+# � HELP
+
 .PHONY: help
+help:
+	@grep -E '(^[a-zA-Z0-9\./_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) \
+	 | awk 'BEGIN {FS = ":.*?## "}{printf "\033[32m%-28s\033[0m %s\n", $$1, $$2}' \
+	 | sed -e 's/\[32m##/[33m/'
 
-help: ##  🆘 Outputs this help screen
-	@grep -E '(^[a-zA-Z0-9\./_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}{printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
+##############################################
+## 🐳 DOCKER COMMANDS
+##############################################
+.PHONY: build up start sh bash stop down logs chown
 
-## —————— 🐳 Docker —————————————————————————————————————————————————————————————————————
-.PHONY: build up start sh bash stop down logs test chown
+build: ## 🛠️ Build Docker images (no cache)
+	$(DOCKER_COMPOSE) build --pull --no-cache
 
-build: ## 🏗️ Builds the Docker images
-	@$(DOCKER_COMP) build --pull --no-cache
+up: ## 🚀 Start containers (detached)
+	$(DOCKER_COMPOSE) up -d
 
-up: ## 🚀 Start the project in detached mode (no logs)
-	@$(DOCKER_COMP) up -d
+start: build up ## 🛠️🚀 Build and start
 
-start: build up ## 🏗️ 🚀 Build and start the containers
+sh: ## � Open sh shell inside container
+	$(EXEC_PHP) sh
 
-sh: ## 📟 Log to the PHP docker container
-	@$(PHP_CONT) sh
+bash: ## � Open bash shell inside container
+	$(EXEC_PHP) bash
 
-bash: ## 📟 Log to the docker container
-	@$(PHP_CONT) bash
+stop: ## 🛑 Stop containers
+	$(DOCKER_COMPOSE) stop
 
-stop: ## 🛑 Stop the project
-	$(DOCKER_COMP) stop
+down: ## 🗑️ Remove containers + networks
+	$(DOCKER_COMPOSE) down --remove-orphans
 
-down: ## 🗑️ Stop and remove containers, networks
-	@$(DOCKER_COMP) down --remove-orphans
+logs: ## 📜 View live logs
+	$(DOCKER_COMPOSE) logs --tail=0 --follow
 
-logs: ## 📜 Show live logs
-	@$(DOCKER_COMP) logs --tail=0 --follow
+chown: ## 👤 Fix file permissions (host user)
+	$(DOCKER_COMPOSE) run --rm $(PROJECT) chown -R $$(id -u):$$(id -g) .
 
+##############################################
+## 🎵 SYMFONY COMMANDS
+##############################################
+.PHONY: sf cc ccf rm-log jwt session
 
-# for more info see https://github.com/dunglas/symfony-docker/blob/main/docs/troubleshooting.md
-chown: ## ©️ set yourself as owner of the project files that were created by the docker container
-	@$(DOCKER_COMP) run --rm php chown -R $(shell id -u)\:$(shell id -g) .
-
-## —————— 🧙‍♀️Composer —————————————————————————————————————————————————————————————————————
-.PHONY: cmp cmp-req cmp-up cmp-ins
-
-cmp: ## Run composer, example: make composer c='req symfony/orm-pack'
+sf: ## 🎛️ Run Symfony console: make sf c="about"
 	@$(eval c ?=)
-	@$(COMPOSER) $(c)
+	$(CONSOLE) $(c)
 
-cmp-req: ## 📥 Run composer require, example: make cmp-req c=twig
-	@$(MAKE) cmp c="require $(c)"
+cc: ## 🧹 Clear cache
+	$(CONSOLE) cache:clear
 
+ccf: ## 🧼 Clear cache (force, no warmup)
+	$(CONSOLE) cache:clear --no-warmup
 
-# Update composer.lock based on changes in composer.json
-cmp-up: composer.lock ## 🔃 Update project dependencies
+rm-log: ## �️ Remove log files
+	@find $(PROJECT_DIR)/var/log -name '*.log' -type f -delete
 
-composer.lock: composer.json
-	$(COMPOSER) update
+jwt: ## 🔐 Generate JWT keys
+	$(CONSOLE) lexik:jwt:generate-keypair --overwrite
 
-# Install vendors according to the current composer.lock file
-cmp-ins: vendor ## 📥 Install vendors according to the current composer.lock file
+session: ## ⚙️ Create application sessions
+	$(CONSOLE) app:create-sessions
 
-vendor: composer.lock
-	@$(MAKE) cmp c=install --prefer-dist --no-dev --no-progress --no-scripts --no-interaction
+##############################################
+## 🗃️ DATABASE & MIGRATIONS
+##############################################
+.PHONY: full-migrat make-migrat remove-migration-files migrate migrate-diff db-test
 
-## —————— 🎵 Symfony —————————————————————————————————————————————————————————————————————
-.PHONY: sf cc ccf rm-log
+full-migrat: make-migrat migrate remove-migration-files ## ��🛫🗑️ Full migration cycle
 
-sf: ## List all Symfony commands, example: make sf c=about
-	@$(eval c ?=)
-	@$(SYMFONY) $(c)
+make-migrat: ## 📜 Create a migration
+	$(CONSOLE) make:migration --no-interaction
 
-cc: c=c:c ## 🧹 Clear the cache
-cc: sf
-
-ccf: c=c:c --no-warmup ## 🧼🧹 Clear Symfony cache (force)
-ccf: sf
-
-rm-log: ## 🗑️ remove log files
-	@find var/log -name '*.log' -type f -delete
-
-## —————— 🗃️ Database —————————————————————————————————————————————————————————————————————
-.PHONY: full-migrat make-migrat remove-migration-files migrate migrate-diff
-
-full-migrat: make-migrat migrate remove-migration-files ## 🎫🛫🗑️ make migration and migrate
-
-make-migrat: c=make:migration --no-interaction ## 🎫 make migration
-make-migrat: sf
-
-remove-migration-files: ## 🗑️ remove migration
-	@find migrations -name 'Version*.php' -type f -delete
+remove-migration-files: ## 🗑️ Delete migration files
+	@find $(PROJECT_DIR)/migrations -name 'Version*.php' -type f -delete
 
 migrate: ## 🛫 Run database migrations
-	$(SYMFONY) doctrine:migrations:migrate --no-interaction
+	$(CONSOLE) doctrine:migrations:migrate --no-interaction
 
-# Generate and view a Doctrine migration diff
-migrate-diff: ## 🟰 Generate and view a Doctrine migration diff
-	$(SYMFONY) doctrine:migrations:diff
-## —————— ✅ Tests —————————————————————————————————————————————————————————————————————
-.PHONY: test
+migrate-diff: ## � Generate migration diff
+	$(CONSOLE) doctrine:migrations:diff
 
-test: ## 🧪 Start tests with phpunit, pass the parameter "c=" to add options to phpunit, example: make test c="--group e2e --stop-on-failure"
+db-test: ## ✅ Test DB connection
+	$(CONSOLE) dbal:run-sql -q "SELECT 1" && echo "✅ DB OK" || echo "❌ DB FAILED"
+
+##############################################
+## 🧪 TESTING
+##############################################
+.PHONY: test ms-test
+
+test: ## 🧪 Run PHPUnit tests (make test c="--filter Order")
 	@$(eval c ?=)
-	@$(DOCKER_COMP) exec -e APP_ENV=test php bin/phpunit $(c)
+	$(DOCKER_COMPOSE) exec -e APP_ENV=test $(PROJECT) bin/phpunit $(c)
 
-## —————— ✨ Coding standards ——————————————————————————————————————————————————————
-.PHONY: fix-php stan cs
+ms-test: ## 📡 Test Messenger transports
+	$(CONSOLE) messenger:setup-transports -vv
 
-fix-php: ## ⚒️Fix files with php-cs-fixer
+##############################################
+## 📦 COMPOSER
+##############################################
+.PHONY: cmp cmp-req cmp-up cmp-ins
+
+cmp: ## 📦 Run composer directly: make cmp c="require twig"
 	@$(eval c ?=)
-	@$(PHP_CS_FIXER) $(c)
+	$(COMPOSER) $(c)
 
-stan: ## 🛠️Run PHPStan
-	@$(eval c ?=)
-	@$(PHPSTAN) $(c)
+cmp-req: ## ➕ Composer require: make cmp-req c=twig
+	$(MAKE) cmp c="require $(c)"
 
-cs: fix-php stan ## Run all coding standards checks
+cmp-up: ## ⬆️ Update dependencies
+	$(COMPOSER) update
 
-## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ————————————————————————————————————————————————————————————
+cmp-ins: ## ⬇️ Install dependencies
+	$(COMPOSER) install --prefer-dist --no-scripts --no-progress --no-interaction
+
+##############################################
+## ✨ CODING STANDARDS & STATIC ANALYSIS
+##############################################
+.PHONY: fix-php lint-php stan cs
+
+fix-php: ## 🛠️ Fix code with PHP-CS-Fixer
+	$(PHP_CS_FIXER) fix --allow-risky=yes
+
+lint-php: ## 🧹 Lint PHP files (dry run)
+	$(PHP_CS_FIXER) fix --dry-run --allow-risky=yes
+
+stan: ## � Run PHPStan static analysis
+	$(PHPSTAN) analyse --memory-limit 1G
+
+cs: fix-php stan ## ✨ Run complete code quality suite
