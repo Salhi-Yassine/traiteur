@@ -89,7 +89,7 @@ make-migrat: ## 📜 Create a migration
 	$(CONSOLE) make:migration --no-interaction
 
 remove-migration-files: ## 🗑️ Delete migration files
-	@find $(PROJECT_DIR)/migrations -name 'Version*.php' -type f -delete
+	@find $(PROJECT_DIR)/migrations -maxdepth 1 -name 'Version[0-9]*.php' -type f -delete
 
 migrate: ## 🛫 Run database migrations
 	$(CONSOLE) doctrine:migrations:migrate --no-interaction
