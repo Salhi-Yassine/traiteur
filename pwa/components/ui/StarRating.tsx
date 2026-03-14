@@ -1,3 +1,4 @@
+// v3.0 — Stars use terracotta primary (#E8472A), not gold
 interface StarRatingProps {
     rating: number;
     reviewCount?: number;
@@ -11,24 +12,33 @@ export default function StarRating({
     size = "md",
     showCount = true,
 }: StarRatingProps) {
-    const sizes = { sm: "w-3.5 h-3.5", md: "w-4.5 h-4.5", lg: "w-6 h-6" };
-    const textSizes = { sm: "text-[10px]", md: "text-xs", lg: "text-sm" };
+    const sizes = { sm: "w-3.5 h-3.5", md: "w-4 h-4", lg: "w-5 h-5" };
+    const textSizes = { sm: "text-[11px]", md: "text-xs", lg: "text-sm" };
 
     return (
-        <div className="flex items-center gap-2">
+        <div
+            className="flex items-center gap-1.5"
+            role="img"
+            aria-label={`${rating.toFixed(1)} étoiles sur 5${reviewCount !== undefined ? `, ${reviewCount} avis` : ""}`}
+        >
             <div className="flex items-center gap-0.5">
                 {[1, 2, 3, 4, 5].map((star) => {
                     const filled = star <= Math.floor(rating);
-                    const partial = !filled && star === Math.ceil(rating) && rating % 1 !== 0;
+                    const partial =
+                        !filled &&
+                        star === Math.ceil(rating) &&
+                        rating % 1 !== 0;
+
                     return (
                         <svg
                             key={star}
-                            className={`${sizes[size]} ${filled
-                                    ? "text-secondary"
+                            className={`${sizes[size]} ${
+                                filled
+                                    ? "text-[#E8472A]"          // terracotta primary
                                     : partial
-                                        ? "text-secondary/50"
-                                        : "text-accent"
-                                }`}
+                                    ? "text-[#E8472A]/50"       // half-star
+                                    : "text-[#DDDDDD]"          // empty — neutral-200
+                            }`}
                             fill="currentColor"
                             viewBox="0 0 20 20"
                             aria-hidden="true"
@@ -39,8 +49,13 @@ export default function StarRating({
                 })}
             </div>
             {showCount && (
-                <span className={`${textSizes[size]} font-black tracking-widest text-primary`}>
+                <span className={`${textSizes[size]} font-semibold text-[#484848]`}>
                     {rating.toFixed(1)}
+                    {reviewCount !== undefined && reviewCount > 0 && (
+                        <span className="font-normal text-[#717171] ml-0.5">
+                            ({reviewCount})
+                        </span>
+                    )}
                 </span>
             )}
         </div>

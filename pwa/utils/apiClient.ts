@@ -15,6 +15,8 @@ export const removeAuthToken = () => {
 
 interface RequestOptions extends RequestInit {
     jsonld?: boolean;
+    /** Next.js router.locale — sent as Accept-Language to drive Gedmo Translatable on the API */
+    locale?: string;
 }
 
 export class ApiError extends Error {
@@ -26,30 +28,37 @@ export class ApiError extends Error {
 
 export const fetchApi = async (path: string, options: RequestOptions = {}) => {
     const token = getAuthToken();
-    const headers = new Headers(options.headers || {});
+    const { locale = "fr", ...restOptions } = options;
+    const headers = new Headers(restOptions.headers || {});
 
     if (token) {
         headers.set("Authorization", `Bearer ${token}`);
     }
 
-    if (options.jsonld !== false) {
+    // Tell the API which language to serve for translatable fields (businessName, tagline, description).
+    // The Symfony LocaleListener reads this and configures Gedmo TranslatableListener.
+    if (!headers.has("Accept-Language")) {
+        headers.set("Accept-Language", locale);
+    }
+
+    if (restOptions.jsonld !== false) {
         if (!headers.has("Accept")) {
             headers.set("Accept", "application/ld+json");
         }
-        if (!headers.has("Content-Type") && (options.method === "POST" || options.method === "PATCH" || options.method === "PUT")) {
+        if (!headers.has("Content-Type") && (restOptions.method === "POST" || restOptions.method === "PATCH" || restOptions.method === "PUT")) {
             headers.set("Content-Type", "application/ld+json");
         }
     } else {
         if (!headers.has("Accept")) {
             headers.set("Accept", "application/json");
         }
-        if (!headers.has("Content-Type") && (options.method === "POST" || options.method === "PATCH" || options.method === "PUT")) {
+        if (!headers.has("Content-Type") && (restOptions.method === "POST" || restOptions.method === "PATCH" || restOptions.method === "PUT")) {
             headers.set("Content-Type", "application/json");
         }
     }
 
     const response = await fetch(`${ENTRYPOINT}${path}`, {
-        ...options,
+        ...restOptions,
         headers,
     });
 
@@ -68,3 +77,14 @@ export const fetchApi = async (path: string, options: RequestOptions = {}) => {
 
     return response.json();
 };
+
+const apiClient = {
+    get: (path: string, options: RequestOptions = {}) => fetchApi(path, { ...options, method: "GET" }),
+    post: (path: string, data: any, options: RequestOptions = {}) =>
+        fetchApi(path, { ...options, method: "POST", body: JSON.stringify(data) }),
+    patch: (path: string, data: any, options: RequestOptions = {}) =>
+        fetchApi(path, { ...options, method: "PATCH", body: JSON.stringify(data) }),
+    delete: (path: string, options: RequestOptions = {}) => fetchApi(path, { ...options, method: "DELETE" }),
+};
+
+export default apiClient;

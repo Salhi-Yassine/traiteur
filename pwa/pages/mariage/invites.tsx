@@ -1,7 +1,10 @@
+import { useTranslation } from "next-i18next";
 import Head from "next/head";
 import PlanningLayout from "../../components/layout/PlanningLayout";
 import { useState, useEffect } from "react";
 import apiClient from "../../utils/apiClient";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import type { GetServerSideProps } from "next";
 
 interface Guest {
     id: number;
@@ -23,11 +26,12 @@ const SIDE_LABELS: Record<string, string> = {
 };
 
 export default function InvitesPage() {
+    const { t } = useTranslation("common");
     const [guests, setGuests] = useState<Guest[]>([]);
     const [weddingProfileId, setWeddingProfileId] = useState<number | null>(null);
     const [isAdding, setIsAdding] = useState(false);
     const [newGuest, setNewGuest] = useState({ 
-        name: "", 
+        fullName: "", 
         rsvpStatus: "pending", 
         side: "bride", 
         mealPreference: "standard" 
@@ -56,12 +60,13 @@ export default function InvitesPage() {
     const handleAddGuest = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await apiClient.post("/api/guests", {
+            const response = await apiClient.post("/api/guests", {
                 ...newGuest,
-                weddingProfile: `/api/wedding_profiles/${weddingProfileId}`
+                name: newGuest.fullName,
+                weddingProfile: `/api/wedding_profiles/${weddingProfileId}`,
             });
             setIsAdding(false);
-            setNewGuest({ name: "", rsvpStatus: "pending", side: "bride", mealPreference: "standard" });
+            setNewGuest({ fullName: "", rsvpStatus: "pending", side: "bride", mealPreference: "standard" });
             fetchData();
         } catch (err) {
             alert("Erreur lors de l'ajout de l'invité.");
@@ -83,57 +88,66 @@ export default function InvitesPage() {
 
     return (
         <PlanningLayout 
-            title="Liste d'Invités" 
-            description="Gérez vos invités, suivez les confirmations et organisez vos tables."
+            title={t("invites.title")} 
+            description={t("invites.description")}
         >
             <Head>
-                <title>Mes Invités — Farah.ma</title>
+                <title>{t("nav.guests")} — Farah.ma</title>
             </Head>
 
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
                 <div className="bg-white p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">Total Invités</p>
-                    <span className="text-3xl font-black text-[var(--color-primary)]">{guests.length}</span>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">{t("invites.total_guests")}</p>
+                    <div className="flex items-end gap-2 text-[var(--color-primary)]">
+                        <span className="text-3xl font-black">{guests.length}</span>
+                        <span className="text-sm font-bold mb-1.5 opacity-60">{t("dashboard.guests_unit")}</span>
+                    </div>
                 </div>
                 <div className="bg-white p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">Confirmés</p>
-                    <span className="text-3xl font-black text-green-600">{confirmedCount}</span>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">{t("invites.confirmed")}</p>
+                    <div className="flex items-end gap-2 text-[var(--color-accent)]">
+                        <span className="text-3xl font-black">{guests.filter(g => g.rsvpStatus === "confirmed").length}</span>
+                        <span className="text-sm font-bold mb-1.5 opacity-60">{t("dashboard.guests_unit")}</span>
+                    </div>
                 </div>
                 <div className="bg-white p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">En Attente</p>
-                    <span className="text-3xl font-black text-[var(--color-accent)]">{pendingCount}</span>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">{t("invites.pending")}</p>
+                    <div className="flex items-end gap-2 text-[var(--color-charcoal-400)]">
+                        <span className="text-3xl font-black">{guests.filter(g => g.rsvpStatus === "pending").length}</span>
+                        <span className="text-sm font-bold mb-1.5 opacity-60">{t("dashboard.guests_unit")}</span>
+                    </div>
                 </div>
             </div>
 
             {/* Guest List */}
             <div className="bg-white rounded-[2.5rem] border border-[var(--color-charcoal-100)] overflow-hidden shadow-sm">
                 <div className="px-10 py-8 border-b border-[var(--color-background)] flex items-center justify-between">
-                    <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">Liste des Invités</h3>
+                    <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">{t("invites.list_title")}</h3>
                     <button 
                         onClick={() => setIsAdding(true)}
-                        className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg"
+                        className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-lg shadow-[var(--color-accent)]/20"
                     >
-                        + Nouvel Invité
+                        + {t("invites.new_guest")}
                     </button>
                 </div>
 
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-[var(--color-background)]/50">
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">Nom complet</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">Côté</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">Statut RSVP</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">Repas</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-right">Actions</th>
+                            <tr className="bg-[var(--color-background)]/50 text-left">
+                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.full_name")}</th>
+                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.side")}</th>
+                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.rsvp")}</th>
+                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.meal")}</th>
+                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-right">{t("invites.actions")}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[var(--color-background)]">
                             {guests.length === 0 && (
                                 <tr>
                                     <td colSpan={5} className="px-10 py-20 text-center text-[var(--color-charcoal-400)] italic font-medium">
-                                        Aucun invité enregistré.
+                                        {t("invites.empty")}
                                     </td>
                                 </tr>
                             )}
@@ -141,22 +155,23 @@ export default function InvitesPage() {
                                 <tr key={guest.id} className="hover:bg-[var(--color-background)]/30 transition-colors group">
                                     <td className="px-10 py-6 font-bold text-[var(--color-primary)]">{guest.name}</td>
                                     <td className="px-10 py-6">
-                                        <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full ${
-                                            guest.side === 'bride' ? 'bg-pink-100 text-pink-700' : 'bg-blue-100 text-blue-700'
+                                        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                                            guest.side === "bride" ? "bg-[var(--color-accent-light)]/10 text-[var(--color-accent)]" : "bg-[var(--color-primary)]/10 text-[var(--color-primary)]"
                                         }`}>
-                                            {SIDE_LABELS[guest.side] || guest.side}
+                                            {t(`invites.sides.${guest.side}`)}
                                         </span>
                                     </td>
                                     <td className="px-10 py-6">
-                                        <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full ${
-                                            guest.rsvpStatus === 'confirmed' ? 'bg-green-100 text-green-700' : 
-                                            guest.rsvpStatus === 'declined' ? 'bg-red-100 text-red-700' : 
-                                            'bg-gray-100 text-gray-700'
+                                        <span className={`px-3 py-1 rounded-lg text-[10px] font-bold ${
+                                            guest.rsvpStatus === "confirmed" ? "bg-green-100 text-green-700" : 
+                                            guest.rsvpStatus === "declined" ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-700"
                                         }`}>
-                                            {RSVP_LABELS[guest.rsvpStatus] || guest.rsvpStatus}
+                                            {t(`invites.rsvp_status.${guest.rsvpStatus}`)}
                                         </span>
                                     </td>
-                                    <td className="px-10 py-6 text-sm font-medium text-[var(--color-charcoal-500)] capitalize">{guest.mealPreference}</td>
+                                    <td className="px-10 py-6 text-sm font-medium text-[var(--color-charcoal-500)] capitalize">
+                                        {t(`invites.meals.${guest.mealPreference}`)}
+                                    </td>
                                     <td className="px-10 py-6 text-right">
                                         <button 
                                             onClick={() => handleDeleteGuest(guest.id)}
@@ -178,56 +193,56 @@ export default function InvitesPage() {
             {isAdding && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
                     <div className="absolute inset-0 bg-[var(--color-primary)]/40 backdrop-blur-md" onClick={() => setIsAdding(false)} />
-                    <div className="relative bg-white rounded-[2.5rem] w-full max-w-md p-10 shadow-2xl animate-in fade-in zoom-in duration-300 border border-[var(--color-accent)]/10">
-                        <h3 className="font-display font-black text-2xl text-[var(--color-primary)] mb-8">Nouvel invité</h3>
+                    <div className="relative bg-white rounded-[2.5rem] w-full max-w-md p-10 shadow-2xl border border-[var(--color-accent)]/10 animate-in fade-in zoom-in duration-300">
+                        <h3 className="font-display font-black text-2xl text-[var(--color-primary)] mb-8">{t("invites.new_guest_title")}</h3>
                         <form onSubmit={handleAddGuest} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">Nom complet</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.full_name")}</label>
                                 <input 
                                     type="text" 
                                     required
-                                    value={newGuest.name}
-                                    onChange={(e) => setNewGuest({...newGuest, name: e.target.value})}
-                                    placeholder="Prénom et Nom"
+                                    value={newGuest.fullName}
+                                    onChange={(e) => setNewGuest({...newGuest, fullName: e.target.value})}
+                                    placeholder={t("invites.name_placeholder")}
                                     className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">Côté</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.side")}</label>
                                     <select 
+                                        className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none"
                                         value={newGuest.side}
                                         onChange={(e) => setNewGuest({...newGuest, side: e.target.value})}
-                                        className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none"
                                     >
-                                        <option value="bride">{SIDE_LABELS.bride}</option>
-                                        <option value="groom">{SIDE_LABELS.groom}</option>
+                                        <option value="bride">{t("invites.sides.bride")}</option>
+                                        <option value="groom">{t("invites.sides.groom")}</option>
                                     </select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">RSVP</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.rsvp")}</label>
                                     <select 
+                                        className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none"
                                         value={newGuest.rsvpStatus}
                                         onChange={(e) => setNewGuest({...newGuest, rsvpStatus: e.target.value})}
-                                        className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none"
                                     >
-                                        <option value="pending">{RSVP_LABELS.pending}</option>
-                                        <option value="confirmed">{RSVP_LABELS.confirmed}</option>
-                                        <option value="declined">{RSVP_LABELS.declined}</option>
+                                        <option value="pending">{t("invites.rsvp_status.pending")}</option>
+                                        <option value="confirmed">{t("invites.rsvp_status.confirmed")}</option>
+                                        <option value="declined">{t("invites.rsvp_status.declined")}</option>
                                     </select>
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">Préférence Repas</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.meal_pref_label")}</label>
                                 <select 
+                                    className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none"
                                     value={newGuest.mealPreference}
                                     onChange={(e) => setNewGuest({...newGuest, mealPreference: e.target.value})}
-                                    className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none"
                                 >
-                                    <option value="standard">Standard</option>
-                                    <option value="vegetarian">Végétarien</option>
-                                    <option value="halal">Halal (Standard)</option>
-                                    <option value="fish">Poisson</option>
+                                    <option value="standard">{t("invites.meals.standard")}</option>
+                                    <option value="vegetarian">{t("invites.meals.vegetarian")}</option>
+                                    <option value="halal">{t("invites.meals.halal")}</option>
+                                    <option value="fish">{t("invites.meals.fish")}</option>
                                 </select>
                             </div>
                             <div className="flex gap-4 pt-4">
@@ -236,19 +251,27 @@ export default function InvitesPage() {
                                     onClick={() => setIsAdding(false)}
                                     className="flex-1 py-4 border-2 border-[var(--color-primary)] rounded-2xl text-xs font-black uppercase tracking-widest text-[var(--color-primary)] hover:bg-[var(--color-background)] transition-all"
                                 >
-                                    Annuler
+                                    {t("common.cancel")}
                                 </button>
                                 <button 
                                     type="submit"
                                     className="flex-1 py-4 bg-[var(--color-accent)] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-xl shadow-[var(--color-accent)]/20"
                                 >
-                                    Enregistrer
+                                    {t("common.save")}
                                 </button>
                             </div>
                         </form>
                     </div>
-                </div>
+                 </div>
             )}
         </PlanningLayout>
     );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale || "fr", ["common"])),
+        },
+    };
+};

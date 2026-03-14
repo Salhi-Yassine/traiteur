@@ -1,21 +1,36 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
+// v3.0 — Airbnb-style button variants aligned to PRD design system
 const buttonVariants = {
   variant: {
-    default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-premium",
-    destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",
-    outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground shadow-sm",
-    secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-gold",
-    ghost: "hover:bg-accent hover:text-accent-foreground",
-    link: "text-primary underline-offset-4 hover:underline",
-    premium: "bg-primary text-white border border-white/10 hover:bg-primary/95 shadow-premium backdrop-blur-md",
+    // Primary: terracotta fill
+    default:     "bg-[#E8472A] text-white hover:bg-[#C43A20] border border-transparent",
+    primary:     "bg-[#E8472A] text-white hover:bg-[#C43A20] border border-transparent",
+    // Secondary: outlined neutral-900
+    secondary:   "border-[1.5px] border-[#1A1A1A] text-[#1A1A1A] bg-transparent hover:bg-[#F7F7F7]",
+    // Ghost: light border
+    ghost:       "border border-[#DDDDDD] text-[#484848] bg-transparent hover:bg-[#F7F7F7] hover:border-[#B0B0B0]",
+    // Outline: alias for ghost (backward compat)
+    outline:     "border border-[#DDDDDD] text-[#484848] bg-transparent hover:bg-[#F7F7F7] hover:border-[#B0B0B0]",
+    // Danger: outlined red
+    danger:      "border-[1.5px] border-[#C13030] text-[#C13030] bg-transparent hover:bg-[#FEECEC]",
+    destructive: "border-[1.5px] border-[#C13030] text-[#C13030] bg-transparent hover:bg-[#FEECEC]",
+    // WhatsApp — always green, never rendered at sm size
+    whatsapp:    "bg-[#25D366] text-white font-semibold hover:bg-[#20BA5A] border border-transparent",
+    // Link
+    link:        "text-[#E8472A] underline-offset-4 hover:underline bg-transparent border-transparent",
   },
   size: {
-    default: "h-11 px-6 py-2.5",
-    sm: "h-9 rounded-xl px-4 text-xs",
-    lg: "h-14 rounded-2xl px-10 text-base",
-    icon: "h-11 w-11",
+    // sm: 32px height — NOT for whatsapp
+    sm:      "h-8 px-4 text-[13px] rounded-lg",
+    // md: 40px height — default
+    default: "h-10 px-5 text-[15px] rounded-lg",
+    md:      "h-10 px-5 text-[15px] rounded-lg",
+    // lg: 48px height
+    lg:      "h-12 px-7 text-base rounded-lg",
+    // icon-only
+    icon:    "h-10 w-10 rounded-lg",
   },
 }
 
@@ -24,23 +39,47 @@ export interface ButtonProps
   variant?: keyof typeof buttonVariants.variant
   size?: keyof typeof buttonVariants.size
   asChild?: boolean
+  loading?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "default", size = "default", asChild = false, ...props }, ref) => {
-    // Note: asChild functionality not fully implemented here to avoid additional dependencies (Radix Slot)
-    // If needed, we can implement a simple switch or use Slot if/when installed.
+  ({ className, variant = "default", size = "default", loading = false, disabled, children, ...props }, ref) => {
     return (
       <button
         className={cn(
-          "inline-flex items-center justify-center whitespace-nowrap rounded-2xl text-sm font-black uppercase tracking-widest ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95",
+          // Base
+          "inline-flex items-center justify-center gap-2 whitespace-nowrap font-semibold",
+          "transition-all duration-150 ease-in-out",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8472A] focus-visible:ring-offset-2",
+          "disabled:pointer-events-none disabled:opacity-45",
+          "active:scale-[0.98]",
           buttonVariants.variant[variant],
           buttonVariants.size[size],
           className
         )}
         ref={ref}
+        disabled={disabled || loading}
+        aria-busy={loading}
         {...props}
-      />
+      >
+        {loading ? (
+          <>
+            <svg
+              className="h-4 w-4 animate-spin"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+            </svg>
+            <span className="sr-only">Chargement…</span>
+          </>
+        ) : (
+          children
+        )}
+      </button>
     )
   }
 )

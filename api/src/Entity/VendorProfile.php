@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Translatable\Translatable;
 
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -36,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(SearchFilter::class, properties: ['serviceArea' => 'ipartial', 'businessName' => 'ipartial', 'category' => 'exact', 'priceRange' => 'exact'])]
 #[ORM\Entity(repositoryClass: VendorProfileRepository::class)]
 #[UniqueEntity(fields: ['slug'], message: 'This slug is already taken')]
-class VendorProfile
+class VendorProfile implements Translatable
 {
     public const PRICE_BUDGET = 'MAD';
     public const PRICE_MODERATE = 'MADMAD';
@@ -55,12 +56,18 @@ class VendorProfile
     #[Groups(['vendor:read', 'vendor:write'])]
     private ?string $slug = null;
 
+    /**
+     * Translatable: stored in ext_translations table for ar/ary/en locales.
+     * Falls back to this column value (fr) when no translation exists.
+     */
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Gedmo\Translatable]
     #[Groups(['vendor:read', 'vendor:write'])]
     private string $businessName = '';
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Gedmo\Translatable]
     #[Groups(['vendor:read', 'vendor:write'])]
     private ?string $tagline = null;
 
@@ -71,8 +78,16 @@ class VendorProfile
 
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank]
+    #[Gedmo\Translatable]
     #[Groups(['vendor:read', 'vendor:write'])]
     private string $description = '';
+
+    /**
+     * Locale hint used by Gedmo at runtime — NOT persisted as a column.
+     * Set by LocaleListener via TranslatableListener.
+     */
+    #[Gedmo\Locale]
+    private ?string $locale = null;
 
     /**
      * @var string[] Multi-select tags (e.g. Traditional, Modern, Fusion)
@@ -186,6 +201,10 @@ class VendorProfile
 
     public function getSlug(): ?string { return $this->slug; }
     public function setSlug(?string $slug): static { $this->slug = $slug; return $this; }
+
+    /** Required by Gedmo Translatable interface */
+    public function setTranslatableLocale(string $locale): void { $this->locale = $locale; }
+    public function getLocale(): ?string { return $this->locale; }
 
     public function getBusinessName(): string { return $this->businessName; }
     public function setBusinessName(string $businessName): static { $this->businessName = $businessName; return $this; }

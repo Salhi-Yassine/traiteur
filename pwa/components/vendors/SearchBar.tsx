@@ -1,16 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/router";
-
-const CATEGORIES = [
-    { value: "", label: "Toutes les catégories" },
-    { value: "Salles", label: "Salles de Fête" },
-    { value: "Catering", label: "Traiteurs" },
-    { value: "Negrafa", label: "Négafas" },
-    { value: "Photography", label: "Photographes" },
-    { value: "Music", label: "Orchestres & DJs" },
-    { value: "Decoration", label: "Décoration" },
-];
+import { useTranslation } from "next-i18next";
 
 interface SearchBarProps {
     initialLocation?: string;
@@ -18,19 +9,51 @@ interface SearchBarProps {
     variant?: "hero" | "page";
 }
 
+// v3.0 — white-first, clean neutral focus ring, terracotta CTA
 export default function SearchBar({
     initialLocation = "",
     initialCategory = "",
     variant = "hero",
 }: SearchBarProps) {
+    const { t } = useTranslation("common");
     const router = useRouter();
-    const [location, setLocation] = useState(initialLocation);
+    const [query, setQuery] = useState(initialLocation);
+    const [city, setCity] = useState(initialLocation);
     const [category, setCategory] = useState(initialCategory);
+
+    const CITIES = [
+        { value: "", label: t("search_bar.cities.all") },
+        { value: "Casablanca", label: t("search_bar.cities.casablanca", { defaultValue: "Casablanca" }) },
+        { value: "Marrakech", label: t("search_bar.cities.marrakech", { defaultValue: "Marrakech" }) },
+        { value: "Rabat", label: t("search_bar.cities.rabat", { defaultValue: "Rabat" }) },
+        { value: "Fès", label: t("search_bar.cities.fes", { defaultValue: "Fès" }) },
+        { value: "Tanger", label: t("search_bar.cities.tanger", { defaultValue: "Tanger" }) },
+        { value: "Agadir", label: t("search_bar.cities.agadir", { defaultValue: "Agadir" }) },
+        { value: "Meknès", label: t("search_bar.cities.meknes", { defaultValue: "Meknès" }) },
+        { value: "Oujda", label: t("search_bar.cities.oujda", { defaultValue: "Oujda" }) },
+        { value: "El Jadida", label: t("search_bar.cities.el_jadida", { defaultValue: "El Jadida" }) },
+        { value: "Kénitra", label: t("search_bar.cities.kenitra", { defaultValue: "Kénitra" }) },
+        { value: "Tétouan", label: t("search_bar.cities.tetouan", { defaultValue: "Tétouan" }) },
+        { value: "Laâyoune", label: t("search_bar.cities.laayoune", { defaultValue: "Laâyoune" }) },
+    ];
+
+    const CATEGORIES = [
+        { value: "", label: t("search_bar.categories.all") },
+        { value: "Salles", label: t("search_bar.categories.salles") },
+        { value: "Catering", label: t("search_bar.categories.catering") },
+        { value: "Negrafa", label: t("search_bar.categories.negrafa") },
+        { value: "Photography", label: t("search_bar.categories.photography") },
+        { value: "Music", label: t("search_bar.categories.music") },
+        { value: "Decoration", label: t("search_bar.categories.decoration") },
+        { value: "Beauty", label: t("search_bar.categories.beauty") },
+        { value: "Transport", label: t("search_bar.categories.transport") },
+    ];
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         const params = new URLSearchParams();
-        if (location.trim()) params.set("serviceArea", location.trim());
+        if (query.trim()) params.set("q", query.trim());
+        if (city) params.set("serviceArea", city);
         if (category) params.set("category", category);
         router.push(`/vendors?${params.toString()}`);
     };
@@ -39,87 +62,94 @@ export default function SearchBar({
         return (
             <form
                 onSubmit={handleSearch}
-                className="w-full max-w-4xl bg-white/10 backdrop-blur-2xl rounded-[2.5rem] p-3 flex flex-col sm:flex-row gap-3 shadow-premium border border-white/10"
+                className="w-full max-w-3xl bg-white rounded-2xl p-2 flex flex-col sm:flex-row gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.10)]"
                 role="search"
-                aria-label="Rechercher des prestataires"
+                aria-label={t("search_bar.cat_label")}
             >
-                {/* Location input */}
-                <div className="flex-[1.2] flex items-center gap-4 px-6 py-4 rounded-[2rem] bg-white/5 hover:bg-white/10 transition-all group">
-                    <svg className="w-5 h-5 text-secondary shrink-0 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                {/* Text input */}
+                <div className="flex-1 flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#F7F7F7] transition-colors group">
+                    <svg className="w-4 h-4 text-[#B0B0B0] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
-                    <div className="flex flex-col flex-1">
-                        <label htmlFor="location-input" className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-0.5">Où ?</label>
-                        <input
-                            type="text"
-                            id="location-input"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                            placeholder="Ville ou région"
-                            className="bg-transparent text-white placeholder:text-white/30 text-base font-bold outline-none"
-                        />
-                    </div>
+                    <input
+                        type="text"
+                        id="hero-search-input"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder={t("search_bar.placeholder")}
+                        className="flex-1 bg-transparent text-[15px] text-[#1A1A1A] placeholder:text-[#B0B0B0] outline-none font-[400]"
+                    />
                 </div>
 
                 {/* Divider */}
-                <div className="hidden sm:block w-px bg-white/10 self-stretch my-4" />
+                <div className="hidden sm:block w-px bg-[#DDDDDD] self-stretch my-2" />
 
-                {/* Category select */}
-                <div className="flex-1 flex items-center gap-4 px-6 py-4 rounded-[2rem] bg-white/5 hover:bg-white/10 transition-all group">
-                    <svg className="w-5 h-5 text-secondary shrink-0 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16m-7 6h7" />
+                {/* City select */}
+                <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#F7F7F7] transition-colors">
+                    <svg className="w-4 h-4 text-[#B0B0B0] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    <div className="flex flex-col flex-1">
-                        <label htmlFor="category-select" className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-0.5">Quoi ?</label>
-                        <select
-                            id="category-select"
-                            value={category}
-                            onChange={(e) => setCategory(e.target.value)}
-                            className="bg-transparent text-white text-base font-bold outline-none cursor-pointer pr-8 appearance-none"
-                        >
-                            {CATEGORIES.map((cat) => (
-                                <option key={cat.value} value={cat.value} className="bg-primary text-white">
-                                    {cat.label}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    <select
+                        id="hero-city-select"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        className="bg-transparent text-[14px] text-[#484848] outline-none cursor-pointer appearance-none pr-6 min-w-[140px]"
+                        aria-label={t("search_bar.city_label")}
+                    >
+                        {CITIES.map((c) => (
+                            <option key={c.value} value={c.value}>{c.label}</option>
+                        ))}
+                    </select>
                 </div>
 
+                {/* CTA */}
                 <button
                     type="submit"
-                    className="bg-secondary text-white px-10 py-5 rounded-[2rem] font-black uppercase tracking-widest text-xs hover:bg-secondary/90 transition-all shadow-gold hover:-translate-y-0.5 active:scale-95 shrink-0"
+                    className="bg-[#E8472A] text-white px-7 py-3 rounded-xl text-[15px] font-semibold hover:bg-[#C43A20] transition-colors duration-150 shrink-0 active:scale-[0.98]"
                 >
-                    Explorer
+                    {t("search_bar.cta")}
                 </button>
             </form>
         );
     }
 
-    // Page variant (compact premium bar)
+    // Page variant — compact bar
     return (
         <form
             onSubmit={handleSearch}
-            className="flex flex-col sm:flex-row gap-4 w-full"
+            className="flex flex-col sm:flex-row gap-3 w-full"
             role="search"
         >
-            <div className="flex-1 flex items-center gap-3 bg-white border border-border rounded-2xl px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-secondary/20 transition-all">
-                <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex-1 flex items-center gap-3 bg-white border-[1.5px] border-[#DDDDDD] rounded-lg px-4 h-12 focus-within:border-[#1A1A1A] focus-within:shadow-[0_0_0_3px_rgba(26,26,26,0.08)] transition-all">
+                <svg className="w-4 h-4 text-[#B0B0B0] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
                     type="text"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Ville ou nom du prestataire..."
-                    className="flex-1 bg-transparent text-sm font-medium outline-none text-primary placeholder:text-muted-foreground"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder={t("search_bar.placeholder")}
+                    className="flex-1 bg-transparent text-[15px] text-[#1A1A1A] placeholder:text-[#B0B0B0] outline-none"
                 />
             </div>
             <select
+                id="page-city-select"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="bg-white border-[1.5px] border-[#DDDDDD] rounded-lg px-4 h-12 text-[14px] text-[#484848] outline-none cursor-pointer hover:border-[#B0B0B0] focus:border-[#1A1A1A] transition-colors appearance-none min-w-[140px]"
+                aria-label={t("search_bar.city_label")}
+            >
+                {CITIES.map((c) => (
+                    <option key={c.value} value={c.value}>{c.label}</option>
+                ))}
+            </select>
+            <select
+                id="page-category-select"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="bg-white border border-border rounded-2xl px-6 py-4 text-sm text-primary outline-none font-bold shadow-sm cursor-pointer hover:border-secondary/30 transition-all"
+                className="bg-white border-[1.5px] border-[#DDDDDD] rounded-lg px-4 h-12 text-[14px] text-[#484848] outline-none cursor-pointer hover:border-[#B0B0B0] focus:border-[#1A1A1A] transition-colors appearance-none min-w-[160px]"
+                aria-label={t("search_bar.cat_label")}
             >
                 {CATEGORIES.map((cat) => (
                     <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -127,9 +157,9 @@ export default function SearchBar({
             </select>
             <button
                 type="submit"
-                className="bg-primary text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-primary/95 transition-all shadow-premium"
+                className="bg-[#E8472A] text-white px-6 h-12 rounded-lg text-[15px] font-semibold hover:bg-[#C43A20] transition-colors duration-150 shrink-0 active:scale-[0.98]"
             >
-                Filtrer
+                {t("search_bar.cta")}
             </button>
         </form>
     );

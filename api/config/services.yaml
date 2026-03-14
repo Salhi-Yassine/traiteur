@@ -22,3 +22,9 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Alias stof's TranslatableListener service so it can be injected by class name
+    # (stof_doctrine_extensions registers it only by string ID, not by class)
+    Gedmo\Translatable\TranslatableListener:
+        alias: stof_doctrine_extensions.listener.translatable
+        public: true

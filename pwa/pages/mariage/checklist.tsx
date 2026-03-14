@@ -1,7 +1,10 @@
+import { useTranslation } from "next-i18next";
 import Head from "next/head";
 import PlanningLayout from "../../components/layout/PlanningLayout";
 import { useState, useEffect } from "react";
 import apiClient from "../../utils/apiClient";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import type { GetServerSideProps } from "next";
 
 interface ChecklistTask {
     id: number;
@@ -12,9 +15,10 @@ interface ChecklistTask {
     isCompleted: boolean;
 }
 
-const CATEGORIES = ["Salles", "Traiteur", "Tenues", "Beauté", "Photo", "Papeterie", "Autre"];
+const CATEGORIES = ["salles", "traiteur", "tenues", "beaute", "photo", "papeterie", "autre"];
 
 export default function ChecklistPage() {
+    const { t } = useTranslation("common");
     const [tasks, setTasks] = useState<ChecklistTask[]>([]);
     const [weddingProfileId, setWeddingProfileId] = useState<number | null>(null);
     const [isAdding, setIsAdding] = useState(false);
@@ -86,21 +90,21 @@ export default function ChecklistPage() {
 
     return (
         <PlanningLayout 
-            title="Ma Checklist" 
-            description="Suivez chaque étape de l'organisation et ne manquez aucun détail important."
+            title={t("checklist.title")} 
+            description={t("checklist.description")}
         >
             <Head>
-                <title>Ma Checklist — Farah.ma</title>
+                <title>{t("nav.checklist")} — Farah.ma</title>
             </Head>
 
             {/* Progress Bar Top */}
-            <div className="bg-white p-10 rounded-[3rem] border border-[var(--color-charcoal-100)] shadow-sm mb-12">
+            <div className="bg-white p-10 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm mb-12">
                 <div className="flex items-center justify-between mb-6">
                     <div>
-                        <h4 className="font-display font-black text-2xl text-[var(--color-primary)]">Progression globale</h4>
-                        <p className="text-[var(--color-charcoal-400)] text-xs font-bold uppercase tracking-widest mt-1">
-                            {completedCount} tâches sur {tasks.length} terminées
-                        </p>
+                        <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">{t("checklist.progress_title")}</h3>
+                        <span className="text-[var(--color-charcoal-400)] text-xs font-bold uppercase tracking-widest mt-1">
+                            {t("checklist.progress_stats", { done: completedCount, total: tasks.length })}
+                        </span>
                     </div>
                     <span className="text-4xl font-black text-[var(--color-accent)]">{Math.round(progressPercent)}%</span>
                 </div>
@@ -115,19 +119,19 @@ export default function ChecklistPage() {
             {/* Task List */}
             <div className="bg-white rounded-[2.5rem] border border-[var(--color-charcoal-100)] overflow-hidden shadow-sm">
                 <div className="px-10 py-8 border-b border-[var(--color-background)] flex items-center justify-between">
-                    <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">Mes Tâches</h3>
+                    <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">{t("checklist.tasks_title")}</h3>
                     <button 
                         onClick={() => setIsAdding(true)}
                         className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-[var(--color-accent)]/20"
                     >
-                        + Ajouter une tâche
+                        + {t("checklist.add_task")}
                     </button>
                 </div>
 
                 <div className="grid grid-cols-1 divide-y divide-[var(--color-background)]">
                     {tasks.length === 0 && (
                         <div className="px-10 py-20 text-center text-[var(--color-charcoal-400)] italic font-medium">
-                            Aucune tâche enregistrée. Commencez par en ajouter une !
+                            {t("checklist.empty")}
                         </div>
                     )}
                     {tasks.sort((a, b) => Number(a.isCompleted) - Number(b.isCompleted)).map((task) => (
@@ -154,9 +158,9 @@ export default function ChecklistPage() {
                                             {task.category}
                                         </span>
                                         {task.dueDate && (
-                                            <span className="text-[9px] font-bold text-[var(--color-charcoal-400)]">
-                                                • Échéance : {new Date(task.dueDate).toLocaleDateString()}
-                                            </span>
+                                            <p className="text-[10px] font-medium text-[var(--color-charcoal-400)] mt-1">
+                                                {t("checklist.due_date", { date: new Date(task.dueDate).toLocaleDateString() })}
+                                            </p>
                                         )}
                                     </div>
                                 </div>
@@ -179,32 +183,35 @@ export default function ChecklistPage() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
                     <div className="absolute inset-0 bg-[var(--color-primary)]/40 backdrop-blur-md" onClick={() => setIsAdding(false)} />
                     <div className="relative bg-white rounded-[2.5rem] w-full max-w-md p-10 shadow-2xl animate-in fade-in zoom-in duration-300 border border-[var(--color-accent)]/10">
-                        <h3 className="font-display font-black text-2xl text-[var(--color-primary)] mb-8">Nouvelle tâche</h3>
+                        <h3 className="font-display font-black text-2xl text-[var(--color-primary)] mb-8">{t("checklist.new_task_title")}</h3>
                         <form onSubmit={handleAddTask} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">Titre de la tâche</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("checklist.tasks_title")}</label>
                                 <input 
                                     type="text" 
                                     required
                                     value={newTask.title}
                                     onChange={(e) => setNewTask({...newTask, title: e.target.value})}
-                                    placeholder="ex: Réserver la salle, Choisir le menu..."
+                                    placeholder={t("checklist.task_placeholder")}
                                     className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">Catégorie</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("checklist.category_label")}</label>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-accent)] mb-1">
+                                        {t(`checklist.categories.${newTask.category}`)}
+                                    </p>
                                     <select 
                                         value={newTask.category}
                                         onChange={(e) => setNewTask({...newTask, category: e.target.value})}
                                         className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none"
                                     >
-                                        {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                        {CATEGORIES.map(c => <option key={c} value={c}>{t("checklist.categories." + c)}</option>)}
                                     </select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">Échéance</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("checklist.due_date_label")}</label>
                                     <input 
                                         type="date" 
                                         value={newTask.dueDate}
@@ -225,7 +232,7 @@ export default function ChecklistPage() {
                                     type="submit"
                                     className="flex-1 py-4 bg-[var(--color-accent)] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-xl shadow-[var(--color-accent)]/20"
                                 >
-                                    Ajouter
+                                    {t("common.save")}
                                 </button>
                             </div>
                         </form>
@@ -235,3 +242,11 @@ export default function ChecklistPage() {
         </PlanningLayout>
     );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale || "fr", ["common"])),
+        },
+    };
+};

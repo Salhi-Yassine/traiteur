@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useTranslation } from "next-i18next";
 
 interface FilterSidebarProps {
     selected: {
@@ -10,144 +11,137 @@ interface FilterSidebarProps {
 }
 
 const ALL_CATEGORIES = [
-    "Salles", "Catering", "Negrafa", "Photography", "Music", "Decoration", "Beauty", "Transport"
+    { value: "Salles",      label: "Salles de Fête" },
+    { value: "Catering",    label: "Traiteurs" },
+    { value: "Negrafa",     label: "Négafas" },
+    { value: "Photography", label: "Photographes" },
+    { value: "Music",       label: "DJs & Orchestres" },
+    { value: "Decoration",  label: "Décoration" },
+    { value: "Beauty",      label: "Beauté" },
+    { value: "Transport",   label: "Transport" },
 ];
 
 const ALL_PRICE_RANGES = [
-    { label: "Budget", value: "MAD" },
+    { label: "Budget",   value: "MAD" },
     { label: "Standard", value: "MADMAD" },
-    { label: "Premium", value: "MADMADMAD" },
+    { label: "Premium",  value: "MADMADMAD" },
     { label: "Exclusif", value: "MADMADMAD+" },
 ];
 
-export default function FilterSidebar({
-    selected,
-    onChange,
-    onClear,
-}: FilterSidebarProps) {
+// v3.0 — neutral-first filter sidebar with terracotta active states
+export default function FilterSidebar({ selected, onChange, onClear }: FilterSidebarProps) {
+    const { t } = useTranslation("common");
     const hasFilters =
         selected.category.length > 0 ||
         selected.priceRanges.length > 0;
 
     return (
-        <aside className="w-full space-y-8" aria-label="Filtrer les prestataires">
-            <div className="bg-white rounded-[2.5rem] shadow-premium p-8 sticky top-32 border border-border/50">
+        <aside className="w-full" aria-label={t("filters.title")}>
+            <div className="bg-white rounded-[24px] border border-[#DDDDDD] shadow-[0_1px_2px_rgba(0,0,0,0.08)] p-6 sticky top-28">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-10">
-                    <h2 className="font-display font-black text-2xl text-primary">
-                        Filtres
-                    </h2>
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="font-semibold text-[16px] text-[#1A1A1A]">{t("filters.title")}</h2>
                     {hasFilters && (
                         <button
                             onClick={onClear}
-                            className="text-[10px] font-black text-secondary hover:text-primary uppercase tracking-[0.2em] transition-colors"
+                            className="text-[13px] font-medium text-[#E8472A] hover:text-[#C43A20] transition-colors underline underline-offset-2"
                         >
-                            Réinitialiser
+                            {t("filters.clear")}
                         </button>
                     )}
                 </div>
 
-                <div className="space-y-12">
+                <div className="space-y-8">
                     {/* Categories */}
-                    <FilterSection title="Catégories">
+                    <FilterSection title={t("filters.categories")}>
                         {ALL_CATEGORIES.map((c) => (
                             <CheckRow
-                                key={c}
-                                label={c}
-                                checked={selected.category.includes(c)}
-                                onChange={(checked) => onChange("category", c, checked)}
+                                key={c.value}
+                                label={t(`search_bar.categories.${c.value.toLowerCase()}`)}
+                                checked={selected.category.includes(c.value)}
+                                onChange={(checked) => onChange("category", c.value, checked)}
                             />
                         ))}
                     </FilterSection>
 
-                    <div className="h-px bg-border/60" />
+                    <div className="h-px bg-[#DDDDDD]" />
 
-                    {/* Price range */}
-                    <FilterSection title="Budget & Standing">
+                    {/* Price ranges */}
+                    <FilterSection title={t("filters.price_range")}>
                         {ALL_PRICE_RANGES.map(({ label, value }) => (
                             <CheckRow
                                 key={value}
-                                label={label}
-                                subLabel={value}
+                                label={t(`filters.price_labels.${label.toLowerCase()}`)}
                                 checked={selected.priceRanges.includes(value)}
                                 onChange={(checked) => onChange("priceRanges", value, checked)}
                             />
                         ))}
                     </FilterSection>
-                </div>
 
-                {/* Inspiration CTA */}
-                <div className="mt-12 p-6 bg-accent/5 rounded-3xl border border-secondary/10 relative overflow-hidden group">
-                    <div className="absolute -top-12 -right-12 w-24 h-24 bg-secondary/10 rounded-full blur-2xl group-hover:bg-secondary/20 transition-colors" />
-                    <p className="text-[10px] font-black text-primary mb-3 uppercase tracking-widest relative z-10">Assistance Express</p>
-                    <p className="text-xs text-muted-foreground leading-relaxed mb-4 relative z-10">
-                        Besoin d'une recommandation personnalisée ? Nos experts sont là.
-                    </p>
-                    <button className="text-[10px] font-black text-secondary uppercase tracking-[0.3em] hover:text-primary transition-colors relative z-10 flex items-center gap-2">
-                        Contactez-nous
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
+                    <div className="h-px bg-[#DDDDDD]" />
+
+                    {/* Assistance CTA */}
+                    <div className="p-4 bg-[#FEF0ED] rounded-[16px]">
+                        <p className="text-[13px] font-medium text-[#1A1A1A] mb-1">{t("filters.help_title")}</p>
+                        <p className="text-[12px] text-[#717171] leading-relaxed mb-3">
+                            {t("filters.help_desc")}
+                        </p>
+                        <button className="text-[13px] font-semibold text-[#E8472A] hover:text-[#C43A20] transition-colors flex items-center gap-1">
+                            {t("filters.contact_us")}
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </aside>
     );
 }
 
-function FilterSection({
-    title,
-    children,
-}: {
-    title: string;
-    children: React.ReactNode;
-}) {
+function FilterSection({ title, children }: { title: string; children: React.ReactNode }) {
     return (
-        <div className="space-y-6">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/40">
+        <div className="space-y-3">
+            <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[#B0B0B0]">
                 {title}
             </h3>
-            <div className="space-y-4">{children}</div>
+            <div className="space-y-3">{children}</div>
         </div>
     );
 }
 
 function CheckRow({
     label,
-    subLabel,
     checked,
     onChange,
 }: {
     label: string;
-    subLabel?: string;
     checked: boolean;
     onChange: (checked: boolean) => void;
 }) {
     return (
-        <label className="flex items-center justify-between group cursor-pointer">
-            <div className="flex flex-col">
-                <span className={cn(
-                    "text-xs font-bold transition-colors uppercase tracking-widest",
-                    checked ? "text-primary" : "text-muted-foreground group-hover:text-primary"
-                )}>
-                    {label}
-                </span>
-                {subLabel && (
-                    <span className="text-[10px] font-black text-secondary/60 tracking-tighter">
-                        {subLabel}
-                    </span>
-                )}
-            </div>
-            <div className="relative flex items-center">
+        <label className="flex items-center justify-between gap-3 cursor-pointer group">
+            <span className={cn(
+                "text-[14px] transition-colors",
+                checked ? "text-[#1A1A1A] font-medium" : "text-[#484848] group-hover:text-[#1A1A1A]"
+            )}>
+                {label}
+            </span>
+            <div className="relative flex items-center shrink-0">
                 <input
                     type="checkbox"
                     checked={checked}
                     onChange={(e) => onChange(e.target.checked)}
-                    className="peer w-6 h-6 rounded-lg border-2 border-border text-secondary focus:ring-0 focus:ring-offset-0 transition-all cursor-pointer hover:border-secondary/50 checked:border-secondary checked:bg-secondary"
+                    className="w-5 h-5 rounded-md border-[1.5px] border-[#DDDDDD] text-[#E8472A] cursor-pointer
+                        checked:bg-[#E8472A] checked:border-[#E8472A]
+                        focus:ring-0 focus:ring-offset-0
+                        hover:border-[#B0B0B0] transition-colors appearance-none"
                 />
-                <svg className="absolute w-4 h-4 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-1 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
-                </svg>
+                {checked && (
+                    <svg className="absolute w-3 h-3 text-white pointer-events-none left-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                )}
             </div>
         </label>
     );

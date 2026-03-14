@@ -1,0 +1,316 @@
+{
+  "nav": {
+    "vendors": "المزوّدين",
+    "inspiration": "إلهام",
+    "real_weddings": "أعراس حقيقية",
+    "for_vendors": "فضاء المزوّدين",
+    "login": "تسجيل الدخول",
+    "start": "بداية",
+    "dashboard": "لوحة التحكم",
+    "budget": "الميزانية",
+    "guests": "المعروضين",
+    "checklist": "قائمة الشغل",
+    "my_wedding": "عرسي",
+    "mgmt_desc": "تدبير العرس",
+    "logout": "خروج",
+    "about": "علينا",
+    "register": "تقيد دابا",
+    "need_help": "محتاج مساعدة؟",
+    "help_desc": "الخبراء ديالنا هنا باش يواكبوا كولشي فكاع المراحل.",
+    "see_experts": "شوف المزوّدين"
+  },
+  "auth": {
+    "planning_wedding": "كنخطط للعرس ديالي",
+    "is_vendor": "أنا مزوّد",
+    "welcome": "مرحبا بيك!",
+    "login_subtitle": "خل باش تبدا تقاد العرس ديالك",
+    "email_label": "الإيميل ديالك",
+    "password_label": "المودباس",
+    "forgot_password": "نسيتي المودباس؟",
+    "no_account": "ماعندكش كونط؟",
+    "register_link": "تقيد دابا",
+    "logging_in": "كنسجلو الدخول...",
+    "login_btn": "دخل",
+    "invalid_email": "إيميل ماشي هو هاداك",
+    "required_email": "الإيميل ضروري",
+    "required_password": "المودباس ضروري",
+    "login_error": "الإيميل أولا المودباس غلط",
+    "register_title": "تقيد دابا",
+    "register_subtitle": "قاد عرس أحلامك فالمغرب",
+    "first_name": "السمية",
+    "last_name": "الكنية",
+    "password_hint": "(على الأقل 8 د الرموز)",
+    "vendor_notice": "✓ من بعد ما تقيد، غاتقدر تقاد البروفيل ديالك من لوحة التحكم.",
+    "terms_text": "فاش كتقيد، كتوافق على <1>شروط الاستعمال</1> و <2>سياسة الخصوصية</2> ديالتنا.",
+    "creating_acc": "كنقادو الحساب ديالك...",
+    "create_acc_btn": "قاد الحساب ديالي",
+    "already_registered": "مقيد ديجا؟",
+    "first_name_req": "السمية ضرورية",
+    "last_name_req": "الكنية ضرورية",
+    "password_min": "المودباس خاص يكون فيه 8 د الرموز على الأقل",
+    "register_error": "الحساب ما تقادش. عاود من بعد."
+  },
+  "footer": {
+    "tagline": "أول بلانيكاتور ديال لعراس فالمغرب.",
+    "made_in": "مصاوب فالمغرب",
+    "rights": "© 2026 Farah.ma — كاع الحقوق محفوظة",
+    "privacy": "الخصوصية",
+    "terms": "شروط الاستعمال",
+    "about": "علينا",
+    "dashboard": "طابلو دبور ديالي",
+    "budget": "الميزانية",
+    "guests": "قائمة الضياف",
+    "checklist": "قائمة التخطيط",
+    "list_business": "سجل الشركة ديالي",
+    "vendor_login": "دخول لمزيّن",
+    "pricing": "الأثمنة",
+    "faq": "الأسئلة",
+    "sections": {
+      "platform": "البلاتفورم",
+      "planning": "التخطيط",
+      "vendors": "النقاشة والمزيّنين"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "بلاني لعرس اللي كتحلم بيه، <1>بالطريقة المغربية</1>",
+      "subtitle": "قلب على أحسن النقاشة والمزيّنين فالمغرب - قاعات، ترايتور، نكافات، مصورين وأكثر.",
+      "social_proof": "انضم لـ 3000 كـوبل اللي كيقادوا عرسهم على Farah.ma"
+    },
+    "stats": {
+      "vendors": "مزيّنين",
+      "cities": "مدون",
+      "verified": "موثوقين",
+      "rating": "تقييم الناس"
+    },
+    "categories": {
+      "title": "قلب على المزيّن اللي نتا محتاج",
+      "subtitle": "شوف الفئات ديالنا واكتشف المحترفين الموثوقين فكاع المدون المغربية.",
+      "view_all": "شوف كاع الفئات ←",
+      "count_suffix": "مزيّن",
+      "items": {
+        "salles": "قاعات الأفراح",
+        "photography": "المصورين",
+        "negrafa": "النكافات",
+        "catering": "ترايتور",
+        "decoration": "الديكور",
+        "beauty": "الحناء والتجميل",
+        "music": "دي جي وموسيقى",
+        "transport": "سيارات العرس"
+      }
+    },
+    "featured": {
+      "title": "أحسن المزيّنين",
+      "subtitle": "مختارين من بين واعرين فالمغرب",
+      "view_all": "شوف كاع المزيّنين ←"
+    },
+    "how_it_works": {
+      "title": "كيفاش خدام",
+      "step1": {
+        "title": "حدد الميزانية والتاريخ ديالك",
+        "desc": "دخل الميزانية ديالك وتاريخ العرس باش تشوف المزيّنين اللي كيناسبوك."
+      },
+      "step2": {
+        "title": "اكتشف وتواصل مع المزيّنين",
+        "desc": "شوف البروفيلات الموثوقة، قارن العروض وتواصل معاهم مباشرة بواتساب."
+      },
+      "step3": {
+        "title": "تبع كلشي فبلاصا وحدة",
+        "desc": "الميزانية، قائمة الضياف، شنو بقا ليك - كلشي مجموع فلوحة التحكم ديالك."
+      },
+      "cta": "بدا دابا فابور"
+    },
+    "vendors_cta": {
+      "title": "نتا مزيّن فالمغرب؟",
+      "subtitle": "انضم لـ 500+ مزيّن فـ Farah.ma. قاد البروفيل ديالك فابور وبدا يوصلوك الطلبات من اليوم.",
+      "cta": "سجل الشركة ديالي فابور"
+    }
+  },
+  "search_bar": {
+    "placeholder": "مصور، قاعة، نكافة...",
+    "city_label": "عزل مدينة",
+    "cat_label": "عزل فئة",
+    "cta": "قلب",
+    "cities": {
+      "all": "كاع المدون",
+      "casablanca": "كازا",
+      "marrakech": "مراكش",
+      "rabat": "الرباط",
+      "fes": "فاس",
+      "tanger": "طنجة",
+      "agadir": "أكادير",
+      "meknes": "مكناس",
+      "oujda": "وجدة",
+      "el_jadida": "الجديدة",
+      "kenitra": "القنيطرة",
+      "tetouan": "تطوان",
+      "laayoune": "العيون"
+    },
+    "categories": {
+      "all": "كاع الفئات",
+      "salles": "قاعات الأفراح",
+      "catering": "ترايتور",
+      "negrafa": "النكافات",
+      "photography": "المصورين",
+      "music": "دي جي وجوق",
+      "decoration": "الديكور",
+      "beauty": "التجميل",
+      "transport": "سيارات"
+    }
+  },
+  "vendor_card": {
+    "verified": "موثوق",
+    "view_profile": "شوف البروفيل",
+    "whatsapp_aria": "تواصل مع {{name}} فـ واتساب"
+  },
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "edit": "تعديل",
+    "delete": "حيد",
+    "currency": "درهم",
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ ما",
+    "search": "بحث",
+    "cities_placeholder": "فين؟ (المدينة)",
+    "active_filters": "الفلاتر اللي خدامين:",
+    "clear_all": "مسح كولشي",
+    "prev": "← اللي فات",
+    "next": "ما جاي →",
+    "no_vendors_found": "ما لقينا حتى شي مزيّن",
+    "no_vendors_desc": "جرب تبدل الفلاتر أولا قلب فمدينة أخرى.",
+    "see_all_vendors": "شوف كاع لمزيّنين"
+  },
+  "budget": {
+    "title": "قاد الميزانية ديالتك",
+    "description": "تبع فين كتمشي فلوسك وقاد المصاريف ديال كاع داكشي اللي غاتحتاج.",
+    "summary_total": "الميزانية الكلية",
+    "summary_spent": "داكشي اللي تصرف",
+    "summary_remaining": "شنو بقا ليك",
+    "postes_title": "فين مشات الفلوس",
+    "add_poste": "زيد حاجة",
+    "col_category": "الصنف",
+    "col_budgeted": "شحال كنتي داير",
+    "col_paid": "شحال خلصتي",
+    "col_actions": "شغل",
+    "empty": "باقي ما زدتي حتى حاجة فالمصاريف.",
+    "totals": "المجموع",
+    "new_poste_title": "حاجة جديدة",
+    "category_placeholder": "مثلاً: ترايتور، مصور...",
+    "budgeted_label": "شحال ناوي تخسر (درهم)",
+    "delete_confirm": "واش بصح بغيتي تمسح هاد الصنف؟",
+    "error_add": "كاين غلط فاش كنزيدو.",
+    "error_delete": "كاين غلط فاش كنمسحو."
+  },
+  "checklist": {
+    "title": "شنو بقا ليك دير",
+    "description": "تبع كل خطوة فالتوجاد ديالك وما تنسى حتى حاجة مهمة.",
+    "progress_title": "فين وصلتي",
+    "progress_stats": "{{done}} شغل من أصل {{total}} كملوا",
+    "tasks_title": "شنو عندي",
+    "add_task": "زيد شغل",
+    "empty": "باقي ما كاين والو. زيد أول شغل ليك!",
+    "due_date": "الأجل: {{date}}",
+    "new_task_title": "شغل جديد",
+    "task_placeholder": "مثلاً: عزل القاعة، شوف الماكلة...",
+    "category_label": "الصنف",
+    "due_date_label": "الأجل",
+    "delete_confirm": "واش بغيتي تمسح هاد الشغل؟",
+    "error_add": "ما قدرناش نزيدو الشغل دابا.",
+    "categories": {
+      "salles": "قاعات",
+      "traiteur": "ترايتور",
+      "tenues": "لبس",
+      "beaute": "تجميل",
+      "photo": "تصوير",
+      "papeterie": "ورقيات",
+      "autre": "حاجة أخرى"
+    }
+  },
+  "invites": {
+    "title": "ليستة د المعروضين",
+    "description": "قاد الضياف ديالك، وشوف شكون جاي وشكون لا.",
+    "total_guests": "كاع الضياف",
+    "confirmed": "جايين",
+    "pending": "باقي ما عرفنا",
+    "list_title": "ليستة د المعروضين",
+    "new_guest": "ضيف جديد",
+    "full_name": "السمية والكنية",
+    "side": "الجهة",
+    "rsvp": "شنو قالو",
+    "meal": "الماكلة",
+    "actions": "شغل",
+    "empty": "باقي ما كاين حتى ضيف.",
+    "delete_confirm": "واش بغيتي تمسح هاد الضيف؟",
+    "error_add": "ما قدرناش نزيدو هاد الضيف.",
+    "new_guest_title": "ضيف جديد",
+    "name_placeholder": "السمية والكنية",
+    "meal_pref_label": "شنو كياكل",
+    "sides": {
+      "bride": "العروسة",
+      "groom": "العريس"
+    },
+    "rsvp_status": {
+      "pending": "باقي ما جاوب",
+      "confirmed": "جاي",
+      "declined": "ما جايش"
+    },
+    "meals": {
+      "standard": "عادي",
+      "vegetarian": "نباتي",
+      "halal": "حلال",
+      "fish": "حوت"
+    }
+  },
+  "dashboard": {
+    "welcome": "مرحبا بيك، {{name}}",
+    "subtitle": "هنا كين كولشي على التوجاد ديال العرس ديالك.",
+    "manage": "قاد ←",
+    "list": "ليستة ←",
+    "tasks": "شغل ←",
+    "guests_unit": "واحد مقيد فالمعروضين",
+    "tasks_done": "{{count}} كملوا",
+    "expert_tip": "نصيحة من واعرين",
+    "tip_content": "\"السر ديال عرس واعر هو تبدا بكري. عزل القاعة والترايتور هما اللولين، على الأقل عام قبل.\"",
+    "tip_author": "نادية، منظمة عراسات"
+  },
+  "vendor_profile": {
+    "location": "البلاصة",
+    "price_range": "التمن",
+    "reviews_count": "اراء و تقييمات",
+    "capacity": "القدرة",
+    "capacity_max": "حتى ل {{max}} واحد",
+    "about_title": "فن الضيافة",
+    "services_title": "خدمات مميزة",
+    "per_person": "درهم / لواحد",
+    "reviews_title": "شهادات",
+    "write_review": "كتب رايك",
+    "booking_label": "حجز",
+    "booking_title": "وجد للمناسبة ديالك",
+    "get_quote": "خد تمن ديالك",
+    "no_commitment": "بلا التزام",
+    "highlights": {
+      "response_time": "جواب ف 24 ساعة",
+      "exclusive_rates": "اتمان حصرية",
+      "concierge": "مرافقة خاصة",
+      "secure_payment": "خلاص أمن 100%"
+    },
+    "guarantee_label": "الضمان",
+    "guarantee_text": "فرحنا تهنا"
+  },
+  "filters": {
+    "title": "فلاتر",
+    "clear": "مسح كولشي",
+    "categories": "الأنواع",
+    "price_range": "التمن",
+    "price_labels": {
+      "budget": "على قد الجيب",
+      "standard": "عادي",
+      "premium": "مزيان",
+      "exclusif": "طوب"
+    },
+    "help_title": "محتاج مساعدة؟",
+    "help_desc": "الخبراء ديالنا غيعاونوك تلقى أحسن المزيّنين على حساب طلبك.",
+    "contact_us": "تواصل مع خبير"
+  }
+}

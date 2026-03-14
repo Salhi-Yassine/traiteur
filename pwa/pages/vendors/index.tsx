@@ -8,6 +8,8 @@ import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { cn } from "@/lib/utils";
 import type { GetServerSideProps } from "next";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 interface VendorsPageProps {
     vendors: VendorCardProps[];
@@ -70,6 +72,7 @@ export default function VendorsPage({
     serviceArea,
     category,
 }: VendorsPageProps) {
+    const { t } = useTranslation("common");
     const router = useRouter();
     const [selected, setSelected] = useState({
         category: category ? [category] : [],
@@ -110,42 +113,35 @@ export default function VendorsPage({
     const totalPages = Math.ceil(displayTotal / ITEMS_PER_PAGE);
 
     return (
-        <div className="bg-background min-h-screen">
+        <div className="bg-white min-h-screen">
             <Head>
-                <title>Prestataires de Mariage au Maroc — Farah.ma</title>
-                <meta name="description" content="Découvrez les meilleurs prestataires pour votre mariage au Maroc : Salles, Traiteurs, Négafas, Photographes et plus encore." />
+                <title>{t("nav.vendors")} — Farah.ma</title>
+                <meta name="description" content={t("home.hero.subtitle")} />
             </Head>
 
-            {/* Page header */}
-            <div className="bg-primary pt-32 pb-24 relative overflow-hidden">
-                {/* Decorative Elements */}
-                <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/moroccan-flower.png')]" />
-                <div className="absolute -top-24 -right-24 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] pointer-events-none" />
-                <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] pointer-events-none" />
-                
-                <div className="container mx-auto max-w-7xl px-6 relative z-10">
-                    <div className="max-w-3xl">
-                        <span className="text-secondary font-black tracking-[0.4em] uppercase text-xs mb-4 block">
-                            Catalogue Farah.ma
-                        </span>
-                        <h1 className="font-display text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
-                            {serviceArea ? `Prestataires à ${serviceArea}` : "Tous nos Prestataires"}
+            {/* ── Page header — v3: clean neutral, no burgundy ── */}
+            <div className="bg-[#F7F7F7] pt-28 pb-10 border-b border-[#DDDDDD]">
+                <div className="container mx-auto max-w-7xl px-6">
+                    <div className="space-y-2 mb-6">
+                        <p className="text-[13px] text-[#717171]">
+                            <span className="text-[#E8472A]">Farah.ma</span> · {t("nav.vendors")}
+                        </p>
+                        <h1 className="font-display text-[32px] md:text-[44px] text-[#1A1A1A] leading-tight">
+                            {serviceArea ? `${t("search_bar.cta")} à ${serviceArea}` : t("search_bar.cities.all")}
                         </h1>
-                        <p className="text-white/60 font-medium mb-12 text-lg max-w-2xl">
-                            {displayTotal} professionnels d'exception sélectionnés pour faire de votre mariage un moment inoubliable.
+                        <p className="text-[15px] text-[#717171]">
+                            {displayTotal} {t("home.categories.count_suffix")} {t("vendor_card.verified")} au Maroc
                         </p>
                     </div>
-                    <div className="p-4 bg-white/5 backdrop-blur-3xl rounded-[3rem] border border-white/10 shadow-premium">
-                        <SearchBar variant="page" initialLocation={serviceArea} initialCategory={category} />
-                    </div>
+                    <SearchBar variant="page" initialLocation={serviceArea} initialCategory={category} />
                 </div>
             </div>
 
-            {/* Main grid */}
-            <div className="container mx-auto max-w-7xl px-6 py-20">
-                <div className="flex flex-col lg:flex-row gap-16">
-                    {/* Filter sidebar */}
-                    <div className="lg:w-80 shrink-0">
+            {/* ── Main grid ── */}
+            <div className="container mx-auto max-w-7xl px-6 py-10">
+                <div className="flex flex-col lg:flex-row gap-8">
+                    {/* Filter sidebar — 280px per PRD */}
+                    <div className="lg:w-[280px] shrink-0">
                         <FilterSidebar
                             selected={selected}
                             onChange={handleFilterChange}
@@ -154,32 +150,38 @@ export default function VendorsPage({
                     </div>
 
                     {/* Results */}
-                    <div className="flex-1 min-w-0 space-y-12">
-                        {/* Active filters display */}
+                    <div className="flex-1 min-w-0 space-y-6">
+                        {/* Sort bar */}
+                        <div className="flex items-center justify-between">
+                            <p className="text-[14px] text-[#484848]">
+                                <span className="font-semibold text-[#1A1A1A]">{displayTotal}</span> {t("home.categories.count_suffix")} {t("search_bar.cta").toLowerCase()}
+                            </p>
+                        </div>
+
+                        {/* Active filter pills */}
                         {(selected.category.length > 0 || selected.priceRanges.length > 0) && (
-                            <div className="flex flex-wrap items-center gap-3">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mr-2">Filtres Actifs:</span>
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className="text-[13px] text-[#717171]">{t("common.active_filters")}</span>
                                 {[...selected.category, ...selected.priceRanges].map((f) => (
-                                    <Badge key={f} variant="secondary" className="pl-4 pr-2 py-1.5 shadow-sm group">
-                                        <span className="flex items-center gap-2">
-                                            {f}
-                                            <button 
-                                                onClick={() => {
-                                                    const key = selected.category.includes(f) ? "category" : "priceRanges";
-                                                    handleFilterChange(key, f, false);
-                                                }}
-                                                className="hover:text-primary transition-colors bg-white/20 rounded-full p-0.5"
-                                            >
-                                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Badge>
+                                    <span key={f} className="inline-flex items-center gap-1.5 bg-[#FEF0ED] text-[#E8472A] text-[13px] font-medium rounded-full px-3 py-1">
+                                        {f}
+                                        <button
+                                            onClick={() => {
+                                                const key = selected.category.includes(f) ? "category" : "priceRanges";
+                                                handleFilterChange(key, f, false);
+                                            }}
+                                            className="hover:text-[#C43A20] transition-colors"
+                                            aria-label={t("filters.clear")}
+                                        >
+                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </span>
                                 ))}
-                                <Button variant="ghost" size="sm" onClick={handleClear} className="text-[10px] font-black uppercase tracking-widest text-secondary hover:text-secondary-foreground h-auto p-0 ml-4">
-                                    Tout Effacer
-                                </Button>
+                                <button onClick={handleClear} className="text-[13px] text-[#717171] hover:text-[#E8472A] transition-colors underline underline-offset-2">
+                                    {t("common.clear_all")}
+                                </button>
                             </div>
                         )}
 
@@ -190,56 +192,56 @@ export default function VendorsPage({
                             ))}
                         </div>
 
-                        {/* Pagination */}
+                        {/* Pagination — v3 neutral + terracotta active */}
                         {totalPages > 1 && (
-                            <div className="flex justify-center items-center gap-4 pt-12">
+                            <div className="flex justify-center items-center gap-2 pt-10">
                                 <Button
-                                    variant="outline"
+                                    variant="ghost"
                                     onClick={() => goToPage(page - 1)}
                                     disabled={page <= 1}
-                                    className="rounded-2xl"
                                 >
-                                    Précédent
+                                    {t("common.prev")}
                                 </Button>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1.5">
                                     {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
                                         <button
                                             key={p}
                                             onClick={() => goToPage(p)}
                                             className={cn(
-                                                "w-12 h-12 rounded-2xl text-[10px] font-black transition-all shadow-sm flex items-center justify-center uppercase tracking-widest",
+                                                "w-10 h-10 rounded-lg text-[14px] font-medium transition-all",
                                                 p === page
-                                                    ? "bg-secondary text-white shadow-gold scale-110"
-                                                    : "bg-white border border-border text-primary hover:border-secondary/50"
+                                                    ? "bg-[#E8472A] text-white"
+                                                    : "bg-white border border-[#DDDDDD] text-[#484848] hover:border-[#B0B0B0]"
                                             )}
+                                            aria-label={`Page ${p}`}
+                                            aria-current={p === page ? "page" : undefined}
                                         >
                                             {p}
                                         </button>
                                     ))}
                                 </div>
                                 <Button
-                                    variant="outline"
+                                    variant="ghost"
                                     onClick={() => goToPage(page + 1)}
                                     disabled={page >= totalPages}
-                                    className="rounded-2xl"
                                 >
-                                    Suivant
+                                    {t("common.next")}
                                 </Button>
                             </div>
                         )}
 
-                        {/* Empty state */}
+                        {/* Empty state — v3 neutral */}
                         {displayVendors.length === 0 && (
-                            <div className="py-24 text-center bg-accent/5 rounded-[3rem] border border-dashed border-border flex flex-col items-center">
-                                <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mb-6">
-                                    <svg className="w-10 h-10 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="py-20 text-center bg-[#F7F7F7] rounded-[24px] border border-[#DDDDDD] flex flex-col items-center">
+                                <div className="w-16 h-16 rounded-full bg-[#DDDDDD] flex items-center justify-center mb-5">
+                                    <svg className="w-8 h-8 text-[#B0B0B0]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
                                 </div>
-                                <h3 className="text-2xl font-display font-black text-primary mb-3">Aucun prestataire trouvé</h3>
-                                <p className="text-muted-foreground mb-10 max-w-sm mx-auto">Essayez de modifier vos filtres ou effectuez une nouvelle recherche pour trouver votre bonheur.</p>
-                                <Button onClick={handleClear} variant="secondary">
-                                    Voir tous les prestataires
+                                <h3 className="text-[20px] font-semibold text-[#1A1A1A] mb-2">{t("common.no_vendors_found")}</h3>
+                                <p className="text-[14px] text-[#717171] mb-8 max-w-sm mx-auto">{t("common.no_vendors_desc")}</p>
+                                <Button onClick={handleClear} variant="ghost">
+                                    {t("common.see_all_vendors")}
                                 </Button>
                             </div>
                         )}
@@ -250,7 +252,7 @@ export default function VendorsPage({
     );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps = async ({ query, locale }) => {
     const page = Number(query.page) || 1;
     const serviceArea = (query.serviceArea as string) || "";
     const category = (query.category as string) || "";
@@ -265,7 +267,10 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://localhost";
         const res = await fetch(`${baseUrl}/api/vendor_profiles?${params}`, {
-            headers: { Accept: "application/ld+json" },
+            headers: { 
+                Accept: "application/ld+json",
+                "Accept-Language": locale || "fr"
+            },
         });
 
         if (!res.ok) throw new Error("API unavailable");
@@ -287,8 +292,26 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
             isVerified: (v.isVerified as boolean) ?? false,
         }));
 
-        return { props: { vendors, total, page, serviceArea, category } };
+        return { 
+            props: { 
+                vendors, 
+                total, 
+                page, 
+                serviceArea, 
+                category,
+                ...(await serverSideTranslations(locale || "fr", ["common"]))
+            } 
+        };
     } catch {
-        return { props: { vendors: [], total: 0, page, serviceArea, category } };
+        return { 
+            props: { 
+                vendors: [], 
+                total: 0, 
+                page, 
+                serviceArea, 
+                category,
+                ...(await serverSideTranslations(locale || "fr", ["common"]))
+            } 
+        };
     }
 };

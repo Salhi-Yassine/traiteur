@@ -1,0 +1,313 @@
+{
+  "nav": {
+    "vendors": "Vendors",
+    "inspiration": "Inspiration",
+    "real_weddings": "Real Weddings",
+    "for_vendors": "Vendor Space",
+    "login": "Login",
+    "start": "Get Started",
+    "dashboard": "Dashboard",
+    "budget": "Budget",
+    "guests": "Guests",
+    "checklist": "Checklist",
+    "my_wedding": "My Wedding",
+    "mgmt_desc": "Event Management",
+    "logout": "Logout",
+    "about": "About",
+    "register": "Register",
+    "need_help": "Need help?",
+    "help_desc": "Our experts are here to guide you through every step.",
+    "see_experts": "See experts"
+  },
+  "auth": {
+    "planning_wedding": "I'm planning my wedding",
+    "is_vendor": "I'm a vendor",
+    "welcome": "Welcome!",
+    "login_subtitle": "Log in to plan your wedding",
+    "email_label": "Email address",
+    "password_label": "Password",
+    "forgot_password": "Forgot password?",
+    "no_account": "No account yet?",
+    "register_link": "Create an account",
+    "logging_in": "Logging in...",
+    "login_btn": "Login",
+    "invalid_email": "Invalid email address",
+    "required_email": "Email is required",
+    "required_password": "Password is required",
+    "login_error": "Incorrect email or password",
+    "register_title": "Create an account",
+    "register_subtitle": "Plan your dream wedding in Morocco",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "password_hint": "(min. 8 characters)",
+    "vendor_notice": "✓ After registration, you can create your vendor profile from your dashboard.",
+    "terms_text": "By registering, you agree to our <1>Terms of Use</1> and our <2>Privacy Policy</2>.",
+    "creating_acc": "Creating account...",
+    "create_acc_btn": "Create my account",
+    "already_registered": "Already registered?",
+    "first_name_req": "First Name is required",
+    "last_name_req": "Last Name is required",
+    "password_min": "Password must be at least 8 characters",
+    "register_error": "Registration failed. Please try again."
+  },
+  "footer": {
+    "tagline": "The #1 Wedding Planner in Morocco.",
+    "made_in": "Made with in Morocco",
+    "rights": "© 2026 Farah.ma — All rights reserved",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "about": "About Us",
+    "dashboard": "My Dashboard",
+    "budget": "Budget",
+    "guests": "Guest List",
+    "checklist": "Wedding Checklist",
+    "list_business": "List my business",
+    "vendor_login": "Vendor Login",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "sections": {
+      "platform": "Platform",
+      "planning": "Planning",
+      "vendors": "Vendors"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Plan your dream wedding, <1>the Moroccan way</1>",
+      "subtitle": "Find the best vendors in Morocco — Venues, Caterers, Negafas, Photographers and more.",
+      "social_proof": "Join 3,000+ couples planning their wedding on Farah.ma"
+    },
+    "stats": {
+      "vendors": "Vendors",
+      "cities": "Cities",
+      "verified": "Verified",
+      "rating": "Guest Rating"
+    },
+    "categories": {
+      "title": "Find your perfect vendor",
+      "subtitle": "Explore our categories and discover verified professionals in every Moroccan city.",
+      "view_all": "View all categories →",
+      "count_suffix": "vendors",
+      "items": {
+        "salles": "Wedding Halls",
+        "photography": "Photographers",
+        "negrafa": "Negafas",
+        "catering": "Caterers",
+        "decoration": "Decoration",
+        "beauty": "Beauty / Henna",
+        "music": "DJs & Music",
+        "transport": "Transport"
+      }
+    },
+    "featured": {
+      "title": "Premium Vendors",
+      "subtitle": "Selected from the top rated in Morocco",
+      "view_all": "View the whole catalog →"
+    },
+    "how_it_works": {
+      "title": "How it works",
+      "step1": {
+        "title": "Set your budget and date",
+        "desc": "Enter your budget and wedding date to see vendors that suit you."
+      },
+      "step2": {
+        "title": "Discover and contact vendors",
+        "desc": "Browse verified profiles, compare offers and contact them directly via WhatsApp."
+      },
+      "step3": {
+        "title": "Track everything in one place",
+        "desc": "Budget, guest list, checklist — everything is centralized on your dashboard."
+      },
+      "cta": "Start planning for free"
+    },
+    "vendors_cta": {
+      "title": "Are you a vendor in Morocco?",
+      "subtitle": "Join 500+ vendors on Farah.ma. Create your profile for free and start receiving inquiries today.",
+      "cta": "List my business for free"
+    }
+  },
+  "search_bar": {
+    "placeholder": "Photographer, Venue, Negafa...",
+    "city_label": "Select a city",
+    "cat_label": "Filter by category",
+    "cta": "Search",
+    "cities": {
+      "all": "All cities",
+      "casablanca": "Casablanca",
+      "marrakech": "Marrakech",
+      "rabat": "Rabat",
+      "fes": "Fes",
+      "tanger": "Tangier",
+      "agadir": "Agadir",
+      "meknes": "Meknes",
+      "oujda": "Oujda",
+      "el_jadida": "El Jadida",
+      "kenitra": "Kenitra",
+      "tetouan": "Tetouan",
+      "laayoune": "Laayoune"
+    },
+    "categories": {
+      "all": "All categories",
+      "salles": "Wedding Halls",
+      "catering": "Caterers",
+      "negrafa": "Negafas",
+      "photography": "Photographers",
+      "music": "Orchestras & DJs",
+      "decoration": "Decoration",
+      "beauty": "Beauty",
+      "transport": "Transport"
+    }
+  },
+  "vendor_card": {
+    "verified": "Verified",
+    "view_profile": "View profile",
+    "whatsapp_aria": "Contact {{name}} via WhatsApp"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "cancel": "Cancel",
+    "search": "Search",
+    "cities_placeholder": "Where? (City)",
+    "active_filters": "Active filters:",
+    "clear_all": "Clear all",
+    "prev": "← Previous",
+    "next": "Next →",
+    "no_vendors_found": "No vendors found",
+    "no_vendors_desc": "Try widening your filters or searching in another city.",
+    "see_all_vendors": "See all vendors"
+  },
+  "budget": {
+    "title": "Budget Management",
+    "description": "Track your spending and optimize your costs for each expense item.",
+    "summary_total": "Total Budget",
+    "summary_spent": "Spent",
+    "summary_remaining": "Remaining to spend",
+    "postes_title": "Expense Items",
+    "add_poste": "Add",
+    "col_category": "Category",
+    "col_budgeted": "Budgeted Amount",
+    "col_paid": "Paid Amount",
+    "col_actions": "Actions",
+    "empty": "No expense items at the moment.",
+    "totals": "TOTALS",
+    "new_poste_title": "New item",
+    "category_placeholder": "e.g., Caterer, Photographer...",
+    "budgeted_label": "Budgeted Amount (MAD)",
+    "delete_confirm": "Do you really want to delete this category?",
+    "error_add": "Error while adding.",
+    "error_delete": "Error while deleting."
+  },
+  "checklist": {
+    "title": "My Checklist",
+    "description": "Track every step of the organization and don't miss any important detail.",
+    "progress_title": "Overall Progress",
+    "progress_stats": "{{done}} tasks out of {{total}} completed",
+    "tasks_title": "My Tasks",
+    "add_task": "Add a task",
+    "empty": "No tasks recorded. Start by adding one!",
+    "due_date": "Due date: {{date}}",
+    "new_task_title": "New task",
+    "task_placeholder": "e.g., Book the venue, Choose the menu...",
+    "category_label": "Category",
+    "due_date_label": "Due Date",
+    "delete_confirm": "Do you want to delete this task?",
+    "error_add": "Error adding the task.",
+    "categories": {
+      "salles": "Venues",
+      "traiteur": "Caterer",
+      "tenues": "Outfits",
+      "beaute": "Beauty",
+      "photo": "Photo",
+      "papeterie": "Stationery",
+      "autre": "Other"
+    }
+  },
+  "invites": {
+    "title": "Guest List",
+    "description": "Manage your guests, track confirmations and organize your tables.",
+    "total_guests": "Total Guests",
+    "confirmed": "Confirmed",
+    "pending": "Pending",
+    "list_title": "Guest List",
+    "new_guest": "New Guest",
+    "full_name": "Full Name",
+    "side": "Side",
+    "rsvp": "RSVP Status",
+    "meal": "Meal",
+    "actions": "Actions",
+    "empty": "No guests registered.",
+    "delete_confirm": "Do you want to delete this guest?",
+    "error_add": "Error adding the guest.",
+    "new_guest_title": "New guest",
+    "name_placeholder": "First and Last Name",
+    "meal_pref_label": "Meal Preference",
+    "sides": {
+      "bride": "Bride",
+      "groom": "Groom"
+    },
+    "rsvp_status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "declined": "Declined"
+    },
+    "currency": "MAD",
+    "meals": {
+      "standard": "Standard",
+      "vegetarian": "Vegetarian",
+      "halal": "Halal",
+      "fish": "Fish"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome, {{name}}",
+    "subtitle": "Here is an overview of your wedding planning.",
+    "manage": "Manage →",
+    "list": "List →",
+    "tasks": "Tasks →",
+    "guests_unit": "People registered",
+    "tasks_done": "{{count}} completed",
+    "expert_tip": "Expert Tip",
+    "tip_content": "\"The secret to a successful wedding lies in anticipation. Start with the most requested vendors (venues and caterers) at least 12 months in advance.\"",
+    "tip_author": "Nadia, Wedding Planner"
+  },
+  "vendor_profile": {
+    "location": "Location",
+    "price_range": "Price Range",
+    "reviews_count": "Rating & Reviews",
+    "capacity": "Capacity",
+    "capacity_max": "Max {{max}} guests",
+    "about_title": "The Art of Hosting",
+    "services_title": "Exceptional Services",
+    "per_person": "MAD / guest",
+    "reviews_title": "Testimonials",
+    "write_review": "Write a review",
+    "booking_label": "Booking",
+    "booking_title": "Create your event",
+    "get_quote": "Get a custom quote",
+    "no_commitment": "No commitment",
+    "highlights": {
+      "response_time": "Guaranteed response within 24h",
+      "exclusive_rates": "Exclusive negotiated rates",
+      "concierge": "Concierge Support",
+      "secure_payment": "100% secure payment"
+    },
+    "guarantee_label": "Guarantee",
+    "guarantee_text": "Farah.ma Peace of Mind"
+  },
+  "filters": {
+    "title": "Filters",
+    "clear": "Clear all",
+    "categories": "Categories",
+    "price_range": "Price Range",
+    "price_labels": {
+      "budget": "Budget",
+      "standard": "Standard",
+      "premium": "Premium",
+      "exclusif": "Exclusive"
+    },
+    "help_title": "Need help?",
+    "help_desc": "Our experts help you find the perfect vendors based on your criteria.",
+    "contact_us": "Contact an expert"
+  }
+}

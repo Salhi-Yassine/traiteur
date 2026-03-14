@@ -1,104 +1,105 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/forms";
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+/* ─── v3.0 Fonts: DM Serif Display (display) + Plus Jakarta Sans (UI/body) ─── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap');
 
+/* ─── shadcn/ui HSL tokens (required by components) ─── */
 @layer base {
   :root {
-    --background: 30 20% 98.4%;
-    --foreground: 348 83% 10%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 348 83% 10%;
+    --card-foreground: 0 0% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 348 83% 10%;
-    --primary: 348 83% 24%;
-    --primary-foreground: 30 20% 98%;
-    --secondary: 46 65% 52%;
-    --secondary-foreground: 348 83% 10%;
-    --muted: 30 10% 94%;
-    --muted-foreground: 348 10% 40%;
-    --accent: 36 47% 94%;
-    --accent-foreground: 348 83% 24%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 30 20% 98%;
-    --border: 30 15% 90%;
-    --input: 30 15% 90%;
-    --ring: 46 65% 52%;
-    --radius: 1.25rem;
-  }
-
-  .dark {
-    --background: 348 83% 5%;
-    --foreground: 30 20% 98%;
-    --card: 348 83% 7%;
-    --card-foreground: 30 20% 98%;
-    --popover: 348 83% 7%;
-    --popover-foreground: 30 20% 98%;
-    --primary: 46 65% 52%;
-    --primary-foreground: 348 83% 5%;
-    --secondary: 348 83% 24%;
-    --secondary-foreground: 30 20% 98%;
-    --muted: 348 40% 15%;
-    --muted-foreground: 30 10% 70%;
-    --accent: 348 40% 15%;
-    --accent-foreground: 46 65% 52%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 30 20% 98%;
-    --border: 348 40% 15%;
-    --input: 348 40% 15%;
-    --ring: 46 65% 52%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 9 80% 54%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 28%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 97%;
+    --muted-foreground: 0 0% 44%;
+    --accent: 12 100% 97%;
+    --accent-foreground: 9 80% 54%;
+    --destructive: 0 59% 47%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 87%;
+    --input: 0 0% 87%;
+    --ring: 9 80% 54%;
+    --radius: 0.5rem;
   }
 }
 
+/* ─── v3.0 Design Tokens ─── */
 @theme {
-  /* Farah.ma "Moroccan Luxe" Palette (Tailwind 4.x) */
-  --color-primary: hsl(348, 83%, 24%);    /* Deep Ruby Burgundy */
-  --color-primary-foreground: hsl(30, 20%, 98%);
-  
-  --color-secondary: hsl(46, 65%, 52%);   /* Hammered Gold */
-  --color-secondary-foreground: hsl(348, 83%, 10%);
+  /* Primary — Terracotta */
+  --color-primary:        #E8472A;   /* 4.5:1 on white ✓ — primary CTA, active nav, star fill */
+  --color-primary-dark:   #C43A20;   /* 6.2:1 on white ✓ — hover state */
+  --color-primary-mid:    #F47C65;   /* Decorative only — SVG ornaments, icon accents */
+  --color-primary-light:  #FEF0ED;   /* Badge bg, hover tint, selected pill bg */
 
-  --color-accent: hsl(36, 47%, 94%);      /* Warm Sand */
-  --color-accent-foreground: hsl(348, 83%, 24%);
+  /* Neutral Scale */
+  --color-neutral-900:    #1A1A1A;   /* 18.1:1 — headings, primary labels */
+  --color-neutral-700:    #484848;   /* 8.3:1 — secondary text, labels */
+  --color-neutral-500:    #717171;   /* 4.6:1 — placeholders, captions (min 14px) */
+  --color-neutral-300:    #B0B0B0;   /* Borders, dividers, inactive icons */
+  --color-neutral-200:    #DDDDDD;   /* Input borders, card borders at rest */
+  --color-neutral-100:    #F7F7F7;   /* Page bg, inactive tabs, skeleton shimmer */
+  --color-neutral-50:     #FFFFFF;   /* Card surfaces, form fields */
 
-  --color-background: hsl(30, 20%, 98.4%); /* Soft Ivory */
-  --color-foreground: hsl(348, 83%, 10%);
-
-  --color-muted: hsl(30, 10%, 94%);
-  --color-muted-foreground: hsl(348, 10%, 40%);
-
-  --color-border: hsl(30, 15%, 90%);
+  /* Semantic — System states only */
+  --color-success:        #0A7A4B;
+  --color-success-bg:     #E8F5EE;
+  --color-warning:        #8A5700;
+  --color-warning-bg:     #FFF8E7;
+  --color-danger:         #C13030;
+  --color-danger-bg:      #FEECEC;
+  --color-info:           #1554A0;
+  --color-info-bg:        #EBF2FF;
+  --color-whatsapp:       #25D366;
 
   /* Typography */
-  --font-display: "Playfair Display", "Georgia", serif;
-  --font-body: "Lora", serif;
+  --font-display:   "DM Serif Display", Georgia, serif;
+  --font-display-ar:"Tajawal", sans-serif;
+  --font-body:      "Plus Jakarta Sans", system-ui, sans-serif;
 
-  /* Premium Shadows */
-  --shadow-premium: 0 10px 40px -10px rgba(107, 15, 26, 0.15);
-  --shadow-premium-hover: 0 20px 60px -15px rgba(107, 15, 26, 0.25);
-  --shadow-gold: 0 10px 30px -10px rgba(200, 150, 10, 0.3);
+  /* Elevation — 3 levels, cool-neutral shadow */
+  --shadow-1:  0 1px 2px rgba(0,0,0,0.08);
+  --shadow-2:  0 2px 12px rgba(0,0,0,0.10);
+  --shadow-3:  0 8px 28px rgba(0,0,0,0.12);
 
-  --radius-xl: 1.5rem;
-  --radius-2xl: 2.5rem;
+  /* Border Radius */
+  --radius-xs:   4px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
 }
 
+/* ─── Base Styles ─── */
 @layer base {
   * {
-    border-color: var(--color-border);
-    font-family: var(--font-body);
+    border-color: var(--color-neutral-200);
   }
 
-  h1, h2, h3, h4, .font-display {
+  body {
+    font-family: var(--font-body);
+    background-color: #FFFFFF;
+    color: var(--color-neutral-900);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-display {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
   }
 
-  body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    -webkit-font-smoothing: antialiased;
+  /* Arabic/Darija typography override */
+  :lang(ar), :lang(ary) {
+    font-family: var(--font-display-ar);
   }
-}
 
   a {
     text-decoration: none;
@@ -106,94 +107,150 @@
   }
 
   ::selection {
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
+    background-color: var(--color-primary-light);
+    color: var(--color-primary-dark);
   }
 
+  /* Scrollbar — subtle neutral */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-neutral-100); }
+  ::-webkit-scrollbar-thumb { background: var(--color-neutral-300); border-radius: var(--radius-full); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-neutral-500); }
+}
+
+/* ─── Utility Classes ─── */
 @layer utilities {
+  /* Typography helpers */
   .font-display {
     font-family: var(--font-display);
   }
-
+  .font-display-ar {
+    font-family: var(--font-display-ar);
+  }
   .text-balance {
     text-wrap: balance;
   }
 
-  /* Caterer card hover effect */
+  /* ── Airbnb card hover: subtle lift + shadow upgrade ── */
   .card-hover {
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: box-shadow 200ms ease, transform 200ms ease, border-color 200ms ease;
+    box-shadow: var(--shadow-1);
   }
   .card-hover:hover {
-    box-shadow: var(--shadow-premium-hover);
-    transform: translateY(-8px);
+    box-shadow: var(--shadow-2);
+    transform: translateY(-2px);
   }
 
-  /* Image zoom effect on hover */
+  /* ── Image zoom (103% — restrained vs old 110%) ── */
   .img-zoom {
     overflow: hidden;
   }
   .img-zoom img {
-    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 300ms ease;
   }
   .img-zoom:hover img {
-    transform: scale(1.1);
+    transform: scale(1.03);
   }
 
-  /* Price badges */
+  /* ── Price symbols ── */
   .price-active {
-    color: var(--color-secondary);
-    font-weight: 800;
+    color: var(--color-neutral-900);
+    font-weight: 600;
   }
   .price-dim {
-    color: var(--color-muted-foreground);
-    opacity: 0.3;
+    color: var(--color-neutral-300);
   }
 
-  /* Animated underline for nav links */
+  /* ── Nav link animated underline ── */
   .nav-link {
     position: relative;
+    color: var(--color-neutral-700);
+    transition: color 150ms ease;
   }
   .nav-link::after {
     content: '';
     position: absolute;
     bottom: -4px;
-    left: 0;
+    inset-inline-start: 0;
     width: 0;
     height: 2px;
-    background: var(--color-secondary);
-    transition: width 0.4s ease;
+    background: var(--color-primary);
+    transition: width 200ms ease;
   }
   .nav-link:hover::after,
   .nav-link.active::after {
     width: 100%;
   }
+  .nav-link.active {
+    color: var(--color-neutral-900);
+  }
 
-  /* Section divider */
+  /* ── Moroccan section ornament divider ── */
   .section-divider {
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
-    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 0 auto;
+  }
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--color-neutral-200);
   }
 
-  /* Glassmorphism Classes */
-  .glass-card {
-    @apply bg-white/80 backdrop-blur-xl border border-white/20 shadow-premium;
-  }
-  
-  .glass-premium {
-    @apply bg-primary/10 backdrop-blur-2xl border border-secondary/10;
-  }
-
-  /* Skeleton loading */
+  /* ── Skeleton shimmer — neutral grays ── */
   .skeleton {
-    background: linear-gradient(90deg, rgba(107, 15, 26, 0.05) 25%, rgba(107, 15, 26, 0.1) 50%, rgba(107, 15, 26, 0.05) 75%);
+    background: linear-gradient(
+      90deg,
+      var(--color-neutral-100) 25%,
+      #EBEBEB 50%,
+      var(--color-neutral-100) 75%
+    );
     background-size: 200% 100%;
-    animation: skeleton-loading 2s infinite linear;
+    animation: skeleton-shimmer 1.5s infinite linear;
+    border-radius: var(--radius-sm);
+  }
+  @keyframes skeleton-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
   }
 
-  @keyframes skeleton-loading {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+  /* ── Form focus ring (v3: black, no color) ── */
+  .input-focus {
+    outline: none;
+    border-color: var(--color-neutral-900) !important;
+    box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.08);
+  }
+
+  /* ── Verified badge ── */
+  .badge-verified {
+    background-color: var(--color-success-bg);
+    color: var(--color-success);
+    border-radius: var(--radius-full);
+  }
+
+  /* ── WhatsApp button base ── */
+  .btn-whatsapp {
+    background-color: var(--color-whatsapp);
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: var(--radius-sm);
+    transition: background-color 150ms ease;
+  }
+  .btn-whatsapp:hover {
+    background-color: #20BA5A;
+  }
+
+  /* ── Respect prefers-reduced-motion ── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0ms !important;
+      transition-duration: 0ms !important;
+    }
   }
 }

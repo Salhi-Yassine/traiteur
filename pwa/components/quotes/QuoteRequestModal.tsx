@@ -243,7 +243,7 @@ export default function QuoteRequestModal({
                         </Button>
                         <Button
                             type="submit"
-                            variant="premium"
+                            variant="default"
                             disabled={formik.isSubmitting}
                             className="flex-1"
                         >

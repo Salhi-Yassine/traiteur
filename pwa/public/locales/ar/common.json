@@ -1,0 +1,293 @@
+{
+  "nav": {
+    "vendors": "المزودين",
+    "inspiration": "إلهام",
+    "real_weddings": "أعراس حقيقية",
+    "for_vendors": "فضاء المزودين",
+    "login": "تسجيل الدخول",
+    "start": "ابدأ الآن",
+    "dashboard": "لوحة التحكم",
+    "budget": "الميزانية",
+    "guests": "الضيوف",
+    "checklist": "قائمة المهام",
+    "my_wedding": "عرسي",
+    "mgmt_desc": "تدبير الحدث",
+    "logout": "تسجيل الخروج",
+    "about": "حول",
+    "register": "سجل الآن",
+    "need_help": "محتاج مساعدة؟",
+    "help_desc": "الخبراء ديالنا هنا لمرافقتك في كل خطوة.",
+    "see_experts": "شوف الخبراء"
+  },
+  "auth": {
+    "planning_wedding": "كنخطط للعرس ديالي",
+    "is_vendor": "أنا مزود خدمة",
+    "welcome": "مرحباً بك!",
+    "login_subtitle": "سجل الدخول باش تبدأ تخطط للعرس ديالك",
+    "email_label": "البريد الإلكتروني",
+    "password_label": "كلمة المرور",
+    "forgot_password": "نسيت كلمة المرور؟",
+    "no_account": "ماعندكش حساب؟",
+    "register_link": "إنشاء حساب",
+    "logging_in": "جاري الدخول...",
+    "login_btn": "تسجيل الدخول",
+    "invalid_email": "بريد إلكتروني غير صالح",
+    "required_email": "البريد الإلكتروني مطلوب",
+    "required_password": "كلمة المرور مطلوبة",
+    "login_error": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    "register_title": "إنشاء حساب",
+    "register_subtitle": "خطط لعرس أحلامك في المغرب",
+    "first_name": "الاسم الشخصي",
+    "last_name": "الاسم العائلي",
+    "password_hint": "(على الأقل 8 رموز)",
+    "vendor_notice": "✓ بعد التسجيل، غاتقدر تنشأ ملف المزود ديالك من لوحة التحكم.",
+    "terms_text": "بتسجيلك، نتا كتوافق على <1>شروط الاستعمال</1> و <2>سياسة الخصوصية</2> ديالنا.",
+    "creating_acc": "جاري إنشاء الحساب...",
+    "create_acc_btn": "إنشاء حسابي",
+    "already_registered": "مسجل ديجا؟",
+    "first_name_req": "الاسم الشخصي مطلوب",
+    "last_name_req": "الاسم العائلي مطلوب",
+    "password_min": "كلمة المرور خاص يكون فيها على الأقل 8 رموز",
+    "register_error": "فشل التسجيل. عاود من بعد."
+  },
+  "footer": {
+    "tagline": "أول مخطط زفاف في المغرب.",
+    "made_in": "صنع بـ في المغرب",
+    "rights": "© 2026 Farah.ma — جميع الحقوق محفوظة",
+    "privacy": "سياسة الخصوصية",
+    "terms": "شروط الاستخدام",
+    "about": "حول",
+    "dashboard": "لوحة التحكم",
+    "budget": "الميزانية",
+    "guests": "قائمة الضيوف",
+    "checklist": "قائمة المهام",
+    "list_business": "سجل شركتك",
+    "vendor_login": "دخول المزودين",
+    "pricing": "الأسعار",
+    "faq": "الأسئلة الشائعة",
+    "sections": {
+      "platform": "المنصة",
+      "planning": "التخطيط",
+      "vendors": "المزيّنين"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "خطط لزفاف أحلامك، <1>على الطريقة المغربية</1>",
+      "subtitle": "ابحث عن أفضل المزودين في المغرب - قاعات، ممونين، نكافات، مصورين والمزيد.",
+      "social_proof": "انضم إلى 3000+ ثنائي يخططون لزفافهم على Farah.ma"
+    },
+    "stats": {
+      "vendors": "مزودين",
+      "cities": "مدن",
+      "verified": "موثوقين",
+      "rating": "تقييم الزوار"
+    },
+    "categories": {
+      "title": "ابحث عن مزودك المثالي",
+      "subtitle": "استكشف فئاتنا واكتشف المهنيين الموثوقين في كل مدينة مغربية.",
+      "view_all": "شاهد كل الفئات ←",
+      "count_suffix": "مزود",
+      "items": {
+        "salles": "قاعات الأفراح",
+        "photography": "المصورين",
+        "negrafa": "النكافات",
+        "catering": "الممونين",
+        "decoration": "الديكور",
+        "beauty": "التجميل / الحناء",
+        "music": "دي جي وموسيقى",
+        "transport": "النقل"
+      }
+    },
+    "featured": {
+      "title": "مزودون متميزون",
+      "subtitle": "مختارون من بين الأعلى تقييماً في المغرب",
+      "view_all": "شاهد كل الكتالوج ←"
+    },
+    "how_it_works": {
+      "title": "كيفاش خدام",
+      "step1": {
+        "title": "حدد ميزانيتك وتاريخك",
+        "desc": "دخل الميزانية ديالك وتاريخ العرس باش تشوف المزودين اللي كيناسبوك."
+      },
+      "step2": {
+        "title": "اكتشف وتواصل مع المزودين",
+        "desc": "تصفح البروفيلات الموثوقة، قارن العروض وتواصل معاهم مباشرة عبر واتساب."
+      },
+      "step3": {
+        "title": "تبع كلشي فبلاصة وحدة",
+        "desc": "الميزانية، قائمة الضيوف، قائمة المهام - كلشي مجموع فلوحة التحكم ديالك."
+      },
+      "cta": "بدا التخطيط مجاناً"
+    },
+    "vendors_cta": {
+      "title": "واش نتا مزود فالمغرب؟",
+      "subtitle": "انضم لـ 500+ مزود على Farah.ma. سجل شركتك مجاناً وبدا تستقبل الطلبات من اليوم.",
+      "cta": "سجل الشركة ديالي مجاناً"
+    }
+  },
+  "search_bar": {
+    "placeholder": "مصور، قاعة أفراح، نكافة...",
+    "city_label": "اختر مدينة",
+    "cat_label": "تصفية حسب الفئة",
+    "cta": "بحث",
+    "cities": {
+      "all": "جميع المدن",
+      "casablanca": "الدار البيضاء",
+      "marrakech": "مراكش",
+      "rabat": "الرباط",
+      "fes": "فاس",
+      "tanger": "طنجة",
+      "agadir": "أكادير",
+      "meknes": "مكناس",
+      "oujda": "وجدة",
+      "el_jadida": "الجديدة",
+      "kenitra": "القنيطرة",
+      "tetouan": "تطوان",
+      "laayoune": "العيون"
+    },
+    "categories": {
+      "all": "جميع الفئات",
+      "salles": "قاعات الأفراح",
+      "catering": "الممونين",
+      "negrafa": "النكافات",
+      "photography": "المصورين",
+      "music": "الأوركسترا ودي جي",
+      "decoration": "الديكور",
+      "beauty": "التجميل",
+      "transport": "النقل"
+    }
+  },
+  "vendor_card": {
+    "verified": "موثوق",
+    "view_profile": "شاهد الملف",
+    "whatsapp_aria": "تواصل مع {{name}} عبر واتساب"
+  },
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "currency": "درهم",
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ ما",
+    "search": "بحث"
+  },
+  "budget": {
+    "title": "تدبير الميزانية",
+    "description": "تبع المصاريف ديالك وحسن التكاليف لكل حاجة غاتحتاجها.",
+    "summary_total": "الميزانية الكلية",
+    "summary_spent": "المصروف",
+    "summary_remaining": "ما تبقى للصرف",
+    "postes_title": "بنود المصاريف",
+    "add_poste": "إضافة",
+    "col_category": "الفئة",
+    "col_budgeted": "الميزانية المتوقعة",
+    "col_paid": "المبلغ المدفوع",
+    "col_actions": "إجراءات",
+    "empty": "ماكاين حتى شي بند مصاريف دابا.",
+    "totals": "المجموع",
+    "new_poste_title": "بند جديد",
+    "category_placeholder": "مثلاً: ممون، مصور...",
+    "budgeted_label": "الميزانية المتوقعة (درهم)",
+    "delete_confirm": "واش بصح بغيتي تمسح هاد الفئة؟",
+    "error_add": "خطأ أثناء الإضافة.",
+    "error_delete": "خطأ أثناء الحذف."
+  },
+  "checklist": {
+    "title": "قائمة المهام",
+    "description": "تبع كل مرحلة من مراحل التنظيم وما تنسى حتى شي تفصيل مهم.",
+    "progress_title": "التقدم العام",
+    "progress_stats": "{{done}} مهمة من أصل {{total}} مكتملة",
+    "tasks_title": "مهامي",
+    "add_task": "إضافة مهمة",
+    "empty": "ماكاين حتى شي مهمة مسجلة. ابدأ بإضافة وحدة!",
+    "due_date": "الأجل: {{date}}",
+    "new_task_title": "مهمة جديدة",
+    "task_placeholder": "مثلاً: حجز القاعة، اختيار القائمة...",
+    "category_label": "الفئة",
+    "due_date_label": "الأجل",
+    "delete_confirm": "واش بغيتي تمسح هاد المهمة؟",
+    "error_add": "خطأ أثناء إضافة المهمة.",
+    "categories": {
+      "salles": "قاعات",
+      "traiteur": "ممون",
+      "tenues": "ملابس",
+      "beaute": "تجميل",
+      "photo": "تصوير",
+      "papeterie": "ورقيات",
+      "autre": "أخرى"
+    }
+  },
+  "invites": {
+    "title": "قائمة الضيوف",
+    "description": "دبر الضيوف ديالك، تبع التأكيدات ونظم الطاولات.",
+    "total_guests": "مجموع الضيوف",
+    "confirmed": "مؤكد",
+    "pending": "في الانتظار",
+    "list_title": "لائحة الضيوف",
+    "new_guest": "ضيف جديد",
+    "full_name": "الاسم الكامل",
+    "side": "الجهة",
+    "rsvp": "حالة التأكيد",
+    "meal": "الوجبة",
+    "actions": "إجراءات",
+    "empty": "حتى شي ضيف ما مسجل.",
+    "delete_confirm": "واش بغيتي تمسح هاد الضيف؟",
+    "error_add": "خطأ أثناء إضافة الضيف.",
+    "new_guest_title": "ضيف جديد",
+    "name_placeholder": "الاسم والنسب",
+    "meal_pref_label": "تفضيل الوجبة",
+    "sides": {
+      "bride": "العروس",
+      "groom": "العريس"
+    },
+    "rsvp_status": {
+      "pending": "في الانتظار",
+      "confirmed": "مؤكد",
+      "declined": "اعتذر"
+    },
+    "meals": {
+      "standard": "عادي",
+      "vegetarian": "نباتي",
+      "halal": "حلال",
+      "fish": "سمك"
+    }
+  },
+  "dashboard": {
+    "welcome": "مرحباً، {{name}}",
+    "subtitle": "هنا نظرة عامة على تنظيم العرس ديالك.",
+    "manage": "تدبير ←",
+    "list": "قائمة ←",
+    "tasks": "مهام ←",
+    "guests_unit": "شخص مسجل",
+    "tasks_done": "{{count}} مكتملة",
+    "expert_tip": "نصيحة الخبراء",
+    "tip_content": "\"سر نجاح أي عرس هو الاستباق. ابدأ بالمزودين اللي عليهم الطلب بزاف (القاعات والممونين) على الأقل 12 شهر قبل.\"",
+    "tip_author": "نادية، مخططة حفلات الزفاف"
+  },
+  "vendor_profile": {
+    "location": "الموقع",
+    "price_range": "نطاق السعر",
+    "reviews_count": "التقييمات",
+    "capacity": "السعة",
+    "capacity_max": "أقصى عدد ضيوف: {{max}}",
+    "about_title": "فن الاستقبال",
+    "services_title": "خدمات استثنائية",
+    "per_person": "درهم / للشخص",
+    "reviews_title": "شهادات العملاء",
+    "write_review": "أضف تقييماً",
+    "booking_label": "حجز",
+    "booking_title": "خطط لحدثك",
+    "get_quote": "احصل على تسعيرة خاصة",
+    "no_commitment": "بدون التزام",
+    "highlights": {
+      "response_time": "رد مضمون خلال 24 ساعة",
+      "exclusive_rates": "أسعار حصرية متفاوض عليها",
+      "concierge": "مرافقة خاصة من خدمة الكونسيرج",
+      "secure_payment": "دفع آمن 100%"
+    },
+    "guarantee_label": "الضمان",
+    "guarantee_text": "طمانينة Farah.ma"
+  }
+}

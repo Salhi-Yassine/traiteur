@@ -1,0 +1,316 @@
+{
+  "nav": {
+    "vendors": "Prestataires",
+    "inspiration": "Inspiration",
+    "real_weddings": "Mariages réels",
+    "for_vendors": "Espace Prestataires",
+    "login": "Se connecter",
+    "start": "Commencer",
+    "dashboard": "Tableau de Bord",
+    "budget": "Budget",
+    "guests": "Invités",
+    "checklist": "Checklist",
+    "my_wedding": "Mon Mariage",
+    "mgmt_desc": "Gestion de l'événement",
+    "logout": "Déconnexion",
+    "about": "À propos",
+    "register": "S'inscrire",
+    "need_help": "Besoin d'aide ?",
+    "help_desc": "Nos experts sont là pour vous accompagner dans chaque étape.",
+    "see_experts": "Voir les experts"
+  },
+  "auth": {
+    "planning_wedding": "Je planifie mon mariage",
+    "is_vendor": "Je suis prestataire",
+    "welcome": "Bienvenue !",
+    "login_subtitle": "Connectez-vous pour planifier votre mariage",
+    "email_label": "Adresse email",
+    "password_label": "Mot de passe",
+    "forgot_password": "Mot de passe oublié ?",
+    "no_account": "Pas encore de compte ?",
+    "register_link": "Créer un compte",
+    "logging_in": "Connexion en cours…",
+    "login_btn": "Se connecter",
+    "invalid_email": "Adresse email invalide",
+    "required_email": "Email obligatoire",
+    "required_password": "Mot de passe obligatoire",
+    "login_error": "Email ou mot de passe incorrect",
+    "register_title": "Créer un compte",
+    "register_subtitle": "Planifiez votre mariage de rêve au Maroc",
+    "first_name": "Prénom",
+    "last_name": "Nom",
+    "password_hint": "(min. 8 caractères)",
+    "vendor_notice": "✓ Après votre inscription, vous pourrez créer votre profil prestataire depuis votre tableau de bord.",
+    "terms_text": "En vous inscrivant, vous acceptez nos <1>Conditions d'utilisation</1> et notre <2>Politique de confidentialité</2>.",
+    "creating_acc": "Création en cours…",
+    "create_acc_btn": "Créer mon compte",
+    "already_registered": "Déjà inscrit ?",
+    "first_name_req": "Prénom obligatoire",
+    "last_name_req": "Nom obligatoire",
+    "password_min": "Le mot de passe doit comporter au moins 8 caractères",
+    "register_error": "Échec de l'inscription. Veuillez réessayer."
+  },
+  "footer": {
+    "tagline": "Le premier planificateur de mariage au Maroc.",
+    "made_in": "Fait avec au Maroc",
+    "rights": "© 2026 Farah.ma — Tous droits réservés",
+    "privacy": "Confidentialité",
+    "terms": "CGU",
+    "about": "À propos",
+    "dashboard": "Mon tableau de bord",
+    "budget": "Budget",
+    "guests": "Liste d'invités",
+    "checklist": "Checklist mariage",
+    "list_business": "Référencer mon entreprise",
+    "vendor_login": "Connexion prestataire",
+    "pricing": "Tarifs",
+    "faq": "FAQ",
+    "sections": {
+      "platform": "Plateforme",
+      "planning": "Planifier",
+      "vendors": "Prestataires"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Planifiez le mariage de vos rêves, <1>à la marocaine</1>",
+      "subtitle": "Trouvez les meilleurs prestataires au Maroc — Salles, Traiteurs, Négafas, Photographes et plus encore.",
+      "social_proof": "Rejoignez 3,000 couples qui planifient leur mariage sur Farah.ma"
+    },
+    "stats": {
+      "vendors": "Prestataires",
+      "cities": "Villes",
+      "verified": "Vérifiés",
+      "rating": "Note clients"
+    },
+    "categories": {
+      "title": "Trouvez votre prestataire idéal",
+      "subtitle": "Explorez nos catégories et découvrez des professionnels vérifiés dans toute ville marocaine.",
+      "view_all": "Voir toutes les catégories →",
+      "count_suffix": "prestataires",
+      "items": {
+        "salles": "Salles de Fête",
+        "photography": "Photographes",
+        "negrafa": "Négafas",
+        "catering": "Traiteurs",
+        "decoration": "Décoration",
+        "beauty": "Haïti / Henné",
+        "music": "DJs & Musique",
+        "transport": "Transport"
+      }
+    },
+    "featured": {
+      "title": "Prestataires d'excellence",
+      "subtitle": "Sélectionnés parmi les mieux notés du Maroc",
+      "view_all": "Voir tout le catalogue →"
+    },
+    "how_it_works": {
+      "title": "Comment ça marche",
+      "step1": {
+        "title": "Définissez votre budget et votre date",
+        "desc": "Entrez votre budget et votre date de mariage pour voir des prestataires adaptés à vous."
+      },
+      "step2": {
+        "title": "Découvrez et contactez les prestataires",
+        "desc": "Parcourez les profils vérifiés, comparez les offres et contactez directement via WhatsApp."
+      },
+      "step3": {
+        "title": "Suivez tout en un seul endroit",
+        "desc": "Budget, liste d'invités, checklist — tout est centralisé sur votre tableau de bord."
+      },
+      "cta": "Commencer gratuitement"
+    },
+    "vendors_cta": {
+      "title": "Vous êtes prestataire au Maroc ?",
+      "subtitle": "Rejoignez 500+ prestataires sur Farah.ma. Créez votre profil gratuitement et commencez à recevoir des demandes de couples dès aujourd'hui.",
+      "cta": "Référencer mon entreprise gratuitement"
+    }
+  },
+  "search_bar": {
+    "placeholder": "Photographe, Salle de fête, Négafa...",
+    "city_label": "Sélectionner une ville",
+    "cat_label": "Filtrer par catégorie",
+    "cta": "Rechercher",
+    "cities": {
+      "all": "Toutes les villes",
+      "casablanca": "Casablanca",
+      "marrakech": "Marrakech",
+      "rabat": "Rabat",
+      "fes": "Fès",
+      "tanger": "Tanger",
+      "agadir": "Agadir",
+      "meknes": "Meknès",
+      "oujda": "Oujda",
+      "el_jadida": "El Jadida",
+      "kenitra": "Kénitra",
+      "tetouan": "Tétouan",
+      "laayoune": "Laâyoune"
+    },
+    "categories": {
+      "all": "Toutes les catégories",
+      "salles": "Salles de Fête",
+      "catering": "Traiteurs",
+      "negrafa": "Négafas",
+      "photography": "Photographes",
+      "music": "Orchestres & DJs",
+      "decoration": "Décoration",
+      "beauty": "Beauté",
+      "transport": "Transport"
+    }
+  },
+  "vendor_card": {
+    "verified": "Vérifié",
+    "view_profile": "Voir le profil",
+    "whatsapp_aria": "Contacter {{name}} via WhatsApp"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "cancel": "Annuler",
+    "search": "Rechercher",
+    "cities_placeholder": "Où ? (Ville)",
+    "active_filters": "Filtres actifs :",
+    "clear_all": "Tout effacer",
+    "prev": "← Précédent",
+    "next": "Suivant →",
+    "no_vendors_found": "Aucun prestataire trouvé",
+    "no_vendors_desc": "Essayez d'élargir vos filtres ou de rechercher dans une autre ville.",
+    "see_all_vendors": "Voir tous les prestataires",
+    "save": "Enregistrer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "currency": "MAD"
+  },
+  "budget": {
+    "title": "Gestion du Budget",
+    "description": "Suivez vos dépenses et optimisez vos coûts pour chaque poste de dépense.",
+    "summary_total": "Budget Total",
+    "summary_spent": "Dépensé",
+    "summary_remaining": "Reste à dépenser",
+    "postes_title": "Postes de Dépenses",
+    "add_poste": "Ajouter",
+    "col_category": "Catégorie",
+    "col_budgeted": "Budget Prévu",
+    "col_paid": "Montant Payé",
+    "col_actions": "Actions",
+    "empty": "Aucun poste de dépense pour le moment.",
+    "totals": "TOTAUX",
+    "new_poste_title": "Nouveau poste",
+    "category_placeholder": "ex: Traiteur, Photographe...",
+    "budgeted_label": "Budget Prévu (MAD)",
+    "delete_confirm": "Voulez-vous vraiment supprimer cette catégorie ?",
+    "error_add": "Erreur lors de l'ajout.",
+    "error_delete": "Erreur lors de la suppression."
+  },
+  "checklist": {
+    "title": "Ma Checklist",
+    "description": "Suivez chaque étape de l'organisation et ne manquez aucun détail important.",
+    "progress_title": "Progression globale",
+    "progress_stats": "{{done}} tâches sur {{total}} terminées",
+    "tasks_title": "Mes Tâches",
+    "add_task": "Ajouter une tâche",
+    "empty": "Aucune tâche enregistrée. Commencez par en ajouter une !",
+    "due_date": "Échéance : {{date}}",
+    "new_task_title": "Nouvelle tâche",
+    "task_placeholder": "ex: Réserver la salle, Choisir le menu...",
+    "category_label": "Catégorie",
+    "due_date_label": "Échéance",
+    "delete_confirm": "Voulez-vous supprimer cette tâche ?",
+    "error_add": "Erreur lors de l'ajout de la tâche.",
+    "categories": {
+      "salles": "Salles",
+      "traiteur": "Traiteur",
+      "tenues": "Tenues",
+      "beaute": "Beauté",
+      "photo": "Photo",
+      "papeterie": "Papeterie",
+      "autre": "Autre"
+    }
+  },
+  "invites": {
+    "title": "Liste d'Invités",
+    "description": "Gérez vos invités, suivez les confirmations et organisez vos tables.",
+    "total_guests": "Total Invités",
+    "confirmed": "Confirmés",
+    "pending": "En Attente",
+    "list_title": "Liste des Invités",
+    "new_guest": "Nouvel Invité",
+    "full_name": "Nom complet",
+    "side": "Côté",
+    "rsvp": "Statut RSVP",
+    "meal": "Repas",
+    "actions": "Actions",
+    "empty": "Aucun invité enregistré.",
+    "delete_confirm": "Voulez-vous supprimer cet invité ?",
+    "error_add": "Erreur lors de l'ajout de l'invité.",
+    "new_guest_title": "Nouvel invité",
+    "name_placeholder": "Prénom et Nom",
+    "meal_pref_label": "Préférence Repas",
+    "sides": {
+      "bride": "Mariée",
+      "groom": "Marié"
+    },
+    "rsvp_status": {
+      "pending": "En attente",
+      "confirmed": "Confirmé",
+      "declined": "Décliné"
+    },
+    "meals": {
+      "standard": "Standard",
+      "vegetarian": "Végétarien",
+      "halal": "Halal (Standard)",
+      "fish": "Poisson"
+    }
+  },
+  "dashboard": {
+    "welcome": "Bienvenue, {{name}}",
+    "subtitle": "Voici un aperçu de l'organisation de votre mariage.",
+    "manage": "Gérer →",
+    "list": "Liste →",
+    "tasks": "Tâches →",
+    "guests_unit": "Personnes enregistrées",
+    "tasks_done": "{{count}} terminées",
+    "expert_tip": "Parole d'expert",
+    "tip_content": "\"Le secret d'un mariage réussi réside dans l'anticipation. Commencez par les prestataires les plus demandés (salles et traiteurs) au moins 12 mois à l'avance.\"",
+    "tip_author": "Nadia, Wedding Planner"
+  },
+  "vendor_profile": {
+    "location": "Localisation",
+    "price_range": "Gamme de Prix",
+    "reviews_count": "Note & Avis",
+    "capacity": "Capacité",
+    "capacity_max": "{{max}} invités max",
+    "about_title": "L'Art de Recevoir",
+    "services_title": "Prestations d'Exception",
+    "per_person": "MAD / pers",
+    "reviews_title": "Témoignages",
+    "write_review": "Écrire un avis",
+    "booking_label": "Réservation",
+    "booking_title": "Créez votre événement",
+    "get_quote": "Obtenir un devis personnalisé",
+    "no_commitment": "Sans engagement",
+    "highlights": {
+      "response_time": "Réponse garantie sous 24h",
+      "exclusive_rates": "Tarifs négociés exclusifs",
+      "concierge": "Accompagnement Conciergerie",
+      "secure_payment": "Paiement 100% sécurisé"
+    },
+    "guarantee_label": "Garantie",
+    "guarantee_text": "Sérénité Farah.ma"
+  },
+  "filters": {
+    "title": "Filtres",
+    "clear": "Effacer",
+    "categories": "Catégories",
+    "price_range": "Gamme de prix",
+    "price_labels": {
+      "budget": "Budget",
+      "standard": "Standard",
+      "premium": "Premium",
+      "exclusif": "Exclusif"
+    },
+    "help_title": "Besoin d'aide ?",
+    "help_desc": "Nos experts vous aident à trouver les prestataires parfaits selon vos critères.",
+    "contact_us": "Contacter un expert"
+  }
+}

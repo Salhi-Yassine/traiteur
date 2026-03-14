@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useAuth } from "../../context/AuthContext";
@@ -11,32 +12,33 @@ interface PlanningLayoutProps {
     description: string;
 }
 
-const NAV_LINKS = [
-    { label: "Tableau de Bord", href: "/mariage", icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-        </svg>
-    )},
-    { label: "Budget", href: "/mariage/budget", icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-    )},
-    { label: "Invités", href: "/mariage/invites", icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-    )},
-    { label: "Checklist", href: "/mariage/checklist", icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-        </svg>
-    )},
-];
-
 export default function PlanningLayout({ children, title, description }: PlanningLayoutProps) {
+    const { t } = useTranslation("common");
     const { user, isLoading } = useAuth();
     const router = useRouter();
+
+    const NAV_LINKS = [
+        { label: t("nav.dashboard"), href: "/mariage", icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+        )},
+        { label: t("nav.budget"), href: "/mariage/budget", icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        )},
+        { label: t("nav.guests"), href: "/mariage/invites", icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+        )},
+        { label: t("nav.checklist"), href: "/mariage/checklist", icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+        )},
+    ];
 
     useEffect(() => {
         if (!isLoading && (!user || user.userType !== 'couple')) {
@@ -58,10 +60,10 @@ export default function PlanningLayout({ children, title, description }: Plannin
                             <div className="sticky top-32 space-y-2">
                                 <div className="px-6 py-4 mb-4">
                                     <h2 className="font-display font-black text-2xl text-[var(--color-primary)]">
-                                        Mon Mariage
+                                        {t("nav.my_wedding")}
                                     </h2>
                                     <p className="text-[var(--color-charcoal-400)] text-xs font-bold uppercase tracking-widest mt-1">
-                                        Gestion de l'événement
+                                        {t("nav.mgmt_desc")}
                                     </p>
                                 </div>
                                 <nav className="space-y-1">
@@ -89,12 +91,12 @@ export default function PlanningLayout({ children, title, description }: Plannin
                                 {/* Quick tips / Decoration Card */}
                                 <div className="mt-12 p-8 rounded-[2.5rem] bg-[var(--color-primary)] text-white relative overflow-hidden group border border-[var(--color-accent)]/10">
                                     <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-accent)]/10 rounded-full -mr-12 -mt-12 blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                                    <h4 className="font-display font-bold text-xl mb-3 relative z-10">Besoin d'aide ?</h4>
+                                    <h4 className="font-display font-bold text-xl mb-3 relative z-10">{t("nav.need_help")}</h4>
                                     <p className="text-white/70 text-sm leading-relaxed mb-6 font-medium relative z-10">
-                                        Nos experts sont là pour vous accompagner dans chaque étape.
+                                        {t("nav.help_desc")}
                                     </p>
                                     <Link href="/vendors" className="relative z-10 text-[var(--color-accent)] font-black text-xs uppercase tracking-widest hover:underline">
-                                        Voir les experts →
+                                        {t("nav.see_experts")} →
                                     </Link>
                                 </div>
                             </div>

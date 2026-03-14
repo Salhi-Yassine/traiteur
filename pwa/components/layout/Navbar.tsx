@@ -3,199 +3,239 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "next-i18next";
+import LanguageSwitcher from "./LanguageSwitcher";
 
-const NAV_ITEMS = [
-    { label: "Explorer", href: "/vendors" },
-    { label: "Mariage", href: "/mariage" },
-    { label: "Conciergerie", href: "/conciergerie" },
+// v3.0 nav items per PRD section 7
+const NAV_ITEM_KEYS = [
+    { labelKey: "nav.vendors", href: "/vendors" },
+    { labelKey: "nav.inspiration",  href: "/inspiration" },
+    { labelKey: "nav.real_weddings", href: "/real-weddings" },
 ];
 
+// v3.0 Navbar — white-first, terracotta CTA, Airbnb style
 export default function Navbar() {
     const { user, logout, isLoading } = useAuth();
-    const [scrolled, setScrolled] = useState(false);
+    const [scrolled, setScrolled]   = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const { t } = useTranslation("common");
 
     useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 20);
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        return () => window.removeEventListener("scroll", handleScroll);
+        const onScroll = () => setScrolled(window.scrollY > 80);
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
+    // Close drawer on ESC
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setMobileOpen(false); };
+        document.addEventListener("keydown", onKey);
+        return () => document.removeEventListener("keydown", onKey);
     }, []);
 
     return (
-        <header
-            className={cn(
-                "fixed top-0 inset-x-0 z-[60] transition-all duration-500",
-                scrolled 
-                    ? "bg-white/80 backdrop-blur-xl shadow-premium py-4" 
-                    : "bg-transparent py-6"
-            )}
-        >
-            <div className="container mx-auto px-6 max-w-7xl">
-                <div className="flex items-center justify-between">
-                    {/* Logo */}
-                    <Link href="/" className="flex items-center gap-3 group relative z-[70]">
-                        <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center border border-secondary/20 shadow-premium transition-transform group-hover:scale-105 group-hover:rotate-3">
-                            <span className="text-secondary text-2xl font-black font-display tracking-tighter">F</span>
-                        </div>
-                        <div className="flex flex-col -gap-1">
-                            <span className={cn(
-                                "font-display font-black text-2xl tracking-tighter transition-colors",
-                                scrolled ? "text-primary" : "text-white"
-                            )}>
-                                Farah<span className="text-secondary">.ma</span>
-                            </span>
-                            <span className={cn(
-                                "text-[8px] font-black uppercase tracking-[0.4em] transition-opacity",
-                                scrolled ? "text-primary/40" : "text-white/40"
-                            )}>
-                                L'Art de l'Exception
-                            </span>
-                        </div>
-                    </Link>
+        <>
+            <header
+                className={cn(
+                    "fixed top-0 inset-x-0 z-50 transition-all duration-300",
+                    scrolled
+                        ? "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)] py-3"
+                        : "bg-transparent py-5"
+                )}
+            >
+                <div className="container mx-auto px-6 max-w-7xl">
+                    <div className="flex items-center justify-between gap-8">
 
-                    {/* Desktop Nav */}
-                    <nav className="hidden lg:flex items-center gap-12 bg-white/5 backdrop-blur-md px-10 py-3 rounded-full border border-white/10 shadow-premium">
-                        {NAV_ITEMS.map((item) => (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={cn(
-                                    "text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:text-secondary relative group",
-                                    scrolled ? "text-primary" : "text-white"
-                                )}
-                            >
-                                {item.label}
-                                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-secondary transition-all group-hover:w-full" />
-                            </Link>
-                        ))}
-                    </nav>
-
-                    {/* Desktop CTAs */}
-                    <div className="hidden lg:flex items-center gap-6 relative z-[70]">
-                        {isLoading ? (
-                            <div className="w-24 h-5 animate-pulse bg-white/10 rounded-full" />
-                        ) : user ? (
-                            <div className="flex items-center gap-8">
-                                <div className="flex items-center gap-4 group cursor-pointer">
-                                    <div className="text-right">
-                                        <p className={cn(
-                                            "text-[10px] font-black uppercase tracking-widest leading-none",
-                                            scrolled ? "text-primary" : "text-white"
-                                        )}>{user.firstName}</p>
-                                        <button 
-                                            onClick={logout}
-                                            className="text-[8px] font-black uppercase tracking-[0.3em] text-secondary hover:underline"
-                                        >
-                                            Quitter
-                                        </button>
-                                    </div>
-                                    <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center border border-secondary/20 group-hover:bg-secondary/20 transition-all">
-                                        <span className="text-secondary text-xs font-black">{user.firstName[0]}</span>
-                                    </div>
-                                </div>
-                                <Button variant="premium" size="sm" className="px-6 py-2.5 rounded-xl border-none">
-                                    Tableau de bord
-                                </Button>
+                        {/* ── Logo ── */}
+                        <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+                            {/* Star mark */}
+                            <div className="w-9 h-9 rounded-xl bg-[#E8472A] flex items-center justify-center transition-transform group-hover:scale-105">
+                                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" aria-hidden="true">
+                                    {/* Eight-pointed star mark */}
+                                    <path d="M12 2l2.4 6.6H21l-5.4 4 2.1 6.4-5.7-4.1-5.7 4.1 2.1-6.4L3 8.6h6.6z" />
+                                </svg>
                             </div>
-                        ) : (
-                            <>
+                            <span className={cn(
+                                "font-display font-semibold text-[20px] tracking-tight transition-colors",
+                                scrolled ? "text-[#1A1A1A]" : "text-white"
+                            )}>
+                                Farah<span className="text-[#E8472A]">.ma</span>
+                            </span>
+                        </Link>
+
+                        {/* ── Desktop Nav ── */}
+                        <nav className="hidden lg:flex items-center gap-8" aria-label="Navigation principale">
+                            {NAV_ITEM_KEYS.map((item) => (
                                 <Link
-                                    href="/auth/login"
+                                    key={item.href}
+                                    href={item.href}
                                     className={cn(
-                                        "text-[10px] font-black uppercase tracking-[0.3em] transition-colors py-2",
-                                        scrolled ? "text-primary hover:text-secondary" : "text-white hover:text-secondary"
+                                        "nav-link text-[14px] font-medium transition-colors py-1",
+                                        scrolled
+                                            ? "text-[#484848] hover:text-[#1A1A1A]"
+                                            : "text-white/85 hover:text-white"
                                     )}
                                 >
-                                    Connexion
+                                    {t(item.labelKey)}
                                 </Link>
-                                <Button variant="premium" size="sm" className="rounded-xl border-none h-11 px-8">
-                                    Nous Rejoindre
-                                </Button>
-                            </>
-                        )}
-                    </div>
+                            ))}
+                        </nav>
 
-                    {/* Mobile hamburger */}
-                    <button
-                        className={cn(
-                            "lg:hidden p-3 rounded-2xl transition-all relative z-[70]",
-                            scrolled 
-                                ? "bg-primary text-secondary shadow-premium" 
-                                : mobileOpen ? "bg-white text-primary" : "bg-white/10 text-white backdrop-blur-md"
-                        )}
-                        onClick={() => setMobileOpen(!mobileOpen)}
-                        aria-label="Menu"
-                    >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            {mobileOpen ? (
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                        {/* ── Desktop CTAs ── */}
+                        <div className="hidden lg:flex items-center gap-3 shrink-0">
+                            <LanguageSwitcher scrolled={scrolled} />
+
+                            <div className="w-px h-6 bg-current opacity-10 mx-1" />
+
+                            {isLoading ? (
+                                <div className="w-20 h-8 bg-white/10 animate-pulse rounded-lg" />
+                            ) : user ? (
+                                <div className="flex items-center gap-3">
+                                    <span className={cn(
+                                        "text-[14px] font-medium",
+                                        scrolled ? "text-[#484848]" : "text-white/85"
+                                    )}>
+                                        {user.firstName}
+                                    </span>
+                                    <button
+                                        onClick={logout}
+                                        className={cn(
+                                            "text-[13px] transition-colors underline underline-offset-2",
+                                            scrolled ? "text-[#717171] hover:text-[#1A1A1A]" : "text-white/60 hover:text-white"
+                                        )}
+                                    >
+                                        {t('nav.logout', 'Déconnexion')}
+                                    </button>
+                                </div>
                             ) : (
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M4 6h16M4 12h16M4 18h16" />
+                                <>
+                                    <Link
+                                        href="/auth/login"
+                                        className={cn(
+                                            "text-[14px] font-medium transition-colors px-3 py-2 rounded-lg hover:bg-white/10",
+                                            scrolled ? "text-[#484848] hover:bg-[#F7F7F7]" : "text-white/85"
+                                        )}
+                                    >
+                                        {t("nav.login")}
+                                    </Link>
+                                    <Button variant="default" size="sm" asChild>
+                                        <Link href="/auth/register">{t("nav.start")}</Link>
+                                    </Button>
+                                </>
                             )}
+                        </div>
+
+                        {/* ── Mobile: hamburger ── */}
+                        <button
+                            className={cn(
+                                "lg:hidden p-2 rounded-lg transition-all",
+                                scrolled
+                                    ? "text-[#1A1A1A] hover:bg-[#F7F7F7]"
+                                    : "text-white hover:bg-white/10"
+                            )}
+                            onClick={() => setMobileOpen(true)}
+                            aria-label="Ouvrir le menu"
+                            aria-expanded={mobileOpen}
+                            aria-controls="mobile-drawer"
+                        >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            {/* ── Mobile Drawer ── */}
+            {/* Backdrop */}
+            <div
+                className={cn(
+                    "fixed inset-0 z-[60] bg-black/40 lg:hidden transition-opacity duration-300",
+                    mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                )}
+                onClick={() => setMobileOpen(false)}
+                aria-hidden="true"
+            />
+            {/* Slide-in panel */}
+            <div
+                id="mobile-drawer"
+                role="dialog"
+                aria-label="Menu navigation"
+                aria-modal="true"
+                className={cn(
+                    "fixed top-0 right-0 bottom-0 z-[70] w-[300px] bg-white shadow-[0_8px_28px_rgba(0,0,0,0.12)] flex flex-col lg:hidden transition-transform duration-300 ease-out",
+                    mobileOpen ? "translate-x-0" : "translate-x-full"
+                )}
+            >
+                {/* Drawer header */}
+                <div className="flex items-center justify-between p-5 border-b border-[#DDDDDD]">
+                    <span className="font-display font-semibold text-[18px] text-[#1A1A1A]">
+                        Farah<span className="text-[#E8472A]">.ma</span>
+                    </span>
+                    <button
+                        className="p-2 rounded-lg hover:bg-[#F7F7F7] transition-colors"
+                        onClick={() => setMobileOpen(false)}
+                        aria-label="Fermer le menu"
+                    >
+                        <svg className="w-5 h-5 text-[#484848]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
-            </div>
 
-            {/* Mobile Drawer */}
-            <div className={cn(
-                "fixed inset-0 bg-primary z-[65] transition-transform duration-700 lg:hidden flex flex-col items-center justify-center px-12 text-center",
-                mobileOpen ? "translate-x-0" : "translate-x-full"
-            )}>
-                {/* Background Pattern */}
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/moroccan-flower.png')] scale-150" />
-                
-                <nav className="relative z-10 flex flex-col gap-12">
-                    {NAV_ITEMS.map((item, i) => (
+                {/* Nav links */}
+                <nav className="flex flex-col p-4 gap-1" aria-label="Navigation mobile">
+                    {NAV_ITEM_KEYS.map((item) => (
                         <Link
                             key={item.href}
                             href={item.href}
-                            className="text-3xl font-display font-black text-white hover:text-secondary transition-colors"
+                            className="text-[15px] font-medium text-[#484848] hover:text-[#1A1A1A] hover:bg-[#F7F7F7] px-4 py-3 rounded-lg transition-colors"
                             onClick={() => setMobileOpen(false)}
-                            style={{ transitionDelay: `${i * 100}ms` }}
                         >
-                            {item.label}
+                            {t(item.labelKey)}
                         </Link>
                     ))}
-                    
-                    <div className="h-0.5 w-12 bg-secondary/30 mx-auto my-4" />
-                    
-                    <div className="flex flex-col gap-6">
-                        {user ? (
-                            <Button
-                                variant="secondary"
-                                onClick={() => { logout(); setMobileOpen(false); }}
-                                className="w-full h-16 rounded-2xl text-xs"
-                            >
-                                Déconnexion
-                            </Button>
-                        ) : (
-                            <>
-                                <Link
-                                    href="/auth/login"
-                                    className="text-white font-black uppercase tracking-[0.4em] text-xs hover:text-secondary py-4"
-                                    onClick={() => setMobileOpen(false)}
-                                >
-                                    Se Connecter
-                                </Link>
-                                <Button
-                                    variant="premium"
-                                    onClick={() => setMobileOpen(false)}
-                                    className="w-full h-16 rounded-2xl"
-                                >
-                                    S'Inscrire Maintenant
-                                </Button>
-                            </>
-                        )}
-                    </div>
                 </nav>
 
-                <div className="absolute bottom-20 left-0 w-full text-center">
-                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20">
-                        Farah.ma — Art de Vivre Marocain
-                    </p>
+                <div className="mx-4 h-px bg-[#DDDDDD]" />
+
+                {/* Language Switcher Mobile */}
+                <div className="px-4 py-4">
+                    <p className="text-[11px] font-bold text-neutral-400 uppercase tracking-widest px-2 mb-2">Langue</p>
+                    <LanguageSwitcher mobile />
+                </div>
+
+                {/* Auth CTAs */}
+                <div className="p-4 mt-auto space-y-2 border-t border-[#DDDDDD]">
+                    {user ? (
+                        <>
+                            <p className="text-[13px] text-[#717171] px-2 mb-3">
+                                Connecté en tant que <strong className="text-[#1A1A1A]">{user.firstName}</strong>
+                            </p>
+                            <Button
+                                variant="ghost"
+                                className="w-full"
+                                onClick={() => { logout(); setMobileOpen(false); }}
+                            >
+                                {t('nav.logout', 'Déconnexion')}
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <Button variant="ghost" className="w-full" asChild>
+                                <Link href="/auth/login" onClick={() => setMobileOpen(false)}>
+                                    {t("nav.login")}
+                                </Link>
+                            </Button>
+                            <Button variant="default" className="w-full" asChild>
+                                <Link href="/auth/register" onClick={() => setMobileOpen(false)}>
+                                    {t("nav.start")}
+                                </Link>
+                            </Button>
+                        </>
+                    )}
                 </div>
             </div>
-        </header>
+        </>
     );
 }

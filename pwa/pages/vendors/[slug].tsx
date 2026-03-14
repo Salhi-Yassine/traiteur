@@ -8,6 +8,8 @@ import { Button } from "../../components/ui/button";
 import PriceRange from "../../components/ui/PriceRange";
 import QuoteRequestModal from "../../components/quotes/QuoteRequestModal";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 interface MenuItem {
     id: number;
@@ -82,6 +84,7 @@ const FALLBACK_REVIEWS: ReviewData[] = [
 ];
 
 export default function VendorProfilePage({ vendor, reviews }: VendorProfilePageProps) {
+    const { t } = useTranslation("common");
     const [quoteOpen, setQuoteOpen] = useState(false);
     const [activeGallery, setActiveGallery] = useState(0);
 
@@ -114,14 +117,14 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                 {/* Overlay content */}
                 <div className="absolute bottom-20 left-6 right-6 md:left-12 lg:left-24 max-w-5xl z-10">
                     <div className="flex flex-wrap items-center gap-4 mb-6">
-                        <Badge variant="secondary" className="px-4 py-1.5">{vendor.category}</Badge>
+                        <Badge variant="neutral" className="px-4 py-1.5">{vendor.category}</Badge>
                         {vendor.isVerified && (
-                             <Badge variant="gold" className="px-4 py-1.5 shadow-gold">
+                             <Badge variant="verified" className="px-4 py-1.5">
                                 <span className="flex items-center gap-1.5">
                                     <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.64.304 1.24.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                     </svg>
-                                    Partenaire Vérifié
+                                    {t("vendor_card.verified")}
                                 </span>
                              </Badge>
                         )}
@@ -163,7 +166,7 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                         {/* Quick bar */}
                         <div className="bg-white/80 backdrop-blur-xl rounded-[3rem] shadow-premium p-10 flex flex-wrap items-center justify-between gap-10 border border-border/50">
                             <div className="space-y-2">
-                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Localisation</p>
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">{t("vendor_profile.location")}</p>
                                 <div className="flex items-center gap-2.5 font-black text-primary uppercase text-xs tracking-widest">
                                     <div className="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center">
                                         <svg className="w-4 h-4 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -174,23 +177,23 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Gamme de Prix</p>
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">{t("vendor_profile.price_range")}</p>
                                 <PriceRange value={vendor.priceRange} label className="text-secondary" />
                             </div>
                             <div className="space-y-2">
-                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Note & Avis</p>
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">{t("vendor_profile.reviews_count")}</p>
                                 <StarRating rating={rating} reviewCount={vendor.reviewCount} size="md" />
                             </div>
                             {vendor.maxGuests && (
                                 <div className="space-y-2">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Capacité</p>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">{t("vendor_profile.capacity")}</p>
                                     <div className="flex items-center gap-2.5 font-black text-primary uppercase text-xs tracking-widest">
                                         <div className="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center">
                                             <svg className="w-4 h-4 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                             </svg>
                                         </div>
-                                        {vendor.maxGuests} invités max
+                                        {t("vendor_profile.capacity_max", { max: vendor.maxGuests })}
                                     </div>
                                 </div>
                             )}
@@ -198,7 +201,7 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
 
                         {/* About section */}
                         <div className="space-y-6">
-                            <h2 className="font-display text-4xl font-black text-primary">L'Art de Recevoir</h2>
+                            <h2 className="font-display text-4xl font-black text-primary">{t("vendor_profile.about_title")}</h2>
                             <div className="prose prose-lg text-muted-foreground max-w-none leading-relaxed italic border-l-4 border-secondary pl-10 py-4 bg-accent/5 rounded-r-[2rem]">
                                 {vendor.description}
                             </div>
@@ -207,7 +210,7 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                         {/* Services / Menu section */}
                         {vendor.menuItems.length > 0 && (
                             <div className="space-y-10">
-                                <h2 className="font-display text-4xl font-black text-primary">Prestations d'Exception</h2>
+                                <h2 className="font-display text-4xl font-black text-primary">{t("vendor_profile.services_title")}</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                     {vendor.menuItems.map((item) => (
                                         <div key={item.id} className="bg-white rounded-[2.5rem] p-10 shadow-premium border border-border/10 hover:border-secondary/30 transition-all group relative overflow-hidden">
@@ -223,7 +226,7 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                                 {item.pricePerPerson && (
                                                     <div className="pt-6 border-t border-border flex items-baseline gap-2">
                                                         <span className="text-3xl font-black text-primary">{Number(item.pricePerPerson).toLocaleString()}</span>
-                                                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">MAD / pers</span>
+                                                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{t("vendor_profile.per_person")}</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -236,8 +239,8 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                         {/* Reviews section */}
                         <div className="space-y-12">
                             <div className="flex items-center justify-between">
-                                <h2 className="font-display text-4xl font-black text-primary">Témoignages</h2>
-                                <Button variant="outline" size="sm">Écrire un avis</Button>
+                                <h2 className="font-display text-4xl font-black text-primary">{t("vendor_profile.reviews_title")}</h2>
+                                <Button variant="outline" size="sm" className="text-xs uppercase tracking-widest font-black">{t("vendor_profile.write_review")}</Button>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 {reviews.map((review) => (
@@ -284,8 +287,8 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                 
                                 <div className="relative z-10 space-y-10">
                                     <div className="space-y-2">
-                                        <span className="text-secondary font-black tracking-[0.4em] uppercase text-[10px]">Réservation</span>
-                                        <h3 className="font-display text-4xl font-black leading-tight">Créez votre événement</h3>
+                                        <span className="text-secondary font-black tracking-[0.4em] uppercase text-[10px]">{t("vendor_profile.booking_label")}</span>
+                                        <h3 className="font-display text-4xl font-black leading-tight">{t("vendor_profile.booking_title")}</h3>
                                     </div>
                                     
                                     <div className="space-y-6">
@@ -295,17 +298,17 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                             onClick={() => setQuoteOpen(true)}
                                             className="w-full text-xs"
                                         >
-                                            Obtenir un devis personnalisé
+                                            {t("vendor_profile.get_quote")}
                                         </Button>
-                                        <p className="text-[10px] text-center text-white/40 font-bold uppercase tracking-[0.25em]">Sans engagement</p>
+                                        <p className="text-[10px] text-center text-white/40 font-bold uppercase tracking-[0.25em]">{t("vendor_profile.no_commitment")}</p>
                                     </div>
                                     
                                     <div className="space-y-5 pt-10 border-t border-white/10">
                                         {[
-                                            "Réponse garantie sous 24h",
-                                            "Tarifs négociés exclusifs",
-                                            "Accompagnement Conciergerie",
-                                            "Paiement 100% sécurisé"
+                                            t("vendor_profile.highlights.response_time"),
+                                            t("vendor_profile.highlights.exclusive_rates"),
+                                            t("vendor_profile.highlights.concierge"),
+                                            t("vendor_profile.highlights.secure_payment")
                                         ].map((item, i) => (
                                             <div key={i} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-white/70">
                                                 <div className="w-5 h-5 rounded-full bg-secondary/20 flex items-center justify-center">
@@ -328,8 +331,8 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                     </svg>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Garantie</p>
-                                    <p className="text-sm font-black text-primary uppercase tracking-widest">Sérénité Farah.ma</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">{t("vendor_profile.guarantee_label")}</p>
+                                    <p className="text-sm font-black text-primary uppercase tracking-widest">{t("vendor_profile.guarantee_text")}</p>
                                 </div>
                             </div>
                         </div>
@@ -347,7 +350,7 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
     );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params, locale }) => {
     const slug = params?.slug as string;
 
     try {
@@ -356,7 +359,12 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
         // Fetch profile by slug filter
         const profileRes = await fetch(
             `${baseUrl}/api/vendor_profiles?slug=${slug}&itemsPerPage=1`,
-            { headers: { Accept: "application/ld+json" } }
+            { 
+                headers: { 
+                    Accept: "application/ld+json",
+                    "Accept-Language": locale || "fr"
+                } 
+            }
         );
 
         if (!profileRes.ok) throw new Error("API unavailable");
@@ -411,11 +419,23 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
             });
         }
 
-        return { props: { vendor, reviews } };
+        return { 
+            props: { 
+                vendor, 
+                reviews,
+                ...(await serverSideTranslations(locale || "fr", ["common"]))
+            } 
+        };
     } catch {
         // Return fallback in dev mode
         if (slug === "palais-des-roses-casablanca") {
-            return { props: { vendor: FALLBACK, reviews: FALLBACK_REVIEWS } };
+            return { 
+                props: { 
+                    vendor: FALLBACK, 
+                    reviews: FALLBACK_REVIEWS,
+                    ...(await serverSideTranslations(locale || "fr", ["common"]))
+                } 
+            };
         }
         return { notFound: true };
     }

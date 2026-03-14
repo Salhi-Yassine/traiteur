@@ -1,7 +1,10 @@
+import { useTranslation } from "next-i18next";
 import Head from "next/head";
 import PlanningLayout from "../../components/layout/PlanningLayout";
 import { useState, useEffect } from "react";
 import apiClient from "../../utils/apiClient";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import type { GetServerSideProps } from "next";
 
 interface BudgetItem {
     id: number;
@@ -11,6 +14,7 @@ interface BudgetItem {
 }
 
 export default function BudgetPage() {
+    const { t } = useTranslation("common");
     const [items, setItems] = useState<BudgetItem[]>([]);
     const [totalBudget, setTotalBudget] = useState(0);
     const [weddingProfileId, setWeddingProfileId] = useState<number | null>(null);
@@ -52,17 +56,17 @@ export default function BudgetPage() {
             setNewItem({ category: "", budgetedAmount: 0 });
             fetchData();
         } catch (err) {
-            alert("Erreur lors de l'ajout.");
+            alert(t("budget.error_add"));
         }
     };
 
     const handleDeleteItem = async (id: number) => {
-        if (!confirm("Voulez-vous vraiment supprimer cette catégorie ?")) return;
+        if (!confirm(t("budget.delete_confirm"))) return;
         try {
             await apiClient.delete(`/api/budget_items/${id}`);
             fetchData();
         } catch (err) {
-            alert("Erreur lors de la suppression.");
+            alert(t("budget.error_delete"));
         }
     };
 
@@ -72,34 +76,34 @@ export default function BudgetPage() {
 
     return (
         <PlanningLayout 
-            title="Gestion du Budget" 
-            description="Suivez vos dépenses et optimisez vos coûts pour chaque poste de dépense."
+            title={t("budget.title")} 
+            description={t("budget.description")}
         >
             <Head>
-                <title>Mon Budget — Farah.ma</title>
+                <title>{t("nav.budget")} — Farah.ma</title>
             </Head>
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
                 <div className="bg-white p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">Budget Total</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">{t("budget.summary_total")}</p>
                     <div className="flex items-end gap-2 text-[var(--color-primary)]">
                         <span className="text-3xl font-black">{totalBudget.toLocaleString()}</span>
-                        <span className="text-sm font-bold mb-1.5 opacity-60">MAD</span>
+                        <span className="text-sm font-bold mb-1.5 opacity-60">{t("common.currency")}</span>
                     </div>
                 </div>
                 <div className="bg-white p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">Dépensé</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">{t("budget.summary_spent")}</p>
                     <div className="flex items-end gap-2 text-[var(--color-accent)]">
                         <span className="text-3xl font-black">{totalSpent.toLocaleString()}</span>
-                        <span className="text-sm font-bold mb-1.5 opacity-60">MAD</span>
+                        <span className="text-sm font-bold mb-1.5 opacity-60">{t("common.currency")}</span>
                     </div>
                 </div>
                 <div className="bg-[var(--color-primary)] p-8 rounded-[2.5rem] shadow-xl shadow-[var(--color-primary)]/10 text-white">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-2">Reste à dépenser</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-2">{t("budget.summary_remaining")}</p>
                     <div className="flex items-end gap-2">
                         <span className="text-3xl font-black">{remainingBudget.toLocaleString()}</span>
-                        <span className="text-sm font-bold mb-1.5 opacity-60">MAD</span>
+                        <span className="text-sm font-bold mb-1.5 opacity-60">{t("common.currency")}</span>
                     </div>
                 </div>
             </div>
@@ -107,12 +111,12 @@ export default function BudgetPage() {
             {/* Budget Table / List */}
             <div className="bg-white rounded-[2.5rem] border border-[var(--color-charcoal-100)] overflow-hidden shadow-sm">
                 <div className="px-10 py-8 border-b border-[var(--color-background)] flex items-center justify-between">
-                    <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">Postes de Dépenses</h3>
+                    <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">{t("budget.postes_title")}</h3>
                     <button 
                         onClick={() => setIsAdding(true)}
                         className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-lg shadow-[var(--color-accent)]/20"
                     >
-                        + Ajouter
+                        + {t("budget.add_poste")}
                     </button>
                 </div>
 
@@ -120,17 +124,17 @@ export default function BudgetPage() {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-[var(--color-background)]/50">
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">Catégorie</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-right">Budget Prévu</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-right">Montant Payé</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-right">Actions</th>
+                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("budget.col_category")}</th>
+                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-right">{t("budget.col_budgeted")}</th>
+                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-right">{t("budget.col_paid")}</th>
+                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-right">{t("budget.col_actions")}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[var(--color-background)]">
                             {items.length === 0 && (
                                 <tr>
                                     <td colSpan={4} className="px-10 py-20 text-center text-[var(--color-charcoal-400)] italic font-medium">
-                                        Aucun poste de dépense pour le moment.
+                                        {t("budget.empty")}
                                     </td>
                                 </tr>
                             )}
@@ -155,7 +159,7 @@ export default function BudgetPage() {
                         {items.length > 0 && (
                             <tfoot className="bg-[var(--color-background)]/20">
                                 <tr>
-                                    <td className="px-10 py-6 font-black text-[var(--color-primary)] uppercase tracking-widest text-xs">TOTAUX</td>
+                                    <td className="px-10 py-6 font-black text-[var(--color-primary)] uppercase tracking-widest text-xs">{t("budget.totals")}</td>
                                     <td className="px-10 py-6 text-right font-black text-[var(--color-primary)]">{totalBudgeted.toLocaleString()} MAD</td>
                                     <td className="px-10 py-6 text-right font-black text-[var(--color-accent)]">{totalSpent.toLocaleString()} MAD</td>
                                     <td></td>
@@ -171,21 +175,21 @@ export default function BudgetPage() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
                     <div className="absolute inset-0 bg-[var(--color-primary)]/40 backdrop-blur-md" onClick={() => setIsAdding(false)} />
                     <div className="relative bg-white rounded-[2.5rem] w-full max-w-md p-10 shadow-2xl border border-[var(--color-accent)]/10 animate-in fade-in zoom-in duration-300">
-                        <h3 className="font-display font-black text-2xl text-[var(--color-primary)] mb-8">Nouveau poste</h3>
+                        <h3 className="font-display font-black text-2xl text-[var(--color-primary)] mb-8">{t("budget.new_poste_title")}</h3>
                         <form onSubmit={handleAddItem} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">Catégorie</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("budget.col_category")}</label>
                                 <input 
                                     type="text" 
                                     required
                                     value={newItem.category}
                                     onChange={(e) => setNewItem({...newItem, category: e.target.value})}
-                                    placeholder="ex: Traiteur, Photographe..."
+                                    placeholder={t("budget.category_placeholder")}
                                     className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">Budget Prévu (MAD)</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("budget.budgeted_label")}</label>
                                 <input 
                                     type="number" 
                                     required
@@ -200,13 +204,13 @@ export default function BudgetPage() {
                                     onClick={() => setIsAdding(false)}
                                     className="flex-1 py-4 border-2 border-[var(--color-primary)] rounded-2xl text-xs font-black uppercase tracking-widest text-[var(--color-primary)] hover:bg-[var(--color-background)] transition-all"
                                 >
-                                    Annuler
+                                    {t("common.cancel")}
                                 </button>
                                 <button 
                                     type="submit"
                                     className="flex-1 py-4 bg-[var(--color-accent)] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-xl shadow-[var(--color-accent)]/20"
                                 >
-                                    Enregistrer
+                                    {t("common.save")}
                                 </button>
                             </div>
                         </form>
@@ -216,3 +220,11 @@ export default function BudgetPage() {
         </PlanningLayout>
     );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale || "fr", ["common"])),
+        },
+    };
+};
