@@ -68,7 +68,7 @@ class Review
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
     #[Groups(['review:read', 'review:write'])]
-    private ?CatererProfile $catererProfile = null;
+    private ?VendorProfile $vendorProfile = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
@@ -96,8 +96,8 @@ class Review
     public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
 
 
-    public function getCatererProfile(): ?CatererProfile { return $this->catererProfile; }
-    public function setCatererProfile(?CatererProfile $catererProfile): static { $this->catererProfile = $catererProfile; return $this; }
+    public function getVendorProfile(): ?VendorProfile { return $this->vendorProfile; }
+    public function setVendorProfile(?VendorProfile $vendorProfile): static { $this->vendorProfile = $vendorProfile; return $this; }
 
     public function getAuthor(): ?User { return $this->author; }
     public function setAuthor(?User $author): static { $this->author = $author; return $this; }

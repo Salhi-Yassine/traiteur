@@ -41,49 +41,49 @@ class MenuItem
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['menu:read', 'caterer:read'])]
+    #[Groups(['menu:read', 'vendor:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['menu:read', 'menu:write', 'caterer:read'])]
+    #[Groups(['menu:read', 'menu:write', 'vendor:read'])]
     private string $name = '';
 
     #[ORM\Column(type: 'text', nullable: true)]
-    #[Groups(['menu:read', 'menu:write', 'caterer:read'])]
+    #[Groups(['menu:read', 'menu:write', 'vendor:read'])]
     private ?string $description = null;
 
     #[ORM\Column(type: 'decimal', precision: 8, scale: 2, nullable: true)]
     #[Assert\PositiveOrZero]
-    #[Groups(['menu:read', 'menu:write', 'caterer:read'])]
+    #[Groups(['menu:read', 'menu:write', 'vendor:read'])]
     private ?string $pricePerPerson = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\Choice(choices: [self::CATEGORY_STARTER, self::CATEGORY_MAIN, self::CATEGORY_DESSERT, self::CATEGORY_DRINKS, self::CATEGORY_CANAPÉ])]
-    #[Groups(['menu:read', 'menu:write', 'caterer:read'])]
+    #[Groups(['menu:read', 'menu:write', 'vendor:read'])]
     private string $category = self::CATEGORY_MAIN;
 
     #[ORM\Column]
-    #[Groups(['menu:read', 'menu:write', 'caterer:read'])]
+    #[Groups(['menu:read', 'menu:write', 'vendor:read'])]
     private bool $isVegetarian = false;
 
     #[ORM\Column]
-    #[Groups(['menu:read', 'menu:write', 'caterer:read'])]
+    #[Groups(['menu:read', 'menu:write', 'vendor:read'])]
     private bool $isVegan = false;
 
     #[ORM\Column]
-    #[Groups(['menu:read', 'menu:write', 'caterer:read'])]
+    #[Groups(['menu:read', 'menu:write', 'vendor:read'])]
     private bool $isGlutenFree = false;
 
     #[ORM\Column(length: 500, nullable: true)]
-    #[Groups(['menu:read', 'menu:write', 'caterer:read'])]
+    #[Groups(['menu:read', 'menu:write', 'vendor:read'])]
     private ?string $imageUrl = null;
 
-    #[ORM\ManyToOne(targetEntity: CatererProfile::class, inversedBy: 'menuItems')]
+    #[ORM\ManyToOne(targetEntity: VendorProfile::class, inversedBy: 'menuItems')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
     #[Groups(['menu:read', 'menu:write'])]
-    private ?CatererProfile $catererProfile = null;
+    private ?VendorProfile $vendorProfile = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Gedmo\Timestampable(on: 'create')]
@@ -122,8 +122,8 @@ class MenuItem
     public function getImageUrl(): ?string { return $this->imageUrl; }
     public function setImageUrl(?string $imageUrl): static { $this->imageUrl = $imageUrl; return $this; }
 
-    public function getCatererProfile(): ?CatererProfile { return $this->catererProfile; }
-    public function setCatererProfile(?CatererProfile $catererProfile): static { $this->catererProfile = $catererProfile; return $this; }
+    public function getVendorProfile(): ?VendorProfile { return $this->vendorProfile; }
+    public function setVendorProfile(?VendorProfile $vendorProfile): static { $this->vendorProfile = $vendorProfile; return $this; }
 
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
     public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }

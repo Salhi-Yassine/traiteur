@@ -2,12 +2,12 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\CatererProfile;
+use App\Entity\VendorProfile;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class CatererProfileVoter extends Voter
+class VendorProfileVoter extends Voter
 {
     public const EDIT = 'profile:edit';
     public const VIEW = 'profile:view';
@@ -15,7 +15,7 @@ class CatererProfileVoter extends Voter
     protected function supports(string $attribute, mixed $subject): bool
     {
         return in_array($attribute, [self::EDIT, self::VIEW])
-            && $subject instanceof CatererProfile;
+            && $subject instanceof VendorProfile;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -26,7 +26,7 @@ class CatererProfileVoter extends Voter
             return false;
         }
 
-        /** @var CatererProfile $profile */
+        /** @var VendorProfile $profile */
         $profile = $subject;
 
         switch ($attribute) {
@@ -39,7 +39,7 @@ class CatererProfileVoter extends Voter
         return false;
     }
 
-    private function canEdit(CatererProfile $profile, User $user): bool
+    private function canEdit(VendorProfile $profile, User $user): bool
     {
         // Admins can edit anything
         if (in_array('ROLE_ADMIN', $user->getRoles())) {

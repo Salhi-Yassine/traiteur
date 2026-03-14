@@ -9,7 +9,7 @@ interface User {
     email: string;
     firstName: string;
     lastName: string;
-    userType: "client" | "caterer" | "admin";
+    userType: "couple" | "vendor" | "admin";
 }
 
 interface AuthContextType {

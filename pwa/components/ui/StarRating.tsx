@@ -11,11 +11,11 @@ export default function StarRating({
     size = "md",
     showCount = true,
 }: StarRatingProps) {
-    const sizes = { sm: "w-3 h-3", md: "w-4 h-4", lg: "w-5 h-5" };
-    const textSizes = { sm: "text-xs", md: "text-sm", lg: "text-base" };
+    const sizes = { sm: "w-3.5 h-3.5", md: "w-4.5 h-4.5", lg: "w-6 h-6" };
+    const textSizes = { sm: "text-[10px]", md: "text-xs", lg: "text-sm" };
 
     return (
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
             <div className="flex items-center gap-0.5">
                 {[1, 2, 3, 4, 5].map((star) => {
                     const filled = star <= Math.floor(rating);
@@ -24,10 +24,10 @@ export default function StarRating({
                         <svg
                             key={star}
                             className={`${sizes[size]} ${filled
-                                    ? "text-[var(--color-gold-500)]"
+                                    ? "text-secondary"
                                     : partial
-                                        ? "text-[var(--color-gold-400)]"
-                                        : "text-[var(--color-charcoal-200)]"
+                                        ? "text-secondary/50"
+                                        : "text-accent"
                                 }`}
                             fill="currentColor"
                             viewBox="0 0 20 20"
@@ -39,13 +39,8 @@ export default function StarRating({
                 })}
             </div>
             {showCount && (
-                <span className={`${textSizes[size]} text-[var(--color-charcoal-500)]`}>
-                    <span className="font-semibold text-[var(--color-charcoal-700)]">
-                        {rating.toFixed(1)}
-                    </span>
-                    {reviewCount !== undefined && (
-                        <span className="ml-1">({reviewCount})</span>
-                    )}
+                <span className={`${textSizes[size]} font-black tracking-widest text-primary`}>
+                    {rating.toFixed(1)}
                 </span>
             )}
         </div>

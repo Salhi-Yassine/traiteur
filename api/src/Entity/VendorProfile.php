@@ -10,8 +10,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
-use App\Repository\CatererProfileRepository;
+use App\Repository\VendorProfileRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,135 +29,147 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Delete(security: "is_granted('ROLE_ADMIN') or is_granted('profile:edit', object)"),
     ],
 
-    normalizationContext: ['groups' => ['caterer:read']],
-    denormalizationContext: ['groups' => ['caterer:write']],
+    normalizationContext: ['groups' => ['vendor:read']],
+    denormalizationContext: ['groups' => ['vendor:write']],
     order: ['averageRating' => 'DESC'],
 )]
-#[ApiFilter(SearchFilter::class, properties: ['serviceArea' => 'ipartial', 'businessName' => 'ipartial', 'cuisineTypes' => 'partial', 'priceRange' => 'exact'])]
-#[ORM\Entity(repositoryClass: CatererProfileRepository::class)]
+#[ApiFilter(SearchFilter::class, properties: ['serviceArea' => 'ipartial', 'businessName' => 'ipartial', 'category' => 'exact', 'priceRange' => 'exact'])]
+#[ORM\Entity(repositoryClass: VendorProfileRepository::class)]
 #[UniqueEntity(fields: ['slug'], message: 'This slug is already taken')]
-class CatererProfile
+class VendorProfile
 {
-    public const PRICE_BUDGET = '$';
-    public const PRICE_MODERATE = '$$';
-    public const PRICE_PREMIUM = '$$$';
-    public const PRICE_LUXURY = '$$$$';
+    public const PRICE_BUDGET = 'MAD';
+    public const PRICE_MODERATE = 'MADMAD';
+    public const PRICE_PREMIUM = 'MADMADMAD';
+    public const PRICE_LUXURY = 'MADMADMAD+';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['caterer:read'])]
+    #[Groups(['vendor:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['businessName'])]
     #[Assert\Regex(pattern: '/^[a-z0-9]+(?:-[a-z0-9]+)*$/', message: 'Slug must be lowercase alphanumeric with hyphens')]
-    #[Groups(['caterer:read', 'caterer:write'])]
+    #[Groups(['vendor:read', 'vendor:write'])]
     private ?string $slug = null;
-
-
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['caterer:read', 'caterer:write'])]
+    #[Groups(['vendor:read', 'vendor:write'])]
     private string $businessName = '';
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['caterer:read', 'caterer:write'])]
+    #[Groups(['vendor:read', 'vendor:write'])]
     private ?string $tagline = null;
+
+    #[ORM\Column(length: 50)]
+    #[Assert\NotBlank]
+    #[Groups(['vendor:read', 'vendor:write'])]
+    private string $category = '';
 
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank]
-    #[Groups(['caterer:read', 'caterer:write'])]
+    #[Groups(['vendor:read', 'vendor:write'])]
     private string $description = '';
 
     /**
-     * @var string[] Cuisine types (e.g. French, Mediterranean, Algerian, Italian)
+     * @var string[] Multi-select tags (e.g. Traditional, Modern, Fusion)
      */
     #[ORM\Column(type: 'json')]
-    #[Groups(['caterer:read', 'caterer:write'])]
-    private array $cuisineTypes = [];
-
-    /**
-     * @var string[] Service styles (Buffet, Plated, Cocktail, Food Truck, Family Style)
-     */
-    #[ORM\Column(type: 'json')]
-    #[Groups(['caterer:read', 'caterer:write'])]
-    private array $serviceStyles = [];
+    #[Groups(['vendor:read', 'vendor:write'])]
+    private array $tags = [];
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['caterer:read', 'caterer:write'])]
+    #[Groups(['vendor:read', 'vendor:write'])]
     private string $serviceArea = '';
 
     #[ORM\Column(length: 10)]
     #[Assert\Choice(choices: [self::PRICE_BUDGET, self::PRICE_MODERATE, self::PRICE_PREMIUM, self::PRICE_LUXURY])]
-    #[Groups(['caterer:read', 'caterer:write'])]
+    #[Groups(['vendor:read', 'vendor:write'])]
     private string $priceRange = self::PRICE_MODERATE;
 
     #[ORM\Column(length: 500, nullable: true)]
-    #[Groups(['caterer:read', 'caterer:write'])]
+    #[Groups(['vendor:read', 'vendor:write'])]
     private ?string $coverImageUrl = null;
+
+    #[ORM\Column(length: 50)]
+    #[Assert\NotBlank]
+    #[Groups(['vendor:read', 'vendor:write'])]
+    private string $whatsapp = '';
 
     /**
      * @var string[] Gallery image URLs
      */
     #[ORM\Column(type: 'json')]
-    #[Groups(['caterer:read', 'caterer:write'])]
+    #[Groups(['vendor:read', 'vendor:write'])]
     private array $galleryImages = [];
 
+    #[ORM\Column(type: 'json')]
+    #[Groups(['vendor:read', 'vendor:write'])]
+    private array $languagesSpoken = ['ary', 'fr'];
+
     #[ORM\Column(type: 'decimal', precision: 3, scale: 2, nullable: true)]
-    #[Groups(['caterer:read'])]
+    #[Groups(['vendor:read'])]
     private ?string $averageRating = null;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(['caterer:read'])]
+    #[Groups(['vendor:read'])]
     private int $reviewCount = 0;
 
     #[ORM\Column]
-    #[Groups(['caterer:read'])]
+    #[Groups(['vendor:read'])]
     private bool $isVerified = false;
 
+    #[ORM\Column]
+    #[Groups(['vendor:read'])]
+    private bool $isFeatured = false;
+
+    #[ORM\Column(length: 20)]
+    #[Groups(['vendor:read'])]
+    private string $subscriptionTier = 'free';
+
     #[ORM\Column(length: 20, nullable: true)]
-    #[Groups(['caterer:read', 'caterer:write'])]
+    #[Groups(['vendor:read', 'vendor:write'])]
     private ?string $minGuests = null;
 
     #[ORM\Column(length: 20, nullable: true)]
-    #[Groups(['caterer:read', 'caterer:write'])]
+    #[Groups(['vendor:read', 'vendor:write'])]
     private ?string $maxGuests = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['caterer:read', 'caterer:write'])]
+    #[Groups(['vendor:read', 'vendor:write'])]
     private ?string $website = null;
 
     #[ORM\Column(length: 50, nullable: true)]
-    #[Groups(['caterer:read', 'caterer:write'])]
+    #[Groups(['vendor:read', 'vendor:write'])]
     private ?string $instagram = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Gedmo\Timestampable(on: 'create')]
-    #[Groups(['caterer:read'])]
+    #[Groups(['vendor:read'])]
     private \DateTimeImmutable $createdAt;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     #[Gedmo\Timestampable(on: 'update')]
-    #[Groups(['caterer:read'])]
+    #[Groups(['vendor:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
-
-    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'catererProfile')]
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'vendorProfile')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['caterer:read'])]
+    #[Groups(['vendor:read'])]
     private ?User $owner = null;
 
-    #[ORM\OneToMany(mappedBy: 'catererProfile', targetEntity: MenuItem::class, cascade: ['persist', 'remove'])]
-    #[Groups(['caterer:read'])]
+    #[ORM\OneToMany(mappedBy: 'vendorProfile', targetEntity: MenuItem::class, cascade: ['persist', 'remove'])]
+    #[Groups(['vendor:read'])]
     private Collection $menuItems;
 
-    #[ORM\OneToMany(mappedBy: 'catererProfile', targetEntity: Review::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'vendorProfile', targetEntity: Review::class, cascade: ['persist', 'remove'])]
     private Collection $reviews;
 
-    #[ORM\OneToMany(mappedBy: 'catererProfile', targetEntity: QuoteRequest::class)]
+    #[ORM\OneToMany(mappedBy: 'vendorProfile', targetEntity: QuoteRequest::class)]
     private Collection $quoteRequests;
 
     public function __construct()
@@ -166,14 +177,15 @@ class CatererProfile
         $this->menuItems = new ArrayCollection();
         $this->reviews = new ArrayCollection();
         $this->quoteRequests = new ArrayCollection();
+        $this->tags = [];
+        $this->galleryImages = [];
+        $this->languagesSpoken = ['ary', 'fr'];
     }
-
 
     public function getId(): ?int { return $this->id; }
 
     public function getSlug(): ?string { return $this->slug; }
     public function setSlug(?string $slug): static { $this->slug = $slug; return $this; }
-
 
     public function getBusinessName(): string { return $this->businessName; }
     public function setBusinessName(string $businessName): static { $this->businessName = $businessName; return $this; }
@@ -181,14 +193,14 @@ class CatererProfile
     public function getTagline(): ?string { return $this->tagline; }
     public function setTagline(?string $tagline): static { $this->tagline = $tagline; return $this; }
 
+    public function getCategory(): string { return $this->category; }
+    public function setCategory(string $category): static { $this->category = $category; return $this; }
+
     public function getDescription(): string { return $this->description; }
     public function setDescription(string $description): static { $this->description = $description; return $this; }
 
-    public function getCuisineTypes(): array { return $this->cuisineTypes; }
-    public function setCuisineTypes(array $cuisineTypes): static { $this->cuisineTypes = $cuisineTypes; return $this; }
-
-    public function getServiceStyles(): array { return $this->serviceStyles; }
-    public function setServiceStyles(array $serviceStyles): static { $this->serviceStyles = $serviceStyles; return $this; }
+    public function getTags(): array { return $this->tags; }
+    public function setTags(array $tags): static { $this->tags = $tags; return $this; }
 
     public function getServiceArea(): string { return $this->serviceArea; }
     public function setServiceArea(string $serviceArea): static { $this->serviceArea = $serviceArea; return $this; }
@@ -199,8 +211,14 @@ class CatererProfile
     public function getCoverImageUrl(): ?string { return $this->coverImageUrl; }
     public function setCoverImageUrl(?string $coverImageUrl): static { $this->coverImageUrl = $coverImageUrl; return $this; }
 
+    public function getWhatsapp(): string { return $this->whatsapp; }
+    public function setWhatsapp(string $whatsapp): static { $this->whatsapp = $whatsapp; return $this; }
+
     public function getGalleryImages(): array { return $this->galleryImages; }
     public function setGalleryImages(array $galleryImages): static { $this->galleryImages = $galleryImages; return $this; }
+
+    public function getLanguagesSpoken(): array { return $this->languagesSpoken; }
+    public function setLanguagesSpoken(array $languagesSpoken): static { $this->languagesSpoken = $languagesSpoken; return $this; }
 
     public function getAverageRating(): ?string { return $this->averageRating; }
     public function setAverageRating(?string $averageRating): static { $this->averageRating = $averageRating; return $this; }
@@ -210,6 +228,12 @@ class CatererProfile
 
     public function isVerified(): bool { return $this->isVerified; }
     public function setIsVerified(bool $isVerified): static { $this->isVerified = $isVerified; return $this; }
+
+    public function isFeatured(): bool { return $this->isFeatured; }
+    public function setIsFeatured(bool $isFeatured): static { $this->isFeatured = $isFeatured; return $this; }
+
+    public function getSubscriptionTier(): string { return $this->subscriptionTier; }
+    public function setSubscriptionTier(string $subscriptionTier): static { $this->subscriptionTier = $subscriptionTier; return $this; }
 
     public function getMinGuests(): ?string { return $this->minGuests; }
     public function setMinGuests(?string $minGuests): static { $this->minGuests = $minGuests; return $this; }
@@ -223,11 +247,6 @@ class CatererProfile
     public function getInstagram(): ?string { return $this->instagram; }
     public function setInstagram(?string $instagram): static { $this->instagram = $instagram; return $this; }
 
-    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
-
-
     public function getOwner(): ?User { return $this->owner; }
     public function setOwner(?User $owner): static { $this->owner = $owner; return $this; }
 
@@ -240,17 +259,6 @@ class CatererProfile
     /** @return Collection<int, QuoteRequest> */
     public function getQuoteRequests(): Collection { return $this->quoteRequests; }
 
-    public function updateRatingStats(): void
-    {
-        $publishedReviews = $this->reviews->filter(fn(Review $r) => $r->getId() !== null);
-        $count = $publishedReviews->count();
-        if ($count === 0) {
-            $this->averageRating = null;
-            $this->reviewCount = 0;
-            return;
-        }
-        $sum = array_sum($publishedReviews->map(fn(Review $r) => $r->getRating())->toArray());
-        $this->averageRating = number_format($sum / $count, 2);
-        $this->reviewCount = $count;
-    }
+    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
 }

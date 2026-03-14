@@ -2,29 +2,38 @@
 import { useEffect, useRef } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 interface QuoteRequestModalProps {
     isOpen: boolean;
     onClose: () => void;
-    catererProfileId: number;
-    catererName: string;
+    vendorProfileId: number;
+    vendorName: string;
 }
 
-const EVENT_TYPES = ["Wedding", "Corporate", "Birthday", "Anniversary", "Graduation", "Other"];
+const EVENT_TYPES = [
+    "Mariage",
+    "Fiançailles",
+    "Sbouâ (Haqiqa)",
+    "Henné",
+    "Réception",
+    "Autre",
+];
 
 const validationSchema = Yup.object({
-    eventType: Yup.string().required("Please select an event type"),
-    eventDate: Yup.date().min(new Date(), "Event date must be in the future").required("Event date is required"),
-    guestCount: Yup.number().min(1, "At least 1 guest").max(10000, "Max 10,000 guests").required("Guest count is required"),
-    budget: Yup.number().min(0).nullable(),
-    message: Yup.string().min(10, "Message must be at least 10 characters").max(2000).required("Please describe your event"),
+    eventType: Yup.string().required("Veuillez choisir un type d'événement"),
+    eventDate: Yup.date().min(new Date(), "La date doit être dans le futur").required("La date est requise"),
+    guestCount: Yup.number().min(1, "Minimum 1 invité").max(10000, "Maximum 10,000").required("Le nombre d'invités est requis"),
+    budget: Yup.number().min(0, "Le budget ne peut pas être négatif").nullable(),
+    message: Yup.string().min(10, "Le message est trop court").max(2000).required("Veuillez décrire votre événement"),
 });
 
 export default function QuoteRequestModal({
     isOpen,
     onClose,
-    catererProfileId,
-    catererName,
+    vendorProfileId,
+    vendorName,
 }: QuoteRequestModalProps) {
     const overlayRef = useRef<HTMLDivElement>(null);
 
@@ -48,23 +57,22 @@ export default function QuoteRequestModal({
                         guestCount: Number(values.guestCount),
                         budget: values.budget ? Number(values.budget) : null,
                         message: values.message,
-                        catererProfile: `/api/caterer_profiles/${catererProfileId}`,
+                        vendorProfile: `/api/vendor_profiles/${vendorProfileId}`,
                     }),
                 });
                 if (!res.ok) throw new Error("Failed to submit");
                 helpers.resetForm();
                 onClose();
-                // In a real app: show success toast
-                alert("✅ Quote request sent successfully! The caterer will be in touch.");
+                // We'll replace this with a better toast/notif later
+                alert("✅ Votre demande de devis a été envoyée avec succès !");
             } catch {
-                alert("Something went wrong. Please try again.");
+                alert("Une erreur est survenue. Veuillez réessayer.");
             } finally {
                 helpers.setSubmitting(false);
             }
         },
     });
 
-    // Close on ESC
     useEffect(() => {
         const handler = (e: KeyboardEvent) => {
             if (e.key === "Escape") onClose();
@@ -73,7 +81,6 @@ export default function QuoteRequestModal({
         return () => document.removeEventListener("keydown", handler);
     }, [isOpen, onClose]);
 
-    // Prevent body scroll
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "";
         return () => { document.body.style.overflow = ""; };
@@ -84,78 +91,95 @@ export default function QuoteRequestModal({
     return (
         <div
             ref={overlayRef}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 lg:p-10"
             onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
             aria-modal="true"
             role="dialog"
             aria-labelledby="modal-title"
         >
             {/* Backdrop */}
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+            <div className="absolute inset-0 bg-primary/40 backdrop-blur-xl animate-in fade-in duration-500" />
 
             {/* Modal */}
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="relative bg-white rounded-[3rem] shadow-premium w-full max-w-2xl max-h-full overflow-y-auto border border-border/50 animate-in fade-in zoom-in-95 duration-500">
+                {/* Decorative Pattern */}
+                <div className="absolute top-0 left-0 w-full h-32 bg-primary opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/moroccan-flower.png')]" />
+
                 {/* Header */}
-                <div className="px-6 py-5 border-b border-[var(--color-sand-200)] flex items-start justify-between">
+                <div className="px-12 py-10 flex items-start justify-between relative z-10">
                     <div>
-                        <h2 id="modal-title" className="font-display font-semibold text-xl text-[var(--color-charcoal-900)]">
-                            Request a Quote
+                        <span className="text-secondary font-black tracking-[0.4em] uppercase text-[10px] mb-2 block">
+                            Demande de Devis
+                        </span>
+                        <h2 id="modal-title" className="font-display font-black text-3xl text-primary leading-tight">
+                            Réserver {vendorName}
                         </h2>
-                        <p className="text-sm text-[var(--color-charcoal-500)] mt-0.5">
-                            from <span className="font-medium text-[var(--color-teal-700)]">{catererName}</span>
+                        <p className="text-muted-foreground text-xs mt-2 font-medium">
+                            Remplissez ce formulaire d'intention pour recevoir une proposition sur mesure.
                         </p>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2 rounded-lg text-[var(--color-charcoal-400)] hover:bg-[var(--color-sand-100)] transition-colors -mr-1"
-                        aria-label="Close"
+                        className="p-3 rounded-2xl bg-accent/5 text-primary/40 hover:bg-secondary/10 hover:text-secondary transition-all"
+                        aria-label="Fermer"
                     >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
 
                 {/* Form */}
-                <form onSubmit={formik.handleSubmit} className="px-6 py-5 space-y-4">
-                    {/* Event type */}
-                    <div>
-                        <label htmlFor="eventType" className="block text-sm font-medium text-[var(--color-charcoal-700)] mb-1.5">
-                            Event Type <span className="text-red-500">*</span>
-                        </label>
-                        <select
-                            id="eventType"
-                            {...formik.getFieldProps("eventType")}
-                            className="w-full border border-[var(--color-sand-200)] rounded-xl px-4 py-2.5 text-sm text-[var(--color-charcoal-900)] focus:ring-2 focus:ring-[var(--color-teal-500)] focus:border-transparent outline-none"
-                        >
-                            <option value="">Select event type…</option>
-                            {EVENT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-                        </select>
-                        {formik.touched.eventType && formik.errors.eventType && (
-                            <p className="text-red-500 text-xs mt-1">{formik.errors.eventType}</p>
-                        )}
-                    </div>
+                <form onSubmit={formik.handleSubmit} className="px-12 pb-12 space-y-10 relative z-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        {/* Event type */}
+                        <div className="space-y-3">
+                            <label htmlFor="eventType" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
+                                Type d'Événement <span className="text-secondary">*</span>
+                            </label>
+                            <div className="relative">
+                                <select
+                                    id="eventType"
+                                    {...formik.getFieldProps("eventType")}
+                                    className="w-full bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary uppercase tracking-widest focus:border-secondary focus:bg-white outline-none appearance-none cursor-pointer transition-all"
+                                >
+                                    <option value="">Sélectionnez…</option>
+                                    {EVENT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                                </select>
+                                <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-secondary">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+                            {formik.touched.eventType && formik.errors.eventType && (
+                                <p className="text-secondary text-[10px] font-black uppercase tracking-tight pl-4">{formik.errors.eventType}</p>
+                            )}
+                        </div>
 
-                    {/* Date + Guests row */}
-                    <div className="grid grid-cols-2 gap-3">
-                        <div>
-                            <label htmlFor="eventDate" className="block text-sm font-medium text-[var(--color-charcoal-700)] mb-1.5">
-                                Event Date <span className="text-red-500">*</span>
+                        {/* Date */}
+                        <div className="space-y-3">
+                            <label htmlFor="eventDate" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
+                                Date Souhaitée <span className="text-secondary">*</span>
                             </label>
                             <input
                                 type="date"
                                 id="eventDate"
                                 {...formik.getFieldProps("eventDate")}
                                 min={new Date().toISOString().split("T")[0]}
-                                className="w-full border border-[var(--color-sand-200)] rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-[var(--color-teal-500)] focus:border-transparent outline-none"
+                                className="w-full bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary uppercase tracking-widest focus:border-secondary focus:bg-white outline-none transition-all"
                             />
                             {formik.touched.eventDate && formik.errors.eventDate && (
-                                <p className="text-red-500 text-xs mt-1">{String(formik.errors.eventDate)}</p>
+                                <p className="text-secondary text-[10px] font-black uppercase tracking-tight pl-4">{String(formik.errors.eventDate)}</p>
                             )}
                         </div>
-                        <div>
-                            <label htmlFor="guestCount" className="block text-sm font-medium text-[var(--color-charcoal-700)] mb-1.5">
-                                Guests <span className="text-red-500">*</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        {/* Guests */}
+                        <div className="space-y-3">
+                            <label htmlFor="guestCount" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
+                                Nombre d'Invités <span className="text-secondary">*</span>
                             </label>
                             <input
                                 type="number"
@@ -163,66 +187,68 @@ export default function QuoteRequestModal({
                                 {...formik.getFieldProps("guestCount")}
                                 min="1"
                                 max="10000"
-                                className="w-full border border-[var(--color-sand-200)] rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-[var(--color-teal-500)] focus:border-transparent outline-none"
+                                className="w-full bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary transition-all focus:border-secondary focus:bg-white outline-none"
                             />
                             {formik.touched.guestCount && formik.errors.guestCount && (
-                                <p className="text-red-500 text-xs mt-1">{formik.errors.guestCount}</p>
+                                <p className="text-secondary text-[10px] font-black uppercase tracking-tight pl-4">{formik.errors.guestCount}</p>
                             )}
+                        </div>
+
+                        {/* Budget */}
+                        <div className="space-y-3">
+                            <label htmlFor="budget" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
+                                Budget Estimé (MAD)
+                            </label>
+                            <input
+                                type="number"
+                                id="budget"
+                                {...formik.getFieldProps("budget")}
+                                placeholder="ex: 80 000"
+                                className="w-full bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary transition-all focus:border-secondary focus:bg-white outline-none"
+                            />
                         </div>
                     </div>
 
-                    {/* Budget */}
-                    <div>
-                        <label htmlFor="budget" className="block text-sm font-medium text-[var(--color-charcoal-700)] mb-1.5">
-                            Approximate Budget (DZD) <span className="text-[var(--color-charcoal-400)] font-normal">— optional</span>
-                        </label>
-                        <input
-                            type="number"
-                            id="budget"
-                            {...formik.getFieldProps("budget")}
-                            placeholder="e.g. 500000"
-                            className="w-full border border-[var(--color-sand-200)] rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-[var(--color-teal-500)] focus:border-transparent outline-none"
-                        />
-                    </div>
-
                     {/* Message */}
-                    <div>
-                        <label htmlFor="message" className="block text-sm font-medium text-[var(--color-charcoal-700)] mb-1.5">
-                            Tell us about your event <span className="text-red-500">*</span>
+                    <div className="space-y-3">
+                        <label htmlFor="message" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
+                            Vos Précisions <span className="text-secondary">*</span>
                         </label>
                         <textarea
                             id="message"
                             {...formik.getFieldProps("message")}
                             rows={4}
-                            placeholder="Describe your event, any dietary requirements, preferred service style, and anything else the caterer should know…"
-                            className="w-full border border-[var(--color-sand-200)] rounded-xl px-4 py-3 text-sm resize-none focus:ring-2 focus:ring-[var(--color-teal-500)] focus:border-transparent outline-none"
+                            placeholder="Thème du mariage, prestations souhaitées, questions particulières..."
+                            className="w-full bg-accent/5 border-2 border-transparent rounded-[2rem] px-8 py-6 text-sm font-medium text-primary resize-none transition-all focus:border-secondary focus:bg-white outline-none leading-relaxed"
                         />
-                        <div className="flex justify-between mt-1">
+                        <div className="flex justify-between px-4">
                             {formik.touched.message && formik.errors.message ? (
-                                <p className="text-red-500 text-xs">{formik.errors.message}</p>
+                                <p className="text-secondary text-[10px] font-black uppercase tracking-tight">{formik.errors.message}</p>
                             ) : <span />}
-                            <span className="text-xs text-[var(--color-charcoal-400)]">
+                            <span className="text-[10px] font-black text-muted-foreground/60 tracking-widest">
                                 {formik.values.message.length}/2000
                             </span>
                         </div>
                     </div>
 
                     {/* Actions */}
-                    <div className="flex gap-3 pt-2">
-                        <button
+                    <div className="flex flex-col sm:flex-row gap-6 pt-6">
+                        <Button
                             type="button"
+                            variant="outline"
                             onClick={onClose}
-                            className="flex-1 py-3 border border-[var(--color-sand-200)] rounded-xl text-sm font-medium text-[var(--color-charcoal-700)] hover:bg-[var(--color-sand-50)] transition-colors"
+                            className="flex-1 rounded-2xl"
                         >
-                            Cancel
-                        </button>
-                        <button
+                            Annuler
+                        </Button>
+                        <Button
                             type="submit"
+                            variant="premium"
                             disabled={formik.isSubmitting}
-                            className="flex-1 py-3 bg-[var(--color-teal-700)] text-white rounded-xl text-sm font-semibold hover:bg-[var(--color-teal-800)] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                            className="flex-1"
                         >
-                            {formik.isSubmitting ? "Sending…" : "Send Request"}
-                        </button>
+                            {formik.isSubmitting ? "Envoi en cours..." : "Transmettre ma Demande"}
+                        </Button>
                     </div>
                 </form>
             </div>

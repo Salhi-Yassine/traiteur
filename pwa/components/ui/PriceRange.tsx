@@ -1,36 +1,43 @@
+import { cn } from "@/lib/utils";
+
 interface PriceRangeProps {
-    value: string; // "$" | "$$" | "$$$" | "$$$$"
+    value: string; // "MAD", "MADMAD", etc.
     label?: boolean;
+    className?: string;
 }
 
 const PRICE_LABELS: Record<string, string> = {
-    "$": "Budget",
-    "$$": "Moderate",
-    "$$$": "Premium",
-    "$$$$": "Luxury",
+    "MAD": "Budget",
+    "MADMAD": "Standard",
+    "MADMADMAD": "Premium",
+    "MADMADMAD+": "Exclusif",
 };
 
-export default function PriceRange({ value, label = false }: PriceRangeProps) {
+export default function PriceRange({ value, label = false, className }: PriceRangeProps) {
     const max = 4;
-    const active = value.length;
+    // Map the string length to a level, handling '+' suffix
+    const active = value.replace("+", "").length / 3; 
 
     return (
-        <span className="inline-flex items-center gap-1" aria-label={`Price range: ${PRICE_LABELS[value] ?? value}`}>
-            <span className="font-semibold text-sm tracking-tight">
+        <div className={cn("inline-flex items-center gap-2", className)} aria-label={`Gamme de prix: ${PRICE_LABELS[value] ?? value}`}>
+            <div className="flex gap-0.5">
                 {Array.from({ length: max }, (_, i) => (
                     <span
                         key={i}
-                        className={i < active ? "price-active" : "price-dim"}
+                        className={cn(
+                            "text-[10px] font-black tracking-tighter transition-colors",
+                            i < active ? "text-inherit" : "text-white/20"
+                        )}
                     >
-                        $
+                        MAD
                     </span>
                 ))}
-            </span>
+            </div>
             {label && (
-                <span className="text-xs text-[var(--color-charcoal-500)] ml-1">
+                <span className="text-[10px] font-black uppercase tracking-widest opacity-60">
                     {PRICE_LABELS[value]}
                 </span>
             )}
-        </span>
+        </div>
     );
 }

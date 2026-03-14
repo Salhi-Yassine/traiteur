@@ -60,11 +60,11 @@ class QuoteRequestVoter extends Voter
             return true;
         }
 
-        if ($quote->getClient() === $user) {
+        if ($quote->getUser() === $user) {
             return true;
         }
 
-        if ($quote->getCatererProfile()->getOwner() === $user) {
+        if ($quote->getVendorProfile()->getOwner() === $user) {
             return true;
         }
 
@@ -77,8 +77,8 @@ class QuoteRequestVoter extends Voter
             return true;
         }
 
-        // Only the caterer owner can manage the status (accept/decline)
-        if ($quote->getCatererProfile()->getOwner() === $user) {
+        // Only the vendor owner can manage the status (accept/decline)
+        if ($quote->getVendorProfile()->getOwner() === $user) {
             return true;
         }
 

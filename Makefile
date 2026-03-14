@@ -1,9 +1,11 @@
 # 🌐 GLOBAL CONFIG
 
 DOCKER_COMPOSE = docker compose
-PROJECT        = php        # Service name in docker-compose.yaml
+PROJECT_PHP    = php        # Service name for Symfony
+PROJECT_PWA    = pwa        # Service name for Next.js
 PROJECT_DIR    = api        # Symfony project directory
-EXEC_PHP       = $(DOCKER_COMPOSE) exec $(PROJECT)
+EXEC_PHP       = $(DOCKER_COMPOSE) exec $(PROJECT_PHP)
+EXEC_PWA       = $(DOCKER_COMPOSE) exec $(PROJECT_PWA)
 
 PHP            = $(EXEC_PHP) php
 CONSOLE        = $(EXEC_PHP) bin/console
@@ -52,16 +54,25 @@ logs: ## 📜 View live logs
 	$(DOCKER_COMPOSE) logs --tail=0 --follow
 
 chown: ## 👤 Fix file permissions (host user)
-	$(DOCKER_COMPOSE) run --rm $(PROJECT) chown -R $$(id -u):$$(id -g) .
+	$(DOCKER_COMPOSE) run --rm $(PROJECT_PHP) chown -R $$(id -u):$$(id -g) .
+
+pwa-sh: ## 🌐 Open sh shell inside PWA container
+	$(EXEC_PWA) sh
 
 ##############################################
 ## 🎵 SYMFONY COMMANDS
 ##############################################
 .PHONY: sf cc ccf rm-log jwt session
 
-sf: ## 🎛️ Run Symfony console: make sf c="about"
+php: ## 🐘 Run PHP: make php c="-v"
+	@$(eval c ?=)
+	$(PHP) $(c)
+
+console: ## 🎛️ Run Symfony console: make console c="about"
 	@$(eval c ?=)
 	$(CONSOLE) $(c)
+
+sf: console ## 🎛️ Alias for console
 
 cc: ## 🧹 Clear cache
 	$(CONSOLE) cache:clear
@@ -141,7 +152,28 @@ fix-php: ## 🛠️ Fix code with PHP-CS-Fixer
 lint-php: ## 🧹 Lint PHP files (dry run)
 	$(PHP_CS_FIXER) fix --dry-run --allow-risky=yes
 
-stan: ## � Run PHPStan static analysis
+stan: ##  Run PHPStan static analysis
 	$(PHPSTAN) analyse --memory-limit 1G
 
 cs: fix-php stan ## ✨ Run complete code quality suite
+
+##############################################
+## 🌐 PWA & NPM COMMANDS
+##############################################
+.PHONY: npm npx pnpm node
+
+npm: ## 📦 Run npm: make npm c="install"
+	@$(eval c ?=)
+	$(EXEC_PWA) npm $(c)
+
+npx: ## 🚀 Run npx: make npx c="next build"
+	@$(eval c ?=)
+	$(EXEC_PWA) npx $(c)
+
+pnpm: ## 📦 Run pnpm: make pnpm c="install"
+	@$(eval c ?=)
+	$(EXEC_PWA) pnpm $(c)
+
+node: ## 🟢 Run node: make node c="-v"
+	@$(eval c ?=)
+	$(EXEC_PWA) node $(c)

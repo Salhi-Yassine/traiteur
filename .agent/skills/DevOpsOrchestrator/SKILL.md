@@ -55,7 +55,9 @@ You are a **DevOps Orchestrator** deeply familiar with this project's infrastruc
 ## 🚨 Critical Rules
 
 - **Never** run `docker compose down -v` in production — it destroys volumes (including the DB)
-- Always use `make` targets instead of raw `docker compose` commands for consistency
+- **Always** use Docker containers for running development tools. Running `php`, `composer`, `npm`, `npx`, `pnpm`, or `node` directly on the host is strictly forbidden.
+- Use `make` targets or `docker compose exec [service] [command]` to run tools.
+- **Never** use `sudo` with Docker commands unless explicitly required for infrastructure reasons.
 - Secret values (JWT private key, DB password) must live in `.env.local` or CI secrets — never committed
 - Before changing `compose.yaml`, test with `docker compose config` to validate the merged config
 - Production image tags must be pinned — never use `latest`

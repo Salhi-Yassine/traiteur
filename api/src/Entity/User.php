@@ -43,8 +43,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    public const TYPE_CLIENT = 'client';
-    public const TYPE_CATERER = 'caterer';
+    public const TYPE_COUPLE = 'couple';
+    public const TYPE_VENDOR = 'vendor';
     public const TYPE_ADMIN = 'admin';
 
     #[ORM\Id]
@@ -74,9 +74,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $phone = null;
 
     #[ORM\Column(length: 20)]
-    #[Assert\Choice(choices: [self::TYPE_CLIENT, self::TYPE_CATERER, self::TYPE_ADMIN])]
+    #[Assert\Choice(choices: [self::TYPE_COUPLE, self::TYPE_VENDOR, self::TYPE_ADMIN])]
     #[Groups(['user:read', 'user:write'])]
-    private string $userType = self::TYPE_CLIENT;
+    private string $userType = self::TYPE_COUPLE;
 
     /**
      * @var list<string> The user roles
@@ -99,12 +99,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
     #[Groups(['user:read'])]
-    private ?CatererProfile $catererProfile = null;
+    private ?VendorProfile $vendorProfile = null;
 
     #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
     #[ORM\JoinTable(name: 'user_roles')]
     #[Groups(['user:read', 'user:write'])]
     private Collection $userRoles;
+
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: WeddingProfile::class, cascade: ['persist', 'remove'])]
+    #[Groups(['user:read'])]
+    private ?WeddingProfile $weddingProfile = null;
 
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Review::class)]
@@ -222,8 +226,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // Guarantees every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        if ($this->userType === self::TYPE_CATERER) {
-            $roles[] = 'ROLE_CATERER';
+        if ($this->userType === self::TYPE_VENDOR) {
+            $roles[] = 'ROLE_VENDOR';
         }
 
         if ($this->userType === self::TYPE_ADMIN) {
@@ -307,20 +311,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCatererProfile(): ?CatererProfile
+    public function getVendorProfile(): ?VendorProfile
     {
-        return $this->catererProfile;
+        return $this->vendorProfile;
     }
 
-    public function setCatererProfile(?CatererProfile $catererProfile): static
+    public function setVendorProfile(?VendorProfile $vendorProfile): static
     {
-        if ($catererProfile === null && $this->catererProfile !== null) {
-            $this->catererProfile->setOwner(null);
+        if ($vendorProfile === null && $this->vendorProfile !== null) {
+            $this->vendorProfile->setOwner(null);
         }
-        if ($catererProfile !== null && $catererProfile->getOwner() !== $this) {
-            $catererProfile->setOwner($this);
+        if ($vendorProfile !== null && $vendorProfile->getOwner() !== $this) {
+            $vendorProfile->setOwner($this);
         }
-        $this->catererProfile = $catererProfile;
+        $this->vendorProfile = $vendorProfile;
         return $this;
     }
 
@@ -334,6 +338,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getQuoteRequests(): Collection
     {
         return $this->quoteRequests;
+    }
+
+    public function getWeddingProfile(): ?WeddingProfile
+    {
+        return $this->weddingProfile;
+    }
+
+    public function setWeddingProfile(?WeddingProfile $weddingProfile): static
+    {
+        if ($weddingProfile === null && $this->weddingProfile !== null) {
+            $this->weddingProfile->setUser(null);
+        }
+        if ($weddingProfile !== null && $weddingProfile->getUser() !== $this) {
+            $weddingProfile->setUser($this);
+        }
+        $this->weddingProfile = $weddingProfile;
+        return $this;
     }
 
     public function getCreatedAt(): \DateTimeImmutable

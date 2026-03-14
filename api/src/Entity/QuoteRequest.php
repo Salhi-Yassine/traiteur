@@ -31,7 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['quote:write']],
     order: ['createdAt' => 'DESC'],
 )]
-#[ApiFilter(SearchFilter::class, properties: ['catererProfile' => 'exact', 'client' => 'exact', 'status' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['vendorProfile' => 'exact', 'client' => 'exact', 'status' => 'exact'])]
 #[ORM\Entity(repositoryClass: QuoteRequestRepository::class)]
 class QuoteRequest
 {
@@ -101,7 +101,7 @@ class QuoteRequest
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
     #[Groups(['quote:read', 'quote:write'])]
-    private ?CatererProfile $catererProfile = null;
+    private ?VendorProfile $vendorProfile = null;
 
     public function __construct()
     {
@@ -136,6 +136,6 @@ class QuoteRequest
     public function getClient(): ?User { return $this->client; }
     public function setClient(?User $client): static { $this->client = $client; return $this; }
 
-    public function getCatererProfile(): ?CatererProfile { return $this->catererProfile; }
-    public function setCatererProfile(?CatererProfile $catererProfile): static { $this->catererProfile = $catererProfile; return $this; }
+    public function getVendorProfile(): ?VendorProfile { return $this->vendorProfile; }
+    public function setVendorProfile(?VendorProfile $vendorProfile): static { $this->vendorProfile = $vendorProfile; return $this; }
 }
