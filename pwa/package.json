@@ -24,13 +24,16 @@
   },
   "devDependencies": {
     "@babel/core": "^7.27.1",
+    "@fontsource/playfair-display": "^5.2.8",
     "@popperjs/core": "^2.11.8",
     "@types/node": "^22.15.18",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
+    "@types/yup": "^0.32.0",
     "eslint": "^9.26.0",
     "eslint-config-next": "^15.3.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "yup": "^1.7.1"
   },
   "peerDependencies": {
     "@babel/core": "^7.19.0",
