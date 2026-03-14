@@ -58,6 +58,23 @@
   --color-info-bg:        #EBF2FF;
   --color-whatsapp:       #25D366;
 
+  /* Shadcn UI system mappings for Tailwind v4 */
+  --color-background:     hsl(var(--background));
+  --color-foreground:     hsl(var(--foreground));
+  --color-popover:        hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-card:           hsl(var(--card));
+  --color-card-foreground:hsl(var(--card-foreground));
+  --color-secondary:      hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted:          hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-destructive:    hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border:         hsl(var(--border));
+  --color-input:          hsl(var(--input));
+  --color-ring:           hsl(var(--ring));
+
   /* Typography */
   --font-display:   "DM Serif Display", Georgia, serif;
   --font-display-ar:"Tajawal", sans-serif;

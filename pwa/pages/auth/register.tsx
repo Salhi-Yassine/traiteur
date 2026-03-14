@@ -13,6 +13,7 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Alert, AlertDescription } from "../../components/ui/alert";
+import { Tabs, TabsList, TabsTrigger } from "../../components/ui/tabs";
 
 const validationSchema = (t: any) => Yup.object({
     firstName: Yup.string().required(t("auth.first_name_req")),
@@ -110,23 +111,26 @@ export default function RegisterPage() {
                     <div className="bg-white rounded-[24px] border border-[#DDDDDD] shadow-[0_1px_2px_rgba(0,0,0,0.08)] p-8">
 
                         {/* Account type toggle */}
-                        <div className="flex bg-[#F7F7F7] rounded-xl p-1 mb-6" role="group" aria-label="Type de compte">
-                            {(["client", "caterer"] as const).map((type) => (
-                                <button
-                                    key={type}
-                                    type="button"
-                                    onClick={() => handleTypeSwitch(type)}
-                                    className={`flex-1 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
-                                        userType === type
-                                            ? "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)] text-[#1A1A1A]"
-                                            : "text-[#717171] hover:text-[#484848]"
-                                    }`}
-                                    aria-pressed={userType === type}
+                        <Tabs 
+                            value={userType} 
+                            onValueChange={(val) => handleTypeSwitch(val as "client" | "caterer")}
+                            className="w-full mb-6"
+                        >
+                            <TabsList className="grid w-full grid-cols-2 bg-[#F7F7F7] rounded-xl p-1 h-auto" aria-label="Type de compte">
+                                <TabsTrigger 
+                                    value="client" 
+                                    className="py-2.5 rounded-lg text-[14px] font-medium data-[state=active]:bg-white data-[state=active]:shadow-[0_1px_2px_rgba(0,0,0,0.08)] data-[state=active]:text-[#1A1A1A] text-[#717171] hover:text-[#484848] transition-all"
                                 >
-                                    {type === "client" ? `💍 ${t("auth.planning_wedding")}` : `🏛️ ${t("nav.for_vendors")}`}
-                                </button>
-                            ))}
-                        </div>
+                                    💍 {t("auth.planning_wedding")}
+                                </TabsTrigger>
+                                <TabsTrigger 
+                                    value="caterer"
+                                    className="py-2.5 rounded-lg text-[14px] font-medium data-[state=active]:bg-white data-[state=active]:shadow-[0_1px_2px_rgba(0,0,0,0.08)] data-[state=active]:text-[#1A1A1A] text-[#717171] hover:text-[#484848] transition-all"
+                                >
+                                    🏛️ {t("nav.for_vendors")}
+                                </TabsTrigger>
+                            </TabsList>
+                        </Tabs>
 
                         <form onSubmit={formik.handleSubmit} noValidate className="space-y-4">
                             {error && (

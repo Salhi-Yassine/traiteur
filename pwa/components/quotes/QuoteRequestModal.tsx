@@ -3,6 +3,10 @@ import { useEffect, useRef } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { cn } from "@/lib/utils";
 
 interface QuoteRequestModalProps {
@@ -134,24 +138,25 @@ export default function QuoteRequestModal({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                         {/* Event type */}
                         <div className="space-y-3">
-                            <label htmlFor="eventType" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
+                            <Label htmlFor="eventType" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
                                 Type d'Événement <span className="text-secondary">*</span>
-                            </label>
-                            <div className="relative">
-                                <select
-                                    id="eventType"
-                                    {...formik.getFieldProps("eventType")}
-                                    className="w-full bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary uppercase tracking-widest focus:border-secondary focus:bg-white outline-none appearance-none cursor-pointer transition-all"
+                            </Label>
+                            <Select 
+                                value={formik.values.eventType} 
+                                onValueChange={(val) => formik.setFieldValue("eventType", val)}
+                            >
+                                <SelectTrigger 
+                                    id="eventType" 
+                                    className="w-full bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-6 text-xs font-black text-primary uppercase tracking-widest focus:border-secondary focus:bg-white outline-none transition-all h-auto"
                                 >
-                                    <option value="">Sélectionnez…</option>
-                                    {EVENT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-                                </select>
-                                <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-secondary">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
-                            </div>
+                                    <SelectValue placeholder="Sélectionnez…" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {EVENT_TYPES.map((t) => (
+                                        <SelectItem key={t} value={t}>{t}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                             {formik.touched.eventType && formik.errors.eventType && (
                                 <p className="text-secondary text-[10px] font-black uppercase tracking-tight pl-4">{formik.errors.eventType}</p>
                             )}
@@ -159,15 +164,15 @@ export default function QuoteRequestModal({
 
                         {/* Date */}
                         <div className="space-y-3">
-                            <label htmlFor="eventDate" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
+                            <Label htmlFor="eventDate" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
                                 Date Souhaitée <span className="text-secondary">*</span>
-                            </label>
-                            <input
+                            </Label>
+                            <Input
                                 type="date"
                                 id="eventDate"
                                 {...formik.getFieldProps("eventDate")}
                                 min={new Date().toISOString().split("T")[0]}
-                                className="w-full bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary uppercase tracking-widest focus:border-secondary focus:bg-white outline-none transition-all"
+                                className="w-full h-auto bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary uppercase tracking-widest focus:border-secondary focus:bg-white focus-visible:ring-0 outline-none transition-all placeholder:normal-case placeholder:tracking-normal"
                             />
                             {formik.touched.eventDate && formik.errors.eventDate && (
                                 <p className="text-secondary text-[10px] font-black uppercase tracking-tight pl-4">{String(formik.errors.eventDate)}</p>
@@ -178,16 +183,16 @@ export default function QuoteRequestModal({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                         {/* Guests */}
                         <div className="space-y-3">
-                            <label htmlFor="guestCount" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
+                            <Label htmlFor="guestCount" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
                                 Nombre d'Invités <span className="text-secondary">*</span>
-                            </label>
-                            <input
+                            </Label>
+                            <Input
                                 type="number"
                                 id="guestCount"
                                 {...formik.getFieldProps("guestCount")}
                                 min="1"
                                 max="10000"
-                                className="w-full bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary transition-all focus:border-secondary focus:bg-white outline-none"
+                                className="w-full h-auto bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary transition-all focus:border-secondary focus:bg-white focus-visible:ring-0 outline-none"
                             />
                             {formik.touched.guestCount && formik.errors.guestCount && (
                                 <p className="text-secondary text-[10px] font-black uppercase tracking-tight pl-4">{formik.errors.guestCount}</p>
@@ -196,30 +201,30 @@ export default function QuoteRequestModal({
 
                         {/* Budget */}
                         <div className="space-y-3">
-                            <label htmlFor="budget" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
+                            <Label htmlFor="budget" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
                                 Budget Estimé (MAD)
-                            </label>
-                            <input
+                            </Label>
+                            <Input
                                 type="number"
                                 id="budget"
                                 {...formik.getFieldProps("budget")}
                                 placeholder="ex: 80 000"
-                                className="w-full bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary transition-all focus:border-secondary focus:bg-white outline-none"
+                                className="w-full h-auto bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary transition-all focus-visible:ring-0 focus:border-secondary focus:bg-white outline-none"
                             />
                         </div>
                     </div>
 
                     {/* Message */}
                     <div className="space-y-3">
-                        <label htmlFor="message" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
+                        <Label htmlFor="message" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
                             Vos Précisions <span className="text-secondary">*</span>
-                        </label>
-                        <textarea
+                        </Label>
+                        <Textarea
                             id="message"
                             {...formik.getFieldProps("message")}
                             rows={4}
                             placeholder="Thème du mariage, prestations souhaitées, questions particulières..."
-                            className="w-full bg-accent/5 border-2 border-transparent rounded-[2rem] px-8 py-6 text-sm font-medium text-primary resize-none transition-all focus:border-secondary focus:bg-white outline-none leading-relaxed"
+                            className="w-full bg-accent/5 border-2 border-transparent rounded-[2rem] px-8 py-6 text-sm font-medium text-primary resize-none transition-all focus:border-secondary focus:bg-white focus-visible:ring-0 outline-none leading-relaxed"
                         />
                         <div className="flex justify-between px-4">
                             {formik.touched.message && formik.errors.message ? (

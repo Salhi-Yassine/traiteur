@@ -5,6 +5,10 @@ import { useState, useEffect } from "react";
 import apiClient from "../../utils/apiClient";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 
 interface Guest {
     id: number;
@@ -124,12 +128,12 @@ export default function InvitesPage() {
             <div className="bg-white rounded-[2.5rem] border border-[var(--color-charcoal-100)] overflow-hidden shadow-sm">
                 <div className="px-10 py-8 border-b border-[var(--color-background)] flex items-center justify-between">
                     <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">{t("invites.list_title")}</h3>
-                    <button 
+                    <Button 
                         onClick={() => setIsAdding(true)}
-                        className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-lg shadow-[var(--color-accent)]/20"
+                        className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-lg shadow-[var(--color-accent)]/20 h-auto"
                     >
                         + {t("invites.new_guest")}
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="overflow-x-auto">
@@ -173,14 +177,16 @@ export default function InvitesPage() {
                                         {t(`invites.meals.${guest.mealPreference}`)}
                                     </td>
                                     <td className="px-10 py-6 text-right">
-                                        <button 
+                                        <Button 
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={() => handleDeleteGuest(guest.id)}
-                                            className="p-3 text-[var(--color-charcoal-300)] hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                                            className="text-[var(--color-charcoal-300)] hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                                         >
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
-                                        </button>
+                                        </Button>
                                     </td>
                                 </tr>
                             ))}
@@ -197,68 +203,81 @@ export default function InvitesPage() {
                         <h3 className="font-display font-black text-2xl text-[var(--color-primary)] mb-8">{t("invites.new_guest_title")}</h3>
                         <form onSubmit={handleAddGuest} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.full_name")}</label>
-                                <input 
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.full_name")}</Label>
+                                <Input 
                                     type="text" 
                                     required
                                     value={newGuest.fullName}
                                     onChange={(e) => setNewGuest({...newGuest, fullName: e.target.value})}
                                     placeholder={t("invites.name_placeholder")}
-                                    className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all"
+                                    className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] outline-none transition-all"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.side")}</label>
-                                    <select 
-                                        className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none"
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.side")}</Label>
+                                    <Select 
                                         value={newGuest.side}
-                                        onChange={(e) => setNewGuest({...newGuest, side: e.target.value})}
+                                        onValueChange={(val) => setNewGuest({...newGuest, side: val})}
                                     >
-                                        <option value="bride">{t("invites.sides.bride")}</option>
-                                        <option value="groom">{t("invites.sides.groom")}</option>
-                                    </select>
+                                        <SelectTrigger className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-[var(--color-accent)] outline-none transition-all">
+                                            <SelectValue placeholder="Sélectionnez" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="bride">{t("invites.sides.bride")}</SelectItem>
+                                            <SelectItem value="groom">{t("invites.sides.groom")}</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.rsvp")}</label>
-                                    <select 
-                                        className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none"
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.rsvp")}</Label>
+                                    <Select 
                                         value={newGuest.rsvpStatus}
-                                        onChange={(e) => setNewGuest({...newGuest, rsvpStatus: e.target.value})}
+                                        onValueChange={(val) => setNewGuest({...newGuest, rsvpStatus: val})}
                                     >
-                                        <option value="pending">{t("invites.rsvp_status.pending")}</option>
-                                        <option value="confirmed">{t("invites.rsvp_status.confirmed")}</option>
-                                        <option value="declined">{t("invites.rsvp_status.declined")}</option>
-                                    </select>
+                                        <SelectTrigger className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-[var(--color-accent)] outline-none transition-all">
+                                            <SelectValue placeholder="Sélectionnez" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="pending">{t("invites.rsvp_status.pending")}</SelectItem>
+                                            <SelectItem value="confirmed">{t("invites.rsvp_status.confirmed")}</SelectItem>
+                                            <SelectItem value="declined">{t("invites.rsvp_status.declined")}</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.meal_pref_label")}</label>
-                                <select 
-                                    className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none"
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.meal_pref_label")}</Label>
+                                <Select 
                                     value={newGuest.mealPreference}
-                                    onChange={(e) => setNewGuest({...newGuest, mealPreference: e.target.value})}
+                                    onValueChange={(val) => setNewGuest({...newGuest, mealPreference: val})}
                                 >
-                                    <option value="standard">{t("invites.meals.standard")}</option>
-                                    <option value="vegetarian">{t("invites.meals.vegetarian")}</option>
-                                    <option value="halal">{t("invites.meals.halal")}</option>
-                                    <option value="fish">{t("invites.meals.fish")}</option>
-                                </select>
+                                    <SelectTrigger className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-[var(--color-accent)] outline-none transition-all">
+                                        <SelectValue placeholder="Sélectionnez" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="standard">{t("invites.meals.standard")}</SelectItem>
+                                        <SelectItem value="vegetarian">{t("invites.meals.vegetarian")}</SelectItem>
+                                        <SelectItem value="halal">{t("invites.meals.halal")}</SelectItem>
+                                        <SelectItem value="fish">{t("invites.meals.fish")}</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div className="flex gap-4 pt-4">
-                                <button 
+                                <Button 
                                     type="button" 
+                                    variant="outline"
                                     onClick={() => setIsAdding(false)}
-                                    className="flex-1 py-4 border-2 border-[var(--color-primary)] rounded-2xl text-xs font-black uppercase tracking-widest text-[var(--color-primary)] hover:bg-[var(--color-background)] transition-all"
+                                    className="flex-1 py-6 border-2 border-[var(--color-primary)] rounded-2xl text-xs font-black uppercase tracking-widest text-[var(--color-primary)] hover:bg-[var(--color-background)] transition-all"
                                 >
                                     {t("common.cancel")}
-                                </button>
-                                <button 
+                                </Button>
+                                <Button 
                                     type="submit"
-                                    className="flex-1 py-4 bg-[var(--color-accent)] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-xl shadow-[var(--color-accent)]/20"
+                                    className="flex-1 py-6 bg-[var(--color-accent)] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-xl shadow-[var(--color-accent)]/20"
                                 >
                                     {t("common.save")}
-                                </button>
+                                </Button>
                             </div>
                         </form>
                     </div>

@@ -5,6 +5,10 @@ import { useState, useEffect } from "react";
 import apiClient from "../../utils/apiClient";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 
 interface ChecklistTask {
     id: number;
@@ -120,12 +124,12 @@ export default function ChecklistPage() {
             <div className="bg-white rounded-[2.5rem] border border-[var(--color-charcoal-100)] overflow-hidden shadow-sm">
                 <div className="px-10 py-8 border-b border-[var(--color-background)] flex items-center justify-between">
                     <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">{t("checklist.tasks_title")}</h3>
-                    <button 
+                    <Button 
                         onClick={() => setIsAdding(true)}
-                        className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-[var(--color-accent)]/20"
+                        className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-[var(--color-accent)]/20 h-auto"
                     >
                         + {t("checklist.add_task")}
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="grid grid-cols-1 divide-y divide-[var(--color-background)]">
@@ -165,14 +169,16 @@ export default function ChecklistPage() {
                                     </div>
                                 </div>
                             </div>
-                            <button 
+                            <Button 
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => handleDeleteTask(task.id)}
-                                className="p-3 text-[var(--color-charcoal-300)] hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                                className="text-[var(--color-charcoal-300)] hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
                             >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
-                            </button>
+                            </Button>
                         </div>
                     ))}
                 </div>
@@ -186,54 +192,59 @@ export default function ChecklistPage() {
                         <h3 className="font-display font-black text-2xl text-[var(--color-primary)] mb-8">{t("checklist.new_task_title")}</h3>
                         <form onSubmit={handleAddTask} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("checklist.tasks_title")}</label>
-                                <input 
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("checklist.tasks_title")}</Label>
+                                <Input 
                                     type="text" 
                                     required
                                     value={newTask.title}
                                     onChange={(e) => setNewTask({...newTask, title: e.target.value})}
                                     placeholder={t("checklist.task_placeholder")}
-                                    className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all"
+                                    className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] outline-none transition-all"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("checklist.category_label")}</label>
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("checklist.category_label")}</Label>
                                     <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-accent)] mb-1">
                                         {t(`checklist.categories.${newTask.category}`)}
                                     </p>
-                                    <select 
+                                    <Select 
                                         value={newTask.category}
-                                        onChange={(e) => setNewTask({...newTask, category: e.target.value})}
-                                        className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none"
+                                        onValueChange={(val) => setNewTask({...newTask, category: val})}
                                     >
-                                        {CATEGORIES.map(c => <option key={c} value={c}>{t("checklist.categories." + c)}</option>)}
-                                    </select>
+                                        <SelectTrigger className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-[var(--color-accent)] outline-none transition-all">
+                                            <SelectValue placeholder="Sélectionnez" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {CATEGORIES.map(c => <SelectItem key={c} value={c}>{t("checklist.categories." + c)}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("checklist.due_date_label")}</label>
-                                    <input 
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("checklist.due_date_label")}</Label>
+                                    <Input 
                                         type="date" 
                                         value={newTask.dueDate}
                                         onChange={(e) => setNewTask({...newTask, dueDate: e.target.value})}
-                                        className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all"
+                                        className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] outline-none transition-all"
                                     />
                                 </div>
                             </div>
                             <div className="flex gap-4 pt-4">
-                                <button 
+                                <Button 
                                     type="button" 
+                                    variant="outline"
                                     onClick={() => setIsAdding(false)}
-                                    className="flex-1 py-4 border-2 border-[var(--color-primary)] rounded-2xl text-xs font-black uppercase tracking-widest text-[var(--color-primary)] hover:bg-[var(--color-background)] transition-all"
+                                    className="flex-1 py-6 border-2 border-[var(--color-primary)] rounded-2xl text-xs font-black uppercase tracking-widest text-[var(--color-primary)] hover:bg-[var(--color-background)] transition-all"
                                 >
                                     Annuler
-                                </button>
-                                <button 
+                                </Button>
+                                <Button 
                                     type="submit"
-                                    className="flex-1 py-4 bg-[var(--color-accent)] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-xl shadow-[var(--color-accent)]/20"
+                                    className="flex-1 py-6 bg-[var(--color-accent)] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-xl shadow-[var(--color-accent)]/20"
                                 >
                                     {t("common.save")}
-                                </button>
+                                </Button>
                             </div>
                         </form>
                     </div>

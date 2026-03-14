@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { useTranslation } from "next-i18next";
+import { Checkbox } from "../ui/checkbox";
 
 interface FilterSidebarProps {
     selected: {
@@ -128,20 +129,14 @@ function CheckRow({
                 {label}
             </span>
             <div className="relative flex items-center shrink-0">
-                <input
-                    type="checkbox"
+                <Checkbox
                     checked={checked}
-                    onChange={(e) => onChange(e.target.checked)}
-                    className="w-5 h-5 rounded-md border-[1.5px] border-[#DDDDDD] text-[#E8472A] cursor-pointer
-                        checked:bg-[#E8472A] checked:border-[#E8472A]
-                        focus:ring-0 focus:ring-offset-0
-                        hover:border-[#B0B0B0] transition-colors appearance-none"
+                    onCheckedChange={(checked) => onChange(checked as boolean)}
+                    className="w-5 h-5 rounded-md border-[1.5px] border-[#DDDDDD] text-[#E8472A] 
+                        data-[state=checked]:bg-[#E8472A] data-[state=checked]:border-[#E8472A] data-[state=checked]:text-white
+                        focus-visible:ring-0 focus-visible:ring-offset-0
+                        hover:border-[#B0B0B0] transition-colors"
                 />
-                {checked && (
-                    <svg className="absolute w-3 h-3 text-white pointer-events-none left-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
-                )}
             </div>
         </label>
     );

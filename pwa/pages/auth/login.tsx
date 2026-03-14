@@ -7,6 +7,9 @@ import { useState } from "react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Button } from "../../components/ui/button";
 
 const validationSchema = (t: any) => Yup.object({
     email:    Yup.string().email(t("auth.invalid_email")).required(t("auth.required_email")),
@@ -75,20 +78,19 @@ export default function LoginPage() {
                             )}
 
                             {/* Email */}
-                            <div>
-                                <label htmlFor="email" className="block text-[14px] font-medium text-[#1A1A1A] mb-1.5">
+                            <div className="space-y-1.5">
+                                <Label htmlFor="email" className="text-[14px] font-medium text-[#1A1A1A]">
                                     {t("auth.email_label")}
-                                </label>
-                                <input
+                                </Label>
+                                <Input
                                     id="email"
                                     type="email"
                                     autoComplete="email"
                                     {...formik.getFieldProps("email")}
-                                    className={`w-full h-12 border rounded-lg px-4 text-[15px] text-[#1A1A1A] placeholder:text-[#B0B0B0] outline-none transition-all
-                                        ${formik.touched.email && formik.errors.email
-                                            ? "border-[#C13030] focus:shadow-[0_0_0_3px_rgba(193,48,48,0.12)]"
-                                            : "border-[#DDDDDD] focus:border-[#1A1A1A] focus:shadow-[0_0_0_3px_rgba(26,26,26,0.08)]"
-                                        }`}
+                                    className={formik.touched.email && formik.errors.email
+                                        ? "border-[#C13030] focus-visible:ring-[#C13030]"
+                                        : ""
+                                    }
                                     placeholder="vous@exemple.com"
                                     aria-invalid={!!(formik.touched.email && formik.errors.email)}
                                     aria-describedby={formik.touched.email && formik.errors.email ? "email-error" : undefined}
@@ -99,25 +101,24 @@ export default function LoginPage() {
                             </div>
 
                             {/* Password */}
-                            <div>
+                            <div className="space-y-1.5">
                                 <div className="flex justify-between items-center mb-1.5">
-                                    <label htmlFor="password" className="block text-[14px] font-medium text-[#1A1A1A]">
+                                    <Label htmlFor="password" className="text-[14px] font-medium text-[#1A1A1A]">
                                         {t("auth.password_label")}
-                                    </label>
+                                    </Label>
                                     <Link href="/auth/forgot-password" className="text-[13px] text-[#E8472A] hover:text-[#C43A20] transition-colors">
                                         {t("auth.forgot_password")}
                                     </Link>
                                 </div>
-                                <input
+                                <Input
                                     id="password"
                                     type="password"
                                     autoComplete="current-password"
                                     {...formik.getFieldProps("password")}
-                                    className={`w-full h-12 border rounded-lg px-4 text-[15px] text-[#1A1A1A] placeholder:text-[#B0B0B0] outline-none transition-all
-                                        ${formik.touched.password && formik.errors.password
-                                            ? "border-[#C13030] focus:shadow-[0_0_0_3px_rgba(193,48,48,0.12)]"
-                                            : "border-[#DDDDDD] focus:border-[#1A1A1A] focus:shadow-[0_0_0_3px_rgba(26,26,26,0.08)]"
-                                        }`}
+                                    className={formik.touched.password && formik.errors.password
+                                        ? "border-[#C13030] focus-visible:ring-[#C13030]"
+                                        : ""
+                                    }
                                     placeholder="••••••••"
                                     aria-invalid={!!(formik.touched.password && formik.errors.password)}
                                 />
@@ -127,13 +128,15 @@ export default function LoginPage() {
                             </div>
 
                             {/* Submit */}
-                            <button
+                            <Button
                                 type="submit"
                                 disabled={formik.isSubmitting}
-                                className="w-full h-12 bg-[#E8472A] text-white rounded-lg text-[15px] font-semibold hover:bg-[#C43A20] transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] mt-1"
+                                loading={formik.isSubmitting}
+                                size="lg"
+                                className="w-full mt-1"
                             >
                                 {formik.isSubmitting ? t("auth.logging_in") : t("auth.login_btn")}
-                            </button>
+                            </Button>
                         </form>
 
                         <p className="text-center text-[14px] text-[#717171] mt-6">

@@ -5,6 +5,9 @@ import { useState, useEffect } from "react";
 import apiClient from "../../utils/apiClient";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
+import { Label } from "../../components/ui/label";
 
 interface BudgetItem {
     id: number;
@@ -112,12 +115,12 @@ export default function BudgetPage() {
             <div className="bg-white rounded-[2.5rem] border border-[var(--color-charcoal-100)] overflow-hidden shadow-sm">
                 <div className="px-10 py-8 border-b border-[var(--color-background)] flex items-center justify-between">
                     <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">{t("budget.postes_title")}</h3>
-                    <button 
+                    <Button 
                         onClick={() => setIsAdding(true)}
-                        className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-lg shadow-[var(--color-accent)]/20"
+                        className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-lg shadow-[var(--color-accent)]/20 h-auto"
                     >
                         + {t("budget.add_poste")}
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="overflow-x-auto">
@@ -144,14 +147,16 @@ export default function BudgetPage() {
                                     <td className="px-10 py-6 text-right font-bold text-[var(--color-charcoal-600)]">{item.budgetedAmount.toLocaleString()} MAD</td>
                                     <td className="px-10 py-6 text-right font-black text-[var(--color-accent)]">{item.spentAmount.toLocaleString()} MAD</td>
                                     <td className="px-10 py-6 text-right">
-                                        <button 
+                                        <Button 
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={() => handleDeleteItem(item.id)}
-                                            className="p-3 text-[var(--color-charcoal-300)] hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                                            className="text-[var(--color-charcoal-300)] hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                                         >
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
-                                        </button>
+                                        </Button>
                                     </td>
                                 </tr>
                             ))}
@@ -178,40 +183,41 @@ export default function BudgetPage() {
                         <h3 className="font-display font-black text-2xl text-[var(--color-primary)] mb-8">{t("budget.new_poste_title")}</h3>
                         <form onSubmit={handleAddItem} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("budget.col_category")}</label>
-                                <input 
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("budget.col_category")}</Label>
+                                <Input 
                                     type="text" 
                                     required
                                     value={newItem.category}
                                     onChange={(e) => setNewItem({...newItem, category: e.target.value})}
                                     placeholder={t("budget.category_placeholder")}
-                                    className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all"
+                                    className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] outline-none transition-all"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("budget.budgeted_label")}</label>
-                                <input 
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("budget.budgeted_label")}</Label>
+                                <Input 
                                     type="number" 
                                     required
                                     value={newItem.budgetedAmount}
                                     onChange={(e) => setNewItem({...newItem, budgetedAmount: Number(e.target.value)})}
-                                    className="w-full bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-accent)] outline-none transition-all"
+                                    className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] outline-none transition-all"
                                 />
                             </div>
                             <div className="flex gap-4 pt-4">
-                                <button 
+                                <Button 
                                     type="button" 
+                                    variant="outline"
                                     onClick={() => setIsAdding(false)}
-                                    className="flex-1 py-4 border-2 border-[var(--color-primary)] rounded-2xl text-xs font-black uppercase tracking-widest text-[var(--color-primary)] hover:bg-[var(--color-background)] transition-all"
+                                    className="flex-1 py-6 border-2 border-[var(--color-primary)] rounded-2xl text-xs font-black uppercase tracking-widest text-[var(--color-primary)] hover:bg-[var(--color-background)] transition-all"
                                 >
                                     {t("common.cancel")}
-                                </button>
-                                <button 
+                                </Button>
+                                <Button 
                                     type="submit"
-                                    className="flex-1 py-4 bg-[var(--color-accent)] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-xl shadow-[var(--color-accent)]/20"
+                                    className="flex-1 py-6 bg-[var(--color-accent)] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-xl shadow-[var(--color-accent)]/20"
                                 >
                                     {t("common.save")}
-                                </button>
+                                </Button>
                             </div>
                         </form>
                     </div>
