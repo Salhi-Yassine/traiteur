@@ -1,6 +1,6 @@
-"use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 const NAV_ITEMS = [
     {
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
 ];
 
 export default function Navbar() {
+    const { user, logout, isLoading } = useAuth();
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -24,8 +25,8 @@ export default function Navbar() {
     return (
         <header
             className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled
-                    ? "bg-white/95 backdrop-blur-md shadow-[var(--shadow-nav)]"
-                    : "bg-transparent"
+                ? "bg-white/95 backdrop-blur-md shadow-[var(--shadow-nav)]"
+                : "bg-transparent"
                 }`}
         >
             <div className="container mx-auto px-6 max-w-7xl">
@@ -50,8 +51,8 @@ export default function Navbar() {
                                 key={item.href}
                                 href={item.href}
                                 className={`nav-link text-sm font-medium transition-colors pb-1 ${scrolled
-                                        ? "text-[var(--color-charcoal-700)] hover:text-[var(--color-teal-700)]"
-                                        : "text-white/90 hover:text-white"
+                                    ? "text-[var(--color-charcoal-700)] hover:text-[var(--color-teal-700)]"
+                                    : "text-white/90 hover:text-white"
                                     }`}
                             >
                                 {item.label}
@@ -61,21 +62,42 @@ export default function Navbar() {
 
                     {/* Desktop CTAs */}
                     <div className="hidden lg:flex items-center gap-3">
-                        <Link
-                            href="/auth/login"
-                            className={`text-sm font-medium px-4 py-2 rounded-full transition-colors ${scrolled
-                                    ? "text-[var(--color-charcoal-700)] hover:text-[var(--color-teal-700)]"
-                                    : "text-white/90 hover:text-white"
-                                }`}
-                        >
-                            Sign In
-                        </Link>
-                        <Link
-                            href="/auth/register"
-                            className="text-sm font-semibold px-5 py-2.5 rounded-full bg-[var(--color-teal-700)] text-white hover:bg-[var(--color-teal-800)] transition-colors shadow-sm"
-                        >
-                            Get Started
-                        </Link>
+                        {isLoading ? (
+                            <div className="w-20 h-8 skeleton rounded-full" />
+                        ) : user ? (
+                            <div className="flex items-center gap-4">
+                                <Link
+                                    href="/profile"
+                                    className={`text-sm font-medium transition-colors ${scrolled ? "text-[var(--color-charcoal-700)]" : "text-white/90"}`}
+                                >
+                                    Hi, {user.firstName}
+                                </Link>
+                                <button
+                                    onClick={logout}
+                                    className="text-xs font-semibold px-4 py-2 rounded-full border border-[var(--color-teal-700)] text-[var(--color-teal-700)] hover:bg-[var(--color-teal-50)] transition-colors"
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <Link
+                                    href="/auth/login"
+                                    className={`text-sm font-medium px-4 py-2 rounded-full transition-colors ${scrolled
+                                        ? "text-[var(--color-charcoal-700)] hover:text-[var(--color-teal-700)]"
+                                        : "text-white/90 hover:text-white"
+                                        }`}
+                                >
+                                    Sign In
+                                </Link>
+                                <Link
+                                    href="/auth/register"
+                                    className="text-sm font-semibold px-5 py-2.5 rounded-full bg-[var(--color-teal-700)] text-white hover:bg-[var(--color-teal-800)] transition-colors shadow-sm"
+                                >
+                                    Get Started
+                                </Link>
+                            </>
+                        )}
                     </div>
 
                     {/* Mobile hamburger */}
@@ -111,20 +133,40 @@ export default function Navbar() {
                             </Link>
                         ))}
                         <div className="flex gap-3 mt-4 pt-3">
-                            <Link
-                                href="/auth/login"
-                                className="flex-1 text-center py-2.5 border border-[var(--color-teal-700)] text-[var(--color-teal-700)] rounded-full text-sm font-medium"
-                                onClick={() => setMobileOpen(false)}
-                            >
-                                Sign In
-                            </Link>
-                            <Link
-                                href="/auth/register"
-                                className="flex-1 text-center py-2.5 bg-[var(--color-teal-700)] text-white rounded-full text-sm font-semibold"
-                                onClick={() => setMobileOpen(false)}
-                            >
-                                Get Started
-                            </Link>
+                            {user ? (
+                                <>
+                                    <Link
+                                        href="/profile"
+                                        className="flex-1 text-center py-2.5 border border-[var(--color-teal-700)] text-[var(--color-teal-700)] rounded-full text-sm font-medium"
+                                        onClick={() => setMobileOpen(false)}
+                                    >
+                                        My Profile
+                                    </Link>
+                                    <button
+                                        onClick={() => { logout(); setMobileOpen(false); }}
+                                        className="flex-1 text-center py-2.5 bg-[var(--color-teal-700)] text-white rounded-full text-sm font-semibold"
+                                    >
+                                        Logout
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link
+                                        href="/auth/login"
+                                        className="flex-1 text-center py-2.5 border border-[var(--color-teal-700)] text-[var(--color-teal-700)] rounded-full text-sm font-medium"
+                                        onClick={() => setMobileOpen(false)}
+                                    >
+                                        Sign In
+                                    </Link>
+                                    <Link
+                                        href="/auth/register"
+                                        className="flex-1 text-center py-2.5 bg-[var(--color-teal-700)] text-white rounded-full text-sm font-semibold"
+                                        onClick={() => setMobileOpen(false)}
+                                    >
+                                        Get Started
+                                    </Link>
+                                </>
+                            )}
                         </div>
                     </nav>
                 </div>

@@ -1,0 +1,92 @@
+PHPUnit 9.6.34 by Sebastian Bergmann and contributors.
+
+  Warning - The configuration file did not pass validation!
+  The following problems have been detected:
+
+  Line 37:
+  - Element 'bootstrap': This element is not expected. Expected is ( extension ).
+
+  Test results may not be as expected.
+
+
+Testing 
+.[41;37mF[0m                                                                  2 / 2 (100%)
+
+Time: 00:00.440, Memory: 50.50 MB
+
+There was 1 failure:
+
+1) App\Tests\Api\AuthTest::testLogin
+Failed asserting that the Response is successful.
+HTTP/1.1 500 Internal Server Error
+Cache-Control:          no-cache, private
+Content-Type:           application/problem+json; charset=utf-8
+Date:                   Sat, 14 Mar 2026 06:25:23 GMT
+Link:                   <http://www.w3.org/ns/hydra/error>; rel="http://www.w3.org/ns/json-ld#error",<http://localhost/docs.jsonld>; rel="http://www.w3.org/ns/hydra/core#apiDocumentation"
+Vary:                   Accept
+X-Content-Type-Options: nosniff
+X-Frame-Options:        deny
+X-Robots-Tag:           noindex
+
+{"@context":"\/contexts\/Error","@id":"\/errors\/500","@type":"Error","title":"An error occurred","detail":"The controller must return a \u0022Symfony\\Component\\HttpFoundation\\Response\u0022 object but it returned an object of type App\\Entity\\User.","status":500,"type":"\/errors\/500","description":"The controller must return a \u0022Symfony\\Component\\HttpFoundation\\Response\u0022 object but it returned an object of type App\\Entity\\User.","trace":[{"line":183,"file":"\/app\/vendor\/symfony\/http-kernel\/HttpKernel.php"},{"file":"\/app\/vendor\/symfony\/http-kernel\/HttpKernel.php","line":76,"function":"handleRaw","class":"Symfony\\Component\\HttpKernel\\HttpKernel","type":"-\u003E"},{"file":"\/app\/vendor\/symfony\/http-kernel\/Kernel.php","line":193,"function":"handle","class":"Symfony\\Component\\HttpKernel\\HttpKernel","type":"-\u003E"},{"file":"\/app\/vendor\/symfony\/http-kernel\/HttpKernelBrowser.php","line":62,"function":"handle","class":"Symfony\\Component\\HttpKernel\\Kernel","type":"-\u003E"},{"file":"\/app\/vendor\/symfony\/framework-bundle\/KernelBrowser.php","line":180,"function":"doRequest","class":"Symfony\\Component\\HttpKernel\\HttpKernelBrowser","type":"-\u003E"},{"file":"\/app\/vendor\/symfony\/browser-kit\/AbstractBrowser.php","line":398,"function":"doRequest","class":"Symfony\\Bundle\\FrameworkBundle\\KernelBrowser","type":"-\u003E"},{"file":"\/app\/vendor\/api-platform\/symfony\/Bundle\/Test\/Client.php","line":115,"function":"request","class":"Symfony\\Component\\BrowserKit\\AbstractBrowser","type":"-\u003E"},{"file":"\/app\/tests\/Api\/AuthTest.php","line":61,"function":"request","class":"ApiPlatform\\Symfony\\Bundle\\Test\\Client","type":"-\u003E"},{"file":"\/app\/vendor\/bin\/.phpunit\/phpunit-9.6-0\/src\/Framework\/TestCase.php","line":1617,"function":"testLogin","class":"App\\Tests\\Api\\AuthTest","type":"-\u003E"},{"file":"\/app\/vendor\/bin\/.phpunit\/phpunit-9.6-0\/src\/Framework\/TestCase.php","line":1223,"function":"runTest","class":"PHPUnit\\Framework\\TestCase","type":"-\u003E"},{"file":"\/app\/vendor\/bin\/.phpunit\/phpunit-9.6-0\/src\/Framework\/TestResult.php","line":729,"function":"runBare","class":"PHPUnit\\Framework\\TestCase","type":"-\u003E"},{"file":"\/app\/vendor\/bin\/.phpunit\/phpunit-9.6-0\/src\/Framework\/TestCase.php","line":973,"function":"run","class":"PHPUnit\\Framework\\TestResult","type":"-\u003E"},{"file":"\/app\/vendor\/bin\/.phpunit\/phpunit-9.6-0\/src\/Framework\/TestSuite.php","line":685,"function":"run","class":"PHPUnit\\Framework\\TestCase","type":"-\u003E"},{"file":"\/app\/vendor\/bin\/.phpunit\/phpunit-9.6-0\/src\/Framework\/TestSuite.php","line":685,"function":"run","class":"PHPUnit\\Framework\\TestSuite","type":"-\u003E"},{"file":"\/app\/vendor\/bin\/.phpunit\/phpunit-9.6-0\/src\/Framework\/TestSuite.php","line":685,"function":"run","class":"PHPUnit\\Framework\\TestSuite","type":"-\u003E"},{"file":"\/app\/vendor\/bin\/.phpunit\/phpunit-9.6-0\/src\/TextUI\/TestRunner.php","line":651,"function":"run","class":"PHPUnit\\Framework\\TestSuite","type":"-\u003E"},{"file":"\/app\/vendor\/bin\/.phpunit\/phpunit-9.6-0\/src\/TextUI\/Command.php","line":146,"function":"run","class":"PHPUnit\\TextUI\\TestRunner","type":"-\u003E"},{"file":"\/app\/vendor\/bin\/.phpunit\/phpunit-9.6-0\/src\/TextUI\/Command.php","line":99,"function":"run","class":"PHPUnit\\TextUI\\Command","type":"-\u003E"},{"file":"\/app\/vendor\/bin\/.phpunit\/phpunit-9.6-0\/phpunit","line":22,"function":"main","class":"PHPUnit\\TextUI\\Command","type":"::"},{"file":"\/app\/vendor\/symfony\/phpunit-bridge\/bin\/simple-phpunit.php","line":460,"function":"include"},{"file":"\/app\/bin\/phpunit","line":22,"function":"require"}]}
+
+/app/vendor/symfony/framework-bundle/Test/BrowserKitAssertionsTrait.php:188
+/app/vendor/symfony/framework-bundle/Test/BrowserKitAssertionsTrait.php:41
+/app/tests/Api/AuthTest.php:66
+
+[37;41mFAILURES![0m
+[37;41mTests: 2[0m[37;41m, Assertions: 5[0m[37;41m, Failures: 1[0m[37;41m.[0m
+
+Remaining direct deprecation notices (2)
+
+  2x: Since api-platform/symfony 4.1.0: Currently, the kernel will always be booted when a new client is created, but in API Platform 5.0, it will not be booted unless you set `static::$alwaysBootKernel` to `true` (the default will be `false`). See https://github.com/api-platform/core/issues/6971 for more information.
+    1x in AuthTest::testRegister from App\Tests\Api
+    1x in AuthTest::testLogin from App\Tests\Api
+
+Remaining indirect deprecation notices (32)
+
+  26x: Class "Doctrine\ORM\Proxy\DefaultProxyClassNameResolver" is deprecated. Use native lazy objects instead. (DefaultProxyClassNameResolver.php:25 called by AbstractClassMetadataFactory.php:433, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    17x in AuthTest::testLogin from App\Tests\Api
+    9x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Class "Doctrine\ORM\Proxy\Autoloader" is deprecated. Use native lazy objects instead. (Autoloader.php:74 called by DoctrineBundle.php:136, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  2x: Since symfony/security-http 7.3: Implementing "App\Entity\User::eraseCredentials()" is deprecated since Symfony 7.3; add the #[\Deprecated] attribute on the method to signal its either empty or that you moved the logic elsewhere, typically to the "__serialize()" method.
+    2x in AuthTest::testLogin from App\Tests\Api
+
+Other deprecation notices (32)
+
+  4x: Calling Doctrine\ORM\Configuration::setProxyDir is deprecated and will not be possible in Doctrine ORM 4.0. (Configuration.php:68 called by App_KernelTestDebugContainer.php:4284, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Calling Doctrine\ORM\Configuration::setProxyNamespace is deprecated and will not be possible in Doctrine ORM 4.0. (Configuration.php:157 called by App_KernelTestDebugContainer.php:4285, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Calling Doctrine\ORM\Configuration::setAutoGenerateProxyClasses is deprecated and will not be possible in Doctrine ORM 4.0. (Configuration.php:123 called by App_KernelTestDebugContainer.php:4286, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Disabling native lazy objects is deprecated and will be impossible in Doctrine ORM 4.0. (Configuration.php:661 called by App_KernelTestDebugContainer.php:4296, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Calling Doctrine\ORM\Configuration::getProxyDir is deprecated and will not be possible in Doctrine ORM 4.0. (Configuration.php:85 called by EntityManager.php:142, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Calling Doctrine\ORM\Configuration::getProxyNamespace is deprecated and will not be possible in Doctrine ORM 4.0. (Configuration.php:140 called by EntityManager.php:143, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Calling Doctrine\ORM\Configuration::getAutoGenerateProxyClasses is deprecated and will not be possible in Doctrine ORM 4.0. (Configuration.php:104 called by EntityManager.php:144, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Not enabling native lazy objects is deprecated and will be impossible in Doctrine ORM 4.0. (ProxyFactory.php:158 called by EntityManager.php:140, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+

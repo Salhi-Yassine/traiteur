@@ -25,6 +25,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
         new Get(security: "is_granted('ROLE_ADMIN') or object == user"),
         new Post(),
         new Patch(security: "is_granted('ROLE_ADMIN') or object == user"),
+        new Get(
+            name: 'me',
+            uriTemplate: '/me',
+            provider: \App\State\MeProvider::class,
+            read: true,
+        ),
     ],
     normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:write']],

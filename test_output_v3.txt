@@ -1,0 +1,81 @@
+PHPUnit 9.6.34 by Sebastian Bergmann and contributors.
+
+  Warning - The configuration file did not pass validation!
+  The following problems have been detected:
+
+  Line 37:
+  - Element 'bootstrap': This element is not expected. Expected is ( extension ).
+
+  Test results may not be as expected.
+
+
+Testing 
+.[31;1mE[0m                                                                  2 / 2 (100%)
+
+Time: 00:00.455, Memory: 50.50 MB
+
+There was 1 error:
+
+1) App\Tests\Api\AuthTest::testLogin
+Symfony\Component\HttpClient\Exception\JsonException: JSON content was expected to decode to an array, NULL returned.
+
+/app/vendor/api-platform/symfony/Bundle/Test/Response.php:146
+/app/vendor/api-platform/symfony/Bundle/Test/ApiTestAssertionsTrait.php:65
+/app/tests/Api/AuthTest.php:67
+
+[37;41mERRORS![0m
+[37;41mTests: 2[0m[37;41m, Assertions: 5[0m[37;41m, Errors: 1[0m[37;41m.[0m
+
+Remaining direct deprecation notices (2)
+
+  2x: Since api-platform/symfony 4.1.0: Currently, the kernel will always be booted when a new client is created, but in API Platform 5.0, it will not be booted unless you set `static::$alwaysBootKernel` to `true` (the default will be `false`). See https://github.com/api-platform/core/issues/6971 for more information.
+    1x in AuthTest::testRegister from App\Tests\Api
+    1x in AuthTest::testLogin from App\Tests\Api
+
+Remaining indirect deprecation notices (32)
+
+  26x: Class "Doctrine\ORM\Proxy\DefaultProxyClassNameResolver" is deprecated. Use native lazy objects instead. (DefaultProxyClassNameResolver.php:25 called by AbstractClassMetadataFactory.php:433, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    17x in AuthTest::testLogin from App\Tests\Api
+    9x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Class "Doctrine\ORM\Proxy\Autoloader" is deprecated. Use native lazy objects instead. (Autoloader.php:74 called by DoctrineBundle.php:136, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  2x: Since symfony/security-http 7.3: Implementing "App\Entity\User::eraseCredentials()" is deprecated since Symfony 7.3; add the #[\Deprecated] attribute on the method to signal its either empty or that you moved the logic elsewhere, typically to the "__serialize()" method.
+    2x in AuthTest::testLogin from App\Tests\Api
+
+Other deprecation notices (32)
+
+  4x: Calling Doctrine\ORM\Configuration::setProxyDir is deprecated and will not be possible in Doctrine ORM 4.0. (Configuration.php:68 called by App_KernelTestDebugContainer.php:4263, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Calling Doctrine\ORM\Configuration::setProxyNamespace is deprecated and will not be possible in Doctrine ORM 4.0. (Configuration.php:157 called by App_KernelTestDebugContainer.php:4264, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Calling Doctrine\ORM\Configuration::setAutoGenerateProxyClasses is deprecated and will not be possible in Doctrine ORM 4.0. (Configuration.php:123 called by App_KernelTestDebugContainer.php:4265, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Disabling native lazy objects is deprecated and will be impossible in Doctrine ORM 4.0. (Configuration.php:661 called by App_KernelTestDebugContainer.php:4275, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Calling Doctrine\ORM\Configuration::getProxyDir is deprecated and will not be possible in Doctrine ORM 4.0. (Configuration.php:85 called by EntityManager.php:142, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Calling Doctrine\ORM\Configuration::getProxyNamespace is deprecated and will not be possible in Doctrine ORM 4.0. (Configuration.php:140 called by EntityManager.php:143, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Calling Doctrine\ORM\Configuration::getAutoGenerateProxyClasses is deprecated and will not be possible in Doctrine ORM 4.0. (Configuration.php:104 called by EntityManager.php:144, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+
+  4x: Not enabling native lazy objects is deprecated and will be impossible in Doctrine ORM 4.0. (ProxyFactory.php:158 called by EntityManager.php:140, https://github.com/doctrine/orm/pull/12005, package doctrine/orm)
+    3x in AuthTest::testLogin from App\Tests\Api
+    1x in AuthTest::testRegister from App\Tests\Api
+

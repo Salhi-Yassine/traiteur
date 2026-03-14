@@ -2,6 +2,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useAuth } from "../../context/AuthContext";
+import { useState } from "react";
 
 const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -9,21 +11,19 @@ const validationSchema = Yup.object({
 });
 
 export default function LoginPage() {
+    const { login } = useAuth();
+    const [error, setError] = useState<string | null>(null);
+
     const formik = useFormik({
         initialValues: { email: "", password: "" },
         validationSchema,
         onSubmit: async (values, helpers) => {
+            setError(null);
             try {
-                const res = await fetch("/api/auth", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email: values.email, password: values.password }),
-                });
-                if (!res.ok) throw new Error("Invalid credentials");
-                // TODO: Store token in cookie/context and redirect
-                window.location.href = "/";
-            } catch {
-                helpers.setErrors({ email: "Invalid email or password" });
+                await login({ email: values.email, password: values.password });
+            } catch (err: any) {
+                setError(err.message || "Invalid email or password");
+                helpers.setErrors({ email: " " }); // Visual cue on email field
             } finally {
                 helpers.setSubmitting(false);
             }
@@ -53,6 +53,11 @@ export default function LoginPage() {
                         </div>
 
                         <form onSubmit={formik.handleSubmit} className="space-y-4">
+                            {error && (
+                                <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
+                                    {error}
+                                </div>
+                            )}
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium text-[var(--color-charcoal-700)] mb-1.5">
                                     Email address

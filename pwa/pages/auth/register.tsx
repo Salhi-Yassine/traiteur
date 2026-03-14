@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useAuth } from "../../context/AuthContext";
 
 const validationSchema = Yup.object({
     firstName: Yup.string().required("First name is required"),
@@ -17,6 +18,8 @@ const validationSchema = Yup.object({
 
 export default function RegisterPage() {
     const router = useRouter();
+    const { register } = useAuth();
+    const [error, setError] = useState<string | null>(null);
     const defaultType = (router.query.type as string) === "caterer" ? "caterer" : "client";
     const [userType, setUserType] = useState<"client" | "caterer">(defaultType);
 
@@ -31,25 +34,18 @@ export default function RegisterPage() {
         validationSchema,
         enableReinitialize: true,
         onSubmit: async (values, helpers) => {
+            setError(null);
             try {
-                const res = await fetch("/api/users", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/ld+json" },
-                    body: JSON.stringify({
-                        firstName: values.firstName,
-                        lastName: values.lastName,
-                        email: values.email,
-                        plainPassword: values.password,
-                        userType: values.userType,
-                    }),
+                await register({
+                    firstName: values.firstName,
+                    lastName: values.lastName,
+                    email: values.email,
+                    plainPassword: values.password,
+                    userType: values.userType,
                 });
-                if (!res.ok) {
-                    const err = await res.json();
-                    throw new Error(err["hydra:description"] ?? "Registration failed");
-                }
-                router.push("/auth/login?registered=1");
-            } catch (e: unknown) {
-                helpers.setErrors({ email: e instanceof Error ? e.message : "Registration failed" });
+            } catch (err: any) {
+                setError(err.message || "Registration failed");
+                helpers.setErrors({ email: " " });
             } finally {
                 helpers.setSubmitting(false);
             }
@@ -90,8 +86,8 @@ export default function RegisterPage() {
                                     type="button"
                                     onClick={() => handleTypeSwitch(type)}
                                     className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${userType === type
-                                            ? "bg-white shadow-sm text-[var(--color-teal-800)]"
-                                            : "text-[var(--color-charcoal-500)] hover:text-[var(--color-charcoal-700)]"
+                                        ? "bg-white shadow-sm text-[var(--color-teal-800)]"
+                                        : "text-[var(--color-charcoal-500)] hover:text-[var(--color-charcoal-700)]"
                                         }`}
                                 >
                                     {type === "client" ? "🍽 I'm looking for a caterer" : "👨‍🍳 I'm a caterer"}
@@ -100,6 +96,11 @@ export default function RegisterPage() {
                         </div>
 
                         <form onSubmit={formik.handleSubmit} className="space-y-4">
+                            {error && (
+                                <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
+                                    {error}
+                                </div>
+                            )}
                             {/* Name row */}
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
