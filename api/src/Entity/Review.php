@@ -1,48 +1,92 @@
 <?php
-// api/src/Entity/Review.php
+
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use App\Repository\ReviewRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
-/** A review of a book. */
-#[ORM\Entity]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Get(),
+        new Post(security: "is_granted('ROLE_USER')"),
+        new Delete(security: "is_granted('ROLE_ADMIN') or object.getAuthor() == user"),
+    ],
+    normalizationContext: ['groups' => ['review:read']],
+    denormalizationContext: ['groups' => ['review:write']],
+    order: ['createdAt' => 'DESC'],
+)]
+#[ApiFilter(SearchFilter::class, properties: ['catererProfile' => 'exact'])]
+#[ORM\Entity(repositoryClass: ReviewRepository::class)]
 class Review
 {
-    /** The ID of this review. */
-    #[ORM\Id, ORM\Column, ORM\GeneratedValue]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    #[Groups(['review:read'])]
     private ?int $id = null;
 
-    /** The rating of this review (between 0 and 5). */
     #[ORM\Column(type: 'smallint')]
-    #[Assert\Range(min: 0, max: 5)]
-    public int $rating = 0;
+    #[Assert\Range(min: 1, max: 5)]
+    #[Assert\NotNull]
+    #[Groups(['review:read', 'review:write'])]
+    private int $rating = 5;
 
-    /** The body of the review. */
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['review:read', 'review:write'])]
+    private ?string $title = null;
+
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank]
-    public string $body = '';
+    #[Assert\Length(min: 20, max: 2000)]
+    #[Groups(['review:read', 'review:write'])]
+    private string $body = '';
 
-    /** The author of the review. */
-    #[ORM\Column]
-    #[Assert\NotBlank]
-    public string $author = '';
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['review:read'])]
+    private \DateTimeImmutable $createdAt;
 
-    /** The date of publication of this review.*/
-    #[ORM\Column]
-    #[Assert\NotNull]
-    public ?\DateTimeImmutable $publicationDate = null;
-
-    /** The book this review is about. */
     #[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
-    public ?Book $book = null;
+    #[Groups(['review:read', 'review:write'])]
+    private ?CatererProfile $catererProfile = null;
 
-    public function getId(): ?int
+    #[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['review:read'])]
+    private ?User $author = null;
+
+    public function __construct()
     {
-        return $this->id;
+        $this->createdAt = new \DateTimeImmutable();
     }
+
+    public function getId(): ?int { return $this->id; }
+
+    public function getRating(): int { return $this->rating; }
+    public function setRating(int $rating): static { $this->rating = $rating; return $this; }
+
+    public function getTitle(): ?string { return $this->title; }
+    public function setTitle(?string $title): static { $this->title = $title; return $this; }
+
+    public function getBody(): string { return $this->body; }
+    public function setBody(string $body): static { $this->body = $body; return $this; }
+
+    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+
+    public function getCatererProfile(): ?CatererProfile { return $this->catererProfile; }
+    public function setCatererProfile(?CatererProfile $catererProfile): static { $this->catererProfile = $catererProfile; return $this; }
+
+    public function getAuthor(): ?User { return $this->author; }
+    public function setAuthor(?User $author): static { $this->author = $author; return $this; }
 }

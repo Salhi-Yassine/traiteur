@@ -1,12 +1,19 @@
-import "../styles/globals.css"
-import Layout from "../components/common/Layout"
-import type { AppProps } from "next/app"
-import type { DehydratedState } from "@tanstack/react-query"
+import type { AppProps } from "next/app";
+import Navbar from "../components/layout/Navbar";
+import Footer from "../components/layout/Footer";
+import "../styles/globals.css";
+import "@fontsource/poppins";
+import "@fontsource/poppins/600.css";
+import "@fontsource/poppins/700.css";
 
-function MyApp({ Component, pageProps }: AppProps<{dehydratedState: DehydratedState}>) {
-  return <Layout dehydratedState={pageProps.dehydratedState}>
-    <Component {...pageProps} />
-  </Layout>
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <>
+      <Navbar />
+      <main>
+        <Component {...pageProps} />
+      </main>
+      <Footer />
+    </>
+  );
 }
-
-export default MyApp

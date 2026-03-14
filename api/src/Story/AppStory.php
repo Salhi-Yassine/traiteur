@@ -10,6 +10,7 @@ final class AppStory extends Story
 {
     public function build(): void
     {
-        // SomeFactory::createOne();
+        // Foundry stories are used for factory-based fixtures.
+        // Main fixtures are in App\DataFixtures\AppFixtures
     }
 }

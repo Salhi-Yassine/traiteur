@@ -1,43 +1,178 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/forms";
 
-@layer base {
-    * {
-        font-family: Poppins;
-    }
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
 
-    a {
-        @apply no-underline text-cyan-700;
-    }
+@theme {
+  /* Colors */
+  --color-teal-50: #f0fafa;
+  --color-teal-100: #cceeee;
+  --color-teal-200: #99dddd;
+  --color-teal-300: #66cccc;
+  --color-teal-400: #33baba;
+  --color-teal-500: #0fa8a8;
+  --color-teal-600: #0d8e8e;
+  --color-teal-700: #0b7474;
+  --color-teal-800: #085a5a;
+  --color-teal-900: #063f3f;
+
+  --color-gold-50: #fdf8ec;
+  --color-gold-100: #f8ecca;
+  --color-gold-200: #f0d68a;
+  --color-gold-400: #d4a843;
+  --color-gold-500: #c9a84c;
+  --color-gold-600: #a8862b;
+
+  --color-sand-50: #fafaf8;
+  --color-sand-100: #f5f4f0;
+  --color-sand-200: #ebe9e3;
+
+  --color-charcoal-900: #1c1c1c;
+  --color-charcoal-700: #3a3a3a;
+  --color-charcoal-500: #6b6b6b;
+  --color-charcoal-300: #a0a0a0;
+  --color-charcoal-100: #f0f0f0;
+
+  /* Typography */
+  --font-display: "Playfair Display", "Georgia", serif;
+  --font-body: "Poppins", "system-ui", sans-serif;
+
+  /* Shadows */
+  --shadow-card: 0 2px 16px 0 rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+  --shadow-nav: 0 2px 12px 0 rgba(0, 0, 0, 0.08);
+
+  /* Container */
+  --container-padding: 1.5rem;
+  --container-center: center;
 }
 
-@layer utilities {
-    .bg-spider-cover {
-        @apply bg-cyan-700 bg-center bg-no-repeat;
-        background-image: url("../public/api-platform/web.svg");
-        background-size: 110%;
-    }
-    .ribbon {
-        position: absolute;
-        top: 0;
-        right: 0;
-        transform: translate(13.397459%, -100%) rotate(30deg); /* translateX: 100%*(1-cos(angleRotation) */
-        transform-origin: bottom left;
+@layer base {
+  * {
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+  }
+
+  body {
+    background-color: var(--color-sand-50);
+    color: var(--color-charcoal-900);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  ::selection {
+    background-color: var(--color-teal-200);
+    color: var(--color-teal-900);
   }
 }
 
-@theme {
-  --font-display: "Poppins", "system-ui";
-  --shadow-card: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
-  --transition-duration: 300ms;
-  --min-height-24: 96px;
-  --color-cyan-500: #46b6bf;
-  --color-cyan-700: #0f929a;
-  --color-cyan-200: #bceff3;
-  --color-red-500: #ee4322;
-  --color-black: #1d1e1c;
-  --color-white: #ffffff;
-  --color-transparent: transparent;
-  --container-padding: 2rem;
-  --container-center: center;
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Caterer card hover effect */
+  .card-hover {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .card-hover:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-4px);
+  }
+
+  /* Image zoom effect on hover */
+  .img-zoom {
+    overflow: hidden;
+  }
+  .img-zoom img {
+    transition: transform 0.5s ease;
+  }
+  .img-zoom:hover img {
+    transform: scale(1.08);
+  }
+
+  /* Price badges */
+  .price-active {
+    color: var(--color-teal-700);
+    font-weight: 700;
+  }
+  .price-dim {
+    color: var(--color-charcoal-300);
+  }
+
+  /* Gradient overlays */
+  .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(6, 63, 63, 0.35) 0%,
+      rgba(6, 63, 63, 0.65) 100%
+    );
+  }
+
+  .card-gradient {
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.6) 0%,
+      transparent 60%
+    );
+  }
+
+  /* Animated underline for nav links */
+  .nav-link {
+    position: relative;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-gold-500);
+    transition: width 0.3s ease;
+  }
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    width: 100%;
+  }
+
+  /* Section divider */
+  .section-divider {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-gold-500), var(--color-teal-500));
+    border-radius: 999px;
+  }
+
+  /* Skeleton loading */
+  .skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+  }
+
+  @keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Fade in animation */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in-up {
+    animation: fadeInUp 0.6s ease forwards;
+  }
 }

@@ -3,24 +3,31 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use ApiPlatform\Elasticsearch\State\CollectionProvider;
-use ApiPlatform\Elasticsearch\State\ItemProvider;
-use ApiPlatform\Elasticsearch\State\Options;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ApiResource(
-    // operations: [
-    //     new GetCollection(provider: CollectionProvider::class, stateOptions: new Options(index: 'user')),
-    //     new Get(provider: ItemProvider::class, stateOptions: new Options(index: 'user')),
-    // ],
+    operations: [
+        new GetCollection(security: "is_granted('ROLE_ADMIN')"),
+        new Get(security: "is_granted('ROLE_ADMIN') or object == user"),
+        new Post(),
+        new Patch(security: "is_granted('ROLE_ADMIN') or object == user"),
+    ],
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:write']],
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -28,13 +35,40 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const TYPE_CLIENT = 'client';
+    public const TYPE_CATERER = 'caterer';
+    public const TYPE_ADMIN = 'admin';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank]
+    #[Assert\Email]
+    #[Groups(['user:read', 'user:write'])]
     private ?string $email = null;
+
+    #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
+    #[Groups(['user:read', 'user:write', 'caterer:read', 'review:read', 'quote:read'])]
+    private string $firstName = '';
+
+    #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
+    #[Groups(['user:read', 'user:write', 'caterer:read', 'review:read', 'quote:read'])]
+    private string $lastName = '';
+
+    #[ORM\Column(length: 30, nullable: true)]
+    #[Groups(['user:read', 'user:write'])]
+    private ?string $phone = null;
+
+    #[ORM\Column(length: 20)]
+    #[Assert\Choice(choices: [self::TYPE_CLIENT, self::TYPE_CATERER, self::TYPE_ADMIN])]
+    #[Groups(['user:read', 'user:write'])]
+    private string $userType = self::TYPE_CLIENT;
 
     /**
      * @var list<string> The user roles
@@ -48,8 +82,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[Groups(['user:write'])]
+    #[Assert\NotBlank(groups: ['Default'])]
+    private ?string $plainPassword = null;
+
     #[ORM\Column(nullable: false)]
     private bool $isVerified = false;
+
+    #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
+    #[Groups(['user:read'])]
+    private ?CatererProfile $catererProfile = null;
+
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Review::class)]
+    private Collection $reviews;
+
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: QuoteRequest::class)]
+    private Collection $quoteRequests;
+
+    public function __construct()
+    {
+        $this->reviews = new ArrayCollection();
+        $this->quoteRequests = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -64,7 +118,55 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
+        return $this;
+    }
 
+    public function getFirstName(): string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(string $firstName): static
+    {
+        $this->firstName = $firstName;
+        return $this;
+    }
+
+    public function getLastName(): string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(string $lastName): static
+    {
+        $this->lastName = $lastName;
+        return $this;
+    }
+
+    public function getFullName(): string
+    {
+        return trim($this->firstName . ' ' . $this->lastName);
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): static
+    {
+        $this->phone = $phone;
+        return $this;
+    }
+
+    public function getUserType(): string
+    {
+        return $this->userType;
+    }
+
+    public function setUserType(string $userType): static
+    {
+        $this->userType = $userType;
         return $this;
     }
 
@@ -84,8 +186,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
+
+        if ($this->userType === self::TYPE_CATERER) {
+            $roles[] = 'ROLE_CATERER';
+        }
+
+        if ($this->userType === self::TYPE_ADMIN) {
+            $roles[] = 'ROLE_ADMIN';
+        }
 
         return array_unique($roles);
     }
@@ -96,7 +205,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
-
         return $this;
     }
 
@@ -111,7 +219,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
+        return $this;
+    }
 
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): static
+    {
+        $this->plainPassword = $plainPassword;
         return $this;
     }
 
@@ -120,8 +238,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function isVerified(): bool
@@ -132,7 +249,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
-
         return $this;
+    }
+
+    public function getCatererProfile(): ?CatererProfile
+    {
+        return $this->catererProfile;
+    }
+
+    public function setCatererProfile(?CatererProfile $catererProfile): static
+    {
+        if ($catererProfile === null && $this->catererProfile !== null) {
+            $this->catererProfile->setOwner(null);
+        }
+        if ($catererProfile !== null && $catererProfile->getOwner() !== $this) {
+            $catererProfile->setOwner($this);
+        }
+        $this->catererProfile = $catererProfile;
+        return $this;
+    }
+
+    /** @return Collection<int, Review> */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    /** @return Collection<int, QuoteRequest> */
+    public function getQuoteRequests(): Collection
+    {
+        return $this->quoteRequests;
     }
 }
