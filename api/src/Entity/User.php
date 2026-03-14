@@ -13,6 +13,8 @@ use ApiPlatform\Metadata\Patch;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -99,17 +101,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read'])]
     private ?CatererProfile $catererProfile = null;
 
+    #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
+    #[ORM\JoinTable(name: 'user_roles')]
+    #[Groups(['user:read', 'user:write'])]
+    private Collection $userRoles;
+
+
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Review::class)]
     private Collection $reviews;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: QuoteRequest::class)]
     private Collection $quoteRequests;
 
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Gedmo\Timestampable(on: 'create')]
+    #[Groups(['user:read'])]
+    private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[Gedmo\Timestampable(on: 'update')]
+    #[Groups(['user:read'])]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
         $this->quoteRequests = new ArrayCollection();
+        $this->userRoles = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -192,6 +213,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
+        
+        // Add roles from DB
+        foreach ($this->userRoles as $role) {
+            $roles[] = $role->getName();
+        }
+
+        // Guarantees every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         if ($this->userType === self::TYPE_CATERER) {
@@ -204,6 +232,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return array_unique($roles);
     }
+
+    /** @return Collection<int, Role> */
+    public function getUserRoles(): Collection
+    {
+        return $this->userRoles;
+    }
+
+    public function addRoleEntity(Role $role): static
+    {
+        if (!$this->userRoles->contains($role)) {
+            $this->userRoles->add($role);
+        }
+        return $this;
+    }
+
+    public function removeRoleEntity(Role $role): static
+    {
+        $this->userRoles->removeElement($role);
+        return $this;
+    }
+
 
     /**
      * @param list<string> $roles
@@ -286,4 +335,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->quoteRequests;
     }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
 }
+

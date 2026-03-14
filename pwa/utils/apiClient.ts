@@ -61,7 +61,7 @@ export const fetchApi = async (path: string, options: RequestOptions = {}) => {
             errorData.description ||
             errorData.message ||
             "An error occurred";
-        throw new Error(errorMessage);
+        throw new ApiError(errorMessage, errorData);
     }
 
     if (response.status === 204) return null;

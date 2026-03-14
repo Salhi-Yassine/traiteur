@@ -11,19 +11,22 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\QuoteRequestRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Get(security: "is_granted('ROLE_ADMIN') or object.getClient() == user or object.getCatererProfile().getOwner() == user"),
-        new Post(security: "is_granted('ROLE_USER')"),
+        new Get(security: "is_granted('quote:view', object)"),
+        new Post(security: "is_granted('quote:create')"),
         new Patch(
-            security: "is_granted('ROLE_ADMIN') or object.getCatererProfile().getOwner() == user",
+            security: "is_granted('quote:manage', object)",
             denormalizationContext: ['groups' => ['quote:status']]
         ),
     ],
+
     normalizationContext: ['groups' => ['quote:read']],
     denormalizationContext: ['groups' => ['quote:write']],
     order: ['createdAt' => 'DESC'],
@@ -79,8 +82,15 @@ class QuoteRequest
     private string $status = self::STATUS_PENDING;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Gedmo\Timestampable(on: 'create')]
     #[Groups(['quote:read'])]
     private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[Gedmo\Timestampable(on: 'update')]
+    #[Groups(['quote:read'])]
+    private ?\DateTimeImmutable $updatedAt = null;
+
 
     #[ORM\ManyToOne(inversedBy: 'quoteRequests')]
     #[ORM\JoinColumn(nullable: false)]
@@ -95,8 +105,8 @@ class QuoteRequest
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
     }
+
 
     public function getId(): ?int { return $this->id; }
 
@@ -119,6 +129,9 @@ class QuoteRequest
     public function setStatus(string $status): static { $this->status = $status; return $this; }
 
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
+
 
     public function getClient(): ?User { return $this->client; }
     public function setClient(?User $client): static { $this->client = $client; return $this; }

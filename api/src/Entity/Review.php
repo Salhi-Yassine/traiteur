@@ -11,6 +11,8 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\ReviewRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -52,8 +54,15 @@ class Review
     private string $body = '';
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Gedmo\Timestampable(on: 'create')]
     #[Groups(['review:read'])]
     private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[Gedmo\Timestampable(on: 'update')]
+    #[Groups(['review:read'])]
+    private ?\DateTimeImmutable $updatedAt = null;
+
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
@@ -68,8 +77,8 @@ class Review
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
     }
+
 
     public function getId(): ?int { return $this->id; }
 
@@ -83,6 +92,9 @@ class Review
     public function setBody(string $body): static { $this->body = $body; return $this; }
 
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
+
 
     public function getCatererProfile(): ?CatererProfile { return $this->catererProfile; }
     public function setCatererProfile(?CatererProfile $catererProfile): static { $this->catererProfile = $catererProfile; return $this; }

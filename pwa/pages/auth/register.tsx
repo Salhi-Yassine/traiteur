@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../context/AuthContext";
+import { ApiError } from "../../utils/apiClient";
 
 const validationSchema = Yup.object({
     firstName: Yup.string().required("First name is required"),
@@ -44,8 +45,15 @@ export default function RegisterPage() {
                     userType: values.userType,
                 });
             } catch (err: any) {
-                setError(err.message || "Registration failed");
-                helpers.setErrors({ email: " " });
+                if (err instanceof ApiError && err.data.violations) {
+                    const formErrors: Record<string, string> = {};
+                    err.data.violations.forEach((violation: any) => {
+                        formErrors[violation.propertyPath] = violation.message;
+                    });
+                    helpers.setErrors(formErrors);
+                } else {
+                    setError(err.message || "Registration failed");
+                }
             } finally {
                 helpers.setSubmitting(false);
             }

@@ -7,24 +7,36 @@ use App\Entity\MenuItem;
 use App\Entity\QuoteRequest;
 use App\Entity\Review;
 use App\Entity\User;
+use App\Entity\Role;
+use App\Entity\Permission;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    private array $permissions = [];
+    private array $roles = [];
+
     public function __construct(private readonly UserPasswordHasherInterface $hasher)
+
     {
     }
 
     public function load(ObjectManager $manager): void
     {
+        $this->createPermissions($manager);
+        $this->createRoles($manager);
+
         // --- Users ---
+
         $client = new User();
         $client->setEmail('client@traiteur.com')
             ->setFirstName('Yasmine')
             ->setLastName('Benali')
             ->setUserType(User::TYPE_CLIENT)
+            ->addRoleEntity($this->roles['ROLE_CLIENT'])
             ->setPassword($this->hasher->hashPassword($client, 'password'));
         $manager->persist($client);
 
@@ -33,14 +45,17 @@ class AppFixtures extends Fixture
             ->setFirstName('Karim')
             ->setLastName('Meziane')
             ->setUserType(User::TYPE_CATERER)
+            ->addRoleEntity($this->roles['ROLE_CATERER'])
             ->setPassword($this->hasher->hashPassword($catererUser1, 'password'));
         $manager->persist($catererUser1);
+
 
         $catererUser2 = new User();
         $catererUser2->setEmail('chef.sophia@traiteur.com')
             ->setFirstName('Sophia')
             ->setLastName('Rahmani')
             ->setUserType(User::TYPE_CATERER)
+            ->addRoleEntity($this->roles['ROLE_CATERER'])
             ->setPassword($this->hasher->hashPassword($catererUser2, 'password'));
         $manager->persist($catererUser2);
 
@@ -49,13 +64,24 @@ class AppFixtures extends Fixture
             ->setFirstName('Youcef')
             ->setLastName('Cherif')
             ->setUserType(User::TYPE_CATERER)
+            ->addRoleEntity($this->roles['ROLE_CATERER'])
             ->setPassword($this->hasher->hashPassword($catererUser3, 'password'));
         $manager->persist($catererUser3);
 
+        $managerUser = new User();
+        $managerUser->setEmail('manager@traiteur.com')
+            ->setFirstName('Omar')
+            ->setLastName('Said')
+            ->setUserType(User::TYPE_CLIENT)
+            ->addRoleEntity($this->roles['ROLE_MANAGER'])
+            ->setPassword($this->hasher->hashPassword($managerUser, 'password'));
+        $manager->persist($managerUser);
+
+
         // --- Caterer Profiles ---
         $profile1 = new CatererProfile();
-        $profile1->setSlug('festin-royal-alger')
-            ->setBusinessName('Festin Royal')
+        $profile1->setBusinessName('Festin Royal')
+
             ->setTagline('Cuisine algérienne authentique pour vos événements mémorables')
             ->setDescription('Festin Royal est un service traiteur haut de gamme basé à Alger, spécialisé dans la cuisine algérienne traditionnelle revisitée. Avec plus de 15 ans d\'expérience, nous proposons des menus sur mesure pour mariages, réceptions d\'entreprise et célébrations privées. Nos chefs utilisent uniquement des produits frais et locaux pour vous offrir une expérience culinaire authentique.')
             ->setCuisineTypes(['Algerian', 'Mediterranean', 'Oriental'])
@@ -76,8 +102,8 @@ class AppFixtures extends Fixture
         $manager->persist($profile1);
 
         $profile2 = new CatererProfile();
-        $profile2->setSlug('le-jardin-saveurs-oran')
-            ->setBusinessName('Le Jardin des Saveurs')
+        $profile2->setBusinessName('Le Jardin des Saveurs')
+
             ->setTagline('La gastronomie méditerranéenne à votre service')
             ->setDescription('Traiteur de prestige basé à Oran, Le Jardin des Saveurs marie les saveurs de la Méditerranée avec une touche de modernité. Notre équipe de chefs passionnés crée des expériences culinaires uniques pour tous types d\'événements. Nous proposons également un service de décoration de table et mise en place complète.')
             ->setCuisineTypes(['Mediterranean', 'French', 'Italian'])
@@ -98,8 +124,8 @@ class AppFixtures extends Fixture
         $manager->persist($profile2);
 
         $profile3 = new CatererProfile();
-        $profile3->setSlug('saveurs-kabyle-tizi-ouzou')
-            ->setBusinessName('Saveurs Kabyles')
+        $profile3->setBusinessName('Saveurs Kabyles')
+
             ->setTagline('L\'authenticité berbère dans chaque bouché')
             ->setDescription('Passionné de cuisine traditionnelle kabyle, notre service traiteur vous propose des spécialités authentiques comme le couscous, le tajine, et les pâtisseries berbères. Nous mettons un point d\'honneur à préserver les recettes ancestrales tout en les adaptant aux standards modernes de restauration événementielle.')
             ->setCuisineTypes(['Algerian', 'Berber', 'Traditional'])
@@ -167,10 +193,44 @@ class AppFixtures extends Fixture
         }
 
         // Update rating stats manually for fixtures
-        $profile1->setAverageRating('5.00')->setReviewCount(2);
-        $profile2->setAverageRating('4.00')->setReviewCount(1);
-        $profile3->setAverageRating('5.00')->setReviewCount(1);
+        // Slugs and Timestamps are now automated via Gedmo Extensions
 
         $manager->flush();
     }
+
+    private function createPermissions(ObjectManager $manager): void
+    {
+        $names = [
+            'profile:create', 'profile:edit', 'profile:view',
+            'quote:create', 'quote:view', 'quote:manage',
+            'manage:all_profiles', 'manage:all_quotes', 'view:all_quotes'
+        ];
+
+        foreach ($names as $name) {
+            $p = new Permission();
+            $p->setName($name);
+            $manager->persist($p);
+            $this->permissions[$name] = $p;
+        }
+    }
+
+    private function createRoles(ObjectManager $manager): void
+    {
+        $config = [
+            'ROLE_CLIENT' => ['quote:create'],
+            'ROLE_CATERER' => ['profile:create', 'quote:manage'],
+            'ROLE_MANAGER' => ['manage:all_profiles', 'manage:all_quotes', 'view:all_quotes'],
+        ];
+
+        foreach ($config as $roleName => $perms) {
+            $r = new Role();
+            $r->setName($roleName);
+            foreach ($perms as $pName) {
+                $r->addPermission($this->permissions[$pName]);
+            }
+            $manager->persist($r);
+            $this->roles[$roleName] = $r;
+        }
+    }
 }
+

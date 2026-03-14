@@ -15,6 +15,8 @@ use App\Repository\CatererProfileRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -23,10 +25,11 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new GetCollection(),
         new Get(),
-        new Post(security: "is_granted('ROLE_CATERER')"),
-        new Patch(security: "is_granted('ROLE_CATERER') and object.getOwner() == user"),
-        new Delete(security: "is_granted('ROLE_CATERER') and object.getOwner() == user or is_granted('ROLE_ADMIN')"),
+        new Post(security: "is_granted('profile:create')"),
+        new Patch(security: "is_granted('profile:edit', object)"),
+        new Delete(security: "is_granted('ROLE_ADMIN') or is_granted('profile:edit', object)"),
     ],
+
     normalizationContext: ['groups' => ['caterer:read']],
     denormalizationContext: ['groups' => ['caterer:write']],
     order: ['averageRating' => 'DESC'],
@@ -48,10 +51,12 @@ class CatererProfile
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Assert\NotBlank]
+    #[Gedmo\Slug(fields: ['businessName'])]
     #[Assert\Regex(pattern: '/^[a-z0-9]+(?:-[a-z0-9]+)*$/', message: 'Slug must be lowercase alphanumeric with hyphens')]
     #[Groups(['caterer:read', 'caterer:write'])]
-    private string $slug = '';
+    private ?string $slug = null;
+
+
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -131,8 +136,15 @@ class CatererProfile
     private ?string $instagram = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Gedmo\Timestampable(on: 'create')]
     #[Groups(['caterer:read'])]
     private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[Gedmo\Timestampable(on: 'update')]
+    #[Groups(['caterer:read'])]
+    private ?\DateTimeImmutable $updatedAt = null;
+
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'catererProfile')]
     #[ORM\JoinColumn(nullable: false)]
@@ -151,16 +163,17 @@ class CatererProfile
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
         $this->menuItems = new ArrayCollection();
         $this->reviews = new ArrayCollection();
         $this->quoteRequests = new ArrayCollection();
     }
 
+
     public function getId(): ?int { return $this->id; }
 
-    public function getSlug(): string { return $this->slug; }
-    public function setSlug(string $slug): static { $this->slug = $slug; return $this; }
+    public function getSlug(): ?string { return $this->slug; }
+    public function setSlug(?string $slug): static { $this->slug = $slug; return $this; }
+
 
     public function getBusinessName(): string { return $this->businessName; }
     public function setBusinessName(string $businessName): static { $this->businessName = $businessName; return $this; }
@@ -211,6 +224,9 @@ class CatererProfile
     public function setInstagram(?string $instagram): static { $this->instagram = $instagram; return $this; }
 
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
+
 
     public function getOwner(): ?User { return $this->owner; }
     public function setOwner(?User $owner): static { $this->owner = $owner; return $this; }

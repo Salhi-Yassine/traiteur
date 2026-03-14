@@ -12,6 +12,8 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\MenuItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -83,6 +85,17 @@ class MenuItem
     #[Groups(['menu:read', 'menu:write'])]
     private ?CatererProfile $catererProfile = null;
 
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Gedmo\Timestampable(on: 'create')]
+    #[Groups(['menu:read'])]
+    private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[Gedmo\Timestampable(on: 'update')]
+    #[Groups(['menu:read'])]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+
     public function getId(): ?int { return $this->id; }
 
     public function getName(): string { return $this->name; }
@@ -111,4 +124,8 @@ class MenuItem
 
     public function getCatererProfile(): ?CatererProfile { return $this->catererProfile; }
     public function setCatererProfile(?CatererProfile $catererProfile): static { $this->catererProfile = $catererProfile; return $this; }
+
+    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
 }
+
