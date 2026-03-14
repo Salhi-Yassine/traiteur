@@ -7,6 +7,7 @@ import type { GetStaticProps } from "next";
 import { Button } from "../components/ui/button";
 import { useTranslation, Trans } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useState, useEffect } from "react";
 
 interface HomeProps {
   featuredVendors: VendorCardProps[];
@@ -27,8 +28,39 @@ function StarDivider() {
   );
 }
 
+const HERO_IMAGES = [
+  {
+    src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1920&q=85",
+    alt: "Mariage marocain — cour de riad illuminée",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1920&q=85",
+    alt: "Salles de mariage",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1920&q=85",
+    alt: "Photographie de mariage",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1555244162-803834f70033?w=1920&q=85",
+    alt: "Traiteur et gastronomie",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1920&q=85",
+    alt: "Décoration de mariage",
+  },
+];
+
 export default function HomePage({ featuredVendors }: HomeProps) {
   const { t } = useTranslation("common");
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   const STATS = [
     { value: "800+", label: t("home.stats.vendors") },
@@ -107,14 +139,23 @@ export default function HomePage({ featuredVendors }: HomeProps) {
       {/* ─── HERO ─── */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden" aria-label="Section héro">
         {/* Background photo */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1920&q=85"
-            alt="Mariage marocain — cour de riad illuminée"
-            fill
-            className="object-cover"
-            priority
-          />
+        <div className="absolute inset-0 z-0 bg-black">
+          {HERO_IMAGES.map((image, index) => (
+            <div
+              key={image.src}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                index === currentImageIndex ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className="object-cover"
+                priority={index === 0}
+              />
+            </div>
+          ))}
           {/* Dark overlay — 55% per PRD */}
           <div className="absolute inset-0 bg-black/55" />
           {/* Subtle Moroccan star tessellation — 5% opacity per PRD §6.9 */}

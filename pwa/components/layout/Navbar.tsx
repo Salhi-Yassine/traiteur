@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 // v3.0 nav items per PRD section 7
@@ -16,9 +17,13 @@ const NAV_ITEM_KEYS = [
 // v3.0 Navbar — white-first, terracotta CTA, Airbnb style
 export default function Navbar() {
     const { user, logout, isLoading } = useAuth();
+    const router = useRouter();
+    const isHome = router.pathname === "/";
     const [scrolled, setScrolled]   = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const { t } = useTranslation("common");
+
+    const isSolid = scrolled || !isHome;
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 80);
@@ -38,7 +43,7 @@ export default function Navbar() {
             <header
                 className={cn(
                     "fixed top-0 inset-x-0 z-50 transition-all duration-300",
-                    scrolled
+                    isSolid
                         ? "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)] py-3"
                         : "bg-transparent py-5"
                 )}
@@ -57,7 +62,7 @@ export default function Navbar() {
                             </div>
                             <span className={cn(
                                 "font-display font-semibold text-[20px] tracking-tight transition-colors",
-                                scrolled ? "text-[#1A1A1A]" : "text-white"
+                                isSolid ? "text-[#1A1A1A]" : "text-white"
                             )}>
                                 Farah<span className="text-[#E8472A]">.ma</span>
                             </span>
@@ -71,7 +76,7 @@ export default function Navbar() {
                                     href={item.href}
                                     className={cn(
                                         "nav-link text-[14px] font-medium transition-colors py-1",
-                                        scrolled
+                                        isSolid
                                             ? "text-[#484848] hover:text-[#1A1A1A]"
                                             : "text-white/85 hover:text-white"
                                     )}
@@ -83,7 +88,7 @@ export default function Navbar() {
 
                         {/* ── Desktop CTAs ── */}
                         <div className="hidden lg:flex items-center gap-3 shrink-0">
-                            <LanguageSwitcher scrolled={scrolled} />
+                            <LanguageSwitcher scrolled={isSolid} />
 
                             <div className="w-px h-6 bg-current opacity-10 mx-1" />
 
@@ -93,7 +98,7 @@ export default function Navbar() {
                                 <div className="flex items-center gap-3">
                                     <span className={cn(
                                         "text-[14px] font-medium",
-                                        scrolled ? "text-[#484848]" : "text-white/85"
+                                        isSolid ? "text-[#484848]" : "text-white/85"
                                     )}>
                                         {user.firstName}
                                     </span>
@@ -101,7 +106,7 @@ export default function Navbar() {
                                         onClick={logout}
                                         className={cn(
                                             "text-[13px] transition-colors underline underline-offset-2",
-                                            scrolled ? "text-[#717171] hover:text-[#1A1A1A]" : "text-white/60 hover:text-white"
+                                            isSolid ? "text-[#717171] hover:text-[#1A1A1A]" : "text-white/60 hover:text-white"
                                         )}
                                     >
                                         {t('nav.logout', 'Déconnexion')}
@@ -113,7 +118,7 @@ export default function Navbar() {
                                         href="/auth/login"
                                         className={cn(
                                             "text-[14px] font-medium transition-colors px-3 py-2 rounded-lg hover:bg-white/10",
-                                            scrolled ? "text-[#484848] hover:bg-[#F7F7F7]" : "text-white/85"
+                                            isSolid ? "text-[#484848] hover:bg-[#F7F7F7]" : "text-white/85"
                                         )}
                                     >
                                         {t("nav.login")}
@@ -129,7 +134,7 @@ export default function Navbar() {
                         <button
                             className={cn(
                                 "lg:hidden p-2 rounded-lg transition-all",
-                                scrolled
+                                isSolid
                                     ? "text-[#1A1A1A] hover:bg-[#F7F7F7]"
                                     : "text-white hover:bg-white/10"
                             )}
