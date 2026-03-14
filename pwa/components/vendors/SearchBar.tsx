@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { Input } from "../ui/input";
@@ -23,34 +23,66 @@ export default function SearchBar({
     const [query, setQuery] = useState(initialLocation);
     const [city, setCity] = useState(initialLocation || "all");
     const [category, setCategory] = useState(initialCategory || "all");
+    const [dynamicOptions, setDynamicOptions] = useState<{ cities: string[], categories: string[] }>({
+        cities: [],
+        categories: []
+    });
+
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://localhost";
+                const res = await fetch(`${baseUrl}/api/app_stats`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setDynamicOptions({
+                        cities: data.availableCities || [],
+                        categories: Object.keys(data.categoryCounts || {})
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to fetch search options:", err);
+            }
+        };
+        fetchOptions();
+    }, []);
 
     const CITIES = [
+        { value: "all", label: t("search_bar.cities.all") },
+        ...dynamicOptions.cities.map(c => ({
+            value: c,
+            label: t(`search_bar.cities.${c.toLowerCase().replace(/\s+/g, '_')}`, { defaultValue: c })
+        }))
+    ];
+
+    const FALLBACK_CITIES = [
         { value: "all", label: t("search_bar.cities.all") },
         { value: "Casablanca", label: t("search_bar.cities.casablanca", { defaultValue: "Casablanca" }) },
         { value: "Marrakech", label: t("search_bar.cities.marrakech", { defaultValue: "Marrakech" }) },
         { value: "Rabat", label: t("search_bar.cities.rabat", { defaultValue: "Rabat" }) },
         { value: "Fès", label: t("search_bar.cities.fes", { defaultValue: "Fès" }) },
         { value: "Tanger", label: t("search_bar.cities.tanger", { defaultValue: "Tanger" }) },
-        { value: "Agadir", label: t("search_bar.cities.agadir", { defaultValue: "Agadir" }) },
-        { value: "Meknès", label: t("search_bar.cities.meknes", { defaultValue: "Meknès" }) },
-        { value: "Oujda", label: t("search_bar.cities.oujda", { defaultValue: "Oujda" }) },
-        { value: "El Jadida", label: t("search_bar.cities.el_jadida", { defaultValue: "El Jadida" }) },
-        { value: "Kénitra", label: t("search_bar.cities.kenitra", { defaultValue: "Kénitra" }) },
-        { value: "Tétouan", label: t("search_bar.cities.tetouan", { defaultValue: "Tétouan" }) },
-        { value: "Laâyoune", label: t("search_bar.cities.laayoune", { defaultValue: "Laâyoune" }) },
     ];
 
+    const finalCities = CITIES.length > 1 ? CITIES : FALLBACK_CITIES;
+
     const CATEGORIES = [
+        { value: "all", label: t("search_bar.categories.all") },
+        ...dynamicOptions.categories.map(cat => ({
+            value: cat,
+            label: t(`search_bar.categories.${cat.toLowerCase()}`, { defaultValue: cat })
+        }))
+    ];
+
+    const FALLBACK_CATEGORIES = [
         { value: "all", label: t("search_bar.categories.all") },
         { value: "Salles", label: t("search_bar.categories.salles") },
         { value: "Catering", label: t("search_bar.categories.catering") },
         { value: "Negrafa", label: t("search_bar.categories.negrafa") },
         { value: "Photography", label: t("search_bar.categories.photography") },
-        { value: "Music", label: t("search_bar.categories.music") },
-        { value: "Decoration", label: t("search_bar.categories.decoration") },
-        { value: "Beauty", label: t("search_bar.categories.beauty") },
-        { value: "Transport", label: t("search_bar.categories.transport") },
     ];
+
+    const finalCategories = CATEGORIES.length > 1 ? CATEGORIES : FALLBACK_CATEGORIES;
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -98,7 +130,7 @@ export default function SearchBar({
                             <SelectValue placeholder={t("search_bar.cities.all")} />
                         </SelectTrigger>
                         <SelectContent>
-                            {CITIES.map((c) => (
+                            {finalCities.map((c) => (
                                 <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
                             ))}
                         </SelectContent>
@@ -155,7 +187,7 @@ export default function SearchBar({
                         <SelectValue placeholder={t("search_bar.categories.all")} />
                     </SelectTrigger>
                     <SelectContent>
-                        {CATEGORIES.map((cat) => (
+                        {finalCategories.map((cat) => (
                             <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
                         ))}
                     </SelectContent>

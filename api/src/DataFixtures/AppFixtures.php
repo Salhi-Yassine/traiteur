@@ -94,6 +94,26 @@ class AppFixtures extends Fixture
             ->setPassword($this->hasher->hashPassword($admin, 'admin123'));
         $manager->persist($admin);
 
+        // --- Cities ---
+        $cities = [
+            'Casablanca', 'Rabat', 'Fès', 'Tanger', 'Marrakech', 'Salé', 'Meknès', 'Agadir',
+            'Oujda', 'Kenitra', 'Tétouan', 'Safi', 'Temara', 'Inezgane', 'Mohammédia',
+            'Laâyoune', 'Khouribga', 'Béni Mellal', 'Nador', 'Taza', 'Aït Melloul',
+            'Settat', 'Barrechid', 'Khemisset', 'Guelmim', 'El Jadida', 'Errachidia',
+            'Ouarzazate', 'Tiznit', 'Essaouira', 'Ifrane', 'Azrou', 'Midelt', 'Larache',
+            'Ksar El Kebir', 'Berrechid', 'Benslimane', 'Sidi Slimane', 'Sidi Kacem',
+            'Skhirat', 'Oued Zem', 'Smara', 'Tan-Tan', 'Tarfaya', 'Boujdour', 'Dakhla'
+        ];
+
+        foreach ($cities as $cityName) {
+            \App\Factory\CityFactory::new(['name' => $cityName])->create();
+        }
+
+        $cityRepo = $manager->getRepository(\App\Entity\City::class);
+        $casablanca = $cityRepo->findOneBy(['name' => 'Casablanca']);
+        $rabat = $cityRepo->findOneBy(['name' => 'Rabat']);
+        $marrakech = $cityRepo->findOneBy(['name' => 'Marrakech']);
+
         // --- Vendor Profiles ---
         $profile1 = new VendorProfile();
         $profile1->setBusinessName('Festin Royal')
@@ -103,7 +123,7 @@ class AppFixtures extends Fixture
             ->setTags(['Traditional', 'Modern', 'Luxury', 'Fish', 'Meat'])
             ->setLanguagesSpoken(['ary', 'fr', 'en'])
             ->setWhatsapp('+212600000001')
-            ->setServiceArea('Casablanca, Rabat, Marrakech')
+            ->setServiceArea('Casablanca, Rabat, Marrakech') // Keep for compat
             ->setPriceRange(VendorProfile::PRICE_PREMIUM)
             ->setCoverImageUrl('https://images.unsplash.com/photo-1555244162-803834f70033?w=800')
             ->setGalleryImages([
@@ -116,6 +136,11 @@ class AppFixtures extends Fixture
             ->setIsFeatured(true)
             ->setSubscriptionTier('gold')
             ->setOwner($vendorUser1);
+        
+        if ($casablanca) $profile1->addCity($casablanca);
+        if ($rabat) $profile1->addCity($rabat);
+        if ($marrakech) $profile1->addCity($marrakech);
+
         $manager->persist($profile1);
 
         $profile2 = new VendorProfile();
@@ -126,7 +151,7 @@ class AppFixtures extends Fixture
             ->setTags(['Traditional', 'Elegance', 'Premium'])
             ->setLanguagesSpoken(['ary', 'fr'])
             ->setWhatsapp('+212600000002')
-            ->setServiceArea('Rabat')
+            ->setServiceArea('Rabat') // Keep for compat
             ->setPriceRange(VendorProfile::PRICE_LUXURY)
             ->setCoverImageUrl('https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800')
             ->setGalleryImages([
@@ -134,6 +159,9 @@ class AppFixtures extends Fixture
             ])
             ->setIsVerified(true)
             ->setOwner($vendorUser2);
+        
+        if ($rabat) $profile2->addCity($rabat);
+
         $manager->persist($profile2);
 
         // --- Menu Items ---

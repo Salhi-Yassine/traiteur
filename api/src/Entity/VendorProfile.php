@@ -37,6 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(SearchFilter::class, properties: ['serviceArea' => 'ipartial', 'businessName' => 'ipartial', 'category' => 'exact', 'priceRange' => 'exact'])]
 #[ORM\Entity(repositoryClass: VendorProfileRepository::class)]
 #[UniqueEntity(fields: ['slug'], message: 'This slug is already taken')]
+#[Gedmo\TranslationEntity(class: Translation::class)]
 class VendorProfile implements Translatable
 {
     public const PRICE_BUDGET = 'MAD';
@@ -172,6 +173,13 @@ class VendorProfile implements Translatable
     #[Groups(['vendor:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    /**
+     * @var Collection<int, City>
+     */
+    #[ORM\ManyToMany(targetEntity: City::class, inversedBy: 'vendorProfiles')]
+    #[Groups(['vendor:read', 'vendor:write'])]
+    private Collection $cities;
+
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'vendorProfile')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['vendor:read'])]
@@ -192,6 +200,7 @@ class VendorProfile implements Translatable
         $this->menuItems = new ArrayCollection();
         $this->reviews = new ArrayCollection();
         $this->quoteRequests = new ArrayCollection();
+        $this->cities = new ArrayCollection();
         $this->tags = [];
         $this->galleryImages = [];
         $this->languagesSpoken = ['ary', 'fr'];
@@ -277,6 +286,23 @@ class VendorProfile implements Translatable
 
     /** @return Collection<int, QuoteRequest> */
     public function getQuoteRequests(): Collection { return $this->quoteRequests; }
+
+    /** @return Collection<int, City> */
+    public function getCities(): Collection { return $this->cities; }
+
+    public function addCity(City $city): static
+    {
+        if (!$this->cities->contains($city)) {
+            $this->cities->add($city);
+        }
+        return $this;
+    }
+
+    public function removeCity(City $city): static
+    {
+        $this->cities->removeElement($city);
+        return $this;
+    }
 
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
     public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }

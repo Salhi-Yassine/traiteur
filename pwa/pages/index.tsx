@@ -11,6 +11,13 @@ import { useState, useEffect } from "react";
 
 interface HomeProps {
   featuredVendors: VendorCardProps[];
+  stats?: {
+    vendorCount: number;
+    cityCount: number;
+    averageRating: number;
+    reviewCount: number;
+    categoryCounts: Record<string, number>;
+  };
 }
 
 // Moroccan eight-pointed star SVG for section ornament dividers
@@ -51,7 +58,7 @@ const HERO_IMAGES = [
   },
 ];
 
-export default function HomePage({ featuredVendors }: HomeProps) {
+export default function HomePage({ featuredVendors, stats }: HomeProps) {
   const { t } = useTranslation("common");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -62,22 +69,24 @@ export default function HomePage({ featuredVendors }: HomeProps) {
     return () => clearInterval(timer);
   }, []);
 
-  const STATS = [
-    { value: "800+", label: t("home.stats.vendors") },
-    { value: "12",   label: t("home.stats.cities") },
-    { value: "100%", label: t("home.stats.verified") },
-    { value: "4.9",  label: t("home.stats.rating") },
+  const categoriesFromApi = stats?.categoryCounts || {};
+  
+  const EVENT_CATEGORIES = [
+    { label: t("home.categories.items.salles"),      icon: "🏛️",  category: "Salles",      count: categoriesFromApi["Salles"] || 0 },
+    { label: t("home.categories.items.photography"), icon: "📸",  category: "Photography", count: categoriesFromApi["Photography"] || 0  },
+    { label: t("home.categories.items.negrafa"),     icon: "👑",  category: "Negrafa",     count: categoriesFromApi["Negrafa"] || 0  },
+    { label: t("home.categories.items.catering"),    icon: "🍽️", category: "Catering",    count: categoriesFromApi["Catering"] || 0 },
+    { label: t("home.categories.items.decoration"),  icon: "🌸",  category: "Decoration",  count: categoriesFromApi["Decoration"] || 0  },
+    { label: t("home.categories.items.beauty"),      icon: "✋",  category: "Beauty",      count: categoriesFromApi["Beauty"] || 0  },
+    { label: t("home.categories.items.music"),       icon: "🎵",  category: "Music",       count: categoriesFromApi["Music"] || 0  },
+    { label: t("home.categories.items.transport"),   icon: "🚗",  category: "Transport",   count: categoriesFromApi["Transport"] || 0  },
   ];
 
-  const EVENT_CATEGORIES = [
-    { label: t("home.categories.items.salles"),      icon: "🏛️",  category: "Salles",      count: 142 },
-    { label: t("home.categories.items.photography"), icon: "📸",  category: "Photography", count: 98  },
-    { label: t("home.categories.items.negrafa"),     icon: "👑",  category: "Negrafa",     count: 67  },
-    { label: t("home.categories.items.catering"),    icon: "🍽️", category: "Catering",    count: 111 },
-    { label: t("home.categories.items.decoration"),  icon: "🌸",  category: "Decoration",  count: 89  },
-    { label: t("home.categories.items.beauty"),      icon: "✋",  category: "Beauty",      count: 54  },
-    { label: t("home.categories.items.music"),       icon: "🎵",  category: "Music",       count: 73  },
-    { label: t("home.categories.items.transport"),   icon: "🚗",  category: "Transport",   count: 38  },
+  const STATS = [
+    { value: stats ? `${stats.vendorCount}+` : "800+", label: t("home.stats.vendors") },
+    { value: stats ? `${stats.cityCount}` : "12",   label: t("home.stats.cities") },
+    { value: "100%", label: t("home.stats.verified") },
+    { value: stats ? `${stats.averageRating}` : "4.9",  label: t("home.stats.rating") },
   ];
 
   const HOW_IT_WORKS = [
@@ -376,16 +385,22 @@ export default function HomePage({ featuredVendors }: HomeProps) {
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://localhost";
-    // For now we still fetch in default, but since it's SSR/SSG we should ideally pass the locale if supported by API
-    // Our new LocaleListener expects Accept-Language
-    const res = await fetch(`${baseUrl}/api/vendor_profiles?isVerified=true&page=1&itemsPerPage=3`, {
-      headers: { 
-        Accept: "application/ld+json",
-        "Accept-Language": locale || 'fr' 
-      },
-    });
+    
+    // Fetch both vendors and stats in parallel
+    const [vendorsRes, statsRes] = await Promise.all([
+      fetch(`${baseUrl}/api/vendor_profiles?isVerified=true&page=1&itemsPerPage=3`, {
+        headers: { 
+          Accept: "application/ld+json",
+          "Accept-Language": locale || 'fr' 
+        },
+      }),
+      fetch(`${baseUrl}/api/app_stats`, {
+        headers: { Accept: "application/json" }
+      })
+    ]);
 
-    const members = res.ok ? (await res.json())["hydra:member"] ?? [] : [];
+    const members = vendorsRes.ok ? (await vendorsRes.json())["hydra:member"] ?? [] : [];
+    const stats = statsRes.ok ? await statsRes.json() : null;
 
     const featuredVendors: VendorCardProps[] = members.map((v: any) => ({
       id: v.id ?? 0,
@@ -404,6 +419,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     return { 
       props: { 
         featuredVendors,
+        stats,
         ...(await serverSideTranslations(locale ?? 'fr', ['common'])),
       }, 
       revalidate: 300 
