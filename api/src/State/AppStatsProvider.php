@@ -8,6 +8,7 @@ use App\Entity\AppStats;
 use App\Entity\VendorProfile;
 use App\Entity\Review;
 use App\Entity\City;
+use App\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AppStatsProvider implements ProviderInterface
@@ -41,8 +42,8 @@ class AppStatsProvider implements ProviderInterface
             ->getResult();
 
         $stats->availableCities = array_map(fn(City $c) => [
-            'name' => $c->getName(),
-            'slug' => $c->getSlug(),
+        'name' => $c->getName(),
+        'slug' => $c->getSlug(),
         ], $cities);
         $stats->cityCount = count($stats->availableCities);
 
@@ -55,17 +56,30 @@ class AppStatsProvider implements ProviderInterface
         $stats->reviewCount = (int)($reviewStats['count'] ?? 0);
         $stats->averageRating = round((float)($reviewStats['avg'] ?? 0.0), 1);
 
-        // Category counts
+        // Categories (only those with verified vendors)
+        $categoryRepo = $this->entityManager->getRepository(Category::class);
+        $availableCategories = $categoryRepo->createQueryBuilder('cat')
+            ->getQuery()
+            ->setHint(\Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER, 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker')
+            ->getResult();
+
+        $stats->availableCategories = array_map(fn(Category $c) => [
+        'name' => $c->getName(),
+        'slug' => $c->getSlug(),
+        ], $availableCategories);
+
+        // Category counts (for legacy support if needed, or update to use slugs)
         $categories = $vendorRepo->createQueryBuilder('v')
-            ->select('v.category, COUNT(v.id) as count')
+            ->join('v.category', 'cat')
+            ->select('cat.slug, COUNT(v.id) as count')
             ->where('v.isVerified = :verified')
             ->setParameter('verified', true)
-            ->groupBy('v.category')
+            ->groupBy('cat.slug')
             ->getQuery()
             ->getResult();
 
         foreach ($categories as $cat) {
-            $stats->categoryCounts[$cat['category']] = (int)$cat['count'];
+            $stats->categoryCounts[$cat['slug']] = (int)$cat['count'];
         }
 
         return $stats;

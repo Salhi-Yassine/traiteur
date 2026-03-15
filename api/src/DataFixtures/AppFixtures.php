@@ -9,6 +9,7 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
+        \App\Story\InitialAppStory::setEntityManager($manager);
         \App\Story\InitialAppStory::load();
     }
 }

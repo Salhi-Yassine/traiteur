@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['vendor:write']],
     order: ['averageRating' => 'DESC'],
 )]
-#[ApiFilter(SearchFilter::class, properties: ['cities.slug' => 'exact', 'serviceArea' => 'ipartial', 'businessName' => 'ipartial', 'category' => 'exact', 'priceRange' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['cities.slug' => 'exact', 'serviceArea' => 'ipartial', 'businessName' => 'ipartial', 'category.slug' => 'exact', 'priceRange' => 'exact'])]
 #[ORM\Entity(repositoryClass: VendorProfileRepository::class)]
 #[UniqueEntity(fields: ['slug'], message: 'This slug is already taken')]
 #[Gedmo\TranslationEntity(class: Translation::class)]
@@ -72,10 +72,10 @@ class VendorProfile implements Translatable
     #[Groups(['vendor:read', 'vendor:write'])]
     private ?string $tagline = null;
 
-    #[ORM\Column(length: 50)]
-    #[Assert\NotBlank]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'vendorProfiles')]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(['vendor:read', 'vendor:write'])]
-    private string $category = '';
+    private ?Category $category = null;
 
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank]
@@ -221,8 +221,8 @@ class VendorProfile implements Translatable
     public function getTagline(): ?string { return $this->tagline; }
     public function setTagline(?string $tagline): static { $this->tagline = $tagline; return $this; }
 
-    public function getCategory(): string { return $this->category; }
-    public function setCategory(string $category): static { $this->category = $category; return $this; }
+    public function getCategory(): ?Category { return $this->category; }
+    public function setCategory(?Category $category): static { $this->category = $category; return $this; }
 
     public function getDescription(): string { return $this->description; }
     public function setDescription(string $description): static { $this->description = $description; return $this; }

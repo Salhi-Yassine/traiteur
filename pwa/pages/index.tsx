@@ -72,14 +72,14 @@ export default function HomePage({ featuredVendors, stats }: HomeProps) {
   const categoriesFromApi = stats?.categoryCounts || {};
   
   const EVENT_CATEGORIES = [
-    { label: t("home.categories.items.salles"),      icon: "🏛️",  category: "Salles",      count: categoriesFromApi["Salles"] || 0 },
-    { label: t("home.categories.items.photography"), icon: "📸",  category: "Photography", count: categoriesFromApi["Photography"] || 0  },
-    { label: t("home.categories.items.negrafa"),     icon: "👑",  category: "Negrafa",     count: categoriesFromApi["Negrafa"] || 0  },
-    { label: t("home.categories.items.catering"),    icon: "🍽️", category: "Catering",    count: categoriesFromApi["Catering"] || 0 },
-    { label: t("home.categories.items.decoration"),  icon: "🌸",  category: "Decoration",  count: categoriesFromApi["Decoration"] || 0  },
-    { label: t("home.categories.items.beauty"),      icon: "✋",  category: "Beauty",      count: categoriesFromApi["Beauty"] || 0  },
-    { label: t("home.categories.items.music"),       icon: "🎵",  category: "Music",       count: categoriesFromApi["Music"] || 0  },
-    { label: t("home.categories.items.transport"),   icon: "🚗",  category: "Transport",   count: categoriesFromApi["Transport"] || 0  },
+    { label: t("home.categories.items.salles"),      icon: "🏛️",  category: "salles",      count: categoriesFromApi["salles"] || 0 },
+    { label: t("home.categories.items.photography"), icon: "📸",  category: "photography", count: categoriesFromApi["photography"] || 0  },
+    { label: t("home.categories.items.negrafa"),     icon: "👑",  category: "negrafa",     count: categoriesFromApi["negrafa"] || 0  },
+    { label: t("home.categories.items.catering"),    icon: "🍽️", category: "catering",    count: categoriesFromApi["catering"] || 0 },
+    { label: t("home.categories.items.decoration"),  icon: "🌸",  category: "decoration",  count: categoriesFromApi["decoration"] || 0  },
+    { label: t("home.categories.items.beauty"),      icon: "✋",  category: "beauty",      count: categoriesFromApi["beauty"] || 0  },
+    { label: t("home.categories.items.music"),       icon: "🎵",  category: "music",       count: categoriesFromApi["music"] || 0  },
+    { label: t("home.categories.items.transport"),   icon: "🚗",  category: "transport",   count: categoriesFromApi["transport"] || 0  },
   ];
 
   const STATS = [
@@ -114,7 +114,7 @@ export default function HomePage({ featuredVendors, stats }: HomeProps) {
       businessName: "Palais des Roses",
       tagline: "Un cadre idyllique pour votre mariage de rêve à Casablanca",
       serviceArea: "Casablanca",
-      category: "Salles",
+      category: { name: "Salles", slug: "salles" },
       priceRange: "MADMADMAD",
       coverImageUrl: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80",
       averageRating: 4.9,
@@ -127,7 +127,7 @@ export default function HomePage({ featuredVendors, stats }: HomeProps) {
       businessName: "Négafa Dar El Makhzen",
       tagline: "Le raffinement des tenues traditionnelles — Fès",
       serviceArea: "Fès",
-      category: "Negrafa",
+      category: { name: "Negrafa", slug: "negafa" },
       priceRange: "MADMADMAD+",
       coverImageUrl: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&q=80",
       averageRating: 5.0,
@@ -235,7 +235,7 @@ export default function HomePage({ featuredVendors, stats }: HomeProps) {
             {EVENT_CATEGORIES.map(({ label, icon, category, count }) => (
               <Link
                 key={label}
-                href={`/vendors?category=${category}`}
+                href={`/vendors?category.slug=${category}`}
                 className="group relative bg-white border border-[#DDDDDD] rounded-[24px] flex flex-col items-center justify-center gap-4 p-6 min-h-[160px]
                   shadow-[0_1px_2px_rgba(0,0,0,0.08)] hover:shadow-[0_2px_12px_rgba(0,0,0,0.10)]
                   hover:-translate-y-[2px] transition-all duration-200 ease-out overflow-hidden"
@@ -408,7 +408,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
       businessName: v.businessName,
       tagline: v.tagline,
       serviceArea: v.serviceArea,
-      category: v.category ?? "Other",
+      category: v.category ?? { name: "Other", slug: "other" },
       priceRange: v.priceRange,
       coverImageUrl: v.coverImageUrl,
       averageRating: v.averageRating ? parseFloat(v.averageRating) : undefined,

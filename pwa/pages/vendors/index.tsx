@@ -16,7 +16,7 @@ interface VendorsPageProps {
     total: number;
     page: number;
     serviceArea: string;
-    category: string;
+    category: { name: string, slug: string } | null;
 }
 
 const ITEMS_PER_PAGE = 12;
@@ -28,7 +28,7 @@ const FALLBACK_VENDORS: VendorCardProps[] = [
         businessName: "Palais des Roses",
         tagline: "Un cadre idyllique pour votre mariage de rêve à Casablanca",
         serviceArea: "Casablanca",
-        category: "Salles",
+        category: { name: "Salles", slug: "salles" },
         priceRange: "MADMADMAD",
         coverImageUrl: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80",
         averageRating: 4.9,
@@ -41,7 +41,7 @@ const FALLBACK_VENDORS: VendorCardProps[] = [
         businessName: "Traiteur El Bahia",
         tagline: "L'excellence de la gastronomie marocaine traditionnelle",
         serviceArea: "Rabat",
-        category: "Catering",
+        category: { name: "Catering", slug: "catering" },
         priceRange: "MADMAD",
         coverImageUrl: "https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80",
         averageRating: 4.8,
@@ -54,7 +54,7 @@ const FALLBACK_VENDORS: VendorCardProps[] = [
         businessName: "Négafa Dar El Makhzen",
         tagline: "Le raffinement des tenues traditionnelles pour une mariée sublime",
         serviceArea: "Fès",
-        category: "Negrafa",
+        category: { name: "Negrafa", slug: "negafa" },
         priceRange: "MADMADMAD+",
         coverImageUrl: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&q=80",
         averageRating: 5.0,
@@ -75,7 +75,7 @@ export default function VendorsPage({
     const { t } = useTranslation("common");
     const router = useRouter();
     const [selected, setSelected] = useState({
-        category: category ? [category] : [],
+        category: category ? [category.slug] : [] as string[],
         priceRanges: [] as string[]
     });
 
@@ -133,7 +133,7 @@ export default function VendorsPage({
                             {displayTotal} {t("home.categories.count_suffix")} {t("vendor_card.verified")} au Maroc
                         </p>
                     </div>
-                    <SearchBar variant="page" initialLocation={serviceArea} initialCategory={category} />
+                    <SearchBar variant="page" initialLocation={serviceArea} initialCategory={category?.slug || "all"} />
                 </div>
             </div>
 
@@ -262,8 +262,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query, locale }) 
             page: String(page),
             itemsPerPage: String(ITEMS_PER_PAGE),
         });
-        if (serviceArea) params.set("serviceArea", serviceArea);
-        if (category) params.set("category", category);
+        if (serviceArea) params.set("cities.slug", serviceArea);
+        if (category) params.set("category.slug", category);
 
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://localhost";
         const res = await fetch(`${baseUrl}/api/vendor_profiles?${params}`, {
@@ -284,7 +284,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query, locale }) 
             businessName: v.businessName as string,
             tagline: v.tagline as string | undefined,
             serviceArea: v.serviceArea as string,
-            category: v.category as string,
+            category: v.category as { name: string, slug: string },
             priceRange: v.priceRange as string,
             coverImageUrl: v.coverImageUrl as string | undefined,
             averageRating: v.averageRating ? parseFloat(v.averageRating as string) : undefined,
@@ -298,7 +298,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query, locale }) 
                 total, 
                 page, 
                 serviceArea, 
-                category,
+                category: (members.find(m => (m.category as any)?.slug === category)?.category as { name: string, slug: string }) || null,
                 ...(await serverSideTranslations(locale || "fr", ["common"]))
             } 
         };

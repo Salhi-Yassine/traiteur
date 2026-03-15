@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { useTranslation } from "next-i18next";
+import { ChevronRight } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
 
 interface FilterSidebarProps {
@@ -12,14 +13,14 @@ interface FilterSidebarProps {
 }
 
 const ALL_CATEGORIES = [
-    { value: "Salles",      label: "Salles de Fête" },
-    { value: "Catering",    label: "Traiteurs" },
-    { value: "Negrafa",     label: "Négafas" },
-    { value: "Photography", label: "Photographes" },
-    { value: "Music",       label: "DJs & Orchestres" },
-    { value: "Decoration",  label: "Décoration" },
-    { value: "Beauty",      label: "Beauté" },
-    { value: "Transport",   label: "Transport" },
+    { value: "salles",      label: "Salles de Fête" },
+    { value: "catering",    label: "Traiteurs" },
+    { value: "negafa",      label: "Négafas" },
+    { value: "photography", label: "Photographes" },
+    { value: "music",       icon: "🎵", label: "DJs & Orchestres" },
+    { value: "decoration",  label: "Décoration" },
+    { value: "beauty",      label: "Beauté" },
+    { value: "transport",   label: "Transport" },
 ];
 
 const ALL_PRICE_RANGES = [
@@ -89,9 +90,7 @@ export default function FilterSidebar({ selected, onChange, onClear }: FilterSid
                         </p>
                         <button className="text-[13px] font-semibold text-[#E8472A] hover:text-[#C43A20] transition-colors flex items-center gap-1">
                             {t("filters.contact_us")}
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
+                            <ChevronRight className="w-3.5 h-3.5" />
                         </button>
                     </div>
                 </div>

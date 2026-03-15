@@ -41,4 +41,10 @@ class AppStats
      */
     #[Groups(['stats:read'])]
     public array $availableCities = [];
+
+    /**
+     * @var array<int, array{name: string, slug: string}>
+     */
+    #[Groups(['stats:read'])]
+    public array $availableCategories = [];
 }

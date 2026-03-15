@@ -5,6 +5,7 @@ namespace App\Story;
 use App\Entity\User;
 use App\Entity\VendorProfile;
 use App\Factory\BudgetItemFactory;
+use App\Factory\CategoryFactory;
 use App\Factory\CityFactory;
 use App\Factory\GuestFactory;
 use App\Factory\MenuItemFactory;
@@ -18,8 +19,20 @@ use Zenstruck\Foundry\Story;
 
 final class InitialAppStory extends Story
 {
+    private static ?\Doctrine\Persistence\ObjectManager $em = null;
+
+    public static function setEntityManager(\Doctrine\Persistence\ObjectManager $em): void
+    {
+        self::$em = $em;
+    }
+
     public function build(): void
     {
+        $em = self::$em;
+        if (!$em) {
+            // Fallback for cases where setEntityManager wasn't called (e.g. tests)
+            // This might still fail but at least we tried.
+        }
         // --- Permissions ---
         $perms = [];
         foreach ([
@@ -122,14 +135,14 @@ final class InitialAppStory extends Story
 
         $cityFactories = [];
         foreach ($cities as $cityName => $arabicName) {
-            $city = CityFactory::createOne(['name' => $cityName])->_real();
+            $city = CityFactory::createOne(['name' => $cityName]);
             $cityFactories[$cityName] = $city;
             
             /** @var \Gedmo\Translatable\Entity\Repository\TranslationRepository $repo */
-            $repo = CityFactory::repository()->_repository()->getEntityManager()->getRepository(\App\Entity\Translation::class);
+            $repo = $em->getRepository(\App\Entity\Translation::class);
             $repo->translate($city, 'name', 'ar', $arabicName);
         }
-        CityFactory::repository()->_repository()->getEntityManager()->flush();
+        $em->flush();
 
         // --- Wedding Profile ---
         $wedding = WeddingProfileFactory::createOne([
@@ -145,10 +158,33 @@ final class InitialAppStory extends Story
         GuestFactory::createOne(['weddingProfile' => $wedding, 'fullName' => 'Salma Bennani', 'side' => 'bride', 'rsvpStatus' => 'pending']);
         BudgetItemFactory::createOne(['weddingProfile' => $wedding, 'category' => 'Venue & Catering', 'budgetedAmount' => 150000, 'spentAmount' => 50000]);
 
+        // --- Categories ---
+        $catData = [
+            'Catering' => 'تموين الحفلات',
+            'Salles' => 'قاعات الأفراح',
+            'Negrafa' => 'نكافة',
+            'Photography' => 'تصوير فوتوغرافي',
+            'Orchestra' => 'أوركسترا',
+            'Patisserie' => 'حلويات',
+            'Hennaya' => 'نقاشة الحناء',
+            'Makeup' => 'حلاقة و تجميل',
+        ];
+
+        $categoryFactories = [];
+        foreach ($catData as $catName => $arabicName) {
+            $category = CategoryFactory::createOne(['name' => $catName]);
+            $categoryFactories[$catName] = $category;
+
+            /** @var \Gedmo\Translatable\Entity\Repository\TranslationRepository $repo */
+            $repo = $em->getRepository(\App\Entity\Translation::class);
+            $repo->translate($category, 'name', 'ar', $arabicName);
+        }
+        $em->flush();
+
         // --- Vendor Profiles ---
         $profile1 = VendorProfileFactory::createOne([
             'businessName' => 'Festin Royal',
-            'category' => 'Catering',
+            'category' => $categoryFactories['Catering'],
             'tagline' => 'Cuisine marocaine authentique pour vos événements mémorables',
             'description' => 'Festin Royal est un service traiteur haut de gamme basé à Casablanca...',
             'languagesSpoken' => ['ary', 'fr', 'en'],
@@ -159,7 +195,7 @@ final class InitialAppStory extends Story
 
         $profile2 = VendorProfileFactory::createOne([
             'businessName' => 'Negrafa Majesty',
-            'category' => 'Negrafa',
+            'category' => $categoryFactories['Negrafa'],
             'tagline' => 'L\'élégance de la mariée marocaine',
             'owner' => $vendorUser2,
             'cities' => [$cityFactories['Rabat']],

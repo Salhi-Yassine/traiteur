@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Search, MapPin, LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SearchBarProps {
@@ -29,7 +29,12 @@ export default function SearchBar({
     const [category, setCategory] = useState(initialCategory || "all");
     const [openCity, setOpenCity] = useState(false);
     const [openPageCity, setOpenPageCity] = useState(false);
-    const [dynamicOptions, setDynamicOptions] = useState<{ cities: { name: string, slug: string }[], categories: string[] }>({
+    const [openCategory, setOpenCategory] = useState(false);
+    const [openPageCategory, setOpenPageCategory] = useState(false);
+    const [dynamicOptions, setDynamicOptions] = useState<{ 
+        cities: { name: string, slug: string }[], 
+        categories: { name: string, slug: string }[] 
+    }>({
         cities: [],
         categories: []
     });
@@ -47,7 +52,7 @@ export default function SearchBar({
                     const data = await res.json();
                     setDynamicOptions({
                         cities: data.availableCities || [],
-                        categories: Object.keys(data.categoryCounts || {})
+                        categories: data.availableCategories || []
                     });
                 }
             } catch (err) {
@@ -79,8 +84,8 @@ export default function SearchBar({
     const CATEGORIES = [
         { value: "all", label: t("search_bar.categories.all") },
         ...dynamicOptions.categories.map(cat => ({
-            value: cat,
-            label: t(`search_bar.categories.${cat.toLowerCase()}`, { defaultValue: cat })
+            value: cat.slug,
+            label: cat.name
         }))
     ];
 
@@ -99,7 +104,7 @@ export default function SearchBar({
         const params = new URLSearchParams();
         if (query.trim()) params.set("q", query.trim());
         if (city && city !== "all") params.set("cities.slug", city);
-        if (category && category !== "all") params.set("category", category);
+        if (category && category !== "all") params.set("category.slug", category);
         router.push(`/vendors?${params.toString()}`);
     };
 
@@ -113,9 +118,7 @@ export default function SearchBar({
             >
                 {/* Text input */}
                 <div className="flex-1 flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#F7F7F7] transition-colors group">
-                    <svg className="w-4 h-4 text-[#B0B0B0] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                    <Search className="w-4 h-4 text-[#B0B0B0] shrink-0" />
                     <Input
                         type="text"
                         id="hero-search-input"
@@ -129,12 +132,62 @@ export default function SearchBar({
                 {/* Divider */}
                 <div className="hidden sm:block w-px bg-[#DDDDDD] self-stretch my-2" />
 
+                {/* Category select */}
+                <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#F7F7F7] transition-colors relative">
+                    <LayoutGrid className="w-4 h-4 text-[#B0B0B0] shrink-0" />
+                    <Popover open={openCategory} onOpenChange={setOpenCategory}>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                role="combobox"
+                                aria-expanded={openCategory}
+                                className="w-[140px] justify-between border-none shadow-none focus:ring-0 bg-transparent px-0 text-[14px] text-[#484848] hover:bg-transparent font-normal h-auto"
+                            >
+                                <span className="truncate">
+                                    {category && category !== "all"
+                                        ? finalCategories.find((c) => c.value.toLowerCase() === category.toLowerCase())?.label
+                                        : t("search_bar.categories.all")}
+                                </span>
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[200px] p-0" align="start">
+                            <Command>
+                                <CommandInput placeholder={t("search_bar.cat_label")} />
+                                <CommandList>
+                                    <CommandEmpty>{t("search_bar.no_results", { defaultValue: "No results found." })}</CommandEmpty>
+                                    <CommandGroup>
+                                        {finalCategories.map((c) => (
+                                            <CommandItem
+                                                key={c.value}
+                                                value={`${c.value} ${c.label}`}
+                                                onSelect={() => {
+                                                    setCategory(c.value === category ? "all" : c.value);
+                                                    setOpenCategory(false);
+                                                }}
+                                            >
+                                                <Check
+                                                    className={cn(
+                                                        "mr-2 h-4 w-4",
+                                                        category.toLowerCase() === c.value.toLowerCase() ? "opacity-100" : "opacity-0"
+                                                    )}
+                                                />
+                                                {c.label}
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </CommandList>
+                            </Command>
+                        </PopoverContent>
+                    </Popover>
+                </div>
+
+                {/* Divider */}
+                <div className="hidden sm:block w-px bg-[#DDDDDD] self-stretch my-2" />
+
                 {/* City select */}
                 <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#F7F7F7] transition-colors relative">
-                    <svg className="w-4 h-4 text-[#B0B0B0] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
+                    <MapPin className="w-4 h-4 text-[#B0B0B0] shrink-0" />
                     <Popover open={openCity} onOpenChange={setOpenCity}>
                         <PopoverTrigger asChild>
                             <Button
@@ -201,9 +254,7 @@ export default function SearchBar({
             role="search"
         >
             <div className="flex-[2] flex items-center gap-3 bg-white border-[1.5px] border-[#DDDDDD] rounded-lg px-4 h-12 focus-within:border-[#1A1A1A] focus-within:shadow-[0_0_0_3px_rgba(26,26,26,0.08)] transition-all">
-                <svg className="w-4 h-4 text-[#B0B0B0] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                <Search className="w-4 h-4 text-[#B0B0B0] shrink-0" />
                 <Input
                     type="text"
                     value={query}
@@ -262,16 +313,51 @@ export default function SearchBar({
             </div>
 
             <div className="flex-1">
-                <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger id="page-category-select" aria-label={t("search_bar.cat_label")} className="h-12 border-[1.5px] border-[#DDDDDD] rounded-lg px-4 text-[14px] text-[#484848] focus:ring-0 focus:border-[#1A1A1A]">
-                        <SelectValue placeholder={t("search_bar.categories.all")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {finalCategories.map((cat) => (
-                            <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                <Popover open={openPageCategory} onOpenChange={setOpenPageCategory}>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openPageCategory}
+                            className="w-full h-12 justify-between border-[1.5px] border-[#DDDDDD] rounded-lg px-4 text-[14px] text-[#484848] font-normal"
+                        >
+                            <span className="truncate">
+                                {category && category !== "all"
+                                    ? finalCategories.find((cat) => cat.value.toLowerCase() === category.toLowerCase())?.label
+                                    : t("search_bar.categories.all")}
+                            </span>
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0" align="start">
+                        <Command>
+                            <CommandInput placeholder={t("search_bar.cat_label")} />
+                            <CommandList>
+                                <CommandEmpty>{t("search_bar.no_results", { defaultValue: "No results found." })}</CommandEmpty>
+                                <CommandGroup>
+                                    {finalCategories.map((cat) => (
+                                        <CommandItem
+                                            key={cat.value}
+                                            value={`${cat.value} ${cat.label}`}
+                                            onSelect={() => {
+                                                setCategory(cat.value === category ? "all" : cat.value);
+                                                setOpenPageCategory(false);
+                                            }}
+                                        >
+                                            <Check
+                                                className={cn(
+                                                    "mr-2 h-4 w-4",
+                                                    category.toLowerCase() === cat.value.toLowerCase() ? "opacity-100" : "opacity-0"
+                                                )}
+                                            />
+                                            {cat.label}
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            </CommandList>
+                        </Command>
+                    </PopoverContent>
+                </Popover>
             </div>
 
             <Button
