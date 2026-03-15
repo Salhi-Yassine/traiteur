@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['vendor:write']],
     order: ['averageRating' => 'DESC'],
 )]
-#[ApiFilter(SearchFilter::class, properties: ['serviceArea' => 'ipartial', 'businessName' => 'ipartial', 'category' => 'exact', 'priceRange' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['cities.slug' => 'exact', 'serviceArea' => 'ipartial', 'businessName' => 'ipartial', 'category' => 'exact', 'priceRange' => 'exact'])]
 #[ORM\Entity(repositoryClass: VendorProfileRepository::class)]
 #[UniqueEntity(fields: ['slug'], message: 'This slug is already taken')]
 #[Gedmo\TranslationEntity(class: Translation::class)]

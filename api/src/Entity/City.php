@@ -41,7 +41,7 @@ class City implements Translatable
     #[Assert\NotBlank]
     #[Gedmo\Translatable]
     #[Groups(['city:read', 'city:write', 'vendor:read'])]
-    private string $name = '';
+    private ?string $name = null;
 
     #[ORM\Column(length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
@@ -72,7 +72,7 @@ class City implements Translatable
 
     public function getName(): string
     {
-        return $this->name;
+        return $this->name ?? '';
     }
 
     public function setName(string $name): static

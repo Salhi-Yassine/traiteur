@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  *
  * The frontend passes the active Next.js router.locale as the Accept-Language header.
  */
-#[AsEventListener(event: KernelEvents::REQUEST, priority: 20)]
+#[AsEventListener(event: KernelEvents::REQUEST, priority: 100)]
 class LocaleListener
 {
     private const SUPPORTED_LOCALES = ['fr', 'ar', 'ary', 'en'];
@@ -37,10 +37,30 @@ class LocaleListener
         // Symfony's getPreferredLanguage finds the best match from supported list.
         $locale = $request->getPreferredLanguage(self::SUPPORTED_LOCALES) ?? self::DEFAULT_LOCALE;
 
+        // Tell Symfony about the locale
+        $request->setLocale($locale);
+
         // Tell Gedmo which locale to use when hydrating entities
         $this->translatableListener->setTranslatableLocale($locale);
 
-        // Always fall back to French if a translation is missing
+        // Always fall back to the value in the main table if a translation is missing
+        $this->translatableListener->setTranslationFallback(true);
         $this->translatableListener->setDefaultLocale(self::DEFAULT_LOCALE);
+
+        error_log(sprintf(
+            '[LocaleListener] Request: %s %s | Locale set to: %s | Accept-Language: %s | Listener Hash: %s',
+            $request->getMethod(),
+            $request->getRequestUri(),
+            $locale,
+            $request->headers->get('Accept-Language', 'NONE'),
+            spl_object_hash($this->translatableListener)
+        ));
+    }
+
+    #[AsEventListener(event: KernelEvents::RESPONSE)]
+    public function onKernelResponse(\Symfony\Component\HttpKernel\Event\ResponseEvent $event): void
+    {
+        $response = $event->getResponse();
+        $response->setVary('Accept-Language', false); // false means 'don't replace, just add'
     }
 }

@@ -243,6 +243,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->userRoles;
     }
 
+    public function setUserRoles(Collection|array $userRoles): static
+    {
+        if ($userRoles instanceof Collection) {
+            $this->userRoles = $userRoles;
+        } else {
+            $this->userRoles = new ArrayCollection($userRoles);
+        }
+        return $this;
+    }
+
     public function addRoleEntity(Role $role): static
     {
         if (!$this->userRoles->contains($role)) {

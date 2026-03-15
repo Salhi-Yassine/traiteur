@@ -23,7 +23,7 @@ export default function SearchBar({
     const [query, setQuery] = useState(initialLocation);
     const [city, setCity] = useState(initialLocation || "all");
     const [category, setCategory] = useState(initialCategory || "all");
-    const [dynamicOptions, setDynamicOptions] = useState<{ cities: string[], categories: string[] }>({
+    const [dynamicOptions, setDynamicOptions] = useState<{ cities: {name: string, slug: string}[], categories: string[] }>({
         cities: [],
         categories: []
     });
@@ -32,7 +32,11 @@ export default function SearchBar({
         const fetchOptions = async () => {
             try {
                 const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://localhost";
-                const res = await fetch(`${baseUrl}/api/app_stats`);
+                const res = await fetch(`${baseUrl}/api/app_stats`, {
+                    headers: {
+                        'Accept-Language': router.locale || 'fr'
+                    }
+                });
                 if (res.ok) {
                     const data = await res.json();
                     setDynamicOptions({
@@ -45,13 +49,13 @@ export default function SearchBar({
             }
         };
         fetchOptions();
-    }, []);
+    }, [router.locale]);
 
     const CITIES = [
         { value: "all", label: t("search_bar.cities.all") },
         ...dynamicOptions.cities.map(c => ({
-            value: c,
-            label: t(`search_bar.cities.${c.toLowerCase().replace(/\s+/g, '_')}`, { defaultValue: c })
+            value: c.slug,
+            label: c.name
         }))
     ];
 
@@ -88,7 +92,7 @@ export default function SearchBar({
         e.preventDefault();
         const params = new URLSearchParams();
         if (query.trim()) params.set("q", query.trim());
-        if (city && city !== "all") params.set("serviceArea", city);
+        if (city && city !== "all") params.set("cities.slug", city);
         if (category && category !== "all") params.set("category", category);
         router.push(`/vendors?${params.toString()}`);
     };

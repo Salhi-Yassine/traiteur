@@ -37,7 +37,7 @@ class AppStats
     public array $categoryCounts = [];
 
     /**
-     * @var string[]
+     * @var array<int, array{name: string, slug: string}>
      */
     #[Groups(['stats:read'])]
     public array $availableCities = [];
