@@ -5,6 +5,10 @@ import { useTranslation } from "next-i18next";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SearchBarProps {
     initialLocation?: string;
@@ -23,7 +27,9 @@ export default function SearchBar({
     const [query, setQuery] = useState(initialLocation);
     const [city, setCity] = useState(initialLocation || "all");
     const [category, setCategory] = useState(initialCategory || "all");
-    const [dynamicOptions, setDynamicOptions] = useState<{ cities: {name: string, slug: string}[], categories: string[] }>({
+    const [openCity, setOpenCity] = useState(false);
+    const [openPageCity, setOpenPageCity] = useState(false);
+    const [dynamicOptions, setDynamicOptions] = useState<{ cities: { name: string, slug: string }[], categories: string[] }>({
         cities: [],
         categories: []
     });
@@ -61,11 +67,11 @@ export default function SearchBar({
 
     const FALLBACK_CITIES = [
         { value: "all", label: t("search_bar.cities.all") },
-        { value: "Casablanca", label: t("search_bar.cities.casablanca", { defaultValue: "Casablanca" }) },
-        { value: "Marrakech", label: t("search_bar.cities.marrakech", { defaultValue: "Marrakech" }) },
-        { value: "Rabat", label: t("search_bar.cities.rabat", { defaultValue: "Rabat" }) },
-        { value: "Fès", label: t("search_bar.cities.fes", { defaultValue: "Fès" }) },
-        { value: "Tanger", label: t("search_bar.cities.tanger", { defaultValue: "Tanger" }) },
+        { value: "casablanca", label: t("search_bar.cities.casablanca", { defaultValue: "Casablanca" }) },
+        { value: "marrakech", label: t("search_bar.cities.marrakech", { defaultValue: "Marrakech" }) },
+        { value: "rabat", label: t("search_bar.cities.rabat", { defaultValue: "Rabat" }) },
+        { value: "fes", label: t("search_bar.cities.fes", { defaultValue: "Fès" }) },
+        { value: "tanger", label: t("search_bar.cities.tanger", { defaultValue: "Tanger" }) },
     ];
 
     const finalCities = CITIES.length > 1 ? CITIES : FALLBACK_CITIES;
@@ -124,21 +130,56 @@ export default function SearchBar({
                 <div className="hidden sm:block w-px bg-[#DDDDDD] self-stretch my-2" />
 
                 {/* City select */}
-                <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#F7F7F7] transition-colors">
+                <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#F7F7F7] transition-colors relative">
                     <svg className="w-4 h-4 text-[#B0B0B0] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    <Select value={city} onValueChange={setCity}>
-                        <SelectTrigger id="hero-city-select" aria-label={t("search_bar.city_label")} className="w-[140px] border-none shadow-none focus:ring-0 bg-transparent px-0 text-[14px] text-[#484848] focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-none outline-none">
-                            <SelectValue placeholder={t("search_bar.cities.all")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {finalCities.map((c) => (
-                                <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <Popover open={openCity} onOpenChange={setOpenCity}>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                role="combobox"
+                                aria-expanded={openCity}
+                                className="w-[140px] justify-between border-none shadow-none focus:ring-0 bg-transparent px-0 text-[14px] text-[#484848] hover:bg-transparent font-normal h-auto"
+                            >
+                                <span className="truncate">
+                                    {city && city !== "all"
+                                        ? finalCities.find((c) => c.value.toLowerCase() === city.toLowerCase())?.label
+                                        : t("search_bar.cities.all")}
+                                </span>
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[200px] p-0" align="start">
+                            <Command>
+                                <CommandInput placeholder={t("search_bar.city_label")} />
+                                <CommandList>
+                                    <CommandEmpty>{t("search_bar.no_results", { defaultValue: "No results found." })}</CommandEmpty>
+                                    <CommandGroup>
+                                        {finalCities.map((c) => (
+                                            <CommandItem
+                                                key={c.value}
+                                                value={`${c.value} ${c.label}`}
+                                                onSelect={() => {
+                                                    setCity(c.value === city ? "all" : c.value);
+                                                    setOpenCity(false);
+                                                }}
+                                            >
+                                                <Check
+                                                    className={cn(
+                                                        "mr-2 h-4 w-4",
+                                                        city.toLowerCase() === c.value.toLowerCase() ? "opacity-100" : "opacity-0"
+                                                    )}
+                                                />
+                                                {c.label}
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </CommandList>
+                            </Command>
+                        </PopoverContent>
+                    </Popover>
                 </div>
 
                 {/* CTA */}
@@ -171,18 +212,53 @@ export default function SearchBar({
                     className="flex-1 bg-transparent text-[15px] border-none shadow-none focus-visible:ring-0 px-0 outline-none font-[400] text-[#1A1A1A] placeholder:text-[#B0B0B0]"
                 />
             </div>
-            
+
             <div className="flex-1">
-                <Select value={city} onValueChange={setCity}>
-                    <SelectTrigger id="page-city-select" aria-label={t("search_bar.city_label")} className="h-12 border-[1.5px] border-[#DDDDDD] rounded-lg px-4 text-[14px] text-[#484848] focus:ring-0 focus:border-[#1A1A1A]">
-                        <SelectValue placeholder={t("search_bar.cities.all")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {CITIES.map((c) => (
-                            <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                <Popover open={openPageCity} onOpenChange={setOpenPageCity}>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openPageCity}
+                            className="w-full h-12 justify-between border-[1.5px] border-[#DDDDDD] rounded-lg px-4 text-[14px] text-[#484848] font-normal"
+                        >
+                            <span className="truncate">
+                                {city && city !== "all"
+                                    ? finalCities.find((c) => c.value.toLowerCase() === city.toLowerCase())?.label
+                                    : t("search_bar.cities.all")}
+                            </span>
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0" align="start">
+                        <Command>
+                            <CommandInput placeholder={t("search_bar.city_label")} />
+                            <CommandList>
+                                <CommandEmpty>{t("search_bar.no_results", { defaultValue: "No results found." })}</CommandEmpty>
+                                <CommandGroup>
+                                    {finalCities.map((c) => (
+                                        <CommandItem
+                                            key={c.value}
+                                            value={`${c.value} ${c.label}`}
+                                            onSelect={() => {
+                                                setCity(c.value === city ? "all" : c.value);
+                                                setOpenPageCity(false);
+                                            }}
+                                        >
+                                            <Check
+                                                className={cn(
+                                                    "mr-2 h-4 w-4",
+                                                    city.toLowerCase() === c.value.toLowerCase() ? "opacity-100" : "opacity-0"
+                                                )}
+                                            />
+                                            {c.label}
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            </CommandList>
+                        </Command>
+                    </PopoverContent>
+                </Popover>
             </div>
 
             <div className="flex-1">
