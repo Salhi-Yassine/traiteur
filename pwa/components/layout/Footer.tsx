@@ -35,10 +35,8 @@ export default function Footer() {
                     {/* Brand column */}
                     <div className="space-y-6 lg:col-span-1">
                         <Link href="/" className="inline-flex items-center gap-2.5 group">
-                            <div className="w-8 h-8 rounded-lg bg-[#E8472A] flex items-center justify-center transition-transform group-hover:scale-105">
-                                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white" aria-hidden="true">
-                                    <path d="M12 2l2.4 6.6H21l-5.4 4 2.1 6.4-5.7-4.1-5.7 4.1 2.1-6.4L3 8.6h6.6z" />
-                                </svg>
+                            <div className="flex items-center justify-center transition-transform group-hover:scale-105 text-4xl" aria-hidden="true">
+                                💞
                             </div>
                             <span className="font-display font-semibold text-[18px] tracking-tight">
                                 Farah<span className="text-[#E8472A]">.ma</span>

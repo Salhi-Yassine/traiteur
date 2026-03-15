@@ -53,12 +53,9 @@ export default function Navbar() {
 
                         {/* ── Logo ── */}
                         <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-                            {/* Star mark */}
-                            <div className="w-9 h-9 rounded-xl bg-[#E8472A] flex items-center justify-center transition-transform group-hover:scale-105">
-                                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" aria-hidden="true">
-                                    {/* Eight-pointed star mark */}
-                                    <path d="M12 2l2.4 6.6H21l-5.4 4 2.1 6.4-5.7-4.1-5.7 4.1 2.1-6.4L3 8.6h6.6z" />
-                                </svg>
+                            {/* Heart mark */}
+                            <div className="flex items-center justify-center transition-transform group-hover:scale-105 text-4xl" aria-hidden="true">
+                                💞
                             </div>
                             <span className={cn(
                                 "font-display font-semibold text-[20px] tracking-tight transition-colors",
