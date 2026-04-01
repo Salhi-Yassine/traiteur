@@ -35,3 +35,8 @@ make sf c="<cmd>"
 ```bash
 make full-migrat
 ```
+
+7. Start Storybook dev server (port 6006):
+```bash
+make storybook
+```

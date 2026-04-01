@@ -9,6 +9,13 @@ import { useTranslation, Trans } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useState, useEffect } from "react";
 
+interface CategoryFromApi {
+  name: string;
+  slug: string;
+  emoji: string | null;
+  vendorCount: number;
+}
+
 interface HomeProps {
   featuredVendors: VendorCardProps[];
   stats?: {
@@ -16,7 +23,7 @@ interface HomeProps {
     cityCount: number;
     averageRating: number;
     reviewCount: number;
-    categoryCounts: Record<string, number>;
+    availableCategories: CategoryFromApi[];
   };
 }
 
@@ -69,24 +76,33 @@ export default function HomePage({ featuredVendors, stats }: HomeProps) {
     return () => clearInterval(timer);
   }, []);
 
-  const categoriesFromApi = stats?.categoryCounts || {};
-  
-  const EVENT_CATEGORIES = [
-    { label: t("home.categories.items.salles"),      icon: "🏛️",  category: "salles",      count: categoriesFromApi["salles"] || 0 },
-    { label: t("home.categories.items.photography"), icon: "📸",  category: "photography", count: categoriesFromApi["photography"] || 0  },
-    { label: t("home.categories.items.negrafa"),     icon: "👑",  category: "negrafa",     count: categoriesFromApi["negrafa"] || 0  },
-    { label: t("home.categories.items.catering"),    icon: "🍽️", category: "catering",    count: categoriesFromApi["catering"] || 0 },
-    { label: t("home.categories.items.decoration"),  icon: "🌸",  category: "decoration",  count: categoriesFromApi["decoration"] || 0  },
-    { label: t("home.categories.items.beauty"),      icon: "✋",  category: "beauty",      count: categoriesFromApi["beauty"] || 0  },
-    { label: t("home.categories.items.music"),       icon: "🎵",  category: "music",       count: categoriesFromApi["music"] || 0  },
-    { label: t("home.categories.items.transport"),   icon: "🚗",  category: "transport",   count: categoriesFromApi["transport"] || 0  },
-  ];
+  const categoriesFromApi = stats?.availableCategories || [];
+
+  // Dynamic categories from API — each has name, slug, emoji, vendorCount
+  const EVENT_CATEGORIES = categoriesFromApi.length > 0
+    ? categoriesFromApi.slice(0, 12).map((cat: CategoryFromApi) => ({
+      label: cat.name,
+      icon: cat.emoji || '📋',
+      category: cat.slug,
+      count: cat.vendorCount ?? 0,
+    }))
+    : [
+      // Fallback if API is unavailable
+      { label: t("home.categories.items.salles"), icon: "🏛️", category: "salles", count: 0 },
+      { label: t("home.categories.items.photography"), icon: "📸", category: "photography", count: 0 },
+      { label: t("home.categories.items.negrafa"), icon: "👑", category: "negrafa", count: 0 },
+      { label: t("home.categories.items.catering"), icon: "🍽️", category: "catering", count: 0 },
+      { label: t("home.categories.items.decoration"), icon: "🌸", category: "decoration", count: 0 },
+      { label: t("home.categories.items.beauty"), icon: "✋", category: "beauty", count: 0 },
+      { label: t("home.categories.items.music"), icon: "🎵", category: "music", count: 0 },
+      { label: t("home.categories.items.transport"), icon: "🚗", category: "transport", count: 0 },
+    ];
 
   const STATS = [
     { value: stats ? `${stats.vendorCount}+` : "800+", label: t("home.stats.vendors") },
-    { value: stats ? `${stats.cityCount}` : "12",   label: t("home.stats.cities") },
+    { value: stats ? `${stats.cityCount}` : "12", label: t("home.stats.cities") },
     { value: "100%", label: t("home.stats.verified") },
-    { value: stats ? `${stats.averageRating}` : "4.9",  label: t("home.stats.rating") },
+    { value: stats ? `${stats.averageRating}` : "4.9", label: t("home.stats.rating") },
   ];
 
   const HOW_IT_WORKS = [
@@ -152,9 +168,8 @@ export default function HomePage({ featuredVendors, stats }: HomeProps) {
           {HERO_IMAGES.map((image, index) => (
             <div
               key={image.src}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                index === currentImageIndex ? "opacity-100" : "opacity-0"
-              }`}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentImageIndex ? "opacity-100" : "opacity-0"
+                }`}
             >
               <Image
                 src={image.src}
@@ -267,7 +282,7 @@ export default function HomePage({ featuredVendors, stats }: HomeProps) {
 
           <div className="text-center mt-8">
             <Link
-              href="/vendors/categories"
+              href="/categories"
               className="text-[14px] font-medium text-[#484848] hover:text-[#E8472A] transition-colors underline underline-offset-4"
             >
               {t("home.categories.view_all")}
@@ -384,18 +399,21 @@ export default function HomePage({ featuredVendors, stats }: HomeProps) {
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://localhost";
-    
+    const baseUrl = process.env.NEXT_PUBLIC_ENTRYPOINT || "https://localhost";
+
     // Fetch both vendors and stats in parallel
     const [vendorsRes, statsRes] = await Promise.all([
       fetch(`${baseUrl}/api/vendor_profiles?isVerified=true&page=1&itemsPerPage=3`, {
-        headers: { 
+        headers: {
           Accept: "application/ld+json",
-          "Accept-Language": locale || 'fr' 
+          "Accept-Language": locale || 'fr'
         },
       }),
       fetch(`${baseUrl}/api/app_stats`, {
-        headers: { Accept: "application/json" }
+        headers: {
+          Accept: "application/ld+json",
+          "Accept-Language": locale || 'fr'
+        }
       })
     ]);
 
@@ -416,21 +434,21 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
       isVerified: v.isVerified ?? false,
     }));
 
-    return { 
-      props: { 
+    return {
+      props: {
         featuredVendors,
         stats,
         ...(await serverSideTranslations(locale ?? 'fr', ['common'])),
-      }, 
-      revalidate: 300 
+      },
+      revalidate: 300
     };
   } catch {
-    return { 
-      props: { 
+    return {
+      props: {
         featuredVendors: [],
         ...(await serverSideTranslations(locale ?? 'fr', ['common'])),
-      }, 
-      revalidate: 60 
+      },
+      revalidate: 60
     };
   }
 };

@@ -43,6 +43,10 @@ class Category implements Translatable
     #[Groups(['category:read', 'category:write', 'vendor:read', 'stats:read'])]
     private ?string $name = null;
 
+    #[ORM\Column(length: 10, nullable: true)]
+    #[Groups(['category:read', 'category:write', 'stats:read'])]
+    private ?string $emoji = null;
+
     #[ORM\Column(length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
     #[Groups(['category:read', 'vendor:read', 'stats:read'])]
@@ -100,6 +104,26 @@ class Category implements Translatable
     public function getLocale(): ?string
     {
         return $this->locale;
+    }
+
+    public function getEmoji(): ?string
+    {
+        return $this->emoji;
+    }
+
+    public function setEmoji(?string $emoji): static
+    {
+        $this->emoji = $emoji;
+        return $this;
+    }
+
+    /**
+     * Virtual property: number of vendor profiles in this category.
+     */
+    #[Groups(['category:read', 'stats:read'])]
+    public function getVendorCount(): int
+    {
+        return $this->vendorProfiles->count();
     }
 
     /**

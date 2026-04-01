@@ -312,5 +312,9 @@
     "help_title": "Besoin d'aide ?",
     "help_desc": "Nos experts vous aident à trouver les prestataires parfaits selon vos critères.",
     "contact_us": "Contacter un expert"
+  },
+  "categories_page": {
+    "title": "Toutes les catégories",
+    "subtitle": "Explorez toutes nos catégories de prestataires pour votre mariage au Maroc."
   }
 }

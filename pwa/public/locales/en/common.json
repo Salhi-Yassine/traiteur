@@ -309,5 +309,9 @@
     "help_title": "Need help?",
     "help_desc": "Our experts help you find the perfect vendors based on your criteria.",
     "contact_us": "Contact an expert"
+  },
+  "categories_page": {
+    "title": "All Categories",
+    "subtitle": "Explore all our vendor categories for your wedding in Morocco."
   }
 }

@@ -35,7 +35,7 @@ final class VendorProfileFactory extends PersistentObjectFactory
     {
         return [
             'businessName' => self::faker()->company(),
-            'category' => CategoryFactory::new(),
+            'category' => CategoryFactory::randomOrCreate(),
             'description' => self::faker()->paragraphs(3, true),
             'tagline' => self::faker()->sentence(),
             'whatsapp' => self::faker()->phoneNumber(),

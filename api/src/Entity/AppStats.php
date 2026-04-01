@@ -31,19 +31,13 @@ class AppStats
     public int $reviewCount = 0;
 
     /**
-     * @var array<string, int>
-     */
-    #[Groups(['stats:read'])]
-    public array $categoryCounts = [];
-
-    /**
      * @var array<int, array{name: string, slug: string}>
      */
     #[Groups(['stats:read'])]
     public array $availableCities = [];
 
     /**
-     * @var array<int, array{name: string, slug: string}>
+     * @var array<int, array{name: string, slug: string, emoji: string|null, vendorCount: int}>
      */
     #[Groups(['stats:read'])]
     public array $availableCategories = [];

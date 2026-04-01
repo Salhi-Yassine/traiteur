@@ -56,31 +56,22 @@ class AppStatsProvider implements ProviderInterface
         $stats->reviewCount = (int)($reviewStats['count'] ?? 0);
         $stats->averageRating = round((float)($reviewStats['avg'] ?? 0.0), 1);
 
-        // Categories (only those with verified vendors)
+        // Categories with vendor counts (single query, no N+1)
         $categoryRepo = $this->entityManager->getRepository(Category::class);
         $availableCategories = $categoryRepo->createQueryBuilder('cat')
+            ->leftJoin('cat.vendorProfiles', 'vp')
+            ->addSelect('COUNT(vp.id) as vendorCount')
+            ->groupBy('cat.id')
             ->getQuery()
             ->setHint(\Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER, 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker')
             ->getResult();
 
-        $stats->availableCategories = array_map(fn(Category $c) => [
-        'name' => $c->getName(),
-        'slug' => $c->getSlug(),
+        $stats->availableCategories = array_map(fn(array $row) => [
+            'name' => $row[0]->getName(),
+            'slug' => $row[0]->getSlug(),
+            'emoji' => $row[0]->getEmoji(),
+            'vendorCount' => (int)$row['vendorCount'],
         ], $availableCategories);
-
-        // Category counts (for legacy support if needed, or update to use slugs)
-        $categories = $vendorRepo->createQueryBuilder('v')
-            ->join('v.category', 'cat')
-            ->select('cat.slug, COUNT(v.id) as count')
-            ->where('v.isVerified = :verified')
-            ->setParameter('verified', true)
-            ->groupBy('cat.slug')
-            ->getQuery()
-            ->getResult();
-
-        foreach ($categories as $cat) {
-            $stats->categoryCounts[$cat['slug']] = (int)$cat['count'];
-        }
 
         return $stats;
     }

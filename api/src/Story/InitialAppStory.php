@@ -159,20 +159,29 @@ final class InitialAppStory extends Story
         BudgetItemFactory::createOne(['weddingProfile' => $wedding, 'category' => 'Venue & Catering', 'budgetedAmount' => 150000, 'spentAmount' => 50000]);
 
         // --- Categories ---
+        // [French name => [Arabic name, emoji]]
         $catData = [
-            'Catering' => 'تموين الحفلات',
-            'Salles' => 'قاعات الأفراح',
-            'Negrafa' => 'نكافة',
-            'Photography' => 'تصوير فوتوغرافي',
-            'Orchestra' => 'أوركسترا',
-            'Patisserie' => 'حلويات',
-            'Hennaya' => 'نقاشة الحناء',
-            'Makeup' => 'حلاقة و تجميل',
+            'Salles'      => ['قاعات الأفراح', '🏛️'],
+            'Photography' => ['تصوير فوتوغرافي', '📸'],
+            'Negrafa'     => ['نكافة', '👑'],
+            'Catering'    => ['تموين الحفلات', '🍽️'],
+            'Decoration'  => ['ديكور', '🌸'],
+            'Makeup'      => ['حلاقة و تجميل', '✋'],
+            'Orchestra'   => ['أوركسترا', '🎵'],
+            'Transport'   => ['نقل', '🚗'],
+            'Patisserie'  => ['حلويات', '🎂'],
+            'Hennaya'     => ['نقاشة الحناء', '🧡'],
+            'Jewelry'     => ['مجوهرات', '💍'],
+            'Dresses'     => ['فساتين الزفاف', '👗'],
+            'Suits'       => ['بدلات رجالية', '👔'],
+            'Invitations' => ['دعوات الزفاف', '✉️'],
+            'Honeymoon'   => ['شهر العسل', '✈️'],
+            'Lighting'    => ['إضاءة وصوت', '💡'],
         ];
 
         $categoryFactories = [];
-        foreach ($catData as $catName => $arabicName) {
-            $category = CategoryFactory::createOne(['name' => $catName]);
+        foreach ($catData as $catName => [$arabicName, $emoji]) {
+            $category = CategoryFactory::createOne(['name' => $catName, 'emoji' => $emoji]);
             $categoryFactories[$catName] = $category;
 
             /** @var \Gedmo\Translatable\Entity\Repository\TranslationRepository $repo */
