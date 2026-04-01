@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@api-platform/admin": "^4.0.7",
@@ -42,12 +44,16 @@
     "@babel/core": "^7.27.1",
     "@fontsource/playfair-display": "^5.2.8",
     "@popperjs/core": "^2.11.8",
+    "@storybook/addon-a11y": "^10.3.3",
+    "@storybook/react": "^10.3.3",
+    "@storybook/react-vite": "^10.3.3",
     "@types/node": "^22.15.18",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
     "@types/yup": "^0.32.0",
     "eslint": "^9.26.0",
     "eslint-config-next": "^15.3.2",
+    "storybook": "^10.3.3",
     "typescript": "^5.8.3",
     "yup": "^1.7.1"
   },

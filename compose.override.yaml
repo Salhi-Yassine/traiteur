@@ -28,6 +28,11 @@ services:
       target: dev
     volumes:
       - ./pwa:/srv/app
+    ports:
+      # Storybook dev server (dev-only)
+      - target: 6006
+        published: 6006
+        protocol: tcp
     environment:
       API_PLATFORM_CREATE_CLIENT_ENTRYPOINT: http://php
       API_PLATFORM_CREATE_CLIENT_OUTPUT: .

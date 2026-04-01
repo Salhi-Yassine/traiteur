@@ -177,3 +177,14 @@ pnpm: ## 📦 Run pnpm: make pnpm c="install"
 node: ## 🟢 Run node: make node c="-v"
 	@$(eval c ?=)
 	$(EXEC_PWA) node $(c)
+
+##############################################
+## 📚 STORYBOOK (dev-only)
+##############################################
+.PHONY: storybook build-storybook
+
+storybook: ## 📚 Start Storybook dev server (port 6006)
+	$(EXEC_PWA) pnpm storybook
+
+build-storybook: ## 📚 Build static Storybook site
+	$(EXEC_PWA) pnpm build-storybook

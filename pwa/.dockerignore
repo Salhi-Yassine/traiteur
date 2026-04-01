@@ -23,3 +23,9 @@ node_modules/
 .editorconfig
 .env.*.local
 .env.local
+
+# Storybook — dev-only, never in production images
+.storybook/
+storybook-static/
+**/*.stories.ts
+**/*.stories.tsx

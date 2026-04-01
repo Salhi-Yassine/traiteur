@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "noEmit": true
+  },
+  "include": [
+    "../components/**/*.stories.ts",
+    "../components/**/*.stories.tsx",
+    "../stories/**/*.stories.ts",
+    "../stories/**/*.stories.tsx",
+    "./**/*.ts"
+  ],
+  "exclude": ["../node_modules"]
+}
