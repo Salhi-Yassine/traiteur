@@ -191,6 +191,8 @@ final class InitialAppStory extends Story
         $em->flush();
 
         // --- Vendor Profiles ---
+        $repo = $em->getRepository(\App\Entity\Translation::class);
+
         $profile1 = VendorProfileFactory::createOne([
             'businessName' => 'Festin Royal',
             'category' => $categoryFactories['Catering'],
@@ -201,6 +203,9 @@ final class InitialAppStory extends Story
             'owner' => $vendorUser1,
             'cities' => [$cityFactories['Casablanca'], $cityFactories['Rabat'], $cityFactories['Marrakech']],
         ]);
+        $repo->translate($profile1, 'businessName', 'ar', 'الترايتور الملكي');
+        $repo->translate($profile1, 'tagline', 'ar', 'مطبخ مغربي أصيل لمناسباتكم التي لا تنسى');
+        $repo->translate($profile1, 'description', 'ar', 'الترايتور الملكي هو خدمة تموين راقية في الدار البيضاء...');
 
         $profile2 = VendorProfileFactory::createOne([
             'businessName' => 'Negrafa Majesty',
@@ -209,6 +214,8 @@ final class InitialAppStory extends Story
             'owner' => $vendorUser2,
             'cities' => [$cityFactories['Rabat']],
         ]);
+        $repo->translate($profile2, 'businessName', 'ar', 'نكافة ماجيستي');
+        $repo->translate($profile2, 'tagline', 'ar', 'أناقة العروس المغربية');
 
         // --- Menu Items ---
         MenuItemFactory::createOne(['name' => 'Pastilla au Pigeon', 'category' => 'Main', 'vendorProfile' => $profile1]);
@@ -217,7 +224,56 @@ final class InitialAppStory extends Story
         // --- Reviews ---
         ReviewFactory::createOne(['rating' => 5, 'vendorProfile' => $profile1, 'author' => $coupleUser]);
 
-        // --- Random Extras ---
-        VendorProfileFactory::createMany(10);
+        // --- Random Extras with Realistic Moroccan Data ---
+        $vendorTemplates = [
+            ['Traiteur Lahlou', 'ممُون لحلو', 'Saveurs authentiques marocaines', 'نكهات مغربية أصيلة', 'Catering', 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=80', 350],
+            ['Salles des Fêtes Al Majd', 'قاعة الأفراح المجد', 'Espace luxueux pour vos célébrations', 'مساحة فاخرة لاحتفالاتكم', 'Salles', 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80', 15000],
+            ['Negafa Amira', 'نكافة أميرة', 'L\'élégance et la tradition marocaine', 'الأناقة والتقاليد المغربية', 'Negrafa', 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=800&q=80', 4000],
+            ['Photographe Mehdi', 'المصور مهدي', 'Immortalisez vos meilleurs moments', 'تخليد أجمل اللحظات', 'Photography', 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=80', 2500],
+            ['Décoration Andalous', 'ديكور الأندلس', 'Design floral d\'exception', 'تصميم زهور استثنائي', 'Decoration', 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80', 3000],
+            ['Orchestre Essaid', 'أوركسترا السعيد', 'Animation musicale inoubliable', 'تنشيط موسيقي لا ينسى', 'Orchestra', 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=80', 8000],
+            ['Traiteur Afrah', 'ممُون أفراح', 'Le goût de la perfection', 'طعم الكمال', 'Catering', 'https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80', 450],
+            ['Palais des Roses', 'قصر الورود', 'Un cadre féérique pour votre mariage', 'إطار ساحر لزفافكم', 'Salles', 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80', 20000],
+            ['Negafa Sultana', 'نكافة سلطانة', 'Le charme impérial pour la mariée', 'السحر الإمبراطوري للعروس', 'Negrafa', 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&q=80', 7000],
+            ['Studio Marrakech', 'ستوديو مراكش', 'Prestations photo & vidéo 4K', 'خدمات تصوير وفيديو 4K', 'Photography', 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=80', 4000],
+            ['Maison des Gâteaux', 'دار الحلويات', 'Pâtisseries marocaines de luxe', 'حلويات مغربية فاخرة', 'Patisserie', 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=800&q=80', 2000],
+            ['Hennaya Fatima', 'النقاشة فاطمة', 'Henné 100% naturel et artisanal', 'حناء طبيعي 100٪ بلمسة أصيلة', 'Hennaya', 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80', 500],
+            ['Bijouterie Berrada', 'مجوهرات برادة', 'Parures de mariée en diamant', 'أطقم زفاف من الألماس', 'Jewelry', 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800&q=80', 10000],
+            ['Dresses Elégance', 'فساتين الأناقة', 'Location de robes de mariée', 'تأجير فساتين الزفاف', 'Dresses', 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=800&q=80', 1500],
+            ['Costumes d\'Or', 'بدلات الذهب', 'Sur-mesure pour le marié', 'تفصيل للعريس حسب المقاس', 'Suits', 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&q=80', 2500],
+            ['Invitations Noor', 'دعوات نور', 'Faire-part élégants et personnalisés', 'بطاقات دعوة أنيقة ومخصصة', 'Invitations', 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80', 300],
+            ['Transports Prestige', 'نقل كبار الشخصيات', 'Transport VIP pour votre soirée', 'نقل فخم لأمسيتكم', 'Transport', 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&q=80', 3000],
+            ['Éclairage Magique', 'إضاءة سحرية', 'Sons et lumières professionnels', 'صوتيات وإضاءة احترافية', 'Lighting', 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=80', 4000],
+            ['Voyages Lune d\'Miel', 'أسفار شهر العسل', 'Des destinations de rêve romantiques', 'وجهات أحلام رومانسية', 'Honeymoon', 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80', 12000],
+            ['Salon Beauté Royale', 'صالون الجمال الملكي', 'Coiffure et Maquillage complet', 'تصفيف شعر وماكياج شامل', 'Makeup', 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&q=80', 1500],
+        ];
+
+        for ($i = 0; $i < 60; $i++) {
+            $tpl = $vendorTemplates[$i % count($vendorTemplates)];
+            $frName = $tpl[0] . ($i >= count($vendorTemplates) ? ' ' . ($i + 1) : '');
+            $arName = $tpl[1] . ($i >= count($vendorTemplates) ? ' ' . ($i + 1) : '');
+            $frTagline = $tpl[2];
+            $arTagline = $tpl[3];
+            $categoryName = $tpl[4];
+            $img = $tpl[5];
+            $startingPrice = $tpl[6] + ($i * 100);
+
+            $cat = $categoryFactories[$categoryName] ?? $categoryFactories['Salles'];
+
+            $vProfile = VendorProfileFactory::createOne([
+                'businessName' => $frName,
+                'tagline' => $frTagline,
+                'description' => "Bienvenue chez $frName. $frTagline. Nous offrons nos services pour sublimer votre événement.",
+                'category' => $cat,
+                'coverImageUrl' => $img,
+                'startingPrice' => $startingPrice,
+            ]);
+
+            $repo->translate($vProfile, 'businessName', 'ar', $arName);
+            $repo->translate($vProfile, 'tagline', 'ar', $arTagline);
+            $repo->translate($vProfile, 'description', 'ar', "مرحباً بكم في $arName. $arTagline. نحن نقدم خدماتنا لجعل مناسبتكم استثنائية.");
+        }
+
+        $em->flush();
     }
 }

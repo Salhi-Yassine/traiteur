@@ -161,7 +161,8 @@
   "vendor_card": {
     "verified": "موثوق",
     "view_profile": "شاهد الملف",
-    "whatsapp_aria": "تواصل مع {{name}} عبر واتساب"
+    "whatsapp_aria": "تواصل مع {{name}} عبر واتساب",
+    "starting_at": "ابتداءً من"
   },
   "common": {
     "save": "حفظ",

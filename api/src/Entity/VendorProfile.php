@@ -107,6 +107,22 @@ class VendorProfile implements Translatable
     #[Groups(['vendor:read', 'vendor:write'])]
     private string $priceRange = self::PRICE_MODERATE;
 
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['vendor:read', 'vendor:write'])]
+    private ?int $startingPrice = null;
+
+    public function getStartingPrice(): ?int
+    {
+        return $this->startingPrice;
+    }
+
+    public function setStartingPrice(?int $startingPrice): static
+    {
+        $this->startingPrice = $startingPrice;
+
+        return $this;
+    }
+
     #[ORM\Column(length: 500, nullable: true)]
     #[Groups(['vendor:read', 'vendor:write'])]
     private ?string $coverImageUrl = null;

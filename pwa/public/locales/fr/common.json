@@ -161,7 +161,8 @@
   "vendor_card": {
     "verified": "Vérifié",
     "view_profile": "Voir le profil",
-    "whatsapp_aria": "Contacter {{name}} via WhatsApp"
+    "whatsapp_aria": "Contacter {{name}} via WhatsApp",
+    "starting_at": "À partir de"
   },
   "common": {
     "loading": "Chargement...",

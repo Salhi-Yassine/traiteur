@@ -38,6 +38,13 @@ final class VendorProfileFactory extends PersistentObjectFactory
             'category' => CategoryFactory::randomOrCreate(),
             'description' => self::faker()->paragraphs(3, true),
             'tagline' => self::faker()->sentence(),
+            'coverImageUrl' => self::faker()->randomElement([
+                'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80',
+                'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&q=80',
+                'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80',
+                'https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80',
+                'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80',
+            ]),
             'whatsapp' => self::faker()->phoneNumber(),
             'serviceArea' => 'Casablanca, Rabat',
             'isVerified' => true,

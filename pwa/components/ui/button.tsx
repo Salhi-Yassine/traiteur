@@ -42,10 +42,14 @@ export interface ButtonProps
   loading?: boolean
 }
 
+import { Slot } from "@radix-ui/react-slot"
+
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "default", size = "default", loading = false, disabled, children, ...props }, ref) => {
+  ({ className, variant = "default", size = "default", loading = false, disabled, asChild = false, children, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button"
+
     return (
-      <button
+      <Comp
         className={cn(
           // Base
           "inline-flex items-center justify-center gap-2 whitespace-nowrap font-semibold",
@@ -62,7 +66,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         aria-busy={loading}
         {...props}
       >
-        {loading ? (
+        {loading && !asChild ? (
           <>
             <svg
               className="h-4 w-4 animate-spin"
@@ -79,7 +83,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ) : (
           children
         )}
-      </button>
+      </Comp>
     )
   }
 )

@@ -26,5 +26,8 @@ class AppStatsTest extends ApiTestCase
         $this->assertArrayHasKey('cityCount', $data);
 
         $this->assertArrayHasKey('availableCities', $data);
+        $this->assertArrayHasKey('availableCategories', $data);
+        $this->assertArrayHasKey('featuredVendors', $data);
+        $this->assertIsArray($data['featuredVendors']);
     }
 }

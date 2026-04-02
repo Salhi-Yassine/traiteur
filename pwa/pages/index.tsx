@@ -401,26 +401,16 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_ENTRYPOINT || "https://localhost";
 
-    // Fetch both vendors and stats in parallel
-    const [vendorsRes, statsRes] = await Promise.all([
-      fetch(`${baseUrl}/api/vendor_profiles?isVerified=true&page=1&itemsPerPage=3`, {
-        headers: {
-          Accept: "application/ld+json",
-          "Accept-Language": locale || 'fr'
-        },
-      }),
-      fetch(`${baseUrl}/api/app_stats`, {
-        headers: {
-          Accept: "application/ld+json",
-          "Accept-Language": locale || 'fr'
-        }
-      })
-    ]);
+    const res = await fetch(`${baseUrl}/api/app_stats`, {
+      headers: {
+        Accept: "application/ld+json",
+        "Accept-Language": locale || 'fr'
+      }
+    });
 
-    const members = vendorsRes.ok ? (await vendorsRes.json())["hydra:member"] ?? [] : [];
-    const stats = statsRes.ok ? await statsRes.json() : null;
+    const stats = res.ok ? await res.json() : null;
 
-    const featuredVendors: VendorCardProps[] = members.map((v: any) => ({
+    const featuredVendors: VendorCardProps[] = (stats?.featuredVendors || []).map((v: any) => ({
       id: v.id ?? 0,
       slug: v.slug,
       businessName: v.businessName,
@@ -428,8 +418,9 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
       serviceArea: v.serviceArea,
       category: v.category ?? { name: "Other", slug: "other" },
       priceRange: v.priceRange,
-      coverImageUrl: v.coverImageUrl,
-      averageRating: v.averageRating ? parseFloat(v.averageRating) : undefined,
+      startingPrice: v.startingPrice ?? null,
+      coverImageUrl: v.coverImageUrl ?? null,
+      averageRating: v.averageRating !== null && v.averageRating !== undefined ? parseFloat(v.averageRating) : null,
       reviewCount: v.reviewCount ?? 0,
       isVerified: v.isVerified ?? false,
     }));

@@ -58,20 +58,67 @@ class AppStatsProvider implements ProviderInterface
 
         // Categories with vendor counts (single query, no N+1)
         $categoryRepo = $this->entityManager->getRepository(Category::class);
-        $availableCategories = $categoryRepo->createQueryBuilder('cat')
-            ->leftJoin('cat.vendorProfiles', 'vp')
-            ->addSelect('COUNT(vp.id) as vendorCount')
-            ->groupBy('cat.id')
+        
+        $availableCategoriesRaw = $categoryRepo->createQueryBuilder('cat')
             ->getQuery()
             ->setHint(\Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER, 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker')
             ->getResult();
 
-        $stats->availableCategories = array_map(fn(array $row) => [
-            'name' => $row[0]->getName(),
-            'slug' => $row[0]->getSlug(),
-            'emoji' => $row[0]->getEmoji(),
-            'vendorCount' => (int)$row['vendorCount'],
-        ], $availableCategories);
+        $categoryCountsRaw = $categoryRepo->createQueryBuilder('cat')
+            ->select('cat.id, COUNT(vp.id) as vendorCount')
+            ->leftJoin('cat.vendorProfiles', 'vp')
+            ->groupBy('cat.id')
+            ->getQuery()
+            ->getArrayResult();
+
+        $countsByCatId = [];
+        foreach ($categoryCountsRaw as $row) {
+            $countsByCatId[$row['id']] = (int)$row['vendorCount'];
+        }
+
+        $stats->availableCategories = array_map(function (Category $cat) use ($countsByCatId) {
+            return [
+                'name' => $cat->getName(),
+                'slug' => $cat->getSlug(),
+                'emoji' => $cat->getEmoji(),
+                'vendorCount' => $countsByCatId[$cat->getId()] ?? 0,
+            ];
+        }, $availableCategoriesRaw);
+
+        // Featured vendors
+        $featuredVendorsRaw = $vendorRepo->createQueryBuilder('v')
+            ->leftJoin('v.category', 'cat')
+            ->addSelect('cat')
+            ->where('v.isFeatured = :isFeatured')
+            ->andWhere('v.isVerified = :isVerified')
+            ->setParameter('isFeatured', true)
+            ->setParameter('isVerified', true)
+            ->setMaxResults(6)
+            ->orderBy('v.averageRating', 'DESC')
+            ->getQuery()
+            ->setHint(\Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER, 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker')
+            ->getResult();
+
+        $stats->featuredVendors = array_map(function (VendorProfile $v) {
+            $cat = $v->getCategory();
+            return [
+                'id' => $v->getId(),
+                'slug' => $v->getSlug(),
+                'businessName' => $v->getBusinessName(),
+                'tagline' => $v->getTagline(),
+                'serviceArea' => $v->getServiceArea(),
+                'priceRange' => $v->getPriceRange(),
+                'startingPrice' => $v->getStartingPrice(),
+                'coverImageUrl' => $v->getCoverImageUrl(),
+                'averageRating' => $v->getAverageRating() !== null ? (float)$v->getAverageRating() : null,
+                'reviewCount' => $v->getReviewCount(),
+                'isVerified' => $v->isVerified(),
+                'category' => $cat ? [
+                    'name' => $cat->getName(),
+                    'slug' => $cat->getSlug(),
+                ] : null,
+            ];
+        }, $featuredVendorsRaw);
 
         return $stats;
     }

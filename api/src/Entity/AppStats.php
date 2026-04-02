@@ -41,4 +41,22 @@ class AppStats
      */
     #[Groups(['stats:read'])]
     public array $availableCategories = [];
+
+    /**
+     * @var array<int, array{
+     *     id: int,
+     *     slug: string,
+     *     businessName: string,
+     *     tagline: string|null,
+     *     serviceArea: string,
+     *     priceRange: string,
+     *     coverImageUrl: string|null,
+     *     averageRating: float|null,
+     *     reviewCount: int,
+     *     isVerified: bool,
+     *     category: array{name: string, slug: string}|null
+     * }>
+     */
+    #[Groups(['stats:read'])]
+    public array $featuredVendors = [];
 }
