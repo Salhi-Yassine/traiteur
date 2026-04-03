@@ -12,7 +12,11 @@ export interface VendorCardProps {
     slug: string;
     businessName: string;
     tagline?: string;
-    serviceArea: string;
+    serviceArea?: string; // Keep for backward compatibility or transition
+    cities?: {
+        name: string;
+        slug: string;
+    }[];
     category: {
         name: string;
         slug: string;
@@ -33,6 +37,7 @@ export default function VendorCard({
     businessName,
     tagline,
     serviceArea,
+    cities,
     category,
     priceRange,
     startingPrice,
@@ -66,7 +71,7 @@ export default function VendorCard({
                 {/* Overlays for better contrast on white badges */}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-transparent opacity-60" />
 
-                <div className="absolute top-3 left-3 flex items-center gap-2">
+                <div className="absolute top-3 start-3 flex items-center gap-2">
                     <Badge variant="category" className="bg-white/95 backdrop-blur-md text-[#222222] text-[10px] uppercase tracking-wider font-bold rounded-full px-3 py-1 border-0 shadow-sm">
                         {category.name}
                     </Badge>
@@ -74,7 +79,7 @@ export default function VendorCard({
 
                 {/* Verified badge — top-right */}
                 {isVerified && (
-                    <div className="absolute top-3 right-3">
+                    <div className="absolute top-3 end-3">
                         <div className="bg-white/90 backdrop-blur-md text-[#0A7A4B] rounded-full p-1 shadow-sm border border-[#0A7A4B]/20">
                             <BadgeCheck className="w-4.5 h-4.5" strokeWidth={2.5} />
                         </div>
@@ -93,7 +98,7 @@ export default function VendorCard({
                     </div>
                     <div className="flex items-center gap-1 text-[#717171] text-[12px]">
                         <MapPin className="w-3.5 h-3.5 shrink-0" />
-                        <span>{serviceArea}</span>
+                        <span>{cities && cities.length > 0 ? cities.map(c => c.name).join(', ') : serviceArea}</span>
                     </div>
                 </div>
 
@@ -121,7 +126,7 @@ export default function VendorCard({
                                 {t("vendor_card.starting_at")}
                             </span>
                             <div className="text-[15px] font-bold text-[#222222]">
-                                {formattedPrice} <span className="text-[12px] font-medium ml-0.5">{t("common.currency")}</span>
+                                {formattedPrice} <span className="text-[12px] font-medium ms-0.5">{t("common.currency")}</span>
                             </div>
                         </div>
                     ) : (
@@ -130,7 +135,7 @@ export default function VendorCard({
                     
                     <div className="flex items-center gap-1 text-[13px] font-semibold text-[#222222] group-hover:text-[#E8472A] transition-colors">
                         {t("vendor_card.view_profile")}
-                        <ChevronRight className="w-4 h-4" />
+                        <ChevronRight className="w-4 h-4 rtl:-scale-x-100" />
                     </div>
                 </div>
             </div>

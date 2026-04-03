@@ -267,6 +267,10 @@ final class InitialAppStory extends Story
                 'category' => $cat,
                 'coverImageUrl' => $img,
                 'startingPrice' => $startingPrice,
+                'cities' => [
+                    array_values($cityFactories)[$i % count($cityFactories)],
+                    array_values($cityFactories)[($i + 1) % count($cityFactories)],
+                ],
             ]);
 
             $repo->translate($vProfile, 'businessName', 'ar', $arName);

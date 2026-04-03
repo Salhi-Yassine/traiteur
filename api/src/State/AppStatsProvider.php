@@ -106,7 +106,11 @@ class AppStatsProvider implements ProviderInterface
                 'slug' => $v->getSlug(),
                 'businessName' => $v->getBusinessName(),
                 'tagline' => $v->getTagline(),
-                'serviceArea' => $v->getServiceArea(),
+                'serviceArea' => implode(', ', $v->getCities()->map(fn(City $c) => $c->getName())->toArray()),
+                'cities' => $v->getCities()->map(fn(City $c) => [
+                    'name' => $c->getName(),
+                    'slug' => $c->getSlug(),
+                ])->toArray(),
                 'priceRange' => $v->getPriceRange(),
                 'startingPrice' => $v->getStartingPrice(),
                 'coverImageUrl' => $v->getCoverImageUrl(),

@@ -26,7 +26,10 @@ export const Default: Story = {
     slug: 'traiteur-lahlou',
     businessName: 'Traiteur Lahlou',
     tagline: 'Saveurs authentiques marocaines',
-    serviceArea: 'Casablanca',
+    cities: [
+      { name: 'Casablanca', slug: 'casablanca' },
+      { name: 'Rabat', slug: 'rabat' }
+    ],
     category: {
       name: 'Catering',
       slug: 'catering',

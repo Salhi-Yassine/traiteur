@@ -1,0 +1,41 @@
+docker compose exec php         bin/console doctrine:fixtures:load --no-interaction -vvv
+   > purging database
+   > loading App\DataFixtures\AppFixtures
+
+In PersistentObjectFactory.php line 107:
+                                                                               
+  [TypeError]                                                                  
+  Zenstruck\Foundry\Persistence\PersistentObjectFactory::randomSet(): Argumen  
+  t #2 ($criteria) must be of type array, int given, called in /app/src/Facto  
+  ry/VendorProfileFactory.php on line 50                                       
+                                                                               
+
+Exception trace:
+  at /app/vendor/zenstruck/foundry/src/Persistence/PersistentObjectFactory.php:107
+ Zenstruck\Foundry\Persistence\PersistentObjectFactory::randomSet() at /app/src/Factory/VendorProfileFactory.php:50
+ App\Factory\VendorProfileFactory->defaults() at /app/vendor/zenstruck/foundry/src/Factory.php:185
+ Zenstruck\Foundry\Factory->normalizeAttributes() at /app/vendor/zenstruck/foundry/src/ObjectFactory.php:52
+ Zenstruck\Foundry\ObjectFactory->create() at /app/vendor/zenstruck/foundry/src/Persistence/PersistentObjectFactory.php:249
+ Zenstruck\Foundry\Persistence\PersistentObjectFactory->create() at /app/vendor/zenstruck/foundry/src/Factory.php:66
+ Zenstruck\Foundry\Factory::createOne() at /app/src/Story/InitialAppStory.php:196
+ App\Story\InitialAppStory->build() at /app/vendor/zenstruck/foundry/src/StoryRegistry.php:53
+ Zenstruck\Foundry\StoryRegistry->load() at /app/vendor/zenstruck/foundry/src/Story.php:112
+ Zenstruck\Foundry\Story::load() at /app/src/DataFixtures/AppFixtures.php:13
+ App\DataFixtures\AppFixtures->load() at /app/vendor/doctrine/data-fixtures/src/Executor/AbstractExecutor.php:86
+ Doctrine\Common\DataFixtures\Executor\AbstractExecutor->load() at /app/vendor/doctrine/data-fixtures/src/Executor/ORMExecutor.php:26
+ Doctrine\Common\DataFixtures\Executor\ORMExecutor::{closure:Doctrine\Common\DataFixtures\Executor\ORMExecutor::execute():20}() at /app/vendor/doctrine/orm/src/EntityManager.php:187
+ Doctrine\ORM\EntityManager->wrapInTransaction() at /app/vendor/doctrine/data-fixtures/src/Executor/ORMExecutor.php:20
+ Doctrine\Common\DataFixtures\Executor\ORMExecutor->execute() at /app/vendor/doctrine/doctrine-fixtures-bundle/src/Command/LoadDataFixturesDoctrineCommand.php:152
+ Doctrine\Bundle\FixturesBundle\Command\LoadDataFixturesDoctrineCommand->execute() at /app/vendor/symfony/console/Command/Command.php:341
+ Symfony\Component\Console\Command\Command->run() at /app/vendor/symfony/console/Application.php:1102
+ Symfony\Component\Console\Application->doRunCommand() at /app/vendor/symfony/framework-bundle/Console/Application.php:123
+ Symfony\Bundle\FrameworkBundle\Console\Application->doRunCommand() at /app/vendor/symfony/console/Application.php:356
+ Symfony\Component\Console\Application->doRun() at /app/vendor/symfony/framework-bundle/Console/Application.php:77
+ Symfony\Bundle\FrameworkBundle\Console\Application->doRun() at /app/vendor/symfony/console/Application.php:195
+ Symfony\Component\Console\Application->run() at /app/vendor/symfony/runtime/Runner/Symfony/ConsoleApplicationRunner.php:49
+ Symfony\Component\Runtime\Runner\Symfony\ConsoleApplicationRunner->run() at /app/vendor/autoload_runtime.php:32
+ require_once() at /app/bin/console:15
+
+doctrine:fixtures:load [--append] [--dry-run] [--group GROUP] [--em EM] [--purger PURGER] [--purge-exclusions PURGE-EXCLUSIONS] [--purge-with-truncate]
+
+make: *** [Makefile:73: console] Error 255

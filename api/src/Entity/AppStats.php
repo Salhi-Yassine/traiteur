@@ -49,6 +49,7 @@ class AppStats
      *     businessName: string,
      *     tagline: string|null,
      *     serviceArea: string,
+     *     cities: array<int, array{name: string, slug: string}>,
      *     priceRange: string,
      *     coverImageUrl: string|null,
      *     averageRating: float|null,

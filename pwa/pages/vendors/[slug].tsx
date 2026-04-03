@@ -35,7 +35,7 @@ interface VendorProfileData {
     tagline?: string;
     description: string;
     category: string;
-    serviceArea: string;
+    cities: { name: string; slug: string }[];
     priceRange: string;
     coverImageUrl?: string;
     galleryImages: string[];
@@ -59,7 +59,7 @@ const FALLBACK: VendorProfileData = {
     tagline: "Un cadre idyllique pour votre mariage de rêve à Casablanca",
     description: "Le Palais des Roses est une salle de réception d'exception située au cœur de Casablanca. Spécialisés dans les mariages marocains traditionnels et modernes, nous offrons un service complet incluant une décoration raffinée, un service traiteur gastronomique et une équipe dédiée pour faire de votre événement un moment inoubliable.",
     category: "Salles",
-    serviceArea: "Casablanca",
+    cities: [{ name: "Casablanca", slug: "casablanca" }],
     priceRange: "MADMADMAD",
     coverImageUrl: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&q=80",
     galleryImages: [
@@ -173,7 +173,7 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                         </svg>
                                     </div>
-                                    {vendor.serviceArea}
+                                    {vendor.cities.map(c => c.name).join(', ')}
                                 </div>
                             </div>
                             <div className="space-y-2">
@@ -380,7 +380,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params, locale })
             tagline: v.tagline,
             description: v.description,
             category: v.category,
-            serviceArea: v.serviceArea,
+            cities: v.cities ?? [],
             priceRange: v.priceRange,
             coverImageUrl: v.coverImageUrl,
             galleryImages: v.galleryImages ?? [],

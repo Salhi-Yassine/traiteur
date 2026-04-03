@@ -23,6 +23,7 @@ const config: StorybookConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       "@": resolve(__dirname, ".."),
+      "next/image": resolve(__dirname, "mocks/NextImage.tsx"),
     };
 
     // Point PostCSS to the pwa root where postcss.config.mjs lives
@@ -34,6 +35,13 @@ const config: StorybookConfig = {
     config.esbuild = {
       ...config.esbuild,
       jsx: "automatic",
+    };
+    // Polyfill process for Next.js internals and components
+    config.define = {
+      ...config.define,
+      "process.env": {},
+      "process.cwd": () => "/",
+      "process.browser": true,
     };
 
     return config;

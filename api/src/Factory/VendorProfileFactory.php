@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\VendorProfile;
 use App\Factory\UserFactory;
+use App\Factory\CityFactory;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
@@ -46,7 +47,7 @@ final class VendorProfileFactory extends PersistentObjectFactory
                 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80',
             ]),
             'whatsapp' => self::faker()->phoneNumber(),
-            'serviceArea' => 'Casablanca, Rabat',
+            'cities' => CityFactory::randomRange(1, 3),
             'isVerified' => true,
             'isFeatured' => self::faker()->boolean(20),
             'subscriptionTier' => self::faker()->randomElement(['free', 'bronze', 'silver', 'gold']),

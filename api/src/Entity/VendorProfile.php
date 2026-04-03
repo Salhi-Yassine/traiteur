@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['vendor:write']],
     order: ['averageRating' => 'DESC'],
 )]
-#[ApiFilter(SearchFilter::class, properties: ['cities.slug' => 'exact', 'serviceArea' => 'ipartial', 'businessName' => 'ipartial', 'category.slug' => 'exact', 'priceRange' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['cities.slug' => 'exact', 'businessName' => 'ipartial', 'category.slug' => 'exact', 'priceRange' => 'exact'])]
 #[ORM\Entity(repositoryClass: VendorProfileRepository::class)]
 #[UniqueEntity(fields: ['slug'], message: 'This slug is already taken')]
 #[Gedmo\TranslationEntity(class: Translation::class)]
@@ -97,10 +97,7 @@ class VendorProfile implements Translatable
     #[Groups(['vendor:read', 'vendor:write'])]
     private array $tags = [];
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Groups(['vendor:read', 'vendor:write'])]
-    private string $serviceArea = '';
+
 
     #[ORM\Column(length: 10)]
     #[Assert\Choice(choices: [self::PRICE_BUDGET, self::PRICE_MODERATE, self::PRICE_PREMIUM, self::PRICE_LUXURY])]
@@ -246,8 +243,7 @@ class VendorProfile implements Translatable
     public function getTags(): array { return $this->tags; }
     public function setTags(array $tags): static { $this->tags = $tags; return $this; }
 
-    public function getServiceArea(): string { return $this->serviceArea; }
-    public function setServiceArea(string $serviceArea): static { $this->serviceArea = $serviceArea; return $this; }
+
 
     public function getPriceRange(): string { return $this->priceRange; }
     public function setPriceRange(string $priceRange): static { $this->priceRange = $priceRange; return $this; }
