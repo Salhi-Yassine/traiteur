@@ -15,6 +15,7 @@
     "logout": "تسجيل الخروج",
     "about": "حول",
     "register": "سجل الآن",
+    "share": "مشاركة",
     "need_help": "محتاج مساعدة؟",
     "help_desc": "الخبراء ديالنا هنا لمرافقتك في كل خطوة.",
     "see_experts": "شوف الخبراء"
@@ -172,7 +173,11 @@
     "currency": "درهم",
     "loading": "جاري التحميل...",
     "error": "حدث خطأ ما",
-    "search": "بحث"
+    "search": "بحث",
+    "in": "في",
+    "read_more": "اقرأ المزيد",
+    "show_more": "عرض المزيد",
+    "morocco": "المغرب"
   },
   "budget": {
     "title": "تدبير الميزانية",
@@ -273,23 +278,93 @@
     "reviews_count": "التقييمات",
     "capacity": "السعة",
     "capacity_max": "أقصى عدد ضيوف: {{max}}",
+    "all_events": "جميع أنواع المناسبات",
     "about_title": "فن الاستقبال",
     "services_title": "خدمات استثنائية",
     "per_person": "درهم / للشخص",
     "reviews_title": "شهادات العملاء",
     "write_review": "أضف تقييماً",
+    "review_label": "تقييم",
     "booking_label": "حجز",
     "booking_title": "خطط لحدثك",
     "get_quote": "احصل على تسعيرة خاصة",
     "no_commitment": "بدون التزام",
     "highlights": {
       "response_time": "رد مضمون خلال 24 ساعة",
+      "response_time_short": "الرد: ~1 ساعة",
       "exclusive_rates": "أسعار حصرية متفاوض عليها",
       "concierge": "مرافقة خاصة من خدمة الكونسيرج",
       "secure_payment": "دفع آمن 100%"
     },
     "guarantee_label": "الضمان",
-    "guarantee_text": "طمانينة Farah.ma"
+    "guarantee_text": "طمانينة Farah.ma",
+    "gallery": {
+       "show_all": "عرض كل الصور",
+       "title": "كل الصور",
+       "close": "إغلاق"
+    },
+    "amenities": {
+       "title": "ما يقدمه هذا المكان",
+       "wifi": "واي فاي متوفر",
+       "ac": "تكييف الهواء",
+       "parking": "موقف سيارات مجاني",
+       "kitchen": "مطبخ مجهز",
+       "cleaning": "خدمة التنظيف متوفرة",
+       "security": "حراسة 24/7",
+       "show_all": "عرض التجهيزات",
+       "show_more": "عرض المزيد",
+       "show_less": "عرض أقل"
+    },
+    "know_before_you_go": {
+       "title": "أشياء يجب معرفتها",
+       "house_rules": "قواعد المكان",
+       "safety": "الصحة والسلامة",
+       "cancellation": "سياسة الإلغاء"
+    },
+    "rules": {
+       "check_in": "الدخول: 14:00 - 16:00",
+       "check_out": "المغادرة قبل 11:00",
+       "parties": "لا حفلات صاخبة بعد 4 صباحاً",
+       "smoking": "ممنوع التدخين في الداخل"
+    },
+    "safety": {
+       "exits": "مخارج الطوارئ محددة",
+       "alarm": "إنذار حريق شغال",
+       "capacity": "احترام الطاقة الاستيعابية"
+    },
+    "cancellation": {
+       "standard_desc": "إلغاء مجاني حتى 48 ساعة بعد الحجز."
+    },
+    "host": {
+       "meet_title": "تعرف على مضيفك: {{name}}",
+       "member_since": "عضو منذ",
+       "verified": "هوية موثقة",
+       "contact": "تواصل عبر واتساب",
+       "contact_label": "الاتصال بالمضيف"
+    },
+    "location_desc": "يقع في حي راقٍ في {{city}}، يمكن الوصول إليه بسهولة ويوفر بيئة هادئة وآمنة لضيوفك.",
+    "report_listing": "الإبلاغ عن هذا الإعلان",
+    "similar": {
+       "title": "اكتشف خيارات أخرى في {{city}}",
+       "view_all": "عرض الكل"
+    },
+    "reservation": {
+       "check_in": "الوصول",
+       "check_out": "المغادرة",
+       "add_date": "إضافة تاريخ",
+       "reserve": "حجز",
+       "no_payment": "لا توجد رسوم مطلوبة الآن",
+       "service_fee": "رسوم خدمة Farah.ma",
+       "total_estimated": "المجموع (تقديري)",
+       "to_be_confirmed": "سيتم التأكيد"
+    },
+    "availability": {
+       "title": "التوفر",
+       "subtitle": "اختر تواريخ مناسبتك",
+       "available": "متاح",
+       "selected": "مختار",
+       "unavailable": "غير متاح"
+    }
   },
   "categories_page": {
     "title": "جميع الفئات",

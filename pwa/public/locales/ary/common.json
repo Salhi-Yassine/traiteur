@@ -15,6 +15,7 @@
     "logout": "خروج",
     "about": "علينا",
     "register": "تقيد دابا",
+    "share": "بارطاجي",
     "need_help": "محتاج مساعدة؟",
     "help_desc": "الخبراء ديالنا هنا باش يواكبوا كولشي فكاع المراحل.",
     "see_experts": "شوف المزوّدين"
@@ -280,23 +281,93 @@
     "reviews_count": "اراء و تقييمات",
     "capacity": "القدرة",
     "capacity_max": "حتى ل {{max}} واحد",
+    "all_events": "ڭاع أنواع لمناسبات",
     "about_title": "فن الضيافة",
     "services_title": "خدمات مميزة",
     "per_person": "درهم / لواحد",
     "reviews_title": "شهادات",
     "write_review": "كتب رايك",
+    "review_label": "تنقيط",
     "booking_label": "حجز",
     "booking_title": "وجد للمناسبة ديالك",
     "get_quote": "خد تمن ديالك",
     "no_commitment": "بلا التزام",
     "highlights": {
       "response_time": "جواب ف 24 ساعة",
+      "response_time_short": "الرد: ~1 ساعة",
       "exclusive_rates": "اتمان حصرية",
       "concierge": "مرافقة خاصة",
       "secure_payment": "خلاص أمن 100%"
     },
     "guarantee_label": "الضمان",
-    "guarantee_text": "فرحنا تهنا"
+    "guarantee_text": "فرحنا تهنا",
+    "gallery": {
+       "show_all": "شوف كاع التصاور",
+       "title": "التصاور كاملين",
+       "close": "سد"
+    },
+    "amenities": {
+       "title": "داكشي اللي كاين فهاد لبلصة",
+       "wifi": "كاين الويفي",
+       "ac": "كاين الكليم",
+       "parking": "باركينڭ فابور",
+       "kitchen": "كوزينة ناضية",
+       "cleaning": "لميناج داخل فالثمن",
+       "security": "سيكوريتي ديما",
+       "show_all": "شوف ليكيپمو كاملين",
+       "show_more": "شوف كتر",
+       "show_less": "شوف قل"
+    },
+    "know_before_you_go": {
+       "title": "داكشي اللي خصك تعرف",
+       "house_rules": "قواعد الدار",
+       "safety": "الصحة والسلامة",
+       "cancellation": "شروط الإلغاء"
+    },
+    "rules": {
+       "check_in": "دخول مع 2 تال 4",
+       "check_out": "خروج قبل 11",
+       "parties": "بلا صداع مورا 4 د ليل",
+       "smoking": "ممنوع تڭاري لداخل"
+    },
+    "safety": {
+       "exits": "خرجات السيكوريتي باينين",
+       "alarm": "لآلارم د لعافية خدام",
+       "capacity": "احترام عدد الناس"
+    },
+    "cancellation": {
+       "standard_desc": "تقدر تكنسلي فابور ف 48 ساعة مورا ما رزرفيتي."
+    },
+    "host": {
+       "meet_title": "تعرف على مول المحل: {{name}}",
+       "member_since": "عضو من",
+       "verified": "الهوية موثقة",
+       "contact": "تواصل بواتساب",
+       "contact_label": "عيط لمول لمحل"
+    },
+    "location_desc": "جا ف بلاصة واعرة ف {{city}}، قريب لكلشي وكاين كالم وسيكوريزي.",
+    "report_listing": "سينيالي هاد لآنونس",
+    "similar": {
+       "title": "اكتشف بلصات خرين ف {{city}}",
+       "view_all": "شوف كولشي"
+    },
+    "reservation": {
+       "check_in": "وقتاش غتجي",
+       "check_out": "وقتاش غتمشي",
+       "add_date": "زيد التاريخ",
+       "reserve": "ريزيرفي",
+       "no_payment": "ما كاين خلاص دابا",
+       "service_fee": "مصاريف الخدمة د Farah.ma",
+       "total_estimated": "المجموع (تقديري)",
+       "to_be_confirmed": "غنتأكدوا"
+    },
+    "availability": {
+       "title": "ديسبونيبيل",
+       "subtitle": "ختار الوقيتة ديال لعرس ديالك",
+       "available": "موجود",
+       "selected": "مختار",
+       "unavailable": "عامر"
+    }
   },
   "filters": {
     "title": "فلاتر",

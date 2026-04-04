@@ -15,6 +15,7 @@
     "logout": "Déconnexion",
     "about": "À propos",
     "register": "S'inscrire",
+    "share": "Partager",
     "need_help": "Besoin d'aide ?",
     "help_desc": "Nos experts sont là pour vous accompagner dans chaque étape.",
     "see_experts": "Voir les experts"
@@ -180,7 +181,11 @@
     "save": "Enregistrer",
     "edit": "Modifier",
     "delete": "Supprimer",
-    "currency": "MAD"
+    "currency": "MAD",
+    "in": "à",
+    "read_more": "En savoir plus",
+    "show_more": "Afficher plus",
+    "morocco": "Maroc"
   },
   "budget": {
     "title": "Gestion du Budget",
@@ -281,23 +286,93 @@
     "reviews_count": "Note & Avis",
     "capacity": "Capacité",
     "capacity_max": "{{max}} invités max",
+    "all_events": "Tous types d'événements",
     "about_title": "L'Art de Recevoir",
     "services_title": "Prestations d'Exception",
     "per_person": "MAD / pers",
     "reviews_title": "Témoignages",
     "write_review": "Écrire un avis",
+    "review_label": "Note",
     "booking_label": "Réservation",
     "booking_title": "Créez votre événement",
     "get_quote": "Obtenir un devis personnalisé",
     "no_commitment": "Sans engagement",
     "highlights": {
       "response_time": "Réponse garantie sous 24h",
+      "response_time_short": "Réponse: ~1h",
       "exclusive_rates": "Tarifs négociés exclusifs",
-      "concierge": "Accompagnement Conciergerie",
+      "concierge": "Accompagement Conciergerie",
       "secure_payment": "Paiement 100% sécurisé"
     },
     "guarantee_label": "Garantie",
-    "guarantee_text": "Sérénité Farah.ma"
+    "guarantee_text": "Sérénité Farah.ma",
+    "gallery": {
+       "show_all": "Afficher toutes les photos",
+       "title": "Toutes les photos",
+       "close": "Fermer"
+    },
+    "amenities": {
+       "title": "Ce que propose ce lieu",
+       "wifi": "Wifi disponible",
+       "ac": "Climatisation",
+       "parking": "Parking gratuit sur place",
+       "kitchen": "Cuisine équipée",
+       "cleaning": "Service de nettoyage inclus",
+       "security": "Sécurité 24h/24",
+       "show_all": "Afficher les équipements",
+       "show_more": "Voir plus",
+       "show_less": "Voir moins"
+    },
+    "know_before_you_go": {
+       "title": "À Savoir",
+       "house_rules": "Règles du lieu",
+       "safety": "Santé et Sécurité",
+       "cancellation": "Conditions d'annulation"
+    },
+    "rules": {
+       "check_in": "Arrivée : 14h00 - 16h00",
+       "check_out": "Départ avant 11h00",
+       "parties": "Pas de fêtes bruyantes après 4h",
+       "smoking": "Non fumeur en intérieur"
+    },
+    "safety": {
+       "exits": "Sorties de secours indiquées",
+       "alarm": "Alarme incendie fonctionnelle",
+       "capacity": "Capacité maximale respectée"
+    },
+    "cancellation": {
+       "standard_desc": "Annulation gratuite jusqu'à 48 heures après la réservation."
+    },
+    "host": {
+       "meet_title": "Votre hôte : {{name}}",
+       "member_since": "Membre depuis",
+       "verified": "Identité vérifiée",
+       "contact": "Contacter par WhatsApp",
+       "contact_label": "Contacter l'hôte"
+    },
+    "location_desc": "Situé dans un quartier prestigieux de {{city}}, cet établissement est facilement accessible et offre un cadre calme et sécurisé pour vos invités.",
+    "report_listing": "Signaler cette annonce",
+    "similar": {
+       "title": "Découvrez d'autres options à {{city}}",
+       "view_all": "Voir tout"
+    },
+    "reservation": {
+       "check_in": "Arrivée",
+       "check_out": "Départ",
+       "add_date": "Ajouter",
+       "reserve": "Réserver",
+       "no_payment": "Aucun paiement requis pour l'instant",
+       "service_fee": "Frais de service Farah.ma",
+       "total_estimated": "Total (estimé)",
+       "to_be_confirmed": "À confirmer"
+    },
+    "availability": {
+       "title": "Disponibilité",
+       "subtitle": "Sélectionnez vos dates pour votre événement",
+       "available": "Disponible",
+       "selected": "Sélectionné",
+       "unavailable": "Indisponible"
+    }
   },
   "filters": {
     "title": "Filtres",
