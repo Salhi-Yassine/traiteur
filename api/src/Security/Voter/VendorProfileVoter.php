@@ -2,8 +2,8 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\VendorProfile;
 use App\Entity\User;
+use App\Entity\VendorProfile;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -54,7 +54,7 @@ class VendorProfileVoter extends Voter
         // Check for specific DB permission "manage:all_profiles"
         foreach ($user->getUserRoles() as $role) {
             foreach ($role->getPermissions() as $permission) {
-                if ($permission->getName() === 'manage:all_profiles') {
+                if ('manage:all_profiles' === $permission->getName()) {
                     return true;
                 }
             }

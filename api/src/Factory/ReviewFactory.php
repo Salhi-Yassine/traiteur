@@ -3,8 +3,6 @@
 namespace App\Factory;
 
 use App\Entity\Review;
-use App\Factory\UserFactory;
-use App\Factory\VendorProfileFactory;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**

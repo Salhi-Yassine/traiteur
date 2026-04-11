@@ -3,11 +3,11 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Post;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -53,7 +53,7 @@ class Category implements Translatable
     private ?string $slug = null;
 
     /**
-     * Locale hint used by Gedmo at runtime
+     * Locale hint used by Gedmo at runtime.
      */
     #[Gedmo\Locale]
     private ?string $locale = null;
@@ -82,6 +82,7 @@ class Category implements Translatable
     public function setName(string $name): static
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -93,6 +94,7 @@ class Category implements Translatable
     public function setSlug(?string $slug): static
     {
         $this->slug = $slug;
+
         return $this;
     }
 
@@ -114,6 +116,7 @@ class Category implements Translatable
     public function setEmoji(?string $emoji): static
     {
         $this->emoji = $emoji;
+
         return $this;
     }
 

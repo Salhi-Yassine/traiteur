@@ -231,6 +231,7 @@
     "due_date_label": "الأجل",
     "delete_confirm": "واش بغيتي تمسح هاد المهمة؟",
     "error_add": "خطأ أثناء إضافة المهمة.",
+    "error_delete": "خطأ أثناء حذف المهمة.",
     "categories": {
       "salles": "قاعات",
       "traiteur": "ممون",
@@ -257,6 +258,7 @@
     "empty": "حتى شي ضيف ما مسجل.",
     "delete_confirm": "واش بغيتي تمسح هاد الضيف؟",
     "error_add": "خطأ أثناء إضافة الضيف.",
+    "error_delete": "خطأ أثناء حذف الضيف.",
     "new_guest_title": "ضيف جديد",
     "name_placeholder": "الاسم والنسب",
     "meal_pref_label": "تفضيل الوجبة",

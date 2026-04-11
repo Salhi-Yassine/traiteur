@@ -4,8 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\WeddingProfileRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -94,38 +94,120 @@ class WeddingProfile
         $this->checklistTasks = new ArrayCollection();
     }
 
-    public function getId(): ?int { return $this->id; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getUser(): ?User { return $this->user; }
-    public function setUser(?User $user): static { $this->user = $user; return $this; }
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
 
-    public function getBrideName(): string { return $this->brideName; }
-    public function setBrideName(string $brideName): static { $this->brideName = $brideName; return $this; }
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
-    public function getGroomName(): string { return $this->groomName; }
-    public function setGroomName(string $groomName): static { $this->groomName = $groomName; return $this; }
+        return $this;
+    }
 
-    public function getWeddingDate(): ?\DateTimeInterface { return $this->weddingDate; }
-    public function setWeddingDate(?\DateTimeInterface $weddingDate): static { $this->weddingDate = $weddingDate; return $this; }
+    public function getBrideName(): string
+    {
+        return $this->brideName;
+    }
 
-    public function getWeddingCity(): ?string { return $this->weddingCity; }
-    public function setWeddingCity(?string $weddingCity): static { $this->weddingCity = $weddingCity; return $this; }
+    public function setBrideName(string $brideName): static
+    {
+        $this->brideName = $brideName;
 
-    public function getGuestCountEst(): ?int { return $this->guestCountEst; }
-    public function setGuestCountEst(?int $guestCountEst): static { $this->guestCountEst = $guestCountEst; return $this; }
+        return $this;
+    }
 
-    public function getTotalBudgetMad(): ?int { return $this->totalBudgetMad; }
-    public function setTotalBudgetMad(?int $totalBudgetMad): static { $this->totalBudgetMad = $totalBudgetMad; return $this; }
+    public function getGroomName(): string
+    {
+        return $this->groomName;
+    }
+
+    public function setGroomName(string $groomName): static
+    {
+        $this->groomName = $groomName;
+
+        return $this;
+    }
+
+    public function getWeddingDate(): ?\DateTimeInterface
+    {
+        return $this->weddingDate;
+    }
+
+    public function setWeddingDate(?\DateTimeInterface $weddingDate): static
+    {
+        $this->weddingDate = $weddingDate;
+
+        return $this;
+    }
+
+    public function getWeddingCity(): ?string
+    {
+        return $this->weddingCity;
+    }
+
+    public function setWeddingCity(?string $weddingCity): static
+    {
+        $this->weddingCity = $weddingCity;
+
+        return $this;
+    }
+
+    public function getGuestCountEst(): ?int
+    {
+        return $this->guestCountEst;
+    }
+
+    public function setGuestCountEst(?int $guestCountEst): static
+    {
+        $this->guestCountEst = $guestCountEst;
+
+        return $this;
+    }
+
+    public function getTotalBudgetMad(): ?int
+    {
+        return $this->totalBudgetMad;
+    }
+
+    public function setTotalBudgetMad(?int $totalBudgetMad): static
+    {
+        $this->totalBudgetMad = $totalBudgetMad;
+
+        return $this;
+    }
 
     /** @return Collection<int, Guest> */
-    public function getGuests(): Collection { return $this->guests; }
+    public function getGuests(): Collection
+    {
+        return $this->guests;
+    }
 
     /** @return Collection<int, BudgetItem> */
-    public function getBudgetItems(): Collection { return $this->budgetItems; }
+    public function getBudgetItems(): Collection
+    {
+        return $this->budgetItems;
+    }
 
     /** @return Collection<int, ChecklistTask> */
-    public function getChecklistTasks(): Collection { return $this->checklistTasks; }
+    public function getChecklistTasks(): Collection
+    {
+        return $this->checklistTasks;
+    }
 
-    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
-    public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
 }

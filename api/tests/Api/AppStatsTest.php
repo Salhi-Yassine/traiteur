@@ -3,16 +3,13 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\VendorProfile;
-use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
 
 class AppStatsTest extends ApiTestCase
 {
     public function testGetAppStats(): void
     {
         $client = static::createClient();
-        
+
         // Request AppStats
         $response = $client->request('GET', '/api/app_stats');
 
@@ -20,7 +17,7 @@ class AppStatsTest extends ApiTestCase
         $this->assertJsonContains([
             '@type' => 'AppStats',
         ]);
-        
+
         $data = $response->toArray();
         $this->assertArrayHasKey('vendorCount', $data);
         $this->assertArrayHasKey('cityCount', $data);

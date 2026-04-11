@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: '/app_stats',
             provider: AppStatsProvider::class,
             normalizationContext: ['groups' => ['stats:read']]
-        )
+        ),
     ]
 )]
 class AppStats

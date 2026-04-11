@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\Post;
 use App\Repository\BudgetItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -60,20 +60,68 @@ class BudgetItem
     #[Groups(['budget:read', 'budget:write'])]
     private int $displayOrder = 0;
 
-    public function getId(): ?int { return $this->id; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getWeddingProfile(): ?WeddingProfile { return $this->weddingProfile; }
-    public function setWeddingProfile(?WeddingProfile $weddingProfile): static { $this->weddingProfile = $weddingProfile; return $this; }
+    public function getWeddingProfile(): ?WeddingProfile
+    {
+        return $this->weddingProfile;
+    }
 
-    public function getCategory(): string { return $this->category; }
-    public function setCategory(string $category): static { $this->category = $category; return $this; }
+    public function setWeddingProfile(?WeddingProfile $weddingProfile): static
+    {
+        $this->weddingProfile = $weddingProfile;
 
-    public function getBudgetedAmount(): int { return $this->budgetedAmount; }
-    public function setBudgetedAmount(int $budgetedAmount): static { $this->budgetedAmount = $budgetedAmount; return $this; }
+        return $this;
+    }
 
-    public function getSpentAmount(): int { return $this->spentAmount; }
-    public function setSpentAmount(int $spentAmount): static { $this->spentAmount = $spentAmount; return $this; }
+    public function getCategory(): string
+    {
+        return $this->category;
+    }
 
-    public function getDisplayOrder(): int { return $this->displayOrder; }
-    public function setDisplayOrder(int $displayOrder): static { $this->displayOrder = $displayOrder; return $this; }
+    public function setCategory(string $category): static
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getBudgetedAmount(): int
+    {
+        return $this->budgetedAmount;
+    }
+
+    public function setBudgetedAmount(int $budgetedAmount): static
+    {
+        $this->budgetedAmount = $budgetedAmount;
+
+        return $this;
+    }
+
+    public function getSpentAmount(): int
+    {
+        return $this->spentAmount;
+    }
+
+    public function setSpentAmount(int $spentAmount): static
+    {
+        $this->spentAmount = $spentAmount;
+
+        return $this;
+    }
+
+    public function getDisplayOrder(): int
+    {
+        return $this->displayOrder;
+    }
+
+    public function setDisplayOrder(int $displayOrder): static
+    {
+        $this->displayOrder = $displayOrder;
+
+        return $this;
+    }
 }

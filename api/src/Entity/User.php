@@ -2,24 +2,21 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
@@ -110,7 +107,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read'])]
     private ?WeddingProfile $weddingProfile = null;
 
-
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Review::class)]
     private Collection $reviews;
 
@@ -127,14 +123,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
-
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
         $this->quoteRequests = new ArrayCollection();
         $this->userRoles = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {
@@ -149,6 +143,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -160,6 +155,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
+
         return $this;
     }
 
@@ -171,12 +167,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
+
         return $this;
     }
 
     public function getFullName(): string
     {
-        return trim($this->firstName . ' ' . $this->lastName);
+        return trim($this->firstName.' '.$this->lastName);
     }
 
     public function getPhone(): ?string
@@ -187,6 +184,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhone(?string $phone): static
     {
         $this->phone = $phone;
+
         return $this;
     }
 
@@ -198,6 +196,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUserType(string $userType): static
     {
         $this->userType = $userType;
+
         return $this;
     }
 
@@ -217,7 +216,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        
+
         // Add roles from DB
         foreach ($this->userRoles as $role) {
             $roles[] = $role->getName();
@@ -226,11 +225,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // Guarantees every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        if ($this->userType === self::TYPE_VENDOR) {
+        if (self::TYPE_VENDOR === $this->userType) {
             $roles[] = 'ROLE_VENDOR';
         }
 
-        if ($this->userType === self::TYPE_ADMIN) {
+        if (self::TYPE_ADMIN === $this->userType) {
             $roles[] = 'ROLE_ADMIN';
         }
 
@@ -250,6 +249,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         } else {
             $this->userRoles = new ArrayCollection($userRoles);
         }
+
         return $this;
     }
 
@@ -258,15 +258,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if (!$this->userRoles->contains($role)) {
             $this->userRoles->add($role);
         }
+
         return $this;
     }
 
     public function removeRoleEntity(Role $role): static
     {
         $this->userRoles->removeElement($role);
+
         return $this;
     }
-
 
     /**
      * @param list<string> $roles
@@ -274,6 +275,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
+
         return $this;
     }
 
@@ -288,6 +290,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -299,6 +302,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPlainPassword(?string $plainPassword): static
     {
         $this->plainPassword = $plainPassword;
+
         return $this;
     }
 
@@ -318,6 +322,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
         return $this;
     }
 
@@ -328,13 +333,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setVendorProfile(?VendorProfile $vendorProfile): static
     {
-        if ($vendorProfile === null && $this->vendorProfile !== null) {
+        if (null === $vendorProfile && null !== $this->vendorProfile) {
             $this->vendorProfile->setOwner(null);
         }
-        if ($vendorProfile !== null && $vendorProfile->getOwner() !== $this) {
+        if (null !== $vendorProfile && $vendorProfile->getOwner() !== $this) {
             $vendorProfile->setOwner($this);
         }
         $this->vendorProfile = $vendorProfile;
+
         return $this;
     }
 
@@ -357,13 +363,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setWeddingProfile(?WeddingProfile $weddingProfile): static
     {
-        if ($weddingProfile === null && $this->weddingProfile !== null) {
+        if (null === $weddingProfile && null !== $this->weddingProfile) {
             $this->weddingProfile->setUser(null);
         }
-        if ($weddingProfile !== null && $weddingProfile->getUser() !== $this) {
+        if (null !== $weddingProfile && $weddingProfile->getUser() !== $this) {
             $weddingProfile->setUser($this);
         }
         $this->weddingProfile = $weddingProfile;
+
         return $this;
     }
 
@@ -377,4 +384,3 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->updatedAt;
     }
 }
-

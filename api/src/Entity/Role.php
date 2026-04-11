@@ -3,19 +3,19 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Post;
 use App\Repository\RoleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ApiResource(
     operations: [
@@ -60,30 +60,50 @@ class Role
         $this->users = new ArrayCollection();
     }
 
-    public function getId(): ?int { return $this->id; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getName(): string { return $this->name; }
-    public function setName(string $name): static { $this->name = $name; return $this; }
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
 
     /** @return Collection<int, Permission> */
-    public function getPermissions(): Collection { return $this->permissions; }
+    public function getPermissions(): Collection
+    {
+        return $this->permissions;
+    }
 
     public function addPermission(Permission $permission): static
     {
         if (!$this->permissions->contains($permission)) {
             $this->permissions->add($permission);
         }
+
         return $this;
     }
 
     public function removePermission(Permission $permission): static
     {
         $this->permissions->removeElement($permission);
+
         return $this;
     }
 
     /** @return Collection<int, User> */
-    public function getUsers(): Collection { return $this->users; }
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
 
     public function addUser(User $user): static
     {
@@ -91,6 +111,7 @@ class Role
             $this->users->add($user);
             $user->addRoleEntity($this);
         }
+
         return $this;
     }
 
@@ -99,8 +120,12 @@ class Role
         if ($this->users->removeElement($user)) {
             $user->removeRoleEntity($this);
         }
+
         return $this;
     }
 
-    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
 }

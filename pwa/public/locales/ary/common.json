@@ -238,6 +238,7 @@
     "due_date_label": "الأجل",
     "delete_confirm": "واش بغيتي تمسح هاد الشغل؟",
     "error_add": "ما قدرناش نزيدو الشغل دابا.",
+    "error_delete": "ما قدرناش نمسحو الشغل دابا.",
     "categories": {
       "salles": "قاعات",
       "traiteur": "ترايتور",
@@ -264,6 +265,7 @@
     "empty": "باقي ما كاين حتى ضيف.",
     "delete_confirm": "واش بغيتي تمسح هاد الضيف؟",
     "error_add": "ما قدرناش نزيدو هاد الضيف.",
+    "error_delete": "ما قدرناش نمسحو هاد الضيف.",
     "new_guest_title": "ضيف جديد",
     "name_placeholder": "السمية والكنية",
     "meal_pref_label": "شنو كياكل",

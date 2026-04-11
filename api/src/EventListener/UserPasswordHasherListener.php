@@ -14,7 +14,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserPasswordHasherListener
 {
     public function __construct(
-        private UserPasswordHasherInterface $passwordHasher
+        private UserPasswordHasherInterface $passwordHasher,
     ) {
     }
 
@@ -31,7 +31,7 @@ class UserPasswordHasherListener
     private function hashPassword(User $user): void
     {
         $plainPassword = $user->getPlainPassword();
-        if ($plainPassword === null || $plainPassword === '') {
+        if (null === $plainPassword || '' === $plainPassword) {
             return;
         }
 

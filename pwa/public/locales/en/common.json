@@ -238,6 +238,7 @@
     "due_date_label": "Due Date",
     "delete_confirm": "Do you want to delete this task?",
     "error_add": "Error adding the task.",
+    "error_delete": "Error deleting the task.",
     "categories": {
       "salles": "Venues",
       "traiteur": "Caterer",
@@ -264,6 +265,7 @@
     "empty": "No guests registered.",
     "delete_confirm": "Do you want to delete this guest?",
     "error_add": "Error adding the guest.",
+    "error_delete": "Error deleting the guest.",
     "new_guest_title": "New guest",
     "name_placeholder": "First and Last Name",
     "meal_pref_label": "Meal Preference",

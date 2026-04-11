@@ -2,17 +2,16 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\QuoteRequestRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -91,7 +90,6 @@ class QuoteRequest
     #[Groups(['quote:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
-
     #[ORM\ManyToOne(inversedBy: 'quoteRequests')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['quote:read'])]
@@ -107,35 +105,114 @@ class QuoteRequest
     {
     }
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getId(): ?int { return $this->id; }
+    public function getEventType(): string
+    {
+        return $this->eventType;
+    }
 
-    public function getEventType(): string { return $this->eventType; }
-    public function setEventType(string $eventType): static { $this->eventType = $eventType; return $this; }
+    public function setEventType(string $eventType): static
+    {
+        $this->eventType = $eventType;
 
-    public function getEventDate(): ?\DateTimeImmutable { return $this->eventDate; }
-    public function setEventDate(?\DateTimeImmutable $eventDate): static { $this->eventDate = $eventDate; return $this; }
+        return $this;
+    }
 
-    public function getGuestCount(): int { return $this->guestCount; }
-    public function setGuestCount(int $guestCount): static { $this->guestCount = $guestCount; return $this; }
+    public function getEventDate(): ?\DateTimeImmutable
+    {
+        return $this->eventDate;
+    }
 
-    public function getBudget(): ?string { return $this->budget; }
-    public function setBudget(?string $budget): static { $this->budget = $budget; return $this; }
+    public function setEventDate(?\DateTimeImmutable $eventDate): static
+    {
+        $this->eventDate = $eventDate;
 
-    public function getMessage(): string { return $this->message; }
-    public function setMessage(string $message): static { $this->message = $message; return $this; }
+        return $this;
+    }
 
-    public function getStatus(): string { return $this->status; }
-    public function setStatus(string $status): static { $this->status = $status; return $this; }
+    public function getGuestCount(): int
+    {
+        return $this->guestCount;
+    }
 
-    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function setGuestCount(int $guestCount): static
+    {
+        $this->guestCount = $guestCount;
 
-    public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
+        return $this;
+    }
 
+    public function getBudget(): ?string
+    {
+        return $this->budget;
+    }
 
-    public function getClient(): ?User { return $this->client; }
-    public function setClient(?User $client): static { $this->client = $client; return $this; }
+    public function setBudget(?string $budget): static
+    {
+        $this->budget = $budget;
 
-    public function getVendorProfile(): ?VendorProfile { return $this->vendorProfile; }
-    public function setVendorProfile(?VendorProfile $vendorProfile): static { $this->vendorProfile = $vendorProfile; return $this; }
+        return $this;
+    }
+
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    public function setMessage(string $message): static
+    {
+        $this->message = $message;
+
+        return $this;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function getClient(): ?User
+    {
+        return $this->client;
+    }
+
+    public function setClient(?User $client): static
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    public function getVendorProfile(): ?VendorProfile
+    {
+        return $this->vendorProfile;
+    }
+
+    public function setVendorProfile(?VendorProfile $vendorProfile): static
+    {
+        $this->vendorProfile = $vendorProfile;
+
+        return $this;
+    }
 }

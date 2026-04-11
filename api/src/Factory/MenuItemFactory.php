@@ -3,7 +3,6 @@
 namespace App\Factory;
 
 use App\Entity\MenuItem;
-use App\Factory\VendorProfileFactory;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**

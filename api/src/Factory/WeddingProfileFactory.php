@@ -3,7 +3,6 @@
 namespace App\Factory;
 
 use App\Entity\WeddingProfile;
-use App\Factory\UserFactory;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**

@@ -3,14 +3,12 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\User;
-use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 
 class AuthTest extends ApiTestCase
 {
     public function testRegister(): void
     {
-        $email = 'test' . uniqid() . '@example.com';
+        $email = 'test'.uniqid().'@example.com';
         $response = static::createClient()->request('POST', '/users', [
             'headers' => ['Accept' => 'application/ld+json', 'Content-Type' => 'application/ld+json'],
             'json' => [
@@ -34,8 +32,8 @@ class AuthTest extends ApiTestCase
     public function testLogin(): void
     {
         $client = static::createClient();
-        $email = 'login' . uniqid() . '@example.com';
-        
+        $email = 'login'.uniqid().'@example.com';
+
         $client->request('POST', '/users', [
             'headers' => ['Accept' => 'application/ld+json', 'Content-Type' => 'application/ld+json'],
             'json' => [

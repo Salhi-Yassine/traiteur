@@ -13,4 +13,3 @@ class AppFixtures extends Fixture
         \App\Story\InitialAppStory::load();
     }
 }
-

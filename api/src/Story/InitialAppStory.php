@@ -38,7 +38,7 @@ final class InitialAppStory extends Story
         foreach ([
             'profile:create', 'profile:edit', 'profile:view',
             'quote:create', 'quote:view', 'quote:manage',
-            'manage:all_profiles', 'manage:all_quotes', 'view:all_quotes'
+            'manage:all_profiles', 'manage:all_quotes', 'view:all_quotes',
         ] as $name) {
             $perms[$name] = PermissionFactory::createOne(['name' => $name]);
         }
@@ -130,14 +130,14 @@ final class InitialAppStory extends Story
             'Tan-Tan' => 'طانطان',
             'Tarfaya' => 'طرفاية',
             'Boujdour' => 'بوجدور',
-            'Dakhla' => 'الداخلة'
+            'Dakhla' => 'الداخلة',
         ];
 
         $cityFactories = [];
         foreach ($cities as $cityName => $arabicName) {
             $city = CityFactory::createOne(['name' => $cityName]);
             $cityFactories[$cityName] = $city;
-            
+
             /** @var \Gedmo\Translatable\Entity\Repository\TranslationRepository $repo */
             $repo = $em->getRepository(\App\Entity\Translation::class);
             $repo->translate($city, 'name', 'ar', $arabicName);
@@ -161,22 +161,22 @@ final class InitialAppStory extends Story
         // --- Categories ---
         // [French name => [Arabic name, emoji]]
         $catData = [
-            'Salles'      => ['قاعات الأفراح', '🏛️'],
+            'Salles' => ['قاعات الأفراح', '🏛️'],
             'Photography' => ['تصوير فوتوغرافي', '📸'],
-            'Negrafa'     => ['نكافة', '👑'],
-            'Catering'    => ['تموين الحفلات', '🍽️'],
-            'Decoration'  => ['ديكور', '🌸'],
-            'Makeup'      => ['حلاقة و تجميل', '✋'],
-            'Orchestra'   => ['أوركسترا', '🎵'],
-            'Transport'   => ['نقل', '🚗'],
-            'Patisserie'  => ['حلويات', '🎂'],
-            'Hennaya'     => ['نقاشة الحناء', '🧡'],
-            'Jewelry'     => ['مجوهرات', '💍'],
-            'Dresses'     => ['فساتين الزفاف', '👗'],
-            'Suits'       => ['بدلات رجالية', '👔'],
+            'Negrafa' => ['نكافة', '👑'],
+            'Catering' => ['تموين الحفلات', '🍽️'],
+            'Decoration' => ['ديكور', '🌸'],
+            'Makeup' => ['حلاقة و تجميل', '✋'],
+            'Orchestra' => ['أوركسترا', '🎵'],
+            'Transport' => ['نقل', '🚗'],
+            'Patisserie' => ['حلويات', '🎂'],
+            'Hennaya' => ['نقاشة الحناء', '🧡'],
+            'Jewelry' => ['مجوهرات', '💍'],
+            'Dresses' => ['فساتين الزفاف', '👗'],
+            'Suits' => ['بدلات رجالية', '👔'],
             'Invitations' => ['دعوات الزفاف', '✉️'],
-            'Honeymoon'   => ['شهر العسل', '✈️'],
-            'Lighting'    => ['إضاءة وصوت', '💡'],
+            'Honeymoon' => ['شهر العسل', '✈️'],
+            'Lighting' => ['إضاءة وصوت', '💡'],
         ];
 
         $categoryFactories = [];
@@ -248,10 +248,10 @@ final class InitialAppStory extends Story
             ['Salon Beauté Royale', 'صالون الجمال الملكي', 'Coiffure et Maquillage complet', 'تصفيف شعر وماكياج شامل', 'Makeup', 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&q=80', 1500],
         ];
 
-        for ($i = 0; $i < 60; $i++) {
+        for ($i = 0; $i < 60; ++$i) {
             $tpl = $vendorTemplates[$i % count($vendorTemplates)];
-            $frName = $tpl[0] . ($i >= count($vendorTemplates) ? ' ' . ($i + 1) : '');
-            $arName = $tpl[1] . ($i >= count($vendorTemplates) ? ' ' . ($i + 1) : '');
+            $frName = $tpl[0].($i >= count($vendorTemplates) ? ' '.($i + 1) : '');
+            $arName = $tpl[1].($i >= count($vendorTemplates) ? ' '.($i + 1) : '');
             $frTagline = $tpl[2];
             $arTagline = $tpl[3];
             $categoryName = $tpl[4];

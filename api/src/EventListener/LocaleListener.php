@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use Gedmo\Translatable\TranslatableListener;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -21,9 +21,11 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class LocaleListener
 {
     private const SUPPORTED_LOCALES = ['fr', 'ar', 'ary', 'en'];
-    private const DEFAULT_LOCALE    = 'fr';
+    private const DEFAULT_LOCALE = 'fr';
 
-    public function __construct(private TranslatableListener $translatableListener) {}
+    public function __construct(private TranslatableListener $translatableListener)
+    {
+    }
 
     public function __invoke(RequestEvent $event): void
     {
@@ -46,15 +48,6 @@ class LocaleListener
         // Always fall back to the value in the main table if a translation is missing
         $this->translatableListener->setTranslationFallback(true);
         $this->translatableListener->setDefaultLocale(self::DEFAULT_LOCALE);
-
-        error_log(sprintf(
-            '[LocaleListener] Request: %s %s | Locale set to: %s | Accept-Language: %s | Listener Hash: %s',
-            $request->getMethod(),
-            $request->getRequestUri(),
-            $locale,
-            $request->headers->get('Accept-Language', 'NONE'),
-            spl_object_hash($this->translatableListener)
-        ));
     }
 
     #[AsEventListener(event: KernelEvents::RESPONSE)]

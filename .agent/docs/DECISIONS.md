@@ -68,6 +68,14 @@
 
 ## Progress Tracking
 
+### Dynamic width inline styles for progress bars
+**Decision:** `style={{ width: \`${percent}%\` }}` is an accepted exception to the Tailwind-only rule.
+**Why:** Tailwind utility classes are resolved at build time. Runtime-computed percentage values (budget progress, task completion) cannot be expressed as Tailwind utilities. CSS custom properties via `style` are the correct pattern for this case.
+**How to apply:** Only use inline styles for truly runtime-computed values (e.g., progress bars, chart dimensions). Any value known at build time must use Tailwind utilities. Add an inline comment `{/* Dynamic width — inline style is correct here */}` next to the element.
+**Date:** 2026-04-11
+
+---
+
 ### Split file approach (DONE.md + TODO.md + DECISIONS.md)
 **Decision:** Replace single PROGRESS.md with three focused files.
 **Why:** PROGRESS.md mixed planning and history — it was always stale. DONE.md is append-only (never lies), TODO.md is the live prioritized backlog, DECISIONS.md captures the why.

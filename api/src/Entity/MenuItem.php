@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -9,11 +10,9 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\MenuItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -21,14 +20,14 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new GetCollection(),
         new Get(),
-        new Post(security: "is_granted('ROLE_CATERER')"),
-        new Patch(security: "is_granted('ROLE_CATERER') and object.getCatererProfile().getOwner() == user"),
-        new Delete(security: "is_granted('ROLE_CATERER') and object.getCatererProfile().getOwner() == user"),
+        new Post(security: "is_granted('ROLE_VENDOR')"),
+        new Patch(security: "is_granted('ROLE_VENDOR') and object.getVendorProfile().getOwner() == user"),
+        new Delete(security: "is_granted('ROLE_VENDOR') and object.getVendorProfile().getOwner() == user"),
     ],
     normalizationContext: ['groups' => ['menu:read']],
     denormalizationContext: ['groups' => ['menu:write']],
 )]
-#[ApiFilter(SearchFilter::class, properties: ['catererProfile' => 'exact', 'category' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['vendorProfile' => 'exact', 'category' => 'exact'])]
 #[ORM\Entity(repositoryClass: MenuItemRepository::class)]
 class MenuItem
 {
@@ -95,37 +94,126 @@ class MenuItem
     #[Groups(['menu:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getId(): ?int { return $this->id; }
+    public function getName(): string
+    {
+        return $this->name;
+    }
 
-    public function getName(): string { return $this->name; }
-    public function setName(string $name): static { $this->name = $name; return $this; }
+    public function setName(string $name): static
+    {
+        $this->name = $name;
 
-    public function getDescription(): ?string { return $this->description; }
-    public function setDescription(?string $description): static { $this->description = $description; return $this; }
+        return $this;
+    }
 
-    public function getPricePerPerson(): ?string { return $this->pricePerPerson; }
-    public function setPricePerPerson(?string $pricePerPerson): static { $this->pricePerPerson = $pricePerPerson; return $this; }
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
 
-    public function getCategory(): string { return $this->category; }
-    public function setCategory(string $category): static { $this->category = $category; return $this; }
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
 
-    public function isVegetarian(): bool { return $this->isVegetarian; }
-    public function setIsVegetarian(bool $isVegetarian): static { $this->isVegetarian = $isVegetarian; return $this; }
+        return $this;
+    }
 
-    public function isVegan(): bool { return $this->isVegan; }
-    public function setIsVegan(bool $isVegan): static { $this->isVegan = $isVegan; return $this; }
+    public function getPricePerPerson(): ?string
+    {
+        return $this->pricePerPerson;
+    }
 
-    public function isGlutenFree(): bool { return $this->isGlutenFree; }
-    public function setIsGlutenFree(bool $isGlutenFree): static { $this->isGlutenFree = $isGlutenFree; return $this; }
+    public function setPricePerPerson(?string $pricePerPerson): static
+    {
+        $this->pricePerPerson = $pricePerPerson;
 
-    public function getImageUrl(): ?string { return $this->imageUrl; }
-    public function setImageUrl(?string $imageUrl): static { $this->imageUrl = $imageUrl; return $this; }
+        return $this;
+    }
 
-    public function getVendorProfile(): ?VendorProfile { return $this->vendorProfile; }
-    public function setVendorProfile(?VendorProfile $vendorProfile): static { $this->vendorProfile = $vendorProfile; return $this; }
+    public function getCategory(): string
+    {
+        return $this->category;
+    }
 
-    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
-    public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
+    public function setCategory(string $category): static
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function isVegetarian(): bool
+    {
+        return $this->isVegetarian;
+    }
+
+    public function setIsVegetarian(bool $isVegetarian): static
+    {
+        $this->isVegetarian = $isVegetarian;
+
+        return $this;
+    }
+
+    public function isVegan(): bool
+    {
+        return $this->isVegan;
+    }
+
+    public function setIsVegan(bool $isVegan): static
+    {
+        $this->isVegan = $isVegan;
+
+        return $this;
+    }
+
+    public function isGlutenFree(): bool
+    {
+        return $this->isGlutenFree;
+    }
+
+    public function setIsGlutenFree(bool $isGlutenFree): static
+    {
+        $this->isGlutenFree = $isGlutenFree;
+
+        return $this;
+    }
+
+    public function getImageUrl(): ?string
+    {
+        return $this->imageUrl;
+    }
+
+    public function setImageUrl(?string $imageUrl): static
+    {
+        $this->imageUrl = $imageUrl;
+
+        return $this;
+    }
+
+    public function getVendorProfile(): ?VendorProfile
+    {
+        return $this->vendorProfile;
+    }
+
+    public function setVendorProfile(?VendorProfile $vendorProfile): static
+    {
+        $this->vendorProfile = $vendorProfile;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
 }
-

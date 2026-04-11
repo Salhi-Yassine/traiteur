@@ -3,7 +3,6 @@
 namespace App\Factory;
 
 use App\Entity\BudgetItem;
-use App\Factory\WeddingProfileFactory;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**

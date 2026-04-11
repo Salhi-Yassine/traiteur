@@ -3,8 +3,6 @@
 namespace App\Factory;
 
 use App\Entity\VendorProfile;
-use App\Factory\UserFactory;
-use App\Factory\CityFactory;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**

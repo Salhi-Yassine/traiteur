@@ -1,7 +1,8 @@
 import { useTranslation } from "next-i18next";
 import Head from "next/head";
 import PlanningLayout from "../../components/layout/PlanningLayout";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "../../utils/apiClient";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
@@ -18,81 +19,72 @@ interface Guest {
     mealPreference: string;
 }
 
-const RSVP_LABELS: Record<string, string> = {
-    'pending': 'En attente',
-    'confirmed': 'Confirmé',
-    'declined': 'Décliné'
-};
-
-const SIDE_LABELS: Record<string, string> = {
-    'bride': 'Mariée',
-    'groom': 'Marié'
-};
+interface WeddingProfile {
+    id: number;
+}
 
 export default function InvitesPage() {
     const { t } = useTranslation("common");
-    const [guests, setGuests] = useState<Guest[]>([]);
-    const [weddingProfileId, setWeddingProfileId] = useState<number | null>(null);
+    const queryClient = useQueryClient();
     const [isAdding, setIsAdding] = useState(false);
-    const [newGuest, setNewGuest] = useState({ 
-        fullName: "", 
-        rsvpStatus: "pending", 
-        side: "bride", 
-        mealPreference: "standard" 
+    const [newGuest, setNewGuest] = useState({
+        fullName: "",
+        rsvpStatus: "pending",
+        side: "bride",
+        mealPreference: "standard",
     });
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    const { data: profileData } = useQuery({
+        queryKey: ["weddingProfile"],
+        queryFn: () => apiClient.get("/api/wedding_profiles?itemsPerPage=1"),
+    });
 
-    const fetchData = async () => {
-        try {
-            const profileRes = await apiClient.get("/api/wedding_profiles?itemsPerPage=1");
-            const members = profileRes["hydra:member"] ?? [];
-            if (members.length > 0) {
-                const wp = members[0];
-                setWeddingProfileId(wp.id);
-                
-                const guestRes = await apiClient.get(`/api/guests?weddingProfile=${wp.id}`);
-                setGuests(guestRes["hydra:member"] ?? []);
-            }
-        } catch (err) {
-            console.error("Error fetching guests:", err);
-        }
-    };
+    const profile: WeddingProfile | null = profileData?.["hydra:member"]?.[0] ?? null;
+    const profileId = profile?.id ?? null;
 
-    const handleAddGuest = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const response = await apiClient.post("/api/guests", {
-                ...newGuest,
-                name: newGuest.fullName,
-                weddingProfile: `/api/wedding_profiles/${weddingProfileId}`,
-            });
+    const { data: guestData } = useQuery({
+        queryKey: ["guests", profileId],
+        queryFn: () => apiClient.get(`/api/guests?weddingProfile=${profileId}`),
+        enabled: profileId !== null,
+    });
+
+    const guests: Guest[] = guestData?.["hydra:member"] ?? [];
+
+    const addMutation = useMutation({
+        mutationFn: (data: { name: string; rsvpStatus: string; side: string; mealPreference: string; weddingProfile: string }) =>
+            apiClient.post("/api/guests", data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["guests", profileId] });
             setIsAdding(false);
             setNewGuest({ fullName: "", rsvpStatus: "pending", side: "bride", mealPreference: "standard" });
-            fetchData();
-        } catch (err) {
-            alert("Erreur lors de l'ajout de l'invité.");
-        }
+        },
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: (id: number) => apiClient.delete(`/api/guests/${id}`),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["guests", profileId] }),
+    });
+
+    const handleAddGuest = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!profileId) return;
+        addMutation.mutate({
+            name: newGuest.fullName,
+            rsvpStatus: newGuest.rsvpStatus,
+            side: newGuest.side,
+            mealPreference: newGuest.mealPreference,
+            weddingProfile: `/api/wedding_profiles/${profileId}`,
+        });
     };
 
-    const handleDeleteGuest = async (id: number) => {
-        if (!confirm("Voulez-vous supprimer cet invité ?")) return;
-        try {
-            await apiClient.delete(`/api/guests/${id}`);
-            fetchData();
-        } catch (err) {
-            alert("Erreur lors de la suppression.");
-        }
+    const handleDeleteGuest = (id: number) => {
+        if (!window.confirm(t("invites.delete_confirm"))) return;
+        deleteMutation.mutate(id);
     };
-
-    const confirmedCount = guests.filter(g => g.rsvpStatus === 'confirmed').length;
-    const pendingCount = guests.filter(g => g.rsvpStatus === 'pending').length;
 
     return (
-        <PlanningLayout 
-            title={t("invites.title")} 
+        <PlanningLayout
+            title={t("invites.title")}
             description={t("invites.description")}
         >
             <Head>
@@ -111,24 +103,31 @@ export default function InvitesPage() {
                 <div className="bg-white p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
                     <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">{t("invites.confirmed")}</p>
                     <div className="flex items-end gap-2 text-[var(--color-accent)]">
-                        <span className="text-3xl font-black">{guests.filter(g => g.rsvpStatus === "confirmed").length}</span>
+                        <span className="text-3xl font-black">{guests.filter((g) => g.rsvpStatus === "confirmed").length}</span>
                         <span className="text-sm font-bold mb-1.5 opacity-60">{t("dashboard.guests_unit")}</span>
                     </div>
                 </div>
                 <div className="bg-white p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
                     <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">{t("invites.pending")}</p>
                     <div className="flex items-end gap-2 text-[var(--color-charcoal-400)]">
-                        <span className="text-3xl font-black">{guests.filter(g => g.rsvpStatus === "pending").length}</span>
+                        <span className="text-3xl font-black">{guests.filter((g) => g.rsvpStatus === "pending").length}</span>
                         <span className="text-sm font-bold mb-1.5 opacity-60">{t("dashboard.guests_unit")}</span>
                     </div>
                 </div>
             </div>
 
+            {/* Delete error */}
+            {deleteMutation.isError && (
+                <div className="mb-6 px-6 py-4 rounded-2xl bg-red-50 border border-red-100 text-red-600 text-sm font-bold">
+                    {t("invites.error_delete")}
+                </div>
+            )}
+
             {/* Guest List */}
             <div className="bg-white rounded-[2.5rem] border border-[var(--color-charcoal-100)] overflow-hidden shadow-sm">
                 <div className="px-10 py-8 border-b border-[var(--color-background)] flex items-center justify-between">
                     <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">{t("invites.list_title")}</h3>
-                    <Button 
+                    <Button
                         onClick={() => setIsAdding(true)}
                         className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-lg shadow-[var(--color-accent)]/20 h-auto"
                     >
@@ -144,7 +143,7 @@ export default function InvitesPage() {
                                 <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.side")}</th>
                                 <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.rsvp")}</th>
                                 <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.meal")}</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-right">{t("invites.actions")}</th>
+                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-end">{t("invites.actions")}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[var(--color-background)]">
@@ -167,7 +166,7 @@ export default function InvitesPage() {
                                     </td>
                                     <td className="px-10 py-6">
                                         <span className={`px-3 py-1 rounded-lg text-[10px] font-bold ${
-                                            guest.rsvpStatus === "confirmed" ? "bg-green-100 text-green-700" : 
+                                            guest.rsvpStatus === "confirmed" ? "bg-green-100 text-green-700" :
                                             guest.rsvpStatus === "declined" ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-700"
                                         }`}>
                                             {t(`invites.rsvp_status.${guest.rsvpStatus}`)}
@@ -176,8 +175,8 @@ export default function InvitesPage() {
                                     <td className="px-10 py-6 text-sm font-medium text-[var(--color-charcoal-500)] capitalize">
                                         {t(`invites.meals.${guest.mealPreference}`)}
                                     </td>
-                                    <td className="px-10 py-6 text-right">
-                                        <Button 
+                                    <td className="px-10 py-6 text-end">
+                                        <Button
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => handleDeleteGuest(guest.id)}
@@ -201,11 +200,18 @@ export default function InvitesPage() {
                     <div className="absolute inset-0 bg-[var(--color-primary)]/40 backdrop-blur-md" onClick={() => setIsAdding(false)} />
                     <div className="relative bg-white rounded-[2.5rem] w-full max-w-md p-10 shadow-2xl border border-[var(--color-accent)]/10 animate-in fade-in zoom-in duration-300">
                         <h3 className="font-display font-black text-2xl text-[var(--color-primary)] mb-8">{t("invites.new_guest_title")}</h3>
+
+                        {addMutation.isError && (
+                            <div className="mb-6 px-4 py-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-bold">
+                                {t("invites.error_add")}
+                            </div>
+                        )}
+
                         <form onSubmit={handleAddGuest} className="space-y-6">
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.full_name")}</Label>
-                                <Input 
-                                    type="text" 
+                                <Input
+                                    type="text"
                                     required
                                     value={newGuest.fullName}
                                     onChange={(e) => setNewGuest({...newGuest, fullName: e.target.value})}
@@ -216,12 +222,12 @@ export default function InvitesPage() {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.side")}</Label>
-                                    <Select 
+                                    <Select
                                         value={newGuest.side}
                                         onValueChange={(val) => setNewGuest({...newGuest, side: val})}
                                     >
                                         <SelectTrigger className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-[var(--color-accent)] outline-none transition-all">
-                                            <SelectValue placeholder="Sélectionnez" />
+                                            <SelectValue placeholder={t("common.confirm")} />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="bride">{t("invites.sides.bride")}</SelectItem>
@@ -231,12 +237,12 @@ export default function InvitesPage() {
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.rsvp")}</Label>
-                                    <Select 
+                                    <Select
                                         value={newGuest.rsvpStatus}
                                         onValueChange={(val) => setNewGuest({...newGuest, rsvpStatus: val})}
                                     >
                                         <SelectTrigger className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-[var(--color-accent)] outline-none transition-all">
-                                            <SelectValue placeholder="Sélectionnez" />
+                                            <SelectValue placeholder={t("common.confirm")} />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="pending">{t("invites.rsvp_status.pending")}</SelectItem>
@@ -248,12 +254,12 @@ export default function InvitesPage() {
                             </div>
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.meal_pref_label")}</Label>
-                                <Select 
+                                <Select
                                     value={newGuest.mealPreference}
                                     onValueChange={(val) => setNewGuest({...newGuest, mealPreference: val})}
                                 >
                                     <SelectTrigger className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus:ring-[var(--color-accent)] outline-none transition-all">
-                                        <SelectValue placeholder="Sélectionnez" />
+                                        <SelectValue placeholder={t("common.confirm")} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="standard">{t("invites.meals.standard")}</SelectItem>
@@ -264,24 +270,25 @@ export default function InvitesPage() {
                                 </Select>
                             </div>
                             <div className="flex gap-4 pt-4">
-                                <Button 
-                                    type="button" 
+                                <Button
+                                    type="button"
                                     variant="outline"
                                     onClick={() => setIsAdding(false)}
                                     className="flex-1 py-6 border-2 border-[var(--color-primary)] rounded-2xl text-xs font-black uppercase tracking-widest text-[var(--color-primary)] hover:bg-[var(--color-background)] transition-all"
                                 >
                                     {t("common.cancel")}
                                 </Button>
-                                <Button 
+                                <Button
                                     type="submit"
-                                    className="flex-1 py-6 bg-[var(--color-accent)] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-xl shadow-[var(--color-accent)]/20"
+                                    disabled={addMutation.isPending}
+                                    className="flex-1 py-6 bg-[var(--color-accent)] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-xl shadow-[var(--color-accent)]/20 disabled:opacity-60"
                                 >
-                                    {t("common.save")}
+                                    {addMutation.isPending ? t("common.loading") : t("common.save")}
                                 </Button>
                             </div>
                         </form>
                     </div>
-                 </div>
+                </div>
             )}
         </PlanningLayout>
     );

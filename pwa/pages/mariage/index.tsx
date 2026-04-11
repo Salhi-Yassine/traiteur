@@ -3,51 +3,49 @@ import Head from "next/head";
 import PlanningLayout from "../../components/layout/PlanningLayout";
 import { useAuth } from "../../context/AuthContext";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import apiClient from "../../utils/apiClient";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
 
+interface BudgetItemSummary {
+    spentAmount: number;
+}
+
+interface ChecklistTaskSummary {
+    isCompleted: boolean;
+}
+
+interface WeddingProfileDashboard {
+    totalBudgetMad?: number;
+    budgetItems?: BudgetItemSummary[];
+    guests?: unknown[];
+    checklistTasks?: ChecklistTaskSummary[];
+}
+
 export default function WeddingDashboard() {
     const { t } = useTranslation("common");
     const { user } = useAuth();
-    const [stats, setStats] = useState({
-        budgetSpent: 0,
-        budgetTotal: 0,
-        guestsCount: 0,
-        tasksDone: 0,
-        tasksTotal: 0,
+
+    const { data: profileData } = useQuery({
+        queryKey: ["weddingProfile"],
+        queryFn: () => apiClient.get("/api/wedding_profiles?itemsPerPage=1"),
     });
 
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            try {
-                // Fetch wedding profile for the current user
-                const profile = await apiClient.get("/api/wedding_profiles?itemsPerPage=1");
-                const members = profile["hydra:member"] ?? [];
-                if (members.length > 0) {
-                    const wp = members[0];
-                    setStats({
-                        budgetSpent: (wp.budgetItems ?? []).reduce((acc: number, item: any) => acc + item.spentAmount, 0),
-                        budgetTotal: wp.totalBudgetMad ?? 0,
-                        guestsCount: wp.guests?.length ?? 0,
-                        tasksTotal: wp.checklistTasks?.length ?? 0,
-                        tasksDone: (wp.checklistTasks ?? []).filter((t: any) => t.isCompleted).length,
-                    });
-                }
-            } catch (err) {
-                console.error("Dashboard fetch error:", err);
-            }
-        };
-        fetchDashboardData();
-    }, []);
+    const wp: WeddingProfileDashboard | null = profileData?.["hydra:member"]?.[0] ?? null;
 
-    const budgetPercent = stats.budgetTotal > 0 ? (stats.budgetSpent / stats.budgetTotal) * 100 : 0;
-    const tasksPercent = stats.tasksTotal > 0 ? (stats.tasksDone / stats.tasksTotal) * 100 : 0;
+    const budgetSpent = (wp?.budgetItems ?? []).reduce((acc, item) => acc + item.spentAmount, 0);
+    const budgetTotal = wp?.totalBudgetMad ?? 0;
+    const guestsCount = wp?.guests?.length ?? 0;
+    const tasksTotal = wp?.checklistTasks?.length ?? 0;
+    const tasksDone = (wp?.checklistTasks ?? []).filter((task) => task.isCompleted).length;
+
+    const budgetPercent = budgetTotal > 0 ? (budgetSpent / budgetTotal) * 100 : 0;
+    const tasksPercent = tasksTotal > 0 ? (tasksDone / tasksTotal) * 100 : 0;
 
     return (
-        <PlanningLayout 
-            title={t("dashboard.welcome", { name: user?.firstName })} 
+        <PlanningLayout
+            title={t("dashboard.welcome", { name: user?.firstName })}
             description={t("dashboard.subtitle")}
         >
             <Head>
@@ -68,12 +66,13 @@ export default function WeddingDashboard() {
                     <h3 className="font-display font-black text-2xl text-[var(--color-primary)] mb-2">{t("nav.budget")}</h3>
                     <div className="space-y-4">
                         <div className="flex items-end gap-2">
-                            <span className="text-3xl font-black text-[var(--color-primary)]">{stats.budgetSpent.toLocaleString()}</span>
-                            <span className="text-sm font-bold text-[var(--color-charcoal-400)] mb-1.5">/ {stats.budgetTotal.toLocaleString()} MAD</span>
+                            <span className="text-3xl font-black text-[var(--color-primary)]">{budgetSpent.toLocaleString()}</span>
+                            <span className="text-sm font-bold text-[var(--color-charcoal-400)] mb-1.5">/ {budgetTotal.toLocaleString()} MAD</span>
                         </div>
                         <div className="h-2 w-full bg-[var(--color-background)] rounded-full overflow-hidden">
-                            <div 
-                                className="h-full bg-[var(--color-accent)] transition-all duration-1000" 
+                            {/* Dynamic width is a runtime value — inline style is the correct approach here */}
+                            <div
+                                className="h-full bg-[var(--color-accent)] transition-all duration-1000"
                                 style={{ width: `${Math.min(budgetPercent, 100)}%` }}
                             />
                         </div>
@@ -92,7 +91,7 @@ export default function WeddingDashboard() {
                     </div>
                     <h3 className="font-display font-black text-2xl text-[var(--color-primary)] mb-2">{t("nav.guests")}</h3>
                     <div className="flex items-end gap-2">
-                        <span className="text-3xl font-black text-[var(--color-primary)]">{stats.guestsCount}</span>
+                        <span className="text-3xl font-black text-[var(--color-primary)]">{guestsCount}</span>
                         <span className="text-sm font-bold text-[var(--color-charcoal-400)] mb-1.5">{t("dashboard.guests_unit")}</span>
                     </div>
                 </Link>
@@ -110,12 +109,13 @@ export default function WeddingDashboard() {
                     <h3 className="font-display font-black text-2xl text-[var(--color-primary)] mb-2">{t("nav.checklist")}</h3>
                     <div className="space-y-4">
                         <div className="flex items-end gap-2">
-                            <span className="text-3xl font-black text-[var(--color-primary)]">{stats.tasksDone}</span>
-                            <span className="text-sm font-bold text-[var(--color-charcoal-400)] mb-1.5">/ {t("dashboard.tasks_done", { count: stats.tasksTotal })}</span>
+                            <span className="text-3xl font-black text-[var(--color-primary)]">{tasksDone}</span>
+                            <span className="text-sm font-bold text-[var(--color-charcoal-400)] mb-1.5">/ {t("dashboard.tasks_done", { count: tasksTotal })}</span>
                         </div>
                         <div className="h-2 w-full bg-[var(--color-background)] rounded-full overflow-hidden">
-                            <div 
-                                className="h-full bg-[var(--color-primary)] transition-all duration-1000" 
+                            {/* Dynamic width is a runtime value — inline style is the correct approach here */}
+                            <div
+                                className="h-full bg-[var(--color-primary)] transition-all duration-1000"
                                 style={{ width: `${Math.min(tasksPercent, 100)}%` }}
                             />
                         </div>
@@ -123,9 +123,9 @@ export default function WeddingDashboard() {
                 </Link>
             </div>
 
-            {/* Tip of the day or Quote */}
+            {/* Tip of the day */}
             <div className="mt-12 bg-[var(--color-accent)]/5 rounded-[3rem] p-12 border border-[var(--color-accent)]/10 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-accent)]/5 rounded-full -mr-32 -mt-32 blur-3xl" />
+                <div className="absolute top-0 end-0 w-64 h-64 bg-[var(--color-accent)]/5 rounded-full -me-32 -mt-32 blur-3xl" />
                 <h4 className="text-[var(--color-accent)] text-xs font-black uppercase tracking-[0.3em] mb-4">{t("dashboard.expert_tip")}</h4>
                 <p className="font-display text-2xl text-[var(--color-primary)] italic max-w-2xl leading-relaxed">
                     {t("dashboard.tip_content")}

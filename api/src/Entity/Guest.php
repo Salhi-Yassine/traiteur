@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\Post;
 use App\Repository\GuestRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -104,43 +104,157 @@ class Guest
     #[Groups(['guest:read'])]
     private \DateTimeImmutable $createdAt;
 
-    public function getId(): ?int { return $this->id; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getWeddingProfile(): ?WeddingProfile { return $this->weddingProfile; }
-    public function setWeddingProfile(?WeddingProfile $weddingProfile): static { $this->weddingProfile = $weddingProfile; return $this; }
+    public function getWeddingProfile(): ?WeddingProfile
+    {
+        return $this->weddingProfile;
+    }
 
-    public function getFullName(): string { return $this->fullName; }
-    public function setFullName(string $fullName): static { $this->fullName = $fullName; return $this; }
+    public function setWeddingProfile(?WeddingProfile $weddingProfile): static
+    {
+        $this->weddingProfile = $weddingProfile;
 
-    public function getPhone(): ?string { return $this->phone; }
-    public function setPhone(?string $phone): static { $this->phone = $phone; return $this; }
+        return $this;
+    }
 
-    public function getEmail(): ?string { return $this->email; }
-    public function setEmail(?string $email): static { $this->email = $email; return $this; }
+    public function getFullName(): string
+    {
+        return $this->fullName;
+    }
 
-    public function getSide(): string { return $this->side; }
-    public function setSide(string $side): static { $this->side = $side; return $this; }
+    public function setFullName(string $fullName): static
+    {
+        $this->fullName = $fullName;
 
-    public function getRelationship(): ?string { return $this->relationship; }
-    public function setRelationship(?string $relationship): static { $this->relationship = $relationship; return $this; }
+        return $this;
+    }
 
-    public function getCity(): ?string { return $this->city; }
-    public function setCity(?string $city): static { $this->city = $city; return $this; }
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
 
-    public function getRsvpStatus(): string { return $this->rsvpStatus; }
-    public function setRsvpStatus(string $rsvpStatus): static { $this->rsvpStatus = $rsvpStatus; return $this; }
+    public function setPhone(?string $phone): static
+    {
+        $this->phone = $phone;
 
-    public function getMealPreference(): ?string { return $this->mealPreference; }
-    public function setMealPreference(?string $mealPreference): static { $this->mealPreference = $mealPreference; return $this; }
+        return $this;
+    }
 
-    public function getTableNumber(): ?int { return $this->tableNumber; }
-    public function setTableNumber(?int $tableNumber): static { $this->tableNumber = $tableNumber; return $this; }
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
 
-    public function isInvitationSent(): bool { return $this->invitationSent; }
-    public function setInvitationSent(bool $invitationSent): static { $this->invitationSent = $invitationSent; return $this; }
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
 
-    public function getNotes(): ?string { return $this->notes; }
-    public function setNotes(?string $notes): static { $this->notes = $notes; return $this; }
+        return $this;
+    }
 
-    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function getSide(): string
+    {
+        return $this->side;
+    }
+
+    public function setSide(string $side): static
+    {
+        $this->side = $side;
+
+        return $this;
+    }
+
+    public function getRelationship(): ?string
+    {
+        return $this->relationship;
+    }
+
+    public function setRelationship(?string $relationship): static
+    {
+        $this->relationship = $relationship;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): static
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getRsvpStatus(): string
+    {
+        return $this->rsvpStatus;
+    }
+
+    public function setRsvpStatus(string $rsvpStatus): static
+    {
+        $this->rsvpStatus = $rsvpStatus;
+
+        return $this;
+    }
+
+    public function getMealPreference(): ?string
+    {
+        return $this->mealPreference;
+    }
+
+    public function setMealPreference(?string $mealPreference): static
+    {
+        $this->mealPreference = $mealPreference;
+
+        return $this;
+    }
+
+    public function getTableNumber(): ?int
+    {
+        return $this->tableNumber;
+    }
+
+    public function setTableNumber(?int $tableNumber): static
+    {
+        $this->tableNumber = $tableNumber;
+
+        return $this;
+    }
+
+    public function isInvitationSent(): bool
+    {
+        return $this->invitationSent;
+    }
+
+    public function setInvitationSent(bool $invitationSent): static
+    {
+        $this->invitationSent = $invitationSent;
+
+        return $this;
+    }
+
+    public function getNotes(): ?string
+    {
+        return $this->notes;
+    }
+
+    public function setNotes(?string $notes): static
+    {
+        $this->notes = $notes;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
 }

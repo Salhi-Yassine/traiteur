@@ -2,17 +2,16 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\ReviewRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -27,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['review:write']],
     order: ['createdAt' => 'DESC'],
 )]
-#[ApiFilter(SearchFilter::class, properties: ['catererProfile' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['vendorProfile' => 'exact'])]
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 class Review
 {
@@ -63,7 +62,6 @@ class Review
     #[Groups(['review:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
-
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
@@ -79,26 +77,78 @@ class Review
     {
     }
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getId(): ?int { return $this->id; }
+    public function getRating(): int
+    {
+        return $this->rating;
+    }
 
-    public function getRating(): int { return $this->rating; }
-    public function setRating(int $rating): static { $this->rating = $rating; return $this; }
+    public function setRating(int $rating): static
+    {
+        $this->rating = $rating;
 
-    public function getTitle(): ?string { return $this->title; }
-    public function setTitle(?string $title): static { $this->title = $title; return $this; }
+        return $this;
+    }
 
-    public function getBody(): string { return $this->body; }
-    public function setBody(string $body): static { $this->body = $body; return $this; }
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
 
-    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function setTitle(?string $title): static
+    {
+        $this->title = $title;
 
-    public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
+        return $this;
+    }
 
+    public function getBody(): string
+    {
+        return $this->body;
+    }
 
-    public function getVendorProfile(): ?VendorProfile { return $this->vendorProfile; }
-    public function setVendorProfile(?VendorProfile $vendorProfile): static { $this->vendorProfile = $vendorProfile; return $this; }
+    public function setBody(string $body): static
+    {
+        $this->body = $body;
 
-    public function getAuthor(): ?User { return $this->author; }
-    public function setAuthor(?User $author): static { $this->author = $author; return $this; }
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function getVendorProfile(): ?VendorProfile
+    {
+        return $this->vendorProfile;
+    }
+
+    public function setVendorProfile(?VendorProfile $vendorProfile): static
+    {
+        $this->vendorProfile = $vendorProfile;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
+
+        return $this;
+    }
 }

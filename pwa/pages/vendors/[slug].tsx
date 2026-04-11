@@ -473,7 +473,7 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                         {/* Description */}
                         <div className="pb-12 border-b border-neutral-200 mb-12">
                              {vendor.tagline && (
-                                <p className="text-xl font-black text-neutral-900 italic mb-6">"{vendor.tagline}"</p>
+                                <p className="text-xl font-black text-neutral-900 italic mb-6">&quot;{vendor.tagline}&quot;</p>
                              )}
                              <p className="text-neutral-700 leading-relaxed text-lg font-medium whitespace-pre-wrap md:line-clamp-none line-clamp-4">
                                  {vendor.description}
@@ -599,9 +599,7 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                 </div>
                             </div>
                             <p className="text-neutral-700 leading-relaxed font-medium">
-                                {vendor.owner.firstName} s'engage à faire de votre événement une réussite totale. 
-                                "Nous mettons un point d'honneur à offrir un service personnalisé pour chaque couple, 
-                                en veillant aux moindres détails pour que votre grand jour soit parfait."
+                                {vendor.owner.firstName}{" s\u2019engage à faire de votre événement une réussite totale. \u201cNous mettons un point d\u2019honneur à offrir un service personnalisé pour chaque couple, en veillant aux moindres détails pour que votre grand jour soit parfait.\u201d"}
                             </p>
                             <div className="flex flex-wrap gap-4 mt-8">
                                 {vendor.whatsapp ? (
@@ -707,7 +705,7 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                                 <p className="text-xs text-neutral-500">{new Date(review.createdAt).toLocaleDateString('fr-MA', { month: 'long', year: 'numeric' })}</p>
                                             </div>
                                         </div>
-                                        <p className={cn("text-neutral-700 leading-relaxed font-medium", expandedReviews.has(review.id) ? "" : "line-clamp-3")}>"{review.body}"</p>
+                                        <p className={cn("text-neutral-700 leading-relaxed font-medium", expandedReviews.has(review.id) ? "" : "line-clamp-3")}>&quot;{review.body}&quot;</p>
                                         {!expandedReviews.has(review.id) && (
                                             <button
                                                 onClick={() => setExpandedReviews(prev => new Set(prev).add(review.id))}

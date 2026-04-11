@@ -239,6 +239,7 @@
     "due_date_label": "Échéance",
     "delete_confirm": "Voulez-vous supprimer cette tâche ?",
     "error_add": "Erreur lors de l'ajout de la tâche.",
+    "error_delete": "Erreur lors de la suppression de la tâche.",
     "categories": {
       "salles": "Salles",
       "traiteur": "Traiteur",
@@ -265,6 +266,7 @@
     "empty": "Aucun invité enregistré.",
     "delete_confirm": "Voulez-vous supprimer cet invité ?",
     "error_add": "Erreur lors de l'ajout de l'invité.",
+    "error_delete": "Erreur lors de la suppression de l'invité.",
     "new_guest_title": "Nouvel invité",
     "name_placeholder": "Prénom et Nom",
     "meal_pref_label": "Préférence Repas",

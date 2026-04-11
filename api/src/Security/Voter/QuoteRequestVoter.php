@@ -15,7 +15,7 @@ class QuoteRequestVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if ($attribute === self::CREATE) {
+        if (self::CREATE === $attribute) {
             return true;
         }
 
@@ -31,7 +31,7 @@ class QuoteRequestVoter extends Voter
             return false;
         }
 
-        if ($attribute === self::CREATE) {
+        if (self::CREATE === $attribute) {
             return $this->canCreate($user);
         }
 
@@ -60,7 +60,7 @@ class QuoteRequestVoter extends Voter
             return true;
         }
 
-        if ($quote->getUser() === $user) {
+        if ($quote->getClient() === $user) {
             return true;
         }
 
@@ -94,6 +94,7 @@ class QuoteRequestVoter extends Voter
                 }
             }
         }
+
         return false;
     }
 }

@@ -119,7 +119,7 @@ export default function QuoteRequestModal({
                             Réserver {vendorName}
                         </h2>
                         <p className="text-muted-foreground text-xs mt-2 font-medium">
-                            Remplissez ce formulaire d'intention pour recevoir une proposition sur mesure.
+                            Remplissez ce formulaire d&apos;intention pour recevoir une proposition sur mesure.
                         </p>
                     </div>
                     <button
@@ -139,7 +139,7 @@ export default function QuoteRequestModal({
                         {/* Event type */}
                         <div className="space-y-3">
                             <Label htmlFor="eventType" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
-                                Type d'Événement <span className="text-secondary">*</span>
+                                Type d&apos;Événement <span className="text-secondary">*</span>
                             </Label>
                             <Select 
                                 value={formik.values.eventType} 
@@ -184,7 +184,7 @@ export default function QuoteRequestModal({
                         {/* Guests */}
                         <div className="space-y-3">
                             <Label htmlFor="guestCount" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
-                                Nombre d'Invités <span className="text-secondary">*</span>
+                                Nombre d&apos;Invités <span className="text-secondary">*</span>
                             </Label>
                             <Input
                                 type="number"
