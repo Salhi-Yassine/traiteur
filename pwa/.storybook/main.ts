@@ -40,7 +40,6 @@ const config: StorybookConfig = {
     config.define = {
       ...config.define,
       "process.env": {},
-      "process.cwd": () => "/",
       "process.browser": true,
     };
 

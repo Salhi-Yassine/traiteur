@@ -1,10 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
 import { Check, ChevronsUpDown, Search, MapPin, LayoutGrid } from "lucide-react";
@@ -31,6 +30,9 @@ export default function SearchBar({
     const [openPageCity, setOpenPageCity] = useState(false);
     const [openCategory, setOpenCategory] = useState(false);
     const [openPageCategory, setOpenPageCategory] = useState(false);
+    const [expanded, setExpanded] = useState(false);
+    const [activeSection, setActiveSection] = useState<"where" | "what" | null>(null);
+    const capsuleRef = useRef<HTMLDivElement>(null);
     const [dynamicOptions, setDynamicOptions] = useState<{ 
         cities: { name: string, slug: string }[], 
         categories: { name: string, slug: string }[] 
@@ -61,6 +63,35 @@ export default function SearchBar({
         };
         fetchOptions();
     }, [router.locale]);
+
+    // Close capsule on outside click
+    const handleClickOutside = useCallback((e: MouseEvent) => {
+        if (capsuleRef.current && !capsuleRef.current.contains(e.target as Node)) {
+            setExpanded(false);
+            setActiveSection(null);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (expanded) {
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, [expanded, handleClickOutside]);
+
+    // Close capsule on Escape
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                setExpanded(false);
+                setActiveSection(null);
+            }
+        };
+        if (expanded) {
+            document.addEventListener("keydown", handleKeyDown);
+            return () => document.removeEventListener("keydown", handleKeyDown);
+        }
+    }, [expanded]);
 
     const CITIES = [
         { value: "all", label: t("search_bar.cities.all") },
@@ -99,14 +130,49 @@ export default function SearchBar({
 
     const finalCategories = CATEGORIES.length > 1 ? CATEGORIES : FALLBACK_CATEGORIES;
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSearch = (e?: React.FormEvent) => {
+        e?.preventDefault();
         const params = new URLSearchParams();
         if (query.trim()) params.set("q", query.trim());
-        if (city && city !== "all") params.set("cities.slug", city);
-        if (category && category !== "all") params.set("category.slug", category);
+        if (city && city !== "all") params.set("serviceArea", city);
+        if (category && category !== "all") params.set("category", category);
         router.push(`/vendors?${params.toString()}`);
+        setExpanded(false);
+        setActiveSection(null);
     };
+
+    // For capsule: select city and auto-navigate
+    const handleCitySelect = (value: string) => {
+        setCity(value);
+        setOpenPageCity(false);
+        // Auto-search after selecting
+        const params = new URLSearchParams();
+        if (value && value !== "all") params.set("serviceArea", value);
+        if (category && category !== "all") params.set("category", category);
+        router.push(`/vendors?${params.toString()}`);
+        setExpanded(false);
+        setActiveSection(null);
+    };
+
+    const handleCategorySelect = (value: string) => {
+        setCategory(value);
+        setOpenPageCategory(false);
+        // Auto-search after selecting
+        const params = new URLSearchParams();
+        if (city && city !== "all") params.set("serviceArea", city);
+        if (value && value !== "all") params.set("category", value);
+        router.push(`/vendors?${params.toString()}`);
+        setExpanded(false);
+        setActiveSection(null);
+    };
+
+    const cityLabel = city && city !== "all"
+        ? finalCities.find((c) => c.value.toLowerCase() === city.toLowerCase())?.label
+        : null;
+
+    const categoryLabel = category && category !== "all"
+        ? finalCategories.find((c) => c.value.toLowerCase() === category.toLowerCase())?.label
+        : null;
 
     if (variant === "hero") {
         return (
@@ -246,126 +312,149 @@ export default function SearchBar({
         );
     }
 
-    // Page variant — compact bar
+    // ─── Page variant — Airbnb-style expandable capsule ──────────────────────
+    const summaryParts = [
+        cityLabel || t("search_bar.anywhere"),
+        categoryLabel || t("search_bar.any_category"),
+    ];
+
     return (
-        <form
-            onSubmit={handleSearch}
-            className="flex flex-col sm:flex-row gap-3 w-full"
-            role="search"
-        >
-            <div className="flex-[2] flex items-center gap-3 bg-white border-[1.5px] border-[#DDDDDD] rounded-lg px-4 h-12 focus-within:border-[#1A1A1A] focus-within:shadow-[0_0_0_3px_rgba(26,26,26,0.08)] transition-all">
-                <Search className="w-4 h-4 text-[#B0B0B0] shrink-0" />
-                <Input
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder={t("search_bar.placeholder")}
-                    className="flex-1 bg-transparent text-[15px] border-none shadow-none focus-visible:ring-0 px-0 outline-none font-[400] text-[#1A1A1A] placeholder:text-[#B0B0B0]"
-                />
-            </div>
+        <div ref={capsuleRef} className="relative w-full max-w-2xl">
+            {/* Collapsed capsule */}
+            {!expanded && (
+                <button
+                    type="button"
+                    onClick={() => setExpanded(true)}
+                    className="w-full flex items-center gap-3 bg-white border border-[#DDDDDD] rounded-full h-12 ps-5 pe-2 shadow-sm hover:shadow-md transition-all duration-200 group"
+                    aria-label={t("search_bar.expand_search")}
+                    id="search-capsule-collapsed"
+                >
+                    <Search className="w-4 h-4 text-[#1A1A1A] shrink-0" />
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <span className="text-[14px] font-semibold text-[#1A1A1A] truncate">
+                            {cityLabel || t("search_bar.anywhere")}
+                        </span>
+                        <span className="w-px h-4 bg-[#DDDDDD] shrink-0" />
+                        <span className="text-[14px] text-[#717171] truncate">
+                            {categoryLabel || t("search_bar.any_category")}
+                        </span>
+                    </div>
+                    <span className="shrink-0 w-8 h-8 rounded-full bg-[#E8472A] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                        <Search className="w-3.5 h-3.5 text-white" />
+                    </span>
+                </button>
+            )}
 
-            <div className="flex-1">
-                <Popover open={openPageCity} onOpenChange={setOpenPageCity}>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={openPageCity}
-                            className="w-full h-12 justify-between border-[1.5px] border-[#DDDDDD] rounded-lg px-4 text-[14px] text-[#484848] font-normal"
+            {/* Expanded capsule */}
+            {expanded && (
+                <div className="w-full bg-white border border-[#DDDDDD] rounded-2xl shadow-lg overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200">
+                    <div className="flex flex-col sm:flex-row">
+                        {/* Where section */}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setActiveSection("where");
+                                setOpenPageCity(true);
+                            }}
+                            className={cn(
+                                "flex-1 px-5 py-4 text-start transition-colors rounded-s-2xl",
+                                activeSection === "where"
+                                    ? "bg-white shadow-[inset_0_0_0_1.5px_#1A1A1A] rounded-2xl"
+                                    : "hover:bg-[#F7F7F7]"
+                            )}
                         >
-                            <span className="truncate">
-                                {city && city !== "all"
-                                    ? finalCities.find((c) => c.value.toLowerCase() === city.toLowerCase())?.label
-                                    : t("search_bar.cities.all")}
-                            </span>
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[200px] p-0" align="start">
-                        <Command>
-                            <CommandInput placeholder={t("search_bar.city_label")} />
-                            <CommandList>
-                                <CommandEmpty>{t("search_bar.no_results", { defaultValue: "No results found." })}</CommandEmpty>
-                                <CommandGroup>
-                                    {finalCities.map((c) => (
-                                        <CommandItem
-                                            key={c.value}
-                                            value={`${c.value} ${c.label}`}
-                                            onSelect={() => {
-                                                setCity(c.value === city ? "all" : c.value);
-                                                setOpenPageCity(false);
-                                            }}
-                                        >
-                                            <Check
-                                                className={cn(
-                                                    "mr-2 h-4 w-4",
-                                                    city.toLowerCase() === c.value.toLowerCase() ? "opacity-100" : "opacity-0"
-                                                )}
-                                            />
-                                            {c.label}
-                                        </CommandItem>
-                                    ))}
-                                </CommandGroup>
-                            </CommandList>
-                        </Command>
-                    </PopoverContent>
-                </Popover>
-            </div>
+                            <p className="text-[11px] font-bold text-[#1A1A1A] uppercase tracking-wide">{t("search_bar.where")}</p>
+                            <p className="text-[14px] text-[#717171] mt-0.5 truncate">
+                                {cityLabel || t("search_bar.anywhere")}
+                            </p>
+                        </button>
 
-            <div className="flex-1">
-                <Popover open={openPageCategory} onOpenChange={setOpenPageCategory}>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={openPageCategory}
-                            className="w-full h-12 justify-between border-[1.5px] border-[#DDDDDD] rounded-lg px-4 text-[14px] text-[#484848] font-normal"
+                        {/* Divider */}
+                        <div className="hidden sm:block w-px bg-[#DDDDDD] self-stretch my-3" />
+                        <div className="sm:hidden h-px bg-[#DDDDDD] mx-4" />
+
+                        {/* What section */}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setActiveSection("what");
+                                setOpenPageCategory(true);
+                            }}
+                            className={cn(
+                                "flex-1 px-5 py-4 text-start transition-colors",
+                                activeSection === "what"
+                                    ? "bg-white shadow-[inset_0_0_0_1.5px_#1A1A1A] rounded-2xl"
+                                    : "hover:bg-[#F7F7F7]"
+                            )}
                         >
-                            <span className="truncate">
-                                {category && category !== "all"
-                                    ? finalCategories.find((cat) => cat.value.toLowerCase() === category.toLowerCase())?.label
-                                    : t("search_bar.categories.all")}
-                            </span>
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[200px] p-0" align="start">
-                        <Command>
-                            <CommandInput placeholder={t("search_bar.cat_label")} />
-                            <CommandList>
-                                <CommandEmpty>{t("search_bar.no_results", { defaultValue: "No results found." })}</CommandEmpty>
-                                <CommandGroup>
-                                    {finalCategories.map((cat) => (
-                                        <CommandItem
-                                            key={cat.value}
-                                            value={`${cat.value} ${cat.label}`}
-                                            onSelect={() => {
-                                                setCategory(cat.value === category ? "all" : cat.value);
-                                                setOpenPageCategory(false);
-                                            }}
-                                        >
-                                            <Check
-                                                className={cn(
-                                                    "mr-2 h-4 w-4",
-                                                    category.toLowerCase() === cat.value.toLowerCase() ? "opacity-100" : "opacity-0"
-                                                )}
-                                            />
-                                            {cat.label}
-                                        </CommandItem>
-                                    ))}
-                                </CommandGroup>
-                            </CommandList>
-                        </Command>
-                    </PopoverContent>
-                </Popover>
-            </div>
+                            <p className="text-[11px] font-bold text-[#1A1A1A] uppercase tracking-wide">{t("search_bar.what")}</p>
+                            <p className="text-[14px] text-[#717171] mt-0.5 truncate">
+                                {categoryLabel || t("search_bar.any_category")}
+                            </p>
+                        </button>
 
-            <Button
-                type="submit"
-                className="px-6 h-12 rounded-lg text-[15px] shrink-0"
-            >
-                {t("search_bar.cta")}
-            </Button>
-        </form>
+                        {/* Search button */}
+                        <div className="flex items-center px-3 py-3">
+                            <button
+                                type="button"
+                                onClick={() => handleSearch()}
+                                className="flex items-center gap-2 bg-[#E8472A] hover:bg-[#C43A20] text-white rounded-xl px-5 h-11 text-[14px] font-semibold transition-colors shadow-sm"
+                            >
+                                <Search className="w-4 h-4" />
+                                <span className="hidden sm:inline">{t("search_bar.cta")}</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* City dropdown panel */}
+                    {activeSection === "where" && (
+                        <div className="border-t border-[#EBEBEB] p-4 animate-in slide-in-from-top-2 duration-200">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                {finalCities.map((c) => (
+                                    <button
+                                        key={c.value}
+                                        type="button"
+                                        onClick={() => handleCitySelect(c.value)}
+                                        className={cn(
+                                            "text-start px-4 py-3 rounded-xl text-[14px] transition-all border",
+                                            city.toLowerCase() === c.value.toLowerCase()
+                                                ? "bg-[#F7F7F7] border-[#1A1A1A] font-medium text-[#1A1A1A]"
+                                                : "border-transparent hover:bg-[#F7F7F7] text-[#484848]"
+                                        )}
+                                    >
+                                        <MapPin className="w-3.5 h-3.5 inline-block me-1.5 opacity-50" />
+                                        {c.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Category dropdown panel */}
+                    {activeSection === "what" && (
+                        <div className="border-t border-[#EBEBEB] p-4 animate-in slide-in-from-top-2 duration-200">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                {finalCategories.map((c) => (
+                                    <button
+                                        key={c.value}
+                                        type="button"
+                                        onClick={() => handleCategorySelect(c.value)}
+                                        className={cn(
+                                            "text-start px-4 py-3 rounded-xl text-[14px] transition-all border",
+                                            category.toLowerCase() === c.value.toLowerCase()
+                                                ? "bg-[#F7F7F7] border-[#1A1A1A] font-medium text-[#1A1A1A]"
+                                                : "border-transparent hover:bg-[#F7F7F7] text-[#484848]"
+                                        )}
+                                    >
+                                        <LayoutGrid className="w-3.5 h-3.5 inline-block me-1.5 opacity-50" />
+                                        {c.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
     );
 }

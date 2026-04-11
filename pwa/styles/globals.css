@@ -207,6 +207,15 @@
     color: var(--color-neutral-900);
   }
 
+  /* ── Hide scrollbar (for horizontal pill rows) ── */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   /* ── Moroccan section ornament divider ── */
   .section-divider {
     display: flex;

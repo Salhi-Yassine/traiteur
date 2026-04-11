@@ -384,6 +384,31 @@
        "unavailable": "غير متاح"
     }
   },
+  "filters": {
+    "title": "الفلاتر",
+    "clear": "مسح الكل",
+    "clear_all": "مسح الكل",
+    "show_results": "عرض {{count}} مزودين",
+    "apply": "عرض النتائج",
+    "categories": "الفئات",
+    "price_range": "نطاق السعر",
+    "price_labels": {
+      "budget": "اقتصادي",
+      "standard": "قياسي",
+      "premium": "مميز",
+      "exclusif": "حصري"
+    },
+    "sort": {
+      "label": "ترتيب حسب",
+      "rating": "الأعلى تقييماً",
+      "reviews": "الأكثر تقييماً",
+      "price_asc": "السعر: من الأقل",
+      "price_desc": "السعر: من الأعلى"
+    },
+    "help_title": "تحتاج مساعدة؟",
+    "help_desc": "خبراؤنا يساعدونك في إيجاد أفضل المزودين وفق معاييرك.",
+    "contact_us": "تواصل مع خبير"
+  },
   "categories_page": {
     "title": "جميع الفئات",
     "subtitle": "استكشف جميع فئات مزودي الخدمات لحفل زفافك في المغرب."

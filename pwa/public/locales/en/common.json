@@ -395,6 +395,9 @@
   "filters": {
     "title": "Filters",
     "clear": "Clear all",
+    "clear_all": "Clear all",
+    "show_results": "Show {{count}} vendors",
+    "apply": "See results",
     "categories": "Categories",
     "price_range": "Price Range",
     "price_labels": {
@@ -402,6 +405,13 @@
       "standard": "Standard",
       "premium": "Premium",
       "exclusif": "Exclusive"
+    },
+    "sort": {
+      "label": "Sort by",
+      "rating": "Top rated",
+      "reviews": "Most reviews",
+      "price_asc": "Price: low to high",
+      "price_desc": "Price: high to low"
     },
     "help_title": "Need help?",
     "help_desc": "Our experts help you find the perfect vendors based on your criteria.",

@@ -132,6 +132,11 @@
     "city_label": "Sélectionner une ville",
     "cat_label": "Filtrer par catégorie",
     "cta": "Rechercher",
+    "where": "Où",
+    "what": "Quoi",
+    "anywhere": "N'importe où",
+    "any_category": "Toutes catégories",
+    "expand_search": "Modifier la recherche",
     "cities": {
       "all": "Toutes les villes",
       "casablanca": "Casablanca",
@@ -424,13 +429,31 @@
   "filters": {
     "title": "Filtres",
     "clear": "Effacer",
+    "clear_all": "Effacer tout",
+    "show_results": "Afficher {{count}} prestataires",
+    "apply": "Voir les résultats",
     "categories": "Catégories",
     "price_range": "Gamme de prix",
+    "budget_label": "Budget",
+    "sort_label": "Trier par",
     "price_labels": {
       "budget": "Budget",
       "standard": "Standard",
       "premium": "Premium",
       "exclusif": "Exclusif"
+    },
+    "price_desc_labels": {
+      "budget": "Moins de 15 000 MAD",
+      "standard": "15 000 – 50 000 MAD",
+      "premium": "50 000 – 150 000 MAD",
+      "exclusif": "150 000 MAD +"
+    },
+    "sort": {
+      "label": "Trier par",
+      "rating": "Mieux notés",
+      "reviews": "Plus d'avis",
+      "price_asc": "Prix croissant",
+      "price_desc": "Prix décroissant"
     },
     "help_title": "Besoin d'aide ?",
     "help_desc": "Nos experts vous aident à trouver les prestataires parfaits selon vos critères.",

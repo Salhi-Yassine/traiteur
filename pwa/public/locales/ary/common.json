@@ -394,6 +394,9 @@
   "filters": {
     "title": "فلاتر",
     "clear": "مسح كولشي",
+    "clear_all": "مسح كولشي",
+    "show_results": "عرض {{count}} مزودين",
+    "apply": "شوف النتائج",
     "categories": "الأنواع",
     "price_range": "التمن",
     "price_labels": {
@@ -401,6 +404,13 @@
       "standard": "عادي",
       "premium": "مزيان",
       "exclusif": "طوب"
+    },
+    "sort": {
+      "label": "رتّب حسب",
+      "rating": "الأعلى تقييم",
+      "reviews": "الأكثر تقييم",
+      "price_asc": "التمن: من الصغر",
+      "price_desc": "التمن: من الكبر"
     },
     "help_title": "محتاج مساعدة؟",
     "help_desc": "الخبراء ديالنا غيعاونوك تلقى أحسن المزيّنين على حساب طلبك.",

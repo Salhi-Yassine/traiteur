@@ -1,6 +1,7 @@
 import React from "react";
 import type { Preview } from "@storybook/react";
 import "../styles/globals.css";
+import "./i18n";
 
 import { RouterContext } from "next/dist/shared/lib/router-context.shared-runtime";
 
