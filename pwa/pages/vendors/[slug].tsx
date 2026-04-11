@@ -74,6 +74,11 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
     const [isSaved, setIsSaved] = useState(false);
     const [isHeartAnimating, setIsHeartAnimating] = useState(false);
     const [activeSection, setActiveSection] = useState('photos');
+    const [showAllAmenities, setShowAllAmenities] = useState(false);
+    const [expandedReviews, setExpandedReviews] = useState<Set<number>>(new Set());
+    const [showAllReviews, setShowAllReviews] = useState(false);
+    const [kbygDrawer, setKbygDrawer] = useState<'rules' | 'safety' | 'cancellation' | null>(null);
+    const [mapRevealed, setMapRevealed] = useState(false);
 
     const rating = vendor.averageRating ? parseFloat(vendor.averageRating) : 0;
     const allMedia = [
@@ -379,12 +384,12 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                             </button>
                         </div>
                         
-                        <button onClick={() => setGalleryIndex((prev: number | null) => (prev! - 1 + allMedia.length) % allMedia.length)} className="absolute left-6 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-50 md:block hidden active:scale-90">
-                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                        <button onClick={() => setGalleryIndex((prev: number | null) => (prev! - 1 + allMedia.length) % allMedia.length)} className="absolute start-6 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-50 md:block hidden active:scale-90">
+                            <ChevronLeft className="w-8 h-8 rtl:rotate-180" />
                         </button>
 
-                        <button onClick={() => setGalleryIndex((prev: number | null) => (prev! + 1) % allMedia.length)} className="absolute right-6 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-50 md:block hidden active:scale-90">
-                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        <button onClick={() => setGalleryIndex((prev: number | null) => (prev! + 1) % allMedia.length)} className="absolute end-6 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-50 md:block hidden active:scale-90">
+                            <ChevronRight className="w-8 h-8 rtl:rotate-180" />
                         </button>
 
                         <div className="flex-1 overflow-hidden relative flex items-center justify-center p-4 md:p-12 w-full h-full" onClick={() => setGalleryIndex(null)}>
@@ -414,14 +419,14 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                         <div className="absolute bottom-8 left-0 right-0 flex justify-center md:hidden pointer-events-none">
                             <div className="bg-black/50 backdrop-blur-md text-white text-xs px-4 py-2 rounded-full flex gap-2 items-center">
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                                Cliquez sur les côtés
+                                {t("vendor_profile.gallery.tap_hint", "Appuyez sur les côtés pour naviguer")}
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                             </div>
                         </div>
                         
                         {/* Invisible Mobile Tap Zones */}
-                        <div className="absolute inset-y-0 left-0 w-1/3 z-40 md:hidden" onClick={() => setGalleryIndex((prev: number | null) => (prev! - 1 + allMedia.length) % allMedia.length)} />
-                        <div className="absolute inset-y-0 right-0 w-1/3 z-40 md:hidden" onClick={() => setGalleryIndex((prev: number | null) => (prev! + 1) % allMedia.length)} />
+                        <div className="absolute inset-y-0 start-0 w-1/3 z-40 md:hidden" onClick={() => setGalleryIndex((prev: number | null) => (prev! - 1 + allMedia.length) % allMedia.length)} />
+                        <div className="absolute inset-y-0 end-0 w-1/3 z-40 md:hidden" onClick={() => setGalleryIndex((prev: number | null) => (prev! + 1) % allMedia.length)} />
                     </div>
                 )}
 
@@ -497,54 +502,48 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                             <h3 className="font-display text-3xl font-black text-neutral-900 mb-8 tracking-tight">
                                 {t("vendor_profile.amenities.title")}
                             </h3>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 md:grid-cols-2">
-                                {[
-                                    { icon: Wifi, label: t("vendor_profile.amenities.wifi", "Wifi disponible") },
-                                    { icon: Wind, label: t("vendor_profile.amenities.ac", "Climatisation") },
-                                    { icon: Car, label: t("vendor_profile.amenities.parking", "Parking gratuit sur place") },
-                                    { icon: Utensils, label: t("vendor_profile.amenities.kitchen", "Cuisine équipée") },
-                                    { icon: Sparkles, label: t("vendor_profile.amenities.cleaning", "Service de nettoyage inclus") },
-                                    { icon: ShieldCheck, label: t("vendor_profile.amenities.security", "Sécurité 24h/24") },
-                                ].slice(0, 4).map((item, idx) => (
-                                    <div key={idx} className="flex items-center gap-4">
-                                        <item.icon className="w-6 h-6 text-neutral-500" strokeWidth={1.5} />
-                                        <span className="text-neutral-700 font-medium">{item.label}</span>
+                            {(() => {
+                                const allAmenities = [
+                                    { icon: Wifi, label: t("vendor_profile.amenities.wifi") },
+                                    { icon: Wind, label: t("vendor_profile.amenities.ac") },
+                                    { icon: Car, label: t("vendor_profile.amenities.parking") },
+                                    { icon: Utensils, label: t("vendor_profile.amenities.kitchen") },
+                                    { icon: Sparkles, label: t("vendor_profile.amenities.cleaning") },
+                                    { icon: ShieldCheck, label: t("vendor_profile.amenities.security") },
+                                ];
+                                const visible = showAllAmenities ? allAmenities : allAmenities.slice(0, 4);
+                                return (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 md:grid-cols-2">
+                                        {visible.map((item, idx) => (
+                                            <div key={idx} className="flex items-center gap-4">
+                                                <item.icon className="w-6 h-6 text-neutral-500" strokeWidth={1.5} />
+                                                <span className="text-neutral-700 font-medium">{item.label}</span>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
-                                {[
-                                    { icon: Wifi, label: t("vendor_profile.amenities.wifi", "Wifi disponible") },
-                                    { icon: Wind, label: t("vendor_profile.amenities.ac", "Climatisation") },
-                                    { icon: Car, label: t("vendor_profile.amenities.parking", "Parking gratuit sur place") },
-                                    { icon: Utensils, label: t("vendor_profile.amenities.kitchen", "Cuisine équipée") },
-                                    { icon: Sparkles, label: t("vendor_profile.amenities.cleaning", "Service de nettoyage inclus") },
-                                    { icon: ShieldCheck, label: t("vendor_profile.amenities.security", "Sécurité 24h/24") },
-                                ].slice(4).map((item, idx) => (
-                                    <div key={idx + 4} className="hidden md:flex items-center gap-4">
-                                        <item.icon className="w-6 h-6 text-neutral-500" strokeWidth={1.5} />
-                                        <span className="text-neutral-700 font-medium">{item.label}</span>
-                                    </div>
-                                ))}
-                            </div>
-                            
+                                );
+                            })()}
+
+                            {/* Mobile: drawer to show all; Desktop: inline toggle */}
                             <Drawer>
                                <DrawerTrigger asChild>
                                  <Button variant="outline" className="md:hidden mt-8 rounded-xl border-neutral-900 h-12 px-8 font-bold hover:bg-neutral-100 transition-all shadow-sm w-full">
-                                    {t("vendor_profile.amenities.show_all", "Afficher les équipements")}
+                                    {t("vendor_profile.amenities.show_all")}
                                  </Button>
                                </DrawerTrigger>
                                <DrawerContent className="px-6 py-4">
                                  <DrawerHeader className="px-0 pb-4 border-b border-neutral-100">
-                                   <DrawerTitle>{t("vendor_profile.amenities.title", "Équipements")}</DrawerTitle>
+                                   <DrawerTitle>{t("vendor_profile.amenities.title")}</DrawerTitle>
                                  </DrawerHeader>
                                  <div className="py-6 overflow-y-auto max-h-[60vh]">
                                     <div className="flex flex-col gap-y-6">
                                        {[
-                                           { icon: Wifi, label: t("vendor_profile.amenities.wifi", "Wifi disponible") },
-                                           { icon: Wind, label: t("vendor_profile.amenities.ac", "Climatisation") },
-                                           { icon: Car, label: t("vendor_profile.amenities.parking", "Parking gratuit sur place") },
-                                           { icon: Utensils, label: t("vendor_profile.amenities.kitchen", "Cuisine équipée") },
-                                           { icon: Sparkles, label: t("vendor_profile.amenities.cleaning", "Service de nettoyage inclus") },
-                                           { icon: ShieldCheck, label: t("vendor_profile.amenities.security", "Sécurité 24h/24") },
+                                           { icon: Wifi, label: t("vendor_profile.amenities.wifi") },
+                                           { icon: Wind, label: t("vendor_profile.amenities.ac") },
+                                           { icon: Car, label: t("vendor_profile.amenities.parking") },
+                                           { icon: Utensils, label: t("vendor_profile.amenities.kitchen") },
+                                           { icon: Sparkles, label: t("vendor_profile.amenities.cleaning") },
+                                           { icon: ShieldCheck, label: t("vendor_profile.amenities.security") },
                                        ].map((item, idx) => (
                                           <div key={idx} className="flex items-center gap-4">
                                              <item.icon className="w-6 h-6 text-neutral-500" strokeWidth={1.5} />
@@ -556,8 +555,12 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                </DrawerContent>
                              </Drawer>
 
-                            <Button variant="outline" className="hidden md:flex mt-10 rounded-xl border-neutral-900 h-12 px-8 font-bold hover:bg-neutral-100 transition-all shadow-sm">
-                                {t("vendor_profile.amenities.show_all", "Afficher les équipements")}
+                            <Button
+                                variant="outline"
+                                onClick={() => setShowAllAmenities(prev => !prev)}
+                                className="hidden md:flex mt-10 rounded-xl border-neutral-900 h-12 px-8 font-bold hover:bg-neutral-100 transition-all shadow-sm"
+                            >
+                                {showAllAmenities ? t("vendor_profile.amenities.show_less") : t("vendor_profile.amenities.show_all")}
                             </Button>
                         </div>
 
@@ -602,12 +605,23 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                 en veillant aux moindres détails pour que votre grand jour soit parfait."
                             </p>
                             <div className="flex flex-wrap gap-4 mt-8">
-                                <Button variant="outline" className="rounded-xl border-neutral-900 h-12 px-8 font-bold hover:bg-neutral-100 flex items-center gap-2">
-                                    {t("vendor_profile.host.contact_label", "Contacter l'hôte")}
-                                </Button>
+                                {vendor.whatsapp ? (
+                                    <a
+                                        href={`https://wa.me/${vendor.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(`Bonjour, je vous contacte depuis votre profil Farah.ma (${vendor.businessName}). J'aimerais avoir plus de détails concernant une réservation.`)}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="h-12 px-8 rounded-xl border border-neutral-900 bg-white hover:bg-neutral-100 text-neutral-900 flex items-center gap-2 font-bold transition-all active:scale-95"
+                                    >
+                                        {t("vendor_profile.host.contact_label")}
+                                    </a>
+                                ) : (
+                                    <Button variant="outline" className="rounded-xl border-neutral-900 h-12 px-8 font-bold hover:bg-neutral-100 flex items-center gap-2" disabled>
+                                        {t("vendor_profile.host.contact_label")}
+                                    </Button>
+                                )}
                                 {vendor.whatsapp && (
-                                    <a 
-                                        href={`https://wa.me/${vendor.whatsapp}`}
+                                    <a
+                                        href={`https://wa.me/${vendor.whatsapp.replace(/\D/g, '')}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="h-12 px-8 rounded-xl bg-[#25D366] hover:bg-[#20bd5c] text-white flex items-center gap-2 font-bold shadow-md transition-all active:scale-95"
@@ -622,7 +636,7 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                         {/* Services Detail */}
                         {vendor.menuItems.length > 0 && (
                             <div id="services" className="pb-12 border-b border-neutral-200 mb-12 space-y-8 scroll-mt-24">
-                                <h3 className="font-display text-3xl font-black text-neutral-900">Services & Formules</h3>
+                                <h3 className="font-display text-3xl font-black text-neutral-900">{t("vendor_profile.services.title")}</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {vendor.menuItems.map((item) => (
                                         <div key={item.id} className="p-6 border border-neutral-200 rounded-2xl hover:border-neutral-900 transition-all hover:shadow-2">
@@ -661,15 +675,32 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                 </div>
                             </div>
                             
-                            <div className="relative w-full aspect-video md:aspect-[21/9] rounded-3xl overflow-hidden group shadow-lg border-4 border-white ring-1 ring-neutral-200">
-                                            <iframe 
-                                                className="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-700"
-                                                loading="lazy" 
-                                                allowFullScreen 
-                                                referrerPolicy="no-referrer-when-downgrade"
-                                                src={`https://www.google.com/maps?q=${encodeURIComponent(vendor.businessName + ' ' + (vendor.cities[0]?.name || ''))}&output=embed`}
-                                            />
-                                <div className="absolute inset-0 bg-black/5 pointer-events-none" />
+                            <div className="relative w-full aspect-video md:aspect-[21/9] rounded-3xl overflow-hidden shadow-lg border-4 border-white ring-1 ring-neutral-200">
+                                {mapRevealed ? (
+                                    <iframe
+                                        className="w-full h-full border-0"
+                                        loading="lazy"
+                                        allowFullScreen
+                                        referrerPolicy="no-referrer-when-downgrade"
+                                        src={`https://www.google.com/maps?q=${encodeURIComponent(vendor.businessName + ' ' + (vendor.cities[0]?.name || ''))}&output=embed`}
+                                    />
+                                ) : (
+                                    <button
+                                        onClick={() => setMapRevealed(true)}
+                                        className="w-full h-full bg-neutral-100 flex flex-col items-center justify-center gap-3 group hover:bg-neutral-200 transition-colors"
+                                        aria-label={t("vendor_profile.location.show_map", "Afficher la carte")}
+                                    >
+                                        <div className="w-14 h-14 rounded-full bg-white shadow-md flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <Navigation className="w-6 h-6 text-primary" />
+                                        </div>
+                                        <span className="text-sm font-bold text-neutral-700">
+                                            {t("vendor_profile.location.show_map", "Afficher la carte")}
+                                        </span>
+                                        <span className="text-xs text-neutral-400">
+                                            {vendor.cities[0]?.name}, {t("common.morocco")}
+                                        </span>
+                                    </button>
+                                )}
                             </div>
                         </div>
 
@@ -684,7 +715,7 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                 </h3>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-                                {reviews.map((review) => (
+                                {reviews.slice(0, showAllReviews ? reviews.length : 2).map((review) => (
                                     <div key={review.id} className="space-y-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center font-black text-neutral-900">
@@ -695,14 +726,27 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                                 <p className="text-xs text-neutral-500">{new Date(review.createdAt).toLocaleDateString('fr-MA', { month: 'long', year: 'numeric' })}</p>
                                             </div>
                                         </div>
-                                        <p className="text-neutral-700 leading-relaxed line-clamp-3 font-medium">"{review.body}"</p>
-                                        <button className="text-sm font-black underline underline-offset-4">Afficher plus</button>
+                                        <p className={cn("text-neutral-700 leading-relaxed font-medium", expandedReviews.has(review.id) ? "" : "line-clamp-3")}>"{review.body}"</p>
+                                        {!expandedReviews.has(review.id) && (
+                                            <button
+                                                onClick={() => setExpandedReviews(prev => new Set(prev).add(review.id))}
+                                                className="text-sm font-black underline underline-offset-4"
+                                            >
+                                                {t("common.show_more")}
+                                            </button>
+                                        )}
                                     </div>
                                 ))}
                             </div>
                             {vendor.reviewCount > 2 && (
-                                <Button variant="outline" className="mt-8 rounded-xl border-neutral-900 h-10 px-6 font-bold hover:bg-neutral-100">
-                                    Afficher les {vendor.reviewCount} avis
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setShowAllReviews(prev => !prev)}
+                                    className="mt-8 rounded-xl border-neutral-900 h-10 px-6 font-bold hover:bg-neutral-100"
+                                >
+                                    {showAllReviews
+                                        ? t("common.show_less")
+                                        : t("vendor_profile.reviews.show_all", { count: vendor.reviewCount })}
                                 </Button>
                             )}
                         </div>
@@ -726,13 +770,16 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                         {t("vendor_profile.know_before_you_go.house_rules")}
                                     </h4>
                                     <ul className="space-y-3 text-neutral-600 font-medium text-sm">
-                                        <li>{t("vendor_profile.rules.check_in", "Arrivée : 14h00 - 16h00")}</li>
-                                        <li>{t("vendor_profile.rules.check_out", "Départ avant 11h00")}</li>
-                                        <li>{t("vendor_profile.rules.parties", "Pas de fêtes bruyantes après 4h")}</li>
-                                        <li>{t("vendor_profile.rules.smoking", "Non fumeur en intérieur")}</li>
+                                        <li>{t("vendor_profile.rules.check_in")}</li>
+                                        <li>{t("vendor_profile.rules.check_out")}</li>
+                                        <li>{t("vendor_profile.rules.parties")}</li>
+                                        <li>{t("vendor_profile.rules.smoking")}</li>
                                     </ul>
-                                    <button className="text-sm font-black underline underline-offset-4 pt-2">
-                                        {t("common.show_more", "Afficher plus")}
+                                    <button
+                                        onClick={() => setKbygDrawer('rules')}
+                                        className="text-sm font-black underline underline-offset-4 pt-2"
+                                    >
+                                        {t("common.show_more")}
                                     </button>
                                 </div>
                                 <div className="space-y-4">
@@ -740,12 +787,15 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                         {t("vendor_profile.know_before_you_go.safety")}
                                     </h4>
                                     <ul className="space-y-3 text-neutral-600 font-medium text-sm">
-                                        <li>{t("vendor_profile.safety.exits", "Sorties de secours indiquées")}</li>
-                                        <li>{t("vendor_profile.safety.alarm", "Alarme incendie fonctionnelle")}</li>
-                                        <li>{t("vendor_profile.safety.capacity", "Capacité maximale respectée")}</li>
+                                        <li>{t("vendor_profile.safety.exits")}</li>
+                                        <li>{t("vendor_profile.safety.alarm")}</li>
+                                        <li>{t("vendor_profile.safety.capacity")}</li>
                                     </ul>
-                                    <button className="text-sm font-black underline underline-offset-4 pt-2">
-                                        {t("common.show_more", "Afficher plus")}
+                                    <button
+                                        onClick={() => setKbygDrawer('safety')}
+                                        className="text-sm font-black underline underline-offset-4 pt-2"
+                                    >
+                                        {t("common.show_more")}
                                     </button>
                                 </div>
                                 <div className="space-y-4">
@@ -753,18 +803,56 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                                         {t("vendor_profile.know_before_you_go.cancellation")}
                                     </h4>
                                     <p className="text-neutral-600 font-medium text-sm leading-relaxed">
-                                        {t("vendor_profile.cancellation.standard_desc", "Annulation gratuite jusqu'à 48 heures après la réservation.")}
+                                        {t("vendor_profile.cancellation.standard_desc")}
                                     </p>
-                                    <button className="text-sm font-black underline underline-offset-4 pt-2">
-                                        {t("common.show_more", "Afficher plus")}
+                                    <button
+                                        onClick={() => setKbygDrawer('cancellation')}
+                                        className="text-sm font-black underline underline-offset-4 pt-2"
+                                    >
+                                        {t("common.show_more")}
                                     </button>
                                 </div>
                              </div>
                         </div>
 
+                        {/* Know Before You Go — detail drawer */}
+                        <Drawer open={kbygDrawer !== null} onOpenChange={(open) => { if (!open) setKbygDrawer(null); }}>
+                            <DrawerContent className="px-6 py-4">
+                                <DrawerHeader className="px-0 pb-4 border-b border-neutral-100">
+                                    <DrawerTitle>
+                                        {kbygDrawer === 'rules' && t("vendor_profile.know_before_you_go.house_rules")}
+                                        {kbygDrawer === 'safety' && t("vendor_profile.know_before_you_go.safety")}
+                                        {kbygDrawer === 'cancellation' && t("vendor_profile.know_before_you_go.cancellation")}
+                                    </DrawerTitle>
+                                </DrawerHeader>
+                                <div className="py-6 overflow-y-auto max-h-[60vh]">
+                                    {kbygDrawer === 'rules' && (
+                                        <ul className="space-y-4 text-neutral-700 font-medium">
+                                            <li>{t("vendor_profile.rules.check_in")}</li>
+                                            <li>{t("vendor_profile.rules.check_out")}</li>
+                                            <li>{t("vendor_profile.rules.parties")}</li>
+                                            <li>{t("vendor_profile.rules.smoking")}</li>
+                                        </ul>
+                                    )}
+                                    {kbygDrawer === 'safety' && (
+                                        <ul className="space-y-4 text-neutral-700 font-medium">
+                                            <li>{t("vendor_profile.safety.exits")}</li>
+                                            <li>{t("vendor_profile.safety.alarm")}</li>
+                                            <li>{t("vendor_profile.safety.capacity")}</li>
+                                        </ul>
+                                    )}
+                                    {kbygDrawer === 'cancellation' && (
+                                        <p className="text-neutral-700 font-medium leading-relaxed">
+                                            {t("vendor_profile.cancellation.standard_desc")}
+                                        </p>
+                                    )}
+                                </div>
+                            </DrawerContent>
+                        </Drawer>
+
                         {/* Foire Aux Questions (FAQ) */}
                         <div className="py-12 border-t border-neutral-200 mt-12">
-                            <h3 className="font-display text-3xl font-black text-neutral-900 mb-8">Foire Aux Questions</h3>
+                            <h3 className="font-display text-3xl font-black text-neutral-900 mb-8">{t("vendor_profile.faq.title")}</h3>
                             <div className="space-y-4">
                                 {faqs.map((faq, idx) => (
                                     <div key={idx} className="border border-neutral-200 rounded-2xl overflow-hidden bg-white hover:border-neutral-300 transition-colors">
@@ -791,9 +879,9 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                     {/* Right content: Reservation Widget */}
                     <div id="reservation-widget" className="lg:w-[400px] shrink-0 relative">
                         {/* Trust Badge */}
-                        <div className="absolute -top-3 right-4 z-10 text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-md flex items-center gap-1 border border-green-200 shadow-sm">
+                        <div className="absolute -top-3 end-4 z-10 text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-md flex items-center gap-1 border border-green-200 shadow-sm">
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                            Extrêmement réactif
+                            {t("vendor_profile.trust_badge.reactive")}
                         </div>
                         <ReservationWidget 
                             vendorId={vendor.id} 
@@ -873,14 +961,14 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                          <span className="text-[10px] font-black uppercase text-neutral-500 block -mb-0.5">{t("vendor_card.starting_at")}</span>
                          <PriceRange value={vendor.priceRange} />
                     </div>
-                    <div className="flex items-center gap-1 mt-1 cursor-pointer" onClick={() => window.scrollTo({top: document.getElementById('reservation-widget')?.offsetTop || 0, behavior: 'smooth'})}>
+                    <div className="flex items-center gap-1 mt-1 cursor-pointer" onClick={() => document.getElementById('reservation-widget')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
                         <StarRating rating={rating} showCount={false} size="sm" />
                         <span className="text-[11px] font-bold text-neutral-500 underline decoration-neutral-300">({vendor.reviewCount})</span>
                     </div>
                 </div>
-                <Button 
-                    className="rounded-xl px-8 h-12 font-bold bg-primary hover:bg-primary-dark text-white active:scale-95 transition-transform" 
-                    onClick={() => window.scrollTo({top: document.getElementById('reservation-widget')?.offsetTop || 0, behavior: 'smooth'})}
+                <Button
+                    className="rounded-xl px-8 h-12 font-bold bg-primary hover:bg-primary-dark text-white active:scale-95 transition-transform"
+                    onClick={() => document.getElementById('reservation-widget')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
                 >
                     {t("vendor_profile.reservation.reserve", "Réserver")}
                 </Button>
@@ -891,7 +979,7 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                 href={`https://wa.me/${vendor.whatsapp?.replace(/\D/g, '') || "212600000000"}?text=${encodeURIComponent(`Bonjour, je vous contacte depuis votre profil Farah.ma (${vendor.businessName}). J'aimerais avoir plus de détails concernant une réservation.`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="fixed bottom-32 lg:bottom-8 right-6 z-[60] bg-[#25D366] hover:bg-[#1DA851] text-white p-3.5 lg:p-4 rounded-full shadow-[0_8px_24px_rgba(37,211,102,0.4)] hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 animate-in fade-in slide-in-from-bottom-4"
+                className="fixed bottom-32 lg:bottom-8 end-6 z-[60] bg-[#25D366] hover:bg-[#1DA851] text-white p-3.5 lg:p-4 rounded-full shadow-[0_8px_24px_rgba(37,211,102,0.4)] hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 animate-in fade-in slide-in-from-bottom-4"
             >
                 <svg className="w-6 h-6 lg:w-7 lg:h-7" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
@@ -911,7 +999,7 @@ const FALLBACK: VendorProfileData = {
     description: "Le Palais des Roses est une salle de réception d'exception située au cœur de Casablanca. Spécialisés dans les mariages marocains traditionnels et modernes, nous offrons un service complet incluant une décoration raffinée, un service traiteur gastronomique et une équipe dédiée pour faire de votre événement un moment inoubliable.",
     category: "Salles",
     cities: [{ name: "Casablanca", slug: "casablanca" }],
-    priceRange: "MADMADMAD",
+    priceRange: "MADMAD",
     coverImageUrl: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&q=80",
     coverVideoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
     galleryImages: [

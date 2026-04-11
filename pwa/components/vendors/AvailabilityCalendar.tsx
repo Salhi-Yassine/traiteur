@@ -29,7 +29,9 @@ export default function AvailabilityCalendar({
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
-    const firstDay = new Date(year, month, 1).getDay();
+    // Morocco week starts on Monday (1). Shift Sunday (0) to position 6.
+    const rawFirstDay = new Date(year, month, 1).getDay();
+    const firstDay = (rawFirstDay + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     return { firstDay, daysInMonth, year, month };
   };
@@ -38,8 +40,8 @@ export default function AvailabilityCalendar({
 
   const dayNames = useMemo(() => {
     return Array.from({ length: 7 }).map((_, i) => {
-      // 2024-01-07 was a Sunday
-      const date = new Date(2024, 0, 7 + i);
+      // 2024-01-08 was a Monday — start week on Monday for Morocco
+      const date = new Date(2024, 0, 8 + i);
       return date.toLocaleDateString(i18n.language, { weekday: 'short' });
     });
   }, [i18n.language]);
@@ -175,10 +177,13 @@ export default function AvailabilityCalendar({
       )}
 
       {isCompact && (
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 px-1">
            <button onClick={handlePrev} className="p-1 hover:bg-neutral-100 rounded-full transition-colors">
               <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
            </button>
+           <span className="text-sm font-bold text-neutral-700 capitalize">
+             {currentMonth.toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}
+           </span>
            <button onClick={handleNext} className="p-1 hover:bg-neutral-100 rounded-full transition-colors">
               <ChevronRight className="w-4 h-4 rtl:rotate-180" />
            </button>

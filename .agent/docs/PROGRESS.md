@@ -1,6 +1,6 @@
 # Farah.ma — Project Progress Tracker
 
-> **Last Updated:** 2026-03-31
+> **Last Updated:** 2026-04-10
 > **PRD Version:** 1.1
 > **Legend:** `[x]` Done · `[/]` In Progress · `[ ]` To Do
 
@@ -10,11 +10,11 @@
 
 | Phase | Progress | Status |
 |-------|----------|--------|
-| Phase 1 — Foundation | ~55% | 🟡 In Progress |
+| Phase 1 — Foundation | ~60% | 🟡 In Progress |
 | Phase 2 — Planning Tools | ~20% | 🟡 In Progress |
 | Phase 3 — Content & Monetization | 0% | ⚪ Not Started |
 | Phase 4 — Pre-Launch | 0% | ⚪ Not Started |
-| **Overall** | **~25%** | **🟡 In Progress** |
+| **Overall** | **~27%** | **🟡 In Progress** |
 
 ---
 
@@ -108,21 +108,34 @@
 
 ### 1.5 Vendor Profile Page — READ (US-1.2)
 
-- [/] Vendor detail page (`pwa/pages/vendors/[slug].tsx` — 442 lines)
-- [/] `StarRating` component
-- [/] `PriceRange` component
+- [x] Vendor detail page (`pwa/pages/vendors/[slug].tsx`)
+- [x] `StarRating` component
+- [x] `PriceRange` component
 - [/] `QuoteRequestModal` component for inquiries
 - [x] `QuoteRequest` entity (backend)
 - [x] `QuoteRequestVoter` for authorization
-- [ ] Photo gallery with lightbox
-- [ ] Services & pricing table
-- [ ] Reviews section with sub-ratings (quality, communication, value, punctuality)
-- [ ] Map embed (city-level precision)
-- [ ] Sticky WhatsApp CTA (mobile)
-- [ ] WhatsApp deep link with pre-filled message
-- [ ] "Sauvegarder" heart button (save to moodboard)
-- [ ] SEO: `<title>`, meta description, `schema.org/LocalBusiness` structured data
-- [ ] Related vendors section (same category + city)
+- [x] Photo gallery with lightbox (Airbnb-style 5-image grid + fullscreen lightbox + keyboard nav)
+- [x] Availability calendar (dual-month, date range selection, booked dates, Monday-first)
+- [x] Reservation widget (sticky, date picker popover, guest count, social proof badge)
+- [x] Services & pricing table (menu items grid with per-person price)
+- [/] Reviews section (2-col layout, expand individual review, show-all toggle — sub-ratings not yet)
+- [x] Map embed (city-level, click-to-reveal lazy load)
+- [x] Sticky WhatsApp CTA (mobile bottom bar + floating bubble)
+- [x] WhatsApp deep link with pre-filled message
+- [x] "Sauvegarder" heart button (localStorage wishlist, heart animation)
+- [x] SEO: `<title>`, meta description, OpenGraph, Twitter Card, `schema.org/LocalBusiness` + FAQPage
+- [x] ScrollSpy navigation bar (Photos / Services / Avis / Localisation)
+- [x] Know Before You Go section (rules, safety, cancellation — with expand drawers)
+- [x] FAQ accordion
+- [x] Meet Your Host section
+- [x] Amenities grid (show/hide toggle desktop, drawer mobile)
+- [x] Similar vendors section (placeholder — needs real API fetch)
+- [x] Mobile sticky booking bar
+- [x] RTL logical properties throughout (start/end instead of left/right)
+- [x] Full i18n coverage on vendor profile page (fr locale)
+- [ ] Related vendors: real API fetch (currently hardcoded placeholders)
+- [ ] Reviews sub-ratings (quality, communication, value, punctuality)
+- [ ] Vendor onboarding wizard
 
 ### 1.6 Vendor Onboarding Wizard (US-2.1)
 

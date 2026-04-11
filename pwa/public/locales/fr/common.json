@@ -185,6 +185,8 @@
     "in": "à",
     "read_more": "En savoir plus",
     "show_more": "Afficher plus",
+    "show_less": "Afficher moins",
+    "saved": "Sauvegardé",
     "morocco": "Maroc"
   },
   "budget": {
@@ -281,9 +283,12 @@
     "tip_author": "Nadia, Wedding Planner"
   },
   "vendor_profile": {
-    "location": "Localisation",
+    "location": {
+      "title": "Localisation",
+      "show_map": "Afficher la carte"
+    },
     "price_range": "Gamme de Prix",
-    "reviews_count": "Note & Avis",
+    "reviews_count": "avis",
     "capacity": "Capacité",
     "capacity_max": "{{max}} invités max",
     "all_events": "Tous types d'événements",
@@ -309,7 +314,8 @@
     "gallery": {
        "show_all": "Afficher toutes les photos",
        "title": "Toutes les photos",
-       "close": "Fermer"
+       "close": "Fermer",
+       "tap_hint": "Appuyez sur les côtés pour naviguer"
     },
     "amenities": {
        "title": "Ce que propose ce lieu",
@@ -351,6 +357,28 @@
        "contact_label": "Contacter l'hôte"
     },
     "location_desc": "Situé dans un quartier prestigieux de {{city}}, cet établissement est facilement accessible et offre un cadre calme et sécurisé pour vos invités.",
+    "nav": {
+      "photos": "Photos",
+      "services": "Services",
+      "reviews": "Avis",
+      "location": "Localisation"
+    },
+    "about": {
+      "title": "À propos"
+    },
+    "reviews": {
+      "count": "avis",
+      "show_all": "Afficher les {{count}} avis"
+    },
+    "services": {
+      "title": "Services & Formules"
+    },
+    "faq": {
+      "title": "Foire Aux Questions"
+    },
+    "trust_badge": {
+      "reactive": "Très réactif"
+    },
     "report_listing": "Signaler cette annonce",
     "similar": {
        "title": "Découvrez d'autres options à {{city}}",
@@ -364,7 +392,10 @@
        "no_payment": "Aucun paiement requis pour l'instant",
        "service_fee": "Frais de service Farah.ma",
        "total_estimated": "Total (estimé)",
-       "to_be_confirmed": "À confirmer"
+       "to_be_confirmed": "À confirmer",
+       "request_sent": "Demande envoyée !",
+       "success_desc": "Votre demande a été transmise à {{name}}. Vous serez contacté dans les plus brefs délais.",
+       "another_request": "Faire une autre demande"
     },
     "availability": {
        "title": "Disponibilité",

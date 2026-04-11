@@ -5,7 +5,6 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { useTranslation } from "next-i18next";
 import PriceRange from "../ui/PriceRange";
-import { Badge } from "../ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 import { Flame, Users } from "lucide-react";
@@ -104,7 +103,6 @@ export default function ReservationWidget({
             </span>
             <PriceRange value={priceRange} label className="text-neutral-900 font-black text-xl" />
           </div>
-          <Badge variant="outline" className="text-[10px] uppercase font-bold px-3 py-1 border-neutral-200 text-neutral-500">P0 - V1</Badge>
         </div>
       </CardHeader>
       <CardContent className="p-6 md:p-8 pt-0">
