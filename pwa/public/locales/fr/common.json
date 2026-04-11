@@ -187,7 +187,21 @@
     "show_more": "Afficher plus",
     "show_less": "Afficher moins",
     "saved": "Sauvegardé",
-    "morocco": "Maroc"
+    "morocco": "Maroc",
+    "close": "Fermer",
+    "retry": "Réessayer",
+    "confirm": "Confirmer",
+    "no_results": "Aucun résultat",
+    "no_results_desc": "Essayez d'élargir vos critères de recherche.",
+    "view": "Voir"
+  },
+  "errors": {
+    "something_went_wrong": "Une erreur est survenue. Veuillez réessayer.",
+    "network_error": "Impossible de se connecter au serveur.",
+    "not_found": "La ressource demandée n'existe pas.",
+    "unauthorized": "Vous devez vous connecter pour accéder à cette page.",
+    "forbidden": "Vous n'avez pas la permission d'effectuer cette action.",
+    "validation_failed": "Veuillez vérifier les informations saisies."
   },
   "budget": {
     "title": "Gestion du Budget",

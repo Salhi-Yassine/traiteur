@@ -118,7 +118,7 @@ db-test: ## ✅ Test DB connection
 
 test: ## 🧪 Run PHPUnit tests (make test c="--filter Order")
 	@$(eval c ?=)
-	$(DOCKER_COMPOSE) exec -e APP_ENV=test $(PROJECT) bin/phpunit $(c)
+	$(DOCKER_COMPOSE) exec -e APP_ENV=test $(PROJECT_PHP) bin/phpunit $(c)
 
 ms-test: ## 📡 Test Messenger transports
 	$(CONSOLE) messenger:setup-transports -vv
@@ -160,7 +160,7 @@ cs: fix-php stan ## ✨ Run complete code quality suite
 ##############################################
 ## 🌐 PWA & NPM COMMANDS
 ##############################################
-.PHONY: npm npx pnpm node
+.PHONY: npm npx pnpm node lint-pwa
 
 npm: ## 📦 Run npm: make npm c="install"
 	@$(eval c ?=)
@@ -177,6 +177,9 @@ pnpm: ## 📦 Run pnpm: make pnpm c="install"
 node: ## 🟢 Run node: make node c="-v"
 	@$(eval c ?=)
 	$(EXEC_PWA) node $(c)
+
+lint-pwa: ## 🧹 Run ESLint on PWA
+	$(EXEC_PWA) pnpm lint
 
 ##############################################
 ## 📚 STORYBOOK (dev-only)

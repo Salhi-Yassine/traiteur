@@ -30,5 +30,5 @@ make cs
 
 5. Run PWA ESLint:
 ```bash
-docker compose exec php sh -c "cd /app/pwa && pnpm lint"
+make lint-pwa
 ```

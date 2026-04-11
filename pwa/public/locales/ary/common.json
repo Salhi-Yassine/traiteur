@@ -180,7 +180,27 @@
     "next": "ما جاي →",
     "no_vendors_found": "ما لقينا حتى شي مزيّن",
     "no_vendors_desc": "جرب تبدل الفلاتر أولا قلب فمدينة أخرى.",
-    "see_all_vendors": "شوف كاع لمزيّنين"
+    "see_all_vendors": "شوف كاع لمزيّنين",
+    "show_more": "شوف كتر",
+    "show_less": "شوف قل",
+    "saved": "تحفظ",
+    "in": "ف",
+    "read_more": "قرا كتر",
+    "morocco": "المغرب",
+    "close": "سد",
+    "retry": "عاود",
+    "confirm": "أكد",
+    "no_results": "ما لقينا والو",
+    "no_results_desc": "جرب تبدل شنو كتقلب عليه.",
+    "view": "شوف"
+  },
+  "errors": {
+    "something_went_wrong": "كاين شي مشكل. عاود من بعد.",
+    "network_error": "ما قدرناش نتواصلو مع السيرفر.",
+    "not_found": "داكشي اللي قلبتي عليه ما كاينش.",
+    "unauthorized": "خاصك تدخل أولاً باش تشوف هاد الصفحة.",
+    "forbidden": "ما عندكش الحق تدير هادشي.",
+    "validation_failed": "شوف المعلومات اللي دخلتي مزيان."
   },
   "budget": {
     "title": "قاد الميزانية ديالتك",

@@ -43,6 +43,10 @@
 - [ ] RTL audit: text-align: start everywhere, icon flipping
 - [ ] Toast positions swap in RTL
 
+### Tech Debt & Quality
+- [ ] Convert `pwa/pages/mariage/budget.tsx` from `useEffect + apiClient.get` to TanStack Query (known rule violation)
+- [ ] Missing Storybook stories for UI components: `checkbox`, `dialog`, `drawer`, `input`, `label`, `popover`, `select`, `tabs`, `textarea`, `alert`, `command`, `PriceRange`, `StarRating`
+
 ---
 
 ## 🟡 Phase 2 — Planning Tools (partial)
