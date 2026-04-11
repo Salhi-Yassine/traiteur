@@ -68,7 +68,7 @@ export default function ReservationWidget({
 
   if (submitted) {
     return (
-      <Card className="sticky top-32 overflow-hidden border border-neutral-200 shadow-3 rounded-xl bg-white p-6 md:p-8">
+      <Card className="overflow-hidden border border-neutral-200 shadow-3 rounded-xl bg-white p-6 md:p-8">
         <CardContent className="p-0 text-center space-y-6">
           <div className="w-16 h-16 bg-success-bg text-success rounded-full flex items-center justify-center mx-auto mb-2">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -94,7 +94,7 @@ export default function ReservationWidget({
   }
 
   return (
-    <Card className="sticky top-32 overflow-hidden border border-neutral-200 shadow-3 rounded-xl bg-white">
+    <Card className="overflow-hidden border border-neutral-200 shadow-3 rounded-xl bg-white">
       <CardHeader className="p-6 md:p-8 pb-4 space-y-4">
         <div className="flex items-baseline justify-between">
           <div className="flex flex-col items-start">

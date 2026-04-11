@@ -12,7 +12,7 @@ import AvailabilityCalendar from "../../components/vendors/AvailabilityCalendar"
 import { cn } from "@/lib/utils";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { BadgeCheck, Wifi, Car, Wind, Utensils, Sparkles, ShieldCheck, MessageCircle, X, ChevronLeft, ChevronRight, Grid, MapPin, Navigation } from "lucide-react";
+import { BadgeCheck, Wifi, Car, Wind, Utensils, Sparkles, ShieldCheck, MessageCircle, X, ChevronLeft, ChevronRight, Grid, MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "../../components/ui/dialog";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "../../components/ui/drawer";
 
@@ -78,7 +78,6 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
     const [expandedReviews, setExpandedReviews] = useState<Set<number>>(new Set());
     const [showAllReviews, setShowAllReviews] = useState(false);
     const [kbygDrawer, setKbygDrawer] = useState<'rules' | 'safety' | 'cancellation' | null>(null);
-    const [mapRevealed, setMapRevealed] = useState(false);
 
     const rating = vendor.averageRating ? parseFloat(vendor.averageRating) : 0;
     const allMedia = [
@@ -676,31 +675,13 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                             </div>
                             
                             <div className="relative w-full aspect-video md:aspect-[21/9] rounded-3xl overflow-hidden shadow-lg border-4 border-white ring-1 ring-neutral-200">
-                                {mapRevealed ? (
-                                    <iframe
-                                        className="w-full h-full border-0"
-                                        loading="lazy"
-                                        allowFullScreen
-                                        referrerPolicy="no-referrer-when-downgrade"
-                                        src={`https://www.google.com/maps?q=${encodeURIComponent(vendor.businessName + ' ' + (vendor.cities[0]?.name || ''))}&output=embed`}
-                                    />
-                                ) : (
-                                    <button
-                                        onClick={() => setMapRevealed(true)}
-                                        className="w-full h-full bg-neutral-100 flex flex-col items-center justify-center gap-3 group hover:bg-neutral-200 transition-colors"
-                                        aria-label={t("vendor_profile.location.show_map", "Afficher la carte")}
-                                    >
-                                        <div className="w-14 h-14 rounded-full bg-white shadow-md flex items-center justify-center group-hover:scale-110 transition-transform">
-                                            <Navigation className="w-6 h-6 text-primary" />
-                                        </div>
-                                        <span className="text-sm font-bold text-neutral-700">
-                                            {t("vendor_profile.location.show_map", "Afficher la carte")}
-                                        </span>
-                                        <span className="text-xs text-neutral-400">
-                                            {vendor.cities[0]?.name}, {t("common.morocco")}
-                                        </span>
-                                    </button>
-                                )}
+                                <iframe
+                                    className="w-full h-full border-0"
+                                    loading="lazy"
+                                    allowFullScreen
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                    src={`https://www.google.com/maps?q=${encodeURIComponent(vendor.businessName + ' ' + (vendor.cities[0]?.name || ''))}&output=embed`}
+                                />
                             </div>
                         </div>
 
@@ -877,29 +858,31 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
                     </div>
 
                     {/* Right content: Reservation Widget */}
-                    <div id="reservation-widget" className="lg:w-[400px] shrink-0 relative">
-                        {/* Trust Badge */}
-                        <div className="absolute -top-3 end-4 z-10 text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-md flex items-center gap-1 border border-green-200 shadow-sm">
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                            {t("vendor_profile.trust_badge.reactive")}
-                        </div>
-                        <ReservationWidget 
-                            vendorId={vendor.id} 
-                            vendorName={vendor.businessName}
-                            priceRange={vendor.priceRange}
-                            range={dateRange}
-                            onRangeChange={setDateRange}
-                            bookedDates={bookedDates}
-                        />
+                    <div id="reservation-widget" className="lg:w-[400px] shrink-0">
+                        <div className="sticky top-32 relative">
+                            {/* Trust Badge */}
+                            <div className="absolute -top-3 end-4 z-10 text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-md flex items-center gap-1 border border-green-200 shadow-sm">
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                                {t("vendor_profile.trust_badge.reactive")}
+                            </div>
+                            <ReservationWidget 
+                                vendorId={vendor.id} 
+                                vendorName={vendor.businessName}
+                                priceRange={vendor.priceRange}
+                                range={dateRange}
+                                onRangeChange={setDateRange}
+                                bookedDates={bookedDates}
+                            />
 
-                        {/* Report listing */}
-                        <div className="mt-8 flex items-center justify-center gap-2 text-neutral-500 hover:text-neutral-900 cursor-pointer transition-colors">
-                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
-                             </svg>
-                             <span className="text-xs font-bold underline underline-offset-2 tracking-tight">
-                                {t("vendor_profile.report_listing", "Signaler cette annonce")}
-                             </span>
+                            {/* Report listing */}
+                            <div className="mt-8 flex items-center justify-center gap-2 text-neutral-500 hover:text-neutral-900 cursor-pointer transition-colors">
+                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                                 </svg>
+                                 <span className="text-xs font-bold underline underline-offset-2 tracking-tight">
+                                    {t("vendor_profile.report_listing", "Signaler cette annonce")}
+                                 </span>
+                            </div>
                         </div>
                     </div>
                 </div>
