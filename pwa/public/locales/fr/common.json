@@ -182,6 +182,9 @@
     "next": "Suivant →",
     "no_vendors_found": "Aucun prestataire trouvé",
     "no_vendors_desc": "Essayez d'élargir vos filtres ou de rechercher dans une autre ville.",
+    "no_vendors_filters_desc": "Essayez de retirer certains filtres pour élargir votre recherche.",
+    "no_vendors_city_desc": "Aucun prestataire trouvé dans cette ville pour l'instant.",
+    "search_all_morocco": "Chercher dans tout le Maroc",
     "see_all_vendors": "Voir tous les prestataires",
     "save": "Enregistrer",
     "edit": "Modifier",
@@ -455,6 +458,8 @@
       "price_asc": "Prix croissant",
       "price_desc": "Prix décroissant"
     },
+    "min_rating": "Note minimale",
+    "verified_only": "Prestataires vérifiés",
     "help_title": "Besoin d'aide ?",
     "help_desc": "Nos experts vous aident à trouver les prestataires parfaits selon vos critères.",
     "contact_us": "Contacter un expert"

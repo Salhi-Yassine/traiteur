@@ -23,6 +23,8 @@ interface VendorsPageProps {
     category: { name: string; slug: string } | null;
     sort: string;
     priceRanges: string[];
+    minRating: number | null;
+    isVerified: boolean;
 }
 
 type SortKey = "rating" | "reviews" | "price_asc" | "price_desc";
@@ -112,6 +114,8 @@ export default function VendorsPage({
     category,
     sort: initialSort,
     priceRanges: initialPriceRanges,
+    minRating: initialMinRating,
+    isVerified: initialIsVerified,
 }: VendorsPageProps) {
     const { t } = useTranslation("common");
     const router = useRouter();
@@ -123,12 +127,17 @@ export default function VendorsPage({
     const [view, setView] = useState<ViewMode>("grid");
     const [isNavigating, setIsNavigating] = useState(false);
     const [filterModalOpen, setFilterModalOpen] = useState(false);
+    const [minRating, setMinRating] = useState<number | null>(initialMinRating);
+    const [isVerified, setIsVerified] = useState<boolean>(initialIsVerified);
 
     // ── Derived ────────────────────────────────────────────────────────────────
-    const displayVendors  = vendors.length > 0 ? vendors : FALLBACK_VENDORS;
-    const displayTotal    = total > 0 ? total : FALLBACK_VENDORS.length;
+    const hasActiveFilters = selectedPriceRanges.length > 0 || !!minRating || isVerified;
+    // Show demo fallback only when no filters are active and the API returned nothing
+    const showFallback    = vendors.length === 0 && !hasActiveFilters && !serviceArea && !activeCategory;
+    const displayVendors  = showFallback ? FALLBACK_VENDORS : vendors;
+    const displayTotal    = showFallback ? FALLBACK_VENDORS.length : total;
     const totalPages      = Math.ceil(displayTotal / ITEMS_PER_PAGE);
-    const modalFilterCount = selectedPriceRanges.length + (sort !== "rating" ? 1 : 0);
+    const modalFilterCount = selectedPriceRanges.length + (sort !== "rating" ? 1 : 0) + (minRating ? 1 : 0) + (isVerified ? 1 : 0);
 
     // ── Navigation skeleton ───────────────────────────────────────────────────
     useEffect(() => {
@@ -164,11 +173,13 @@ export default function VendorsPage({
         });
     };
 
-    // Clear price ranges only (modal header button)
+    // Clear all modal filters
     const handleModalClear = () => {
         setSelectedPriceRanges([]);
         setSort("rating");
-        pushQuery({ priceRange: undefined, sort: undefined });
+        setMinRating(null);
+        setIsVerified(false);
+        pushQuery({ priceRange: undefined, sort: undefined, minRating: undefined, isVerified: undefined });
     };
 
     // Full reset
@@ -176,12 +187,24 @@ export default function VendorsPage({
         setActiveCategory("");
         setSelectedPriceRanges([]);
         setSort("rating");
+        setMinRating(null);
+        setIsVerified(false);
         router.push("/vendors");
     };
 
     const handleSortChange = (value: string) => {
         setSort(value as SortKey);
         pushQuery({ sort: value });
+    };
+
+    const handleRatingChange = (val: number | null) => {
+        setMinRating(val);
+        pushQuery({ minRating: val != null ? String(val) : undefined });
+    };
+
+    const handleVerifiedChange = (val: boolean) => {
+        setIsVerified(val);
+        pushQuery({ isVerified: val ? "true" : undefined });
     };
 
     const removePriceFilter = (value: string) => {
@@ -276,8 +299,8 @@ export default function VendorsPage({
             {/* ── Main content ──────────────────────────────────────────────── */}
             <div className="container mx-auto max-w-7xl px-6 py-6 space-y-5">
 
-                {/* ── Active price-range pills ───────────────────── */}
-                {selectedPriceRanges.length > 0 && (
+                {/* ── Active filter pills ────────────────────────── */}
+                {hasActiveFilters && (
                     <div className="flex flex-wrap items-center gap-2">
                         {selectedPriceRanges.map(f => (
                             <FilterPill
@@ -286,6 +309,18 @@ export default function VendorsPage({
                                 onRemove={() => removePriceFilter(f)}
                             />
                         ))}
+                        {minRating && (
+                            <FilterPill
+                                label={`${minRating}+ ★`}
+                                onRemove={() => handleRatingChange(null)}
+                            />
+                        )}
+                        {isVerified && (
+                            <FilterPill
+                                label={t("filters.verified_only")}
+                                onRemove={() => handleVerifiedChange(false)}
+                            />
+                        )}
                         <button
                             onClick={handleClearAll}
                             className="text-[13px] text-[#717171] hover:text-[#E8472A] transition-colors underline underline-offset-2"
@@ -351,7 +386,7 @@ export default function VendorsPage({
                     </div>
                 ) : displayVendors.length === 0 ? (
                     <EmptyState
-                        hasFilters={selectedPriceRanges.length > 0 || !!activeCategory}
+                        hasFilters={hasActiveFilters || !!activeCategory}
                         onClear={handleClearAll}
                         serviceArea={serviceArea}
                     />
@@ -388,6 +423,10 @@ export default function VendorsPage({
                 total={displayTotal}
                 sort={sort}
                 onSortChange={handleSortChange}
+                minRating={minRating}
+                onRatingChange={handleRatingChange}
+                isVerified={isVerified}
+                onVerifiedChange={handleVerifiedChange}
             />
         </div>
     );
@@ -537,6 +576,8 @@ export const getServerSideProps: GetServerSideProps<VendorsPageProps> = async ({
     const priceRanges = query.priceRange
         ? Array.isArray(query.priceRange) ? query.priceRange : [query.priceRange]
         : [];
+    const minRating   = query.minRating ? Number(query.minRating) : null;
+    const isVerified  = query.isVerified === "true";
 
     try {
         const params = new URLSearchParams({
@@ -546,6 +587,8 @@ export const getServerSideProps: GetServerSideProps<VendorsPageProps> = async ({
 
         if (serviceArea) params.set("cities.slug", serviceArea);
         if (category)    params.set("category.slug", category);
+        if (isVerified)  params.set("isVerified", "true");
+        if (minRating)   params.set("averageRating[gte]", String(minRating));
 
         priceRanges.forEach(pr => params.append("priceRange[]", pr));
 
@@ -588,22 +631,26 @@ export const getServerSideProps: GetServerSideProps<VendorsPageProps> = async ({
                 total,
                 page,
                 serviceArea,
-                category:    categoryObj,
+                category:   categoryObj,
                 sort,
                 priceRanges,
+                minRating,
+                isVerified,
                 ...(await serverSideTranslations(locale || "fr", ["common"])),
             },
         };
     } catch {
         return {
             props: {
-                vendors:     [],
-                total:       0,
+                vendors:    [],
+                total:      0,
                 page,
                 serviceArea,
-                category:    null,
+                category:   null,
                 sort,
                 priceRanges,
+                minRating,
+                isVerified,
                 ...(await serverSideTranslations(locale || "fr", ["common"])),
             },
         };
