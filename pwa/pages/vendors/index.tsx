@@ -9,7 +9,6 @@ import { LayoutGrid, List, SlidersHorizontal, ChevronLeft, ChevronRight, X } fro
 import { cn } from "@/lib/utils";
 
 import VendorCard, { VendorCardProps } from "../../components/vendors/VendorCard";
-import CategoryPills from "../../components/vendors/CategoryPills";
 import FilterModal from "../../components/vendors/FilterModal";
 import SearchBar from "../../components/vendors/SearchBar";
 import { Button } from "../../components/ui/button";
@@ -156,12 +155,6 @@ export default function VendorsPage({
         router.push({ pathname: "/vendors", query: next }, undefined, { shallow: true });
     };
 
-    // Category tab → single-select, instant apply
-    const handleCategorySelect = (slug: string) => {
-        setActiveCategory(slug);
-        pushQuery({ category: slug || undefined });
-    };
-
     // Price range toggle in modal
     const handlePriceChange = (value: string, checked: boolean) => {
         setSelectedPriceRanges(prev => {
@@ -244,87 +237,38 @@ export default function VendorsPage({
             </Head>
 
             {/* ── Sticky Search & Filter Header ─────────────────────────────── */}
-            <div className="sticky top-0 z-30 bg-white">
-                {/* Top row: Breadcrumb + Title + Search Capsule */}
-                <div className="border-b border-[#EBEBEB]">
-                    <div className="container mx-auto max-w-7xl px-6 pt-20 pb-5">
-                        {/* Breadcrumb */}
-                        <nav aria-label="Fil d'Ariane" className="flex items-center gap-1.5 text-[13px] text-[#717171] mb-3">
-                            <Link href="/" className="hover:text-[#E8472A] transition-colors">Farah.ma</Link>
-                            <span>/</span>
-                            <Link href="/vendors" className={cn("transition-colors", activeCategoryName ? "hover:text-[#E8472A]" : "text-[#1A1A1A] font-medium")}>
-                                {t("nav.vendors")}
-                            </Link>
-                            {activeCategoryName && (
-                                <>
-                                    <span>/</span>
-                                    <span className="text-[#1A1A1A] font-medium">{activeCategoryName}</span>
-                                </>
+            <div className="sticky top-0 z-40 bg-white border-b border-[#EBEBEB]">
+                <div className="container mx-auto max-w-7xl px-6 pt-24 pb-0">
+                    {/* Search + Filters row */}
+                    <div className="flex items-center gap-3 pb-4 relative z-50">
+                        <div className="flex-1 min-w-0">
+                            <SearchBar
+                                variant="page"
+                                initialLocation={serviceArea}
+                                initialCategory={category?.slug ?? "all"}
+                            />
+                        </div>
+
+                        {/* Filtres button */}
+                        <button
+                            type="button"
+                            onClick={() => setFilterModalOpen(true)}
+                            aria-label={t("filters.title", "Filtres")}
+                            className={cn(
+                                "relative shrink-0 w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-150",
+                                modalFilterCount > 0
+                                    ? "border-[#1A1A1A] bg-[#1A1A1A] text-white shadow-sm"
+                                    : "border-[#DDDDDD] bg-white text-[#1A1A1A] hover:border-[#1A1A1A] hover:bg-[#F7F7F7]"
                             )}
-                        </nav>
-
-                        {/* Title + Count */}
-                        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-5">
-                            <div>
-                                <h1 className="font-display text-[28px] md:text-[36px] text-[#1A1A1A] leading-tight">
-                                    {serviceArea
-                                        ? `${t("search_bar.cta")} à ${serviceArea}`
-                                        : activeCategoryName
-                                            ? activeCategoryName
-                                            : t("search_bar.cities.all")}
-                                </h1>
-                                <p className="text-[14px] text-[#717171] mt-1">
-                                    <span className="font-semibold text-[#1A1A1A]">{displayTotal}</span>{" "}
-                                    {t("home.categories.count_suffix")} {t("vendor_card.verified").toLowerCase()} au Maroc
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Search capsule */}
-                        <SearchBar
-                            variant="page"
-                            initialLocation={serviceArea}
-                            initialCategory={category?.slug ?? "all"}
-                        />
-                    </div>
-                </div>
-
-                {/* Category tabs + Filters button row */}
-                <div className="border-b border-[#EBEBEB]">
-                    <div className="container mx-auto max-w-7xl px-6">
-                        <div className="flex items-end gap-4">
-                            {/* Category icon tabs */}
-                            <div className="flex-1 min-w-0">
-                                <CategoryPills
-                                    activeCategory={activeCategory}
-                                    onSelect={handleCategorySelect}
-                                />
-                            </div>
-
-                            {/* Separator */}
-                            <div className="hidden sm:block w-px h-10 bg-[#DDDDDD] shrink-0 mb-2" />
-
-                            {/* Filtres button */}
-                            <button
-                                type="button"
-                                onClick={() => setFilterModalOpen(true)}
-                                className={cn(
-                                    "shrink-0 flex items-center gap-2 rounded-xl border h-10 px-4 mb-2 text-[13px] font-medium transition-all duration-200",
-                                    modalFilterCount > 0
-                                        ? "border-[#1A1A1A] bg-[#F7F7F7]"
-                                        : "border-[#DDDDDD] hover:border-[#B0B0B0]"
-                                )}
-                                id="filter-button"
-                            >
-                                <SlidersHorizontal className="w-4 h-4" />
-                                {t("filters.title")}
-                                {modalFilterCount > 0 && (
-                                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#1A1A1A] text-white text-[11px] font-bold">
-                                        {modalFilterCount}
-                                    </span>
-                                )}
-                            </button>
-                        </div>
+                            id="filter-button"
+                        >
+                            <SlidersHorizontal className="w-4 h-4" />
+                            {modalFilterCount > 0 && (
+                                <span className="absolute -top-1 -end-1 w-4 h-4 rounded-full bg-[#E8472A] text-white text-[9px] font-bold flex items-center justify-center">
+                                    {modalFilterCount}
+                                </span>
+                            )}
+                        </button>
                     </div>
                 </div>
             </div>

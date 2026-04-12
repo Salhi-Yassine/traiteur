@@ -97,7 +97,7 @@ export default function CategoryPills({ activeCategory, onSelect }: CategoryPill
             {/* Scrollable tabs */}
             <div
                 ref={scrollRef}
-                className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth px-1"
+                className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-1"
             >
                 {CATEGORIES.map(({ value, labelKey, Icon }) => {
                     const isActive = value === "all" ? activeCategory === "" : activeCategory === value;
@@ -115,15 +115,15 @@ export default function CategoryPills({ activeCategory, onSelect }: CategoryPill
                         >
                             <span
                                 className={cn(
-                                    "w-6 h-6 flex items-center justify-center transition-opacity",
+                                    "w-5 h-5 flex items-center justify-center transition-opacity",
                                     isActive ? "opacity-100" : "opacity-70 group-hover:opacity-100"
                                 )}
                             >
                                 {Icon ? (
-                                    <Icon size={24} strokeWidth={1.5} />
+                                    <Icon size={20} strokeWidth={1.5} />
                                 ) : (
                                     /* "All" icon — a simple grid */
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                         <rect x="3" y="3" width="7" height="7" rx="1.5" />
                                         <rect x="14" y="3" width="7" height="7" rx="1.5" />
                                         <rect x="3" y="14" width="7" height="7" rx="1.5" />
