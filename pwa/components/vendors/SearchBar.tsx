@@ -236,7 +236,7 @@ export default function SearchBar({
     const sectionBg = (section: "search" | "where" | "what") => {
         if (activeSection === section) return "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.12)]";
         if (anyActive)                 return "hover:bg-[#DEDEDE]";
-        return "hover:bg-[#F0F0F0]";
+        return variant === "hero" ? "hover:bg-white/50" : "hover:bg-[#F0F0F0]";
     };
 
     const pillHeight    = variant === "hero" ? "h-16"  : "h-14";
@@ -251,7 +251,9 @@ export default function SearchBar({
             pillHeight,
             anyActive
                 ? "bg-[#EBEBEB] shadow-[0_6px_20px_rgba(0,0,0,0.12)]"
-                : "bg-white border border-[#DDDDDD] shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_2px_14px_rgba(0,0,0,0.12)]"
+                : variant === "hero"
+                    ? "bg-white/80 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:bg-white/90"
+                    : "bg-white border border-[#DDDDDD] shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_2px_14px_rgba(0,0,0,0.12)]"
         )}>
             {/* SEARCH section */}
             <div
@@ -483,9 +485,151 @@ export default function SearchBar({
     if (variant === "hero") {
         return (
             <div ref={capsuleRef} className="relative w-full max-w-3xl mx-auto">
-                {pill}
+                {/* Desktop pill */}
+                <div className="hidden sm:block">
+                    {pill}
+                </div>
+
+                {/* Portaled panels — rendered at document.body */}
                 {wherePanel}
                 {whatPanel}
+
+                {/* Mobile: compact Airbnb-style capsule */}
+                <button
+                    type="button"
+                    onClick={() => setDrawerOpen(true)}
+                    aria-label={t("search_bar.expand_search")}
+                    className="sm:hidden flex items-center gap-3 w-full bg-white/80 backdrop-blur-md border border-white/50 rounded-full h-14 px-4 shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:bg-white/90 transition-all duration-200"
+                >
+                    <span className="w-9 h-9 rounded-full bg-[#E8472A] flex items-center justify-center shrink-0 shadow-sm">
+                        <Search className="w-4 h-4 text-white" />
+                    </span>
+                    <div className="flex flex-col flex-1 min-w-0 text-start">
+                        <span className="text-[14px] font-semibold text-[#1A1A1A] truncate leading-none">
+                            {query || t("search_bar.placeholder")}
+                        </span>
+                        <span className="text-[12px] text-[#717171] truncate leading-none mt-1">
+                            {[cityLabel, categoryLabel].filter(Boolean).join(" · ") || t("search_bar.anywhere")}
+                        </span>
+                    </div>
+                </button>
+
+                {/* Mobile: bottom drawer (shared with page variant) */}
+                <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+                    <DrawerContent className="px-0 pb-0 max-h-[90vh]">
+                        <DrawerHeader className="px-5 pt-4 pb-3 border-b border-[#EBEBEB] text-start">
+                            <DrawerTitle className="text-[17px] font-semibold text-[#1A1A1A] font-sans">
+                                {t("search_bar.expand_search")}
+                            </DrawerTitle>
+                        </DrawerHeader>
+
+                        <div className="overflow-y-auto">
+                            {/* Text search */}
+                            <div className="px-5 py-4 border-b border-[#EBEBEB]">
+                                <p className="text-[10px] font-bold text-[#717171] tracking-widest uppercase mb-2">
+                                    {t("search_bar.cta")}
+                                </p>
+                                <div className="flex items-center gap-2 bg-[#F7F7F7] rounded-xl px-4 py-3">
+                                    <Search className="w-4 h-4 text-[#717171] shrink-0" />
+                                    <input
+                                        type="text"
+                                        value={query}
+                                        onChange={(e) => setQuery(e.target.value)}
+                                        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                                        placeholder={t("search_bar.placeholder")}
+                                        className="flex-1 text-[14px] bg-transparent border-0 outline-none focus:outline-none focus:ring-0 text-[#1A1A1A] placeholder:text-[#B0B0B0]"
+                                    />
+                                    {query && (
+                                        <button type="button" onClick={() => setQuery("")}
+                                            className="w-5 h-5 rounded-full bg-[#B0B0B0] hover:bg-[#717171] flex items-center justify-center shrink-0 transition-colors">
+                                            <X className="w-3 h-3 text-white" />
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* City picker */}
+                            <div className="px-5 py-4 border-b border-[#EBEBEB]">
+                                <p className="text-[10px] font-bold text-[#717171] tracking-widest uppercase mb-2">
+                                    {t("search_bar.where")}
+                                </p>
+                                <div className="flex items-center gap-2 bg-[#F7F7F7] rounded-xl px-3 py-2.5 mb-3">
+                                    <Search className="w-3.5 h-3.5 text-[#717171] shrink-0" />
+                                    <input
+                                        type="text"
+                                        value={cityFilter}
+                                        onChange={(e) => setCityFilter(e.target.value)}
+                                        placeholder={t("search_bar.city_label")}
+                                        className="flex-1 text-[13px] bg-transparent border-0 outline-none focus:outline-none focus:ring-0 text-[#1A1A1A] placeholder:text-[#B0B0B0]"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-2">
+                                    {(cityFilter.trim()
+                                        ? finalCities.filter((c) => c.label.toLowerCase().includes(cityFilter.toLowerCase()))
+                                        : finalCities
+                                    ).map((c) => (
+                                        <button key={c.value} type="button" onClick={() => handleCitySelect(c.value)}
+                                            className={cn(
+                                                "flex items-center gap-2 px-3 py-2.5 rounded-xl border text-start transition-all",
+                                                city.toLowerCase() === c.value.toLowerCase()
+                                                    ? "bg-[#FEF0ED] border-[#E8472A] text-[#E8472A]"
+                                                    : "border-[#EBEBEB] text-[#1A1A1A] hover:border-[#1A1A1A]"
+                                            )}>
+                                            <MapPin className="w-3.5 h-3.5 shrink-0 opacity-50" />
+                                            <span className="text-[13px] font-medium truncate">{c.label}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Category picker */}
+                            <div className="px-5 py-4">
+                                <p className="text-[10px] font-bold text-[#717171] tracking-widest uppercase mb-2">
+                                    {t("search_bar.what")}
+                                </p>
+                                <div className="flex items-center gap-2 bg-[#F7F7F7] rounded-xl px-3 py-2.5 mb-3">
+                                    <Search className="w-3.5 h-3.5 text-[#717171] shrink-0" />
+                                    <input
+                                        type="text"
+                                        value={categoryFilter}
+                                        onChange={(e) => setCategoryFilter(e.target.value)}
+                                        placeholder={t("search_bar.cat_label")}
+                                        className="flex-1 text-[13px] bg-transparent border-0 outline-none focus:outline-none focus:ring-0 text-[#1A1A1A] placeholder:text-[#B0B0B0]"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {(categoryFilter.trim()
+                                        ? finalCategories.filter((c) => c.label.toLowerCase().includes(categoryFilter.toLowerCase()))
+                                        : finalCategories
+                                    ).map((c) => {
+                                        const CatIcon = CATEGORY_ICON_MAP[c.value] ?? LayoutGrid;
+                                        return (
+                                            <button key={c.value} type="button" onClick={() => handleCategorySelect(c.value)}
+                                                className={cn(
+                                                    "flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all",
+                                                    category.toLowerCase() === c.value.toLowerCase()
+                                                        ? "bg-[#FEF0ED] border-[#E8472A] text-[#E8472A]"
+                                                        : "border-[#EBEBEB] text-[#1A1A1A] hover:border-[#1A1A1A]"
+                                                )}>
+                                                <CatIcon className="w-5 h-5" strokeWidth={1.5} />
+                                                <span className="text-[11px] font-medium leading-tight text-center">{c.label}</span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+
+                        <DrawerFooter className="px-5 pt-3 pb-5 border-t border-[#EBEBEB]">
+                            <button type="button"
+                                onClick={() => { handleSearch(); setDrawerOpen(false); }}
+                                className="w-full bg-[#E8472A] hover:bg-[#C43A20] text-white rounded-full h-12 text-[15px] font-semibold transition-colors flex items-center justify-center gap-2">
+                                <Search className="w-4 h-4" />
+                                {t("search_bar.cta")}
+                            </button>
+                        </DrawerFooter>
+                    </DrawerContent>
+                </Drawer>
             </div>
         );
     }
