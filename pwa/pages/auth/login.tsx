@@ -10,6 +10,7 @@ import type { GetServerSideProps } from "next";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
+import { cn } from "@/lib/utils";
 
 const validationSchema = (t: any) => Yup.object({
     email:    Yup.string().email(t("auth.invalid_email")).required(t("auth.required_email")),
@@ -38,47 +39,69 @@ export default function LoginPage() {
         },
     });
 
+    const LOGIN_IMAGE = "https://images.unsplash.com/photo-1621532050212-e58f000fc7eb?w=1920&q=80"; // Beautiful Moroccan wedding / romantic ambiance
+
     return (
-        <>
+        <div className="min-h-screen bg-white flex w-full">
             <Head>
                 <title>{t("nav.login")} — Farah.ma</title>
                 <meta name="description" content={t("home.hero.subtitle")} />
             </Head>
 
-            <div className="min-h-screen bg-[#F7F7F7] flex items-center justify-center px-4 pt-20 pb-12">
-                <div className="w-full max-w-[440px]">
+            {/* ── Left Pane (Image) ─────────────────────────────────────────── */}
+            <div className="hidden lg:block lg:w-5/12 xl:w-1/2 relative bg-[#1A1A1A] overflow-hidden">
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        backgroundImage: `url('${LOGIN_IMAGE}')`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                    }}
+                >
+                    <div className="absolute inset-0 bg-black/20" />
+                </div>
+                
+                {/* Branding overlay */}
+                <div className="absolute top-10 left-12 z-10">
+                    <Link href="/" className="font-display italic text-white text-[28px] drop-shadow-md">
+                        Farah.ma
+                    </Link>
+                </div>
+            </div>
 
-                    {/* ── Logo ── */}
-                    <div className="text-center mb-8">
-                        <Link href="/" className="inline-flex items-center gap-2 mb-6">
-                            <div className="w-9 h-9 rounded-xl bg-[#E8472A] flex items-center justify-center">
-                                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" aria-hidden="true">
-                                    <path d="M12 2l2.4 6.6H21l-5.4 4 2.1 6.4-5.7-4.1-5.7 4.1 2.1-6.4L3 8.6h6.6z" />
-                                </svg>
-                            </div>
-                            <span className="font-display font-semibold text-[20px] text-[#1A1A1A]">
-                                Farah<span className="text-[#E8472A]">.ma</span>
-                            </span>
-                        </Link>
-                        <h1 className="font-display text-[28px] text-[#1A1A1A] leading-tight">
-                            {t("auth.welcome")}
-                        </h1>
-                        <p className="text-[14px] text-[#717171] mt-1">
-                            {t("auth.login_subtitle")}
-                        </p>
-                    </div>
+            {/* ── Right Pane (Form) ─────────────────────────────────────────── */}
+            <div className="w-full lg:w-7/12 xl:w-1/2 flex flex-col relative h-screen bg-white">
+                
+                {/* Mobile top bar */}
+                <div className="lg:hidden px-6 py-5 flex items-center justify-between border-b border-[#EBEBEB] bg-white sticky top-0 z-20">
+                    <Link href="/" className="font-display italic text-[#E8472A] text-[22px]">
+                        Farah.ma
+                    </Link>
+                </div>
 
-                    {/* ── Card ── */}
-                    <div className="bg-white rounded-[24px] border border-[#DDDDDD] shadow-[0_1px_2px_rgba(0,0,0,0.08)] p-8">
-                        <form onSubmit={formik.handleSubmit} noValidate className="space-y-5">
+                <div className="flex-1 overflow-y-auto px-6 py-12 md:px-16 lg:px-20 lg:py-24 flex items-center">
+                    <div className="max-w-md w-full mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        
+                        {/* Title area */}
+                        <div className="mb-10">
+                            <h1 className="font-display text-[36px] md:text-[44px] text-[#1A1A1A] leading-[1.05] tracking-tight">
+                                {t("auth.welcome")}
+                            </h1>
+                            <p className="text-[16px] text-[#717171] mt-3 leading-relaxed">
+                                {t("auth.login_subtitle")}
+                            </p>
+                        </div>
+
+                        {/* Form area */}
+                        <form onSubmit={formik.handleSubmit} noValidate className="space-y-6">
                             {error && (
-                                <div className="p-3.5 bg-[#FEECEC] border border-[#C13030]/20 rounded-xl text-[14px] text-[#C13030]" role="alert">
+                                <div className="p-4 bg-[#FEECEC] border border-[#C13030]/20 rounded-xl text-[14px] text-[#C13030]" role="alert">
                                     {error}
                                 </div>
                             )}
 
                             {/* Email */}
-                            <div className="space-y-1.5">
+                            <div className="space-y-2">
                                 <Label htmlFor="email" className="text-[14px] font-medium text-[#1A1A1A]">
                                     {t("auth.email_label")}
                                 </Label>
@@ -87,10 +110,12 @@ export default function LoginPage() {
                                     type="email"
                                     autoComplete="email"
                                     {...formik.getFieldProps("email")}
-                                    className={formik.touched.email && formik.errors.email
-                                        ? "border-[#C13030] focus-visible:ring-[#C13030]"
-                                        : ""
-                                    }
+                                    className={cn(
+                                        "h-14 text-[16px] rounded-xl border-2 transition-all focus:border-[#E8472A] focus:ring-4 focus:ring-[#E8472A]/10",
+                                        formik.touched.email && formik.errors.email
+                                            ? "border-red-400 focus:border-red-400 focus:ring-red-400/20"
+                                            : "border-[#EBEBEB]"
+                                    )}
                                     placeholder="vous@exemple.com"
                                     aria-invalid={!!(formik.touched.email && formik.errors.email)}
                                     aria-describedby={formik.touched.email && formik.errors.email ? "email-error" : undefined}
@@ -101,12 +126,12 @@ export default function LoginPage() {
                             </div>
 
                             {/* Password */}
-                            <div className="space-y-1.5">
+                            <div className="space-y-2">
                                 <div className="flex justify-between items-center mb-1.5">
                                     <Label htmlFor="password" className="text-[14px] font-medium text-[#1A1A1A]">
                                         {t("auth.password_label")}
                                     </Label>
-                                    <Link href="/auth/forgot-password" className="text-[13px] text-[#E8472A] hover:text-[#C43A20] transition-colors">
+                                    <Link href="/auth/forgot-password" className="text-[13px] text-[#E8472A] font-medium hover:text-[#C43A20] transition-colors">
                                         {t("auth.forgot_password")}
                                     </Link>
                                 </div>
@@ -115,10 +140,12 @@ export default function LoginPage() {
                                     type="password"
                                     autoComplete="current-password"
                                     {...formik.getFieldProps("password")}
-                                    className={formik.touched.password && formik.errors.password
-                                        ? "border-[#C13030] focus-visible:ring-[#C13030]"
-                                        : ""
-                                    }
+                                    className={cn(
+                                        "h-14 text-[16px] rounded-xl border-2 transition-all focus:border-[#E8472A] focus:ring-4 focus:ring-[#E8472A]/10",
+                                        formik.touched.password && formik.errors.password
+                                            ? "border-red-400 focus:border-red-400 focus:ring-red-400/20"
+                                            : "border-[#EBEBEB]"
+                                    )}
                                     placeholder="••••••••"
                                     aria-invalid={!!(formik.touched.password && formik.errors.password)}
                                 />
@@ -131,24 +158,22 @@ export default function LoginPage() {
                             <Button
                                 type="submit"
                                 disabled={formik.isSubmitting}
-                                loading={formik.isSubmitting}
-                                size="lg"
-                                className="w-full mt-1"
+                                className="w-full h-14 mt-2 text-[15px] font-medium rounded-xl bg-[#1A1A1A] hover:bg-[#333333] text-white transition-all active:scale-[0.98] shadow-lg shadow-black/10"
                             >
                                 {formik.isSubmitting ? t("auth.logging_in") : t("auth.login_btn")}
                             </Button>
                         </form>
 
-                        <p className="text-center text-[14px] text-[#717171] mt-6">
+                        <p className="text-center text-[15px] text-[#717171] mt-10">
                             {t("auth.no_account")}{" "}
-                            <Link href="/auth/register" className="text-[#E8472A] font-medium hover:text-[#C43A20] transition-colors">
+                            <Link href="/auth/register" className="text-[#E8472A] font-medium hover:text-[#C43A20] transition-colors underline underline-offset-4">
                                 {t("auth.register_link")}
                             </Link>
                         </p>
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 

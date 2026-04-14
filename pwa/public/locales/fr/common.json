@@ -467,5 +467,65 @@
   "categories_page": {
     "title": "Toutes les catégories",
     "subtitle": "Explorez toutes nos catégories de prestataires pour votre mariage au Maroc."
+  },
+  "onboarding": {
+    "title": "Créez votre profil prestataire",
+    "subtitle": "Complétez les étapes ci-dessous pour apparaître sur Farah.ma",
+    "step_of": "Étape {{current}} sur {{total}}",
+    "steps": {
+      "basic": "Infos essentielles",
+      "zone": "Zone & contact",
+      "services": "Services & tarifs",
+      "photos": "Photos",
+      "preview": "Aperçu"
+    },
+    "fields": {
+      "business_name": "Nom de votre entreprise",
+      "business_name_placeholder": "ex. Palais des Roses",
+      "tagline": "Accroche (optionnel)",
+      "tagline_placeholder": "Une phrase courte qui décrit votre service",
+      "category": "Catégorie",
+      "category_placeholder": "Choisissez une catégorie",
+      "description": "Description",
+      "description_placeholder": "Décrivez votre expertise, votre style et ce qui vous distingue…",
+      "description_hint": "Minimum 50 caractères",
+      "cities": "Villes desservies",
+      "whatsapp": "Numéro WhatsApp",
+      "whatsapp_placeholder": "+212 6XX XXX XXX",
+      "website": "Site web (optionnel)",
+      "website_placeholder": "https://monsite.ma",
+      "instagram": "Instagram (optionnel)",
+      "instagram_placeholder": "@moncompte",
+      "price_range": "Gamme de prix",
+      "starting_price": "Prix à partir de (MAD, optionnel)",
+      "languages": "Langues parlées",
+      "cover_image": "Image de couverture (URL)",
+      "cover_image_placeholder": "https://… (JPG ou PNG)",
+      "cover_image_hint": "Photo principale de votre profil",
+      "gallery": "Galerie photos (jusqu'à 6)",
+      "gallery_hint": "Collez des URLs de vos plus belles photos",
+      "gallery_item": "Photo {{n}}"
+    },
+    "nav": {
+      "next": "Suivant",
+      "back": "Retour",
+      "submit": "Publier mon profil",
+      "submitting": "Publication en cours…"
+    },
+    "preview": {
+      "title": "Vérifiez vos informations",
+      "subtitle": "Voici un résumé de votre profil avant publication.",
+      "edit": "Modifier"
+    },
+    "errors": {
+      "business_name_required": "Le nom de l'entreprise est obligatoire",
+      "category_required": "Veuillez choisir une catégorie",
+      "description_required": "La description est obligatoire",
+      "description_min": "La description doit comporter au moins 50 caractères",
+      "cities_required": "Sélectionnez au moins une ville",
+      "whatsapp_required": "Le numéro WhatsApp est obligatoire",
+      "price_required": "Veuillez choisir une gamme de prix",
+      "submit_failed": "Une erreur est survenue. Veuillez réessayer."
+    }
   }
 }
