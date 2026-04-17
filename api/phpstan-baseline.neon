@@ -1,0 +1,193 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Property App\\Entity\\BudgetItem\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/BudgetItem.php
+
+		-
+			message: '#^Property App\\Entity\\Category\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Category.php
+
+		-
+			message: '#^Property App\\Entity\\ChecklistTask\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/ChecklistTask.php
+
+		-
+			message: '#^Property App\\Entity\\ChecklistTask\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/ChecklistTask.php
+
+		-
+			message: '#^Property App\\Entity\\City\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/City.php
+
+		-
+			message: '#^Property App\\Entity\\Guest\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/Guest.php
+
+		-
+			message: '#^Property App\\Entity\\Guest\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Guest.php
+
+		-
+			message: '#^Property App\\Entity\\MenuItem\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/MenuItem.php
+
+		-
+			message: '#^Property App\\Entity\\MenuItem\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/MenuItem.php
+
+		-
+			message: '#^Property App\\Entity\\MenuItem\:\:\$updatedAt \(DateTimeImmutable\|null\) is never assigned DateTimeImmutable so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/MenuItem.php
+
+		-
+			message: '#^Property App\\Entity\\Permission\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/Permission.php
+
+		-
+			message: '#^Property App\\Entity\\Permission\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Permission.php
+
+		-
+			message: '#^Property App\\Entity\\QuoteRequest\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/QuoteRequest.php
+
+		-
+			message: '#^Property App\\Entity\\QuoteRequest\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/QuoteRequest.php
+
+		-
+			message: '#^Property App\\Entity\\QuoteRequest\:\:\$updatedAt \(DateTimeImmutable\|null\) is never assigned DateTimeImmutable so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/QuoteRequest.php
+
+		-
+			message: '#^Property App\\Entity\\Review\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/Review.php
+
+		-
+			message: '#^Property App\\Entity\\Review\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Review.php
+
+		-
+			message: '#^Property App\\Entity\\Review\:\:\$updatedAt \(DateTimeImmutable\|null\) is never assigned DateTimeImmutable so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Review.php
+
+		-
+			message: '#^Property App\\Entity\\Role\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/Role.php
+
+		-
+			message: '#^Property App\\Entity\\Role\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Role.php
+
+		-
+			message: '#^Property App\\Entity\\User\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/User.php
+
+		-
+			message: '#^Property App\\Entity\\User\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/User.php
+
+		-
+			message: '#^Property App\\Entity\\User\:\:\$updatedAt \(DateTimeImmutable\|null\) is never assigned DateTimeImmutable so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/User.php
+
+		-
+			message: '#^Property App\\Entity\\VendorProfile\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/VendorProfile.php
+
+		-
+			message: '#^Property App\\Entity\\VendorProfile\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/VendorProfile.php
+
+		-
+			message: '#^Property App\\Entity\\VendorProfile\:\:\$updatedAt \(DateTimeImmutable\|null\) is never assigned DateTimeImmutable so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/VendorProfile.php
+
+		-
+			message: '#^Property App\\Entity\\WeddingProfile\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/WeddingProfile.php
+
+		-
+			message: '#^Property App\\Entity\\WeddingProfile\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/WeddingProfile.php
+
+		-
+			message: '#^Property App\\Entity\\WeddingProfile\:\:\$updatedAt \(DateTimeImmutable\|null\) is never assigned DateTimeImmutable so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/WeddingProfile.php
+
+		-
+			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/Security/Voter/PermissionVoter.php
+
+		-
+			message: '#^Property App\\State\\AppStatsProvider\:\:\$translatableListener is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/State/AppStatsProvider.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectRepository\<App\\Entity\\Translation\>\:\:translate\(\)\.$#'
+			identifier: method.notFound
+			count: 8
+			path: src/Story/InitialAppStory.php

@@ -24,8 +24,8 @@
 - [ ] Reviews sub-ratings (quality, communication, value, punctuality)
 
 ### Auth (US-3.1)
-- [ ] Google OAuth 2.0 integration
-- [ ] Password reset flow (email via Resend)
+- [ ] Google OAuth 2.0 integration (credentials in .env — `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET`)
+- [ ] Password reset flow — **backend done** (`POST /api/auth/forgot-password` + `POST /api/auth/reset-password`), **frontend done** (`/auth/forgot-password` + `/auth/reset-password`); pending: `make full-migrat` + `make cs` once Docker is running
 - [ ] Silent JWT refresh (refresh token)
 - [ ] Wedding date + budget prompt on first couple login
 

@@ -16,6 +16,7 @@ interface AuthContextType {
     user: User | null;
     isLoading: boolean;
     login: (credentials: any) => Promise<void>;
+    loginWithToken: (token: string) => Promise<void>;
     register: (data: any) => Promise<void>;
     logout: () => void;
 }
@@ -32,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const token = getAuthToken();
             if (token) {
                 try {
-                    const userData = await fetchApi("/me");
+                    const userData = await fetchApi("/api/me");
                     setUser(userData);
                 } catch (error) {
                     removeAuthToken();
@@ -54,14 +55,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (data.token) {
             setAuthToken(data.token);
-            const userData = await fetchApi("/me");
+            const userData = await fetchApi("/api/me");
             setUser(userData);
             router.push("/");
         }
     };
 
+    /** Used by the OAuth callback page — token already issued by Symfony. */
+    const loginWithToken = async (token: string) => {
+        setAuthToken(token);
+        const userData = await fetchApi("/api/me");
+        setUser(userData);
+        router.push("/");
+    };
+
     const register = async (userData: any) => {
-        await fetchApi("/users", {
+        await fetchApi("/api/users", {
             method: "POST",
             body: JSON.stringify(userData),
         });
@@ -77,7 +86,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
+        <AuthContext.Provider value={{ user, isLoading, login, loginWithToken, register, logout }}>
             {children}
         </AuthContext.Provider>
     );

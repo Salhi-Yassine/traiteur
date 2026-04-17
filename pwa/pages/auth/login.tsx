@@ -7,31 +7,59 @@ import { useState } from "react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
+import { FloatingInput } from "../../components/ui/floating-input";
+import { AuthCard } from "../../components/auth/AuthCard";
 import { cn } from "@/lib/utils";
+import { Eye, EyeOff } from "lucide-react";
 
-const validationSchema = (t: any) => Yup.object({
-    email:    Yup.string().email(t("auth.invalid_email")).required(t("auth.required_email")),
-    password: Yup.string().required(t("auth.required_password")),
-});
+// ── Google logo (official brand colours) ────────────────────────────────────
+function GoogleIcon() {
+    return (
+        <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" aria-hidden="true">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+        </svg>
+    );
+}
 
-// v3.0 — white card, neutral-200 borders, terracotta focus, black submit button
+// ── "── ou ──" separator ─────────────────────────────────────────────────────
+function OrDivider({ label }: { label: string }) {
+    return (
+        <div className="relative flex items-center my-5" role="separator" aria-label={label}>
+            <div className="flex-1 h-px bg-[#DDDDDD]" />
+            <span className="mx-4 text-[13px] font-medium text-[#717171] select-none">{label}</span>
+            <div className="flex-1 h-px bg-[#DDDDDD]" />
+        </div>
+    );
+}
+
+// ── Validation ───────────────────────────────────────────────────────────────
+const validationSchema = (t: (key: string) => string) =>
+    Yup.object({
+        email:    Yup.string().email(t("auth.invalid_email")).required(t("auth.required_email")),
+        password: Yup.string().required(t("auth.required_password")),
+    });
+
+// ── Page ─────────────────────────────────────────────────────────────────────
 export default function LoginPage() {
     const { t } = useTranslation("common");
     const { login } = useAuth();
-    const [error, setError] = useState<string | null>(null);
+    const [serverError, setServerError] = useState<string | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
 
     const formik = useFormik({
         initialValues: { email: "", password: "" },
         validationSchema: validationSchema(t),
         onSubmit: async (values, helpers) => {
-            setError(null);
+            setServerError(null);
             try {
                 await login({ email: values.email, password: values.password });
-            } catch (err: any) {
-                setError(err.message || t("auth.login_error"));
+            } catch (err: unknown) {
+                const msg = err instanceof Error ? err.message : null;
+                setServerError(msg || t("auth.login_error"));
                 helpers.setErrors({ email: " " });
             } finally {
                 helpers.setSubmitting(false);
@@ -39,148 +67,117 @@ export default function LoginPage() {
         },
     });
 
-    const LOGIN_IMAGE = "https://images.unsplash.com/photo-1621532050212-e58f000fc7eb?w=1920&q=80"; // Beautiful Moroccan wedding / romantic ambiance
-
     return (
-        <div className="min-h-screen bg-white flex w-full">
+        <>
             <Head>
-                <title>{t("nav.login")} — Farah.ma</title>
-                <meta name="description" content={t("home.hero.subtitle")} />
+                <title>{t("auth.login_btn")} — Farah.ma</title>
+                <meta name="description" content={t("auth.login_subtitle")} />
             </Head>
 
-            {/* ── Left Pane (Image) ─────────────────────────────────────────── */}
-            <div className="hidden lg:block lg:w-5/12 xl:w-1/2 relative bg-[#1A1A1A] overflow-hidden">
-                <div
-                    className="absolute inset-0"
-                    style={{
-                        backgroundImage: `url('${LOGIN_IMAGE}')`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                    }}
-                >
-                    <div className="absolute inset-0 bg-black/20" />
-                </div>
-                
-                {/* Branding overlay */}
-                <div className="absolute top-10 left-12 z-10">
-                    <Link href="/" className="font-display italic text-white text-[28px] drop-shadow-md">
-                        Farah.ma
-                    </Link>
-                </div>
-            </div>
+            <AuthCard closeHref="/">
+                <p className="font-display text-[26px] text-[#1A1A1A] leading-tight mb-7">
+                    {t("auth.welcome")}
+                </p>
 
-            {/* ── Right Pane (Form) ─────────────────────────────────────────── */}
-            <div className="w-full lg:w-7/12 xl:w-1/2 flex flex-col relative h-screen bg-white">
-                
-                {/* Mobile top bar */}
-                <div className="lg:hidden px-6 py-5 flex items-center justify-between border-b border-[#EBEBEB] bg-white sticky top-0 z-20">
-                    <Link href="/" className="font-display italic text-[#E8472A] text-[22px]">
-                        Farah.ma
-                    </Link>
-                </div>
-
-                <div className="flex-1 overflow-y-auto px-6 py-12 md:px-16 lg:px-20 lg:py-24 flex items-center">
-                    <div className="max-w-md w-full mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
-                        
-                        {/* Title area */}
-                        <div className="mb-10">
-                            <h1 className="font-display text-[36px] md:text-[44px] text-[#1A1A1A] leading-[1.05] tracking-tight">
-                                {t("auth.welcome")}
-                            </h1>
-                            <p className="text-[16px] text-[#717171] mt-3 leading-relaxed">
-                                {t("auth.login_subtitle")}
-                            </p>
-                        </div>
-
-                        {/* Form area */}
-                        <form onSubmit={formik.handleSubmit} noValidate className="space-y-6">
-                            {error && (
-                                <div className="p-4 bg-[#FEECEC] border border-[#C13030]/20 rounded-xl text-[14px] text-[#C13030]" role="alert">
-                                    {error}
-                                </div>
-                            )}
-
-                            {/* Email */}
-                            <div className="space-y-2">
-                                <Label htmlFor="email" className="text-[14px] font-medium text-[#1A1A1A]">
-                                    {t("auth.email_label")}
-                                </Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    autoComplete="email"
-                                    {...formik.getFieldProps("email")}
-                                    className={cn(
-                                        "h-14 text-[16px] rounded-xl border-2 transition-all focus:border-[#E8472A] focus:ring-4 focus:ring-[#E8472A]/10",
-                                        formik.touched.email && formik.errors.email
-                                            ? "border-red-400 focus:border-red-400 focus:ring-red-400/20"
-                                            : "border-[#EBEBEB]"
-                                    )}
-                                    placeholder="vous@exemple.com"
-                                    aria-invalid={!!(formik.touched.email && formik.errors.email)}
-                                    aria-describedby={formik.touched.email && formik.errors.email ? "email-error" : undefined}
-                                />
-                                {formik.touched.email && formik.errors.email && formik.errors.email.trim() && (
-                                    <p id="email-error" className="text-[13px] text-[#C13030] mt-1.5">{formik.errors.email}</p>
-                                )}
-                            </div>
-
-                            {/* Password */}
-                            <div className="space-y-2">
-                                <div className="flex justify-between items-center mb-1.5">
-                                    <Label htmlFor="password" className="text-[14px] font-medium text-[#1A1A1A]">
-                                        {t("auth.password_label")}
-                                    </Label>
-                                    <Link href="/auth/forgot-password" className="text-[13px] text-[#E8472A] font-medium hover:text-[#C43A20] transition-colors">
-                                        {t("auth.forgot_password")}
-                                    </Link>
-                                </div>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    autoComplete="current-password"
-                                    {...formik.getFieldProps("password")}
-                                    className={cn(
-                                        "h-14 text-[16px] rounded-xl border-2 transition-all focus:border-[#E8472A] focus:ring-4 focus:ring-[#E8472A]/10",
-                                        formik.touched.password && formik.errors.password
-                                            ? "border-red-400 focus:border-red-400 focus:ring-red-400/20"
-                                            : "border-[#EBEBEB]"
-                                    )}
-                                    placeholder="••••••••"
-                                    aria-invalid={!!(formik.touched.password && formik.errors.password)}
-                                />
-                                {formik.touched.password && formik.errors.password && (
-                                    <p className="text-[13px] text-[#C13030] mt-1.5">{formik.errors.password}</p>
-                                )}
-                            </div>
-
-                            {/* Submit */}
-                            <Button
-                                type="submit"
-                                disabled={formik.isSubmitting}
-                                className="w-full h-14 mt-2 text-[15px] font-medium rounded-xl bg-[#1A1A1A] hover:bg-[#333333] text-white transition-all active:scale-[0.98] shadow-lg shadow-black/10"
-                            >
-                                {formik.isSubmitting ? t("auth.logging_in") : t("auth.login_btn")}
-                            </Button>
-                        </form>
-
-                        <p className="text-center text-[15px] text-[#717171] mt-10">
-                            {t("auth.no_account")}{" "}
-                            <Link href="/auth/register" className="text-[#E8472A] font-medium hover:text-[#C43A20] transition-colors underline underline-offset-4">
-                                {t("auth.register_link")}
-                            </Link>
-                        </p>
+                {serverError && (
+                    <div
+                        role="alert"
+                        className="mb-5 p-4 bg-[#FEECEC] border border-[#C13030]/20 rounded-xl text-[14px] text-[#C13030]"
+                    >
+                        {serverError}
                     </div>
-                </div>
-            </div>
-        </div>
+                )}
+
+                {/* Google OAuth */}
+                <a
+                    href="/auth/google"
+                    className={cn(
+                        "w-full flex items-center justify-center gap-3 h-[52px]",
+                        "border border-[#DDDDDD] rounded-xl bg-white",
+                        "text-[15px] font-medium text-[#1A1A1A]",
+                        "hover:bg-[#F7F7F7] hover:border-[#B0B0B0] transition-colors",
+                    )}
+                >
+                    <GoogleIcon />
+                    {t("auth.continue_with_google")}
+                </a>
+
+                <OrDivider label={t("auth.or")} />
+
+                <form onSubmit={formik.handleSubmit} noValidate className="space-y-4">
+
+                    <FloatingInput
+                        id="email"
+                        label={t("auth.email_label")}
+                        type="email"
+                        autoComplete="email"
+                        {...formik.getFieldProps("email")}
+                        error={
+                            formik.touched.email && formik.errors.email?.trim()
+                                ? formik.errors.email
+                                : undefined
+                        }
+                    />
+
+                    <div className="space-y-1">
+                        <FloatingInput
+                            id="password"
+                            label={t("auth.password_label")}
+                            type={showPassword ? "text" : "password"}
+                            autoComplete="current-password"
+                            {...formik.getFieldProps("password")}
+                            error={
+                                formik.touched.password && formik.errors.password
+                                    ? formik.errors.password
+                                    : undefined
+                            }
+                            trailingSlot={
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword((v) => !v)}
+                                    aria-label={showPassword ? t("auth.hide_password") : t("auth.show_password")}
+                                    className="p-1 rounded-full text-[#717171] hover:text-[#E8472A] transition-colors"
+                                >
+                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                </button>
+                            }
+                        />
+                        <div className="flex justify-end pt-1">
+                            <Link
+                                href="/auth/forgot-password"
+                                className="text-[13px] text-[#717171] underline underline-offset-2 hover:text-[#E8472A] transition-colors"
+                            >
+                                {t("auth.forgot_password")}
+                            </Link>
+                        </div>
+                    </div>
+
+                    <Button
+                        type="submit"
+                        disabled={formik.isSubmitting}
+                        loading={formik.isSubmitting}
+                        className="w-full h-[52px] mt-2 text-[15px] font-semibold rounded-xl bg-[#E8472A] hover:bg-[#C43A20] text-white border-transparent"
+                    >
+                        {t("auth.login_btn")}
+                    </Button>
+                </form>
+
+                <p className="text-center text-[14px] text-[#717171] mt-7 pb-1">
+                    {t("auth.no_account")}{" "}
+                    <Link
+                        href="/auth/register"
+                        className="text-[#E8472A] font-semibold underline underline-offset-2 hover:text-[#C43A20] transition-colors"
+                    >
+                        {t("auth.register_link")}
+                    </Link>
+                </p>
+            </AuthCard>
+        </>
     );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
-    return {
-        props: {
-            ...(await serverSideTranslations(locale || "fr", ["common"])),
-        },
-    };
-};
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => ({
+    props: {
+        ...(await serverSideTranslations(locale || "fr", ["common"])),
+    },
+});

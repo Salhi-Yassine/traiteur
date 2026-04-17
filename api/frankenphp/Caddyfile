@@ -53,6 +53,17 @@
 	header ?Permissions-Policy "browsing-topics=()"
 
 	route {
+		# Google OAuth routes must reach PHP/Symfony regardless of Accept header.
+		# Handled first so the @pwa reverse-proxy below never intercepts them.
+		handle /auth/google {
+			rewrite * /index.php
+			php /index.php
+		}
+		handle /auth/google/* {
+			rewrite * /index.php
+			php /index.php
+		}
+
 		# Matches requests for HTML documents, for static files and for Next.js files,
 		# except for known API paths and paths with extensions handled by API Platform
 		@pwa expression `(

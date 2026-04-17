@@ -4,6 +4,24 @@
 
 ---
 
+## 2026-04-16
+
+### Auth — Airbnb-like redesign + password reset (Closes #41)
+- [2026-04-16] Deleted dead `RegistrationController.php`, `RegistrationForm.php`, `templates/registration/` (HTML-based, conflicted with API-first registration via `/api/users`)
+- [2026-04-16] Added `passwordResetToken` + `passwordResetTokenExpiresAt` fields to `User` entity (not exposed via API groups)
+- [2026-04-16] Added `findOneByResetToken()` to `UserRepository`
+- [2026-04-16] Created `Service/PasswordResetService.php` — `initiateReset()` + `resetPassword()`, silently ignores unknown emails
+- [2026-04-16] Created `Controller/PasswordResetController.php` — `POST /api/auth/forgot-password` + `POST /api/auth/reset-password` (plain Symfony, not API Platform)
+- [2026-04-16] Created `templates/emails/reset_password.html.twig` — responsive HTML email with terracotta CTA button
+- [2026-04-16] Added 16 `auth.*` i18n keys to all 4 locale files (fr, en, ar, ary) for forgot/reset password flows
+- [2026-04-16] Created `components/auth/AuthCard.tsx` — shared card shell (Airbnb header pattern: [X] + Farah.ma logotype centered) + `AuthCard.stories.tsx`
+- [2026-04-16] Refactored `login.tsx` — uses `AuthCard`, removed redundant footer Farah.ma link
+- [2026-04-16] Refactored `register.tsx` — uses `AuthCard`, **fixed `userType` bug**: `"client"/"caterer"` → `"couple"/"vendor"` (was failing `Assert\Choice` validator on backend)
+- [2026-04-16] Created `pages/auth/forgot-password.tsx` — email form with success state (CheckCircle)
+- [2026-04-16] Created `pages/auth/reset-password.tsx` — password + confirm fields, handles missing/invalid token state
+
+---
+
 ## 2026-04-10
 
 ### Infrastructure & Tooling

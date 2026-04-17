@@ -76,6 +76,26 @@
 
 ---
 
+### Password reset via custom token, not symfonycasts/verify-email-bundle
+**Decision:** Use a 32-byte random hex token stored on the `User` entity, not `symfonycasts/verify-email-bundle`.
+**Why:** The verify-email bundle ties its signed URL to the user's current password hash — circular for reset flows. A plain random token is simpler to test and reason about.
+**Trade-off:** Token is stored in the DB (one extra column). Mitigated by setting it to `null` on use.
+**Date:** 2026-04-16
+
+### Password reset endpoints are plain Symfony controllers, not API Platform resources
+**Decision:** `POST /api/auth/forgot-password` and `POST /api/auth/reset-password` use `#[Route]` on a plain `AbstractController`, not `#[ApiResource]`.
+**Why:** Password reset is a command-style operation (no GET, no collection, no IRI). Wrapping it in API Platform would require a dummy class just to satisfy the framework model.
+**Date:** 2026-04-16
+
+### AuthCard shared component for all auth pages
+**Decision:** Extract card shell (outer wrapper + header) into `components/auth/AuthCard.tsx`.
+**Why:** login, register, forgot-password, reset-password, callback all share identical structural markup. Single source of truth for the Airbnb-pattern header (X button + Farah.ma logotype centered).
+**Date:** 2026-04-16
+
+### userType values aligned to backend constants
+**Decision:** Frontend now uses `"couple"/"vendor"` matching `User::TYPE_COUPLE`/`User::TYPE_VENDOR`. Was `"client"/"caterer"` — a silent bug where the API returned 422 on the `Assert\Choice` validator.
+**Date:** 2026-04-16
+
 ### Split file approach (DONE.md + TODO.md + DECISIONS.md)
 **Decision:** Replace single PROGRESS.md with three focused files.
 **Why:** PROGRESS.md mixed planning and history — it was always stale. DONE.md is append-only (never lies), TODO.md is the live prioritized backlog, DECISIONS.md captures the why.
