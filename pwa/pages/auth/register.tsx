@@ -162,6 +162,7 @@ export default function RegisterPage() {
                             label={t("auth.first_name")}
                             type="text"
                             autoComplete="given-name"
+                            autoFocus
                             {...formik.getFieldProps("firstName")}
                             error={
                                 formik.touched.firstName && formik.errors.firstName
@@ -198,7 +199,7 @@ export default function RegisterPage() {
 
                     <FloatingInput
                         id="password"
-                        label={`${t("auth.password_label")} ${t("auth.password_hint")}`}
+                        label={t("auth.password_label")}
                         type={showPassword ? "text" : "password"}
                         autoComplete="new-password"
                         {...formik.getFieldProps("password")}
@@ -218,6 +219,9 @@ export default function RegisterPage() {
                             </button>
                         }
                     />
+                    <p className="text-[12px] text-[#717171] ps-1">
+                        {t("auth.password_hint")}
+                    </p>
 
                     {userType === "vendor" && (
                         <div className="p-3.5 bg-[#FEF0ED] border border-[#E8472A]/20 rounded-xl text-[13px] text-[#484848]">

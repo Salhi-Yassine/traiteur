@@ -111,6 +111,7 @@ export default function LoginPage() {
                         label={t("auth.email_label")}
                         type="email"
                         autoComplete="email"
+                        autoFocus
                         {...formik.getFieldProps("email")}
                         error={
                             formik.touched.email && formik.errors.email?.trim()
