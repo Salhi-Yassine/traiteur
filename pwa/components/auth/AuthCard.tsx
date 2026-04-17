@@ -13,8 +13,6 @@ interface AuthCardProps {
 
 /**
  * Shared card shell for all auth pages.
- * Header: [X close]  [Farah.ma logotype centered]
- * Body: children rendered inside padded container.
  */
 export function AuthCard({
     closeHref = "/",
@@ -24,19 +22,19 @@ export function AuthCard({
     const { t } = useTranslation("common");
 
     return (
-        <div className="min-h-screen bg-[#F7F7F7] flex flex-col items-center justify-center px-4 py-10">
-            <div className="w-full max-w-[568px] bg-white rounded-[12px] shadow-[0_2px_16px_rgba(0,0,0,0.12)] overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-500">
+        <div className="min-h-screen bg-neutral-100 flex flex-col items-center justify-center px-4 py-10">
+            <div className="w-full max-w-[568px] bg-white rounded-xl shadow-3 overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-500">
 
                 {/* Header — Airbnb pattern: [X]  [Logo centered] */}
-                <div className="relative flex items-center justify-center h-[64px] border-b border-[#EBEBEB] px-6">
+                <div className="relative flex items-center justify-center h-[64px] border-b border-neutral-200 px-6">
                     <Link
                         href={closeHref}
                         aria-label={t(closeLabelKey)}
-                        className="absolute start-5 p-2 rounded-full hover:bg-[#F7F7F7] transition-colors text-[#1A1A1A]"
+                        className="absolute start-5 p-2 rounded-full hover:bg-neutral-100 transition-colors text-neutral-900"
                     >
                         <X className="w-4 h-4" />
                     </Link>
-                    <span className="font-display italic text-[#E8472A] text-[18px] select-none">
+                    <span className="font-display italic text-primary text-[18px] select-none">
                         Farah.ma
                     </span>
                 </div>
@@ -49,3 +47,32 @@ export function AuthCard({
         </div>
     );
 }
+
+/**
+ * Airbnb-style social login button (Google, Facebook, etc.)
+ */
+AuthCard.SocialButton = function SocialButton({
+    href,
+    onClick,
+    children,
+}: {
+    href?: string;
+    onClick?: () => void;
+    children: React.ReactNode;
+}) {
+    const className = "w-full flex items-center justify-center gap-3 h-[52px] border border-neutral-300 rounded-xl bg-white text-[15px] font-bold text-neutral-900 hover:bg-neutral-100 hover:border-neutral-900 transition-all duration-200 active:scale-[0.98]";
+
+    if (href) {
+        return (
+            <Link href={href} className={className}>
+                {children}
+            </Link>
+        );
+    }
+
+    return (
+        <button type="button" onClick={onClick} className={className}>
+            {children}
+        </button>
+    );
+};

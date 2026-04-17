@@ -63,13 +63,13 @@ export default function ResetPasswordPage() {
                 {success ? (
                     /* ── Success state ── */
                     <div className="flex flex-col items-center text-center py-4 space-y-5">
-                        <CheckCircle className="w-12 h-12 text-[#E8472A]" strokeWidth={1.5} />
-                        <p className="font-display text-[22px] text-[#1A1A1A] leading-snug max-w-[380px]">
+                        <CheckCircle className="w-12 h-12 text-primary" strokeWidth={1.5} />
+                        <p className="font-display text-[22px] text-neutral-900 leading-snug max-w-[380px]">
                             {t("auth.reset_password_success")}
                         </p>
                         <Link href="/auth/login" className="w-full">
                             <Button
-                                className="w-full h-[52px] text-[15px] font-semibold rounded-xl bg-[#E8472A] hover:bg-[#C43A20] text-white border-transparent"
+                                className="w-full h-[52px] text-[15px] font-semibold rounded-xl"
                             >
                                 {t("auth.login_btn")}
                             </Button>
@@ -78,7 +78,7 @@ export default function ResetPasswordPage() {
                 ) : tokenMissing ? (
                     /* ── Invalid / missing token state ── */
                     <div className="flex flex-col items-center text-center py-4 space-y-5">
-                        <p className="font-display text-[22px] text-[#1A1A1A] leading-snug max-w-[380px]">
+                        <p className="font-display text-[22px] text-neutral-900 leading-snug max-w-[380px]">
                             {t("auth.reset_password_error_invalid")}
                         </p>
                         <Link href="/auth/forgot-password" className="w-full">
@@ -93,17 +93,17 @@ export default function ResetPasswordPage() {
                 ) : (
                     /* ── Form state ── */
                     <>
-                        <p className="font-display text-[26px] text-[#1A1A1A] leading-tight mb-3">
+                        <p className="font-display text-[26px] text-neutral-900 leading-tight mb-3">
                             {t("auth.reset_password_title")}
                         </p>
-                        <p className="text-[14px] text-[#717171] mb-7 leading-relaxed">
+                        <p className="text-[14px] text-neutral-500 mb-7 leading-relaxed">
                             {t("auth.reset_password_desc")}
                         </p>
 
                         {serverError && (
                             <div
                                 role="alert"
-                                className="mb-5 p-4 bg-[#FEECEC] border border-[#C13030]/20 rounded-xl text-[14px] text-[#C13030]"
+                                className="mb-5 p-4 bg-danger-bg border border-danger/20 rounded-xl text-[14px] text-danger"
                             >
                                 {serverError}
                             </div>
@@ -149,7 +149,7 @@ export default function ResetPasswordPage() {
                                         type="button"
                                         onClick={() => setShowConfirm((v) => !v)}
                                         aria-label={showConfirm ? t("auth.hide_password") : t("auth.show_password")}
-                                        className="p-1 rounded-full text-[#717171] hover:text-[#E8472A] transition-colors"
+                                        className="p-1 rounded-full text-neutral-500 hover:text-primary transition-colors"
                                     >
                                         {showConfirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                     </button>
@@ -160,7 +160,7 @@ export default function ResetPasswordPage() {
                                 type="submit"
                                 disabled={formik.isSubmitting}
                                 loading={formik.isSubmitting}
-                                className="w-full h-[52px] mt-2 text-[15px] font-semibold rounded-xl bg-[#E8472A] hover:bg-[#C43A20] text-white border-transparent"
+                                className="w-full h-[52px] mt-2 text-[15px] font-semibold rounded-xl"
                             >
                                 {t("auth.reset_password_btn")}
                             </Button>

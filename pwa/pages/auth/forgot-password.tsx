@@ -52,8 +52,8 @@ export default function ForgotPasswordPage() {
                 {submitted ? (
                     /* ── Success state ── */
                     <div className="flex flex-col items-center text-center py-4 space-y-5">
-                        <CheckCircle className="w-12 h-12 text-[#E8472A]" strokeWidth={1.5} />
-                        <p className="font-display text-[22px] text-[#1A1A1A] leading-snug max-w-[380px]">
+                        <CheckCircle className="w-12 h-12 text-primary" strokeWidth={1.5} />
+                        <p className="font-display text-[22px] text-neutral-900 leading-snug max-w-[380px]">
                             {t("auth.forgot_password_sent")}
                         </p>
                         <Link
@@ -71,17 +71,17 @@ export default function ForgotPasswordPage() {
                 ) : (
                     /* ── Form state ── */
                     <>
-                        <p className="font-display text-[26px] text-[#1A1A1A] leading-tight mb-3">
+                        <p className="font-display text-[26px] text-neutral-900 leading-tight mb-3">
                             {t("auth.forgot_password_title")}
                         </p>
-                        <p className="text-[14px] text-[#717171] mb-7 leading-relaxed">
+                        <p className="text-[14px] text-neutral-500 mb-7 leading-relaxed">
                             {t("auth.forgot_password_desc")}
                         </p>
 
                         {serverError && (
                             <div
                                 role="alert"
-                                className="mb-5 p-4 bg-[#FEECEC] border border-[#C13030]/20 rounded-xl text-[14px] text-[#C13030]"
+                                className="mb-5 p-4 bg-danger-bg border border-danger/20 rounded-xl text-[14px] text-danger"
                             >
                                 {serverError}
                             </div>
@@ -105,16 +105,16 @@ export default function ForgotPasswordPage() {
                                 type="submit"
                                 disabled={formik.isSubmitting}
                                 loading={formik.isSubmitting}
-                                className="w-full h-[52px] mt-2 text-[15px] font-semibold rounded-xl bg-[#E8472A] hover:bg-[#C43A20] text-white border-transparent"
+                                className="w-full h-[52px] mt-2 text-[15px] font-semibold rounded-xl"
                             >
                                 {t("auth.forgot_password_btn")}
                             </Button>
                         </form>
 
-                        <p className="text-center text-[14px] text-[#717171] mt-6 pb-1">
+                        <p className="text-center text-[14px] text-neutral-500 mt-6 pb-1">
                             <Link
                                 href="/auth/login"
-                                className="text-[#E8472A] font-semibold underline underline-offset-2 hover:text-[#C43A20] transition-colors"
+                                className="text-primary font-semibold underline underline-offset-2 hover:text-primary-dark transition-colors"
                             >
                                 {t("auth.back_to_login")}
                             </Link>

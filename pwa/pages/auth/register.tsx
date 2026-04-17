@@ -13,7 +13,7 @@ import { Button } from "../../components/ui/button";
 import { FloatingInput } from "../../components/ui/floating-input";
 import { AuthCard } from "../../components/auth/AuthCard";
 import { cn } from "@/lib/utils";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, CheckCircle2, Circle } from "lucide-react";
 
 // ── Google logo ──────────────────────────────────────────────────────────────
 function GoogleIcon() {
@@ -31,9 +31,9 @@ function GoogleIcon() {
 function OrDivider({ label }: { label: string }) {
     return (
         <div className="relative flex items-center my-5" role="separator" aria-label={label}>
-            <div className="flex-1 h-px bg-[#DDDDDD]" />
-            <span className="mx-4 text-[13px] font-medium text-[#717171] select-none">{label}</span>
-            <div className="flex-1 h-px bg-[#DDDDDD]" />
+            <div className="flex-1 h-px bg-neutral-200" />
+            <span className="mx-4 text-[13px] font-bold text-neutral-500 uppercase tracking-wider select-none">{label}</span>
+            <div className="flex-1 h-px bg-neutral-200" />
         </div>
     );
 }
@@ -115,10 +115,10 @@ export default function RegisterPage() {
                             type="button"
                             onClick={() => handleTypeSwitch(type)}
                             className={cn(
-                                "flex-1 h-[44px] rounded-full text-[14px] font-medium border transition-all",
+                                "flex-1 h-[44px] rounded-full text-[14px] font-bold border transition-all duration-200",
                                 userType === type
-                                    ? "bg-[#E8472A] text-white border-[#E8472A]"
-                                    : "bg-white text-[#717171] border-[#DDDDDD] hover:border-[#E8472A] hover:text-[#E8472A]",
+                                    ? "bg-primary text-white border-primary shadow-sm"
+                                    : "bg-white text-neutral-500 border-neutral-200 hover:border-primary hover:text-primary",
                             )}
                         >
                             {type === "couple"
@@ -138,18 +138,13 @@ export default function RegisterPage() {
                 )}
 
                 {/* Google OAuth */}
-                <a
-                    href="/auth/google"
-                    className={cn(
-                        "w-full flex items-center justify-center gap-3 h-[52px]",
-                        "border border-[#DDDDDD] rounded-xl bg-white",
-                        "text-[15px] font-medium text-[#1A1A1A]",
-                        "hover:bg-[#F7F7F7] hover:border-[#B0B0B0] transition-colors",
-                    )}
+                <AuthCard.SocialButton
+                    href="/api/auth/google"
+                    onClick={() => {}}
                 >
                     <GoogleIcon />
                     {t("auth.continue_with_google")}
-                </a>
+                </AuthCard.SocialButton>
 
                 <OrDivider label={t("auth.or")} />
 
@@ -219,9 +214,48 @@ export default function RegisterPage() {
                             </button>
                         }
                     />
-                    <p className="text-[12px] text-[#717171] ps-1">
-                        {t("auth.password_hint")}
-                    </p>
+                    <div className="space-y-2.5 pb-2">
+                        <p className="text-[12px] font-bold text-neutral-900 ps-1 uppercase tracking-wider">
+                            {t("auth.password_requirements")}
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 ps-1">
+                            {[
+                                { 
+                                    label: t("auth.req_min_chars"), 
+                                    met: formik.values.password.length >= 8 
+                                },
+                                { 
+                                    label: t("auth.req_number"), 
+                                    met: /[0-9]/.test(formik.values.password) 
+                                },
+                                { 
+                                    label: t("auth.req_uppercase"), 
+                                    met: /[A-Z]/.test(formik.values.password) 
+                                },
+                                { 
+                                    label: t("auth.req_special"), 
+                                    met: /[^A-Za-z0-9]/.test(formik.values.password) 
+                                }
+                            ].map((req, i) => (
+                                <div 
+                                    key={i} 
+                                    className={cn(
+                                        "flex items-center gap-2 text-[12px] transition-colors duration-300",
+                                        req.met ? "text-green-600" : "text-neutral-400"
+                                    )}
+                                >
+                                    {req.met ? (
+                                        <CheckCircle2 className="w-3.5 h-3.5" />
+                                    ) : (
+                                        <Circle className="w-3.5 h-3.5" />
+                                    )}
+                                    <span className={cn(req.met ? "font-bold" : "font-medium")}>
+                                        {req.label}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
 
                     {userType === "vendor" && (
                         <div className="p-3.5 bg-[#FEF0ED] border border-[#E8472A]/20 rounded-xl text-[13px] text-[#484848]">
@@ -242,8 +276,9 @@ export default function RegisterPage() {
 
                     <Button
                         type="submit"
+                        disabled={formik.isSubmitting}
                         loading={formik.isSubmitting}
-                        className="w-full h-[52px] text-[15px] font-semibold rounded-xl bg-[#E8472A] hover:bg-[#C43A20] text-white border-transparent"
+                        className="w-full h-[52px] mt-2 text-[15px] font-semibold rounded-xl"
                     >
                         {t("auth.create_acc_btn")}
                     </Button>

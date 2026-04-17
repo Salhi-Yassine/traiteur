@@ -8,11 +8,13 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\GuestRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -20,6 +22,23 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),
         new Get(security: "is_granted('ROLE_ADMIN') or object.getWeddingProfile().getUser() == user"),
+        new Get(
+            uriTemplate: '/public/guests/{guestToken}',
+            uriVariables: [
+                'guestToken' => new Link(fromClass: Guest::class, identifiers: ['guestToken'])
+            ],
+            requirements: ['guestToken' => '[a-zA-Z0-9]{16,64}'],
+            normalizationContext: ['groups' => ['guest:public:read']]
+        ),
+        new Patch(
+            uriTemplate: '/public/guests/{guestToken}',
+            uriVariables: [
+                'guestToken' => new Link(fromClass: Guest::class, identifiers: ['guestToken'])
+            ],
+            requirements: ['guestToken' => '[a-zA-Z0-9]{16,64}'],
+            normalizationContext: ['groups' => ['guest:public:read']],
+            denormalizationContext: ['groups' => ['guest:public:write']]
+        ),
         new Post(security: "is_granted('ROLE_USER')"),
         new Patch(security: "is_granted('ROLE_ADMIN') or object.getWeddingProfile().getUser() == user"),
         new Delete(security: "is_granted('ROLE_ADMIN') or object.getWeddingProfile().getUser() == user"),
@@ -27,8 +46,10 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['guest:read']],
     denormalizationContext: ['groups' => ['guest:write']],
 )]
-#[ApiFilter(SearchFilter::class, properties: ['weddingProfile' => 'exact', 'rsvpStatus' => 'exact'])]
+#[UniqueEntity(fields: ['guestToken'])]
 #[ORM\Entity(repositoryClass: GuestRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ApiFilter(SearchFilter::class, properties: ['weddingProfile' => 'exact', 'rsvpStatus' => 'exact'])]
 class Guest
 {
     public const RSVP_PENDING = 'pending';
@@ -45,6 +66,10 @@ class Guest
     #[Groups(['guest:read'])]
     private ?int $id = null;
 
+    #[ORM\Column(length: 64, unique: true)]
+    #[Groups(['guest:read', 'guest:public:read'])]
+    private ?string $guestToken = null;
+
     #[ORM\ManyToOne(inversedBy: 'guests', targetEntity: WeddingProfile::class)]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['guest:read', 'guest:write'])]
@@ -52,7 +77,7 @@ class Guest
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['guest:read', 'guest:write'])]
+    #[Groups(['guest:read', 'guest:write', 'guest:public:read'])]
     private string $fullName = '';
 
     #[ORM\Column(length: 30, nullable: true)]
@@ -79,12 +104,12 @@ class Guest
 
     #[ORM\Column(length: 15)]
     #[Assert\Choice(choices: [self::RSVP_PENDING, self::RSVP_CONFIRMED, self::RSVP_DECLINED])]
-    #[Groups(['guest:read', 'guest:write'])]
+    #[Groups(['guest:read', 'guest:write', 'guest:public:read', 'guest:public:write'])]
     private string $rsvpStatus = self::RSVP_PENDING;
 
     #[ORM\Column(length: 20, nullable: true)]
     #[Assert\Choice(choices: [self::MEAL_STANDARD, self::MEAL_VEGETARIAN, self::MEAL_CHILDREN])]
-    #[Groups(['guest:read', 'guest:write'])]
+    #[Groups(['guest:read', 'guest:write', 'guest:public:read', 'guest:public:write'])]
     private ?string $mealPreference = null;
 
     #[ORM\Column(nullable: true)]
@@ -96,7 +121,7 @@ class Guest
     private bool $invitationSent = false;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    #[Groups(['guest:read', 'guest:write'])]
+    #[Groups(['guest:read', 'guest:write', 'guest:public:read', 'guest:public:write'])]
     private ?string $notes = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -251,6 +276,25 @@ class Guest
         $this->notes = $notes;
 
         return $this;
+    }
+
+    public function getGuestToken(): ?string
+    {
+        return $this->guestToken;
+    }
+
+    public function setGuestToken(string $guestToken): static
+    {
+        $this->guestToken = $guestToken;
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function generateGuestToken(): void
+    {
+        if ($this->guestToken === null) {
+            $this->guestToken = bin2hex(random_bytes(16));
+        }
     }
 
     public function getCreatedAt(): \DateTimeImmutable

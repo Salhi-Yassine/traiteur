@@ -29,9 +29,9 @@ function GoogleIcon() {
 function OrDivider({ label }: { label: string }) {
     return (
         <div className="relative flex items-center my-5" role="separator" aria-label={label}>
-            <div className="flex-1 h-px bg-[#DDDDDD]" />
-            <span className="mx-4 text-[13px] font-medium text-[#717171] select-none">{label}</span>
-            <div className="flex-1 h-px bg-[#DDDDDD]" />
+            <div className="flex-1 h-px bg-neutral-200" />
+            <span className="mx-4 text-[13px] font-bold text-neutral-500 uppercase tracking-wider select-none">{label}</span>
+            <div className="flex-1 h-px bg-neutral-200" />
         </div>
     );
 }
@@ -57,7 +57,7 @@ export default function LoginPage() {
             setServerError(null);
             try {
                 await login({ email: values.email, password: values.password });
-            } catch (err: unknown) {
+            } catch (err: any) {
                 const msg = err instanceof Error ? err.message : null;
                 setServerError(msg || t("auth.login_error"));
                 helpers.setErrors({ email: " " });
@@ -89,18 +89,13 @@ export default function LoginPage() {
                 )}
 
                 {/* Google OAuth */}
-                <a
-                    href="/auth/google"
-                    className={cn(
-                        "w-full flex items-center justify-center gap-3 h-[52px]",
-                        "border border-[#DDDDDD] rounded-xl bg-white",
-                        "text-[15px] font-medium text-[#1A1A1A]",
-                        "hover:bg-[#F7F7F7] hover:border-[#B0B0B0] transition-colors",
-                    )}
+                <AuthCard.SocialButton
+                    href="/api/auth/google"
+                    onClick={() => {}}
                 >
                     <GoogleIcon />
                     {t("auth.continue_with_google")}
-                </a>
+                </AuthCard.SocialButton>
 
                 <OrDivider label={t("auth.or")} />
 
@@ -157,7 +152,7 @@ export default function LoginPage() {
                         type="submit"
                         disabled={formik.isSubmitting}
                         loading={formik.isSubmitting}
-                        className="w-full h-[52px] mt-2 text-[15px] font-semibold rounded-xl bg-[#E8472A] hover:bg-[#C43A20] text-white border-transparent"
+                        className="w-full h-[52px] mt-2 text-[15px] font-semibold rounded-xl"
                     >
                         {t("auth.login_btn")}
                     </Button>

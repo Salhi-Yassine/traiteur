@@ -57,7 +57,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setAuthToken(data.token);
             const userData = await fetchApi("/api/me");
             setUser(userData);
-            router.push("/");
+            
+            // Smarter redirection based on user type
+            if (userData.userType === "couple") {
+                router.push("/mariage");
+            } else if (userData.userType === "vendor") {
+                router.push("/onboarding");
+            } else {
+                router.push("/");
+            }
         }
     };
 
@@ -66,7 +74,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setAuthToken(token);
         const userData = await fetchApi("/api/me");
         setUser(userData);
-        router.push("/");
+        
+        if (userData.userType === "couple") {
+            router.push("/mariage");
+        } else if (userData.userType === "vendor") {
+            router.push("/onboarding");
+        } else {
+            router.push("/");
+        }
     };
 
     const register = async (userData: any) => {

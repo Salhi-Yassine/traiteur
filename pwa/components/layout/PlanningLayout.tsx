@@ -46,10 +46,10 @@ export default function PlanningLayout({ children, title, description }: Plannin
         }
     }, [user, isLoading, router]);
 
-    if (isLoading || !user) return <div className="min-h-screen bg-[var(--color-background)]" />;
+    if (isLoading || !user) return <div className="min-h-screen bg-neutral-100" />;
 
     return (
-        <div className="bg-[var(--color-background)] min-h-screen pb-20">
+        <div className="bg-neutral-100 min-h-screen pb-20">
             <Navbar />
             
             <div className="pt-24 lg:pt-32">
@@ -59,10 +59,10 @@ export default function PlanningLayout({ children, title, description }: Plannin
                         <aside className="lg:w-72 shrink-0">
                             <div className="sticky top-32 space-y-2">
                                 <div className="px-6 py-4 mb-4">
-                                    <h2 className="font-display font-black text-2xl text-[var(--color-primary)]">
+                                    <h2 className="font-display font-black text-2xl text-neutral-900">
                                         {t("nav.my_wedding")}
                                     </h2>
-                                    <p className="text-[var(--color-charcoal-400)] text-xs font-bold uppercase tracking-widest mt-1">
+                                    <p className="text-neutral-500 text-xs font-bold uppercase tracking-widest mt-1">
                                         {t("nav.mgmt_desc")}
                                     </p>
                                 </div>
@@ -75,8 +75,8 @@ export default function PlanningLayout({ children, title, description }: Plannin
                                                 href={link.href}
                                                 className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all group ${
                                                     isActive 
-                                                    ? "bg-[var(--color-primary)] text-white shadow-xl shadow-[var(--color-primary)]/20" 
-                                                    : "text-[var(--color-charcoal-600)] hover:bg-white hover:text-[var(--color-primary)] hover:translate-x-1"
+                                                    ? "bg-neutral-900 text-white shadow-3" 
+                                                    : "text-neutral-700 hover:bg-white hover:text-neutral-900 hover:translate-x-1"
                                                 }`}
                                             >
                                                 <div className={`${isActive ? "text-[var(--color-accent)]" : "text-[var(--color-charcoal-400)] group-hover:text-[var(--color-accent)]"}`}>
@@ -89,13 +89,13 @@ export default function PlanningLayout({ children, title, description }: Plannin
                                 </nav>
 
                                 {/* Quick tips / Decoration Card */}
-                                <div className="mt-12 p-8 rounded-[2.5rem] bg-[var(--color-primary)] text-white relative overflow-hidden group border border-[var(--color-accent)]/10">
-                                    <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-accent)]/10 rounded-full -mr-12 -mt-12 blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                                <div className="mt-12 p-8 rounded-xl bg-primary text-white relative overflow-hidden group shadow-3">
+                                    <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 blur-2xl group-hover:scale-150 transition-transform duration-700" />
                                     <h4 className="font-display font-bold text-xl mb-3 relative z-10">{t("nav.need_help")}</h4>
-                                    <p className="text-white/70 text-sm leading-relaxed mb-6 font-medium relative z-10">
+                                    <p className="text-white/80 text-sm leading-relaxed mb-6 font-medium relative z-10">
                                         {t("nav.help_desc")}
                                     </p>
-                                    <Link href="/vendors" className="relative z-10 text-[var(--color-accent)] font-black text-xs uppercase tracking-widest hover:underline">
+                                    <Link href="/vendors" className="relative z-10 text-white font-black text-xs uppercase tracking-widest hover:underline">
                                         {t("nav.see_experts")} →
                                     </Link>
                                 </div>
@@ -107,11 +107,11 @@ export default function PlanningLayout({ children, title, description }: Plannin
                             {/* Content Header */}
                             <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
                                 <div>
-                                    <div className="w-12 h-1.5 bg-[var(--color-accent)] rounded-full mb-6" />
-                                    <h1 className="font-display text-4xl md:text-5xl font-black text-[var(--color-primary)] leading-tight mb-2">
+                                    <div className="w-12 h-1.5 bg-primary rounded-full mb-6" />
+                                    <h1 className="font-display text-4xl md:text-5xl font-black text-neutral-900 leading-tight mb-2">
                                         {title}
                                     </h1>
-                                    <p className="text-[var(--color-charcoal-500)] text-lg font-medium leading-relaxed max-w-xl">
+                                    <p className="text-neutral-500 text-lg font-medium leading-relaxed max-w-xl">
                                         {description}
                                     </p>
                                 </div>
