@@ -20,13 +20,13 @@ interface RequestOptions extends RequestInit {
 }
 
 export class ApiError extends Error {
-    constructor(public message: string, public data: any) {
+    constructor(public message: string, public data: Record<string, unknown>) {
         super(message);
         this.name = "ApiError";
     }
 }
 
-export const fetchApi = async (path: string, options: RequestOptions = {}) => {
+export const fetchApi = async <T = unknown>(path: string, options: RequestOptions = {}): Promise<T> => {
     const token = getAuthToken();
     const { locale = "fr", ...restOptions } = options;
     const headers = new Headers(restOptions.headers || {});
@@ -73,18 +73,20 @@ export const fetchApi = async (path: string, options: RequestOptions = {}) => {
         throw new ApiError(errorMessage, errorData);
     }
 
-    if (response.status === 204) return null;
+    if (response.status === 204) return null as T;
 
-    return response.json();
+    return response.json() as Promise<T>;
 };
 
 const apiClient = {
-    get: (path: string, options: RequestOptions = {}) => fetchApi(path, { ...options, method: "GET" }),
-    post: (path: string, data: any, options: RequestOptions = {}) =>
-        fetchApi(path, { ...options, method: "POST", body: JSON.stringify(data) }),
-    patch: (path: string, data: any, options: RequestOptions = {}) =>
-        fetchApi(path, { ...options, method: "PATCH", body: JSON.stringify(data) }),
-    delete: (path: string, options: RequestOptions = {}) => fetchApi(path, { ...options, method: "DELETE" }),
+    get: <T = unknown>(path: string, options: RequestOptions = {}) =>
+        fetchApi<T>(path, { ...options, method: "GET" }),
+    post: <T = unknown>(path: string, data: unknown, options: RequestOptions = {}) =>
+        fetchApi<T>(path, { ...options, method: "POST", body: JSON.stringify(data) }),
+    patch: <T = unknown>(path: string, data: unknown, options: RequestOptions = {}) =>
+        fetchApi<T>(path, { ...options, method: "PATCH", body: JSON.stringify(data) }),
+    delete: <T = unknown>(path: string, options: RequestOptions = {}) =>
+        fetchApi<T>(path, { ...options, method: "DELETE" }),
 };
 
 export default apiClient;

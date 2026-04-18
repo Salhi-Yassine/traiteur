@@ -4,6 +4,26 @@
 
 ---
 
+## 2026-04-18
+
+### Structural review & refactor — full audit pass (Closes #42)
+- [2026-04-18] `pwa/types/api.ts` — synced all interfaces with actual Doctrine entities: fixed `VendorProfile` (coverImageUrl, whatsapp, cities, priceRange, galleryImages, tags, etc.), `Review` (body, title, author), `AppStats` (matches AppStatsProvider output), removed phantom fields (status, facebookUrl, coverPhotoUrl, priceRangeMin/Max)
+- [2026-04-18] `pwa/utils/apiClient.ts` — added generics to `fetchApi<T>`, `get<T>`, `post<T>`, `patch<T>`, `delete<T>`; `ApiError.data` typed as `Record<string, unknown>` instead of `any`
+- [2026-04-18] `pwa/context/AuthContext.tsx` — replaced `any` on `login`/`register` with `LoginCredentials`/`RegisterPayload` imported from `types/api`
+- [2026-04-18] `pwa/components/ui/alert.tsx` — RTL: `[&>svg]:left-4` → `start-4`, `[&>svg~*]:pl-7` → `ps-7`
+- [2026-04-18] `pwa/components/layout/Navbar.tsx` — RTL: `right-0` → `end-0` on mobile drawer; i18n: replaced all hardcoded French strings (Ouvrir le menu, Fermer le menu, Navigation principale, Navigation mobile, Langue, Connecté en tant que) with `t()` calls
+- [2026-04-18] All 4 locale files (fr/en/ar/ary) — added `nav.open_menu`, `nav.close_menu`, `nav.main_nav`, `nav.mobile_nav`, `nav.drawer`, `nav.language`, `nav.connected_as` keys
+- [2026-04-18] `api/src/Entity/Review.php` — added ORM indexes on `vendor_profile_id` and `author_id` foreign key columns
+- [2026-04-18] `api/src/Entity/VendorProfile.php` — added ORM indexes on `category_id` and `owner_id` foreign key columns
+- [2026-04-18] `api/src/Repository/CategoryRepository.php` — created with `findAllWithVendorCounts()`: single DQL query returning translated category names + vendor counts (replaces 2 separate queries)
+- [2026-04-18] `api/src/Entity/Category.php` — wired to `CategoryRepository`
+- [2026-04-18] `api/src/State/AppStatsProvider.php` — removed `EntityManagerInterface`, injected typed repositories (`VendorProfileRepository`, `ReviewRepository`, `CityRepository`, `CategoryRepository`); categories now fetched via single `findAllWithVendorCounts()` call
+- [2026-04-18] `api/src/Repository/VendorProfileRepository.php` — `findFeatured()` now eager-joins category + cities (eliminates N+1); added `findByCategory()` query method; TranslationWalker hint moved inside the repository
+- [2026-04-18] `api/src/State/ReviewProcessor.php` — new API Platform processor; auto-sets authenticated user as `author` on POST, preventing spoofing; wired to `Review::Post` via `processor: ReviewProcessor::class`
+- [2026-04-18] DB migration executed: 4 new indexes on `review` and `vendor_profile` tables
+
+---
+
 ## 2026-04-17
 
 ### User onboarding UX — all 3 user types (Airbnb-like flow)

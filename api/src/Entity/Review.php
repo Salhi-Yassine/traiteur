@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Repository\ReviewRepository;
+use App\State\ReviewProcessor;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -19,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new GetCollection(),
         new Get(),
-        new Post(security: "is_granted('ROLE_USER')"),
+        new Post(security: "is_granted('ROLE_USER')", processor: ReviewProcessor::class),
         new Delete(security: "is_granted('ROLE_ADMIN') or object.getAuthor() == user"),
     ],
     normalizationContext: ['groups' => ['review:read']],
@@ -28,6 +29,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ApiFilter(SearchFilter::class, properties: ['vendorProfile' => 'exact'])]
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
+#[ORM\Index(columns: ['vendor_profile_id'], name: 'idx_review_vendor_profile')]
+#[ORM\Index(columns: ['author_id'], name: 'idx_review_author')]
 class Review
 {
     #[ORM\Id]

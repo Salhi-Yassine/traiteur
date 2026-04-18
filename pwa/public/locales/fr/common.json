@@ -18,7 +18,14 @@
     "share": "Partager",
     "need_help": "Besoin d'aide ?",
     "help_desc": "Nos experts sont là pour vous accompagner dans chaque étape.",
-    "see_experts": "Voir les experts"
+    "see_experts": "Voir les experts",
+    "open_menu": "Ouvrir le menu",
+    "close_menu": "Fermer le menu",
+    "main_nav": "Navigation principale",
+    "mobile_nav": "Navigation mobile",
+    "drawer": "Menu navigation",
+    "language": "Langue",
+    "connected_as": "Connecté en tant que"
   },
   "auth": {
     "planning_wedding": "Je planifie mon mariage",

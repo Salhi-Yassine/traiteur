@@ -5,16 +5,20 @@ namespace App\State;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Entity\AppStats;
-use App\Entity\Category;
 use App\Entity\City;
-use App\Entity\Review;
 use App\Entity\VendorProfile;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\CategoryRepository;
+use App\Repository\CityRepository;
+use App\Repository\ReviewRepository;
+use App\Repository\VendorProfileRepository;
 
 class AppStatsProvider implements ProviderInterface
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
+        private VendorProfileRepository $vendorProfileRepository,
+        private ReviewRepository $reviewRepository,
+        private CityRepository $cityRepository,
+        private CategoryRepository $categoryRepository,
         private \Gedmo\Translatable\TranslatableListener $translatableListener,
     ) {
     }
@@ -23,15 +27,9 @@ class AppStatsProvider implements ProviderInterface
     {
         $stats = new AppStats();
 
-        $vendorRepo = $this->entityManager->getRepository(VendorProfile::class);
-        $reviewRepo = $this->entityManager->getRepository(Review::class);
+        $stats->vendorCount = $this->vendorProfileRepository->count(['isVerified' => true]);
 
-        // Basic counts
-        $stats->vendorCount = $vendorRepo->count(['isVerified' => true]);
-
-        // Cities (only those with verified vendors)
-        $cityRepo = $this->entityManager->getRepository(City::class);
-        $cities = $cityRepo->createQueryBuilder('c')
+        $cities = $this->cityRepository->createQueryBuilder('c')
             ->getQuery()
             ->setHint(\Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER, 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker')
             ->getResult();
@@ -42,8 +40,7 @@ class AppStatsProvider implements ProviderInterface
         ], $cities);
         $stats->cityCount = count($stats->availableCities);
 
-        // Ratings & Reviews directly from Review entity
-        $reviewStats = $reviewRepo->createQueryBuilder('r')
+        $reviewStats = $this->reviewRepository->createQueryBuilder('r')
             ->select('COUNT(r.id) as count, AVG(r.rating) as avg')
             ->getQuery()
             ->getOneOrNullResult();
@@ -51,48 +48,10 @@ class AppStatsProvider implements ProviderInterface
         $stats->reviewCount = (int) ($reviewStats['count'] ?? 0);
         $stats->averageRating = round((float) ($reviewStats['avg'] ?? 0.0), 1);
 
-        // Categories with vendor counts (single query, no N+1)
-        $categoryRepo = $this->entityManager->getRepository(Category::class);
+        // Single query: categories with translated names + vendor counts
+        $stats->availableCategories = $this->categoryRepository->findAllWithVendorCounts();
 
-        $availableCategoriesRaw = $categoryRepo->createQueryBuilder('cat')
-            ->getQuery()
-            ->setHint(\Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER, 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker')
-            ->getResult();
-
-        $categoryCountsRaw = $categoryRepo->createQueryBuilder('cat')
-            ->select('cat.id, COUNT(vp.id) as vendorCount')
-            ->leftJoin('cat.vendorProfiles', 'vp')
-            ->groupBy('cat.id')
-            ->getQuery()
-            ->getArrayResult();
-
-        $countsByCatId = [];
-        foreach ($categoryCountsRaw as $row) {
-            $countsByCatId[$row['id']] = (int) $row['vendorCount'];
-        }
-
-        $stats->availableCategories = array_map(function (Category $cat) use ($countsByCatId) {
-            return [
-                'name' => $cat->getName(),
-                'slug' => $cat->getSlug(),
-                'emoji' => $cat->getEmoji(),
-                'vendorCount' => $countsByCatId[$cat->getId()] ?? 0,
-            ];
-        }, $availableCategoriesRaw);
-
-        // Featured vendors
-        $featuredVendorsRaw = $vendorRepo->createQueryBuilder('v')
-            ->leftJoin('v.category', 'cat')
-            ->addSelect('cat')
-            ->where('v.isFeatured = :isFeatured')
-            ->andWhere('v.isVerified = :isVerified')
-            ->setParameter('isFeatured', true)
-            ->setParameter('isVerified', true)
-            ->setMaxResults(6)
-            ->orderBy('v.averageRating', 'DESC')
-            ->getQuery()
-            ->setHint(\Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER, 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker')
-            ->getResult();
+        $featuredVendorsRaw = $this->vendorProfileRepository->findFeatured();
 
         $stats->featuredVendors = array_map(function (VendorProfile $v) {
             $cat = $v->getCategory();

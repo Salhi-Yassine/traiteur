@@ -39,6 +39,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(OrderFilter::class, properties: ['averageRating', 'reviewCount', 'priceRange', 'createdAt'], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(RangeFilter::class, properties: ['averageRating'])]
 #[ORM\Entity(repositoryClass: VendorProfileRepository::class)]
+#[ORM\Index(columns: ['category_id'], name: 'idx_vendor_profile_category')]
+#[ORM\Index(columns: ['owner_id'], name: 'idx_vendor_profile_owner')]
 #[UniqueEntity(fields: ['slug'], message: 'This slug is already taken')]
 #[Gedmo\TranslationEntity(class: Translation::class)]
 class VendorProfile implements Translatable

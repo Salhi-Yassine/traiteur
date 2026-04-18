@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { fetchApi, setAuthToken, removeAuthToken, getAuthToken } from "../utils/apiClient";
+import type { LoginCredentials, RegisterPayload } from "../types/api";
 import { useRouter } from "next/router";
 import type { NextRouter } from "next/router";
 
@@ -18,9 +19,9 @@ interface User {
 interface AuthContextType {
     user: User | null;
     isLoading: boolean;
-    login: (credentials: any) => Promise<void>;
+    login: (credentials: LoginCredentials) => Promise<void>;
     loginWithToken: (token: string) => Promise<void>;
-    register: (data: any) => Promise<void>;
+    register: (data: RegisterPayload) => Promise<void>;
     logout: () => void;
     refreshUser: () => Promise<void>;
 }
@@ -64,7 +65,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         initAuth();
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const login = async (credentials: any) => {
+    const login = async (credentials: LoginCredentials) => {
         const data = await fetchApi("/auth", {
             method: "POST",
             jsonld: false,
@@ -87,7 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         redirectAfterAuth(userData, router);
     };
 
-    const register = async (userData: any) => {
+    const register = async (userData: RegisterPayload) => {
         await fetchApi("/api/users", {
             method: "POST",
             body: JSON.stringify(userData),

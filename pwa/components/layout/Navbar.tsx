@@ -66,7 +66,7 @@ export default function Navbar() {
                         </Link>
 
                         {/* ── Desktop Nav ── */}
-                        <nav className="hidden lg:flex items-center gap-8" aria-label="Navigation principale">
+                        <nav className="hidden lg:flex items-center gap-8" aria-label={t('nav.main_nav')}>
                             {NAV_ITEM_KEYS.map((item) => (
                                 <Link
                                     key={item.href}
@@ -136,7 +136,7 @@ export default function Navbar() {
                                     : "text-white hover:bg-white/10"
                             )}
                             onClick={() => setMobileOpen(true)}
-                            aria-label="Ouvrir le menu"
+                            aria-label={t('nav.open_menu')}
                             aria-expanded={mobileOpen}
                             aria-controls="mobile-drawer"
                         >
@@ -164,8 +164,9 @@ export default function Navbar() {
                 role="dialog"
                 aria-label="Menu navigation"
                 aria-modal="true"
+                aria-label={t('nav.drawer')}
                 className={cn(
-                    "fixed top-0 right-0 bottom-0 z-[70] w-[300px] bg-white shadow-[0_8px_28px_rgba(0,0,0,0.12)] flex flex-col lg:hidden transition-transform duration-300 ease-out",
+                    "fixed top-0 end-0 bottom-0 z-[70] w-[300px] bg-white shadow-[0_8px_28px_rgba(0,0,0,0.12)] flex flex-col lg:hidden transition-transform duration-300 ease-out",
                     mobileOpen ? "translate-x-0" : "translate-x-full"
                 )}
             >
@@ -177,7 +178,7 @@ export default function Navbar() {
                     <button
                         className="p-2 rounded-lg hover:bg-[#F7F7F7] transition-colors"
                         onClick={() => setMobileOpen(false)}
-                        aria-label="Fermer le menu"
+                        aria-label={t('nav.close_menu')}
                     >
                         <svg className="w-5 h-5 text-[#484848]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -186,7 +187,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Nav links */}
-                <nav className="flex flex-col p-4 gap-1" aria-label="Navigation mobile">
+                <nav className="flex flex-col p-4 gap-1" aria-label={t('nav.mobile_nav')}>
                     {NAV_ITEM_KEYS.map((item) => (
                         <Link
                             key={item.href}
@@ -203,7 +204,7 @@ export default function Navbar() {
 
                 {/* Language Switcher Mobile */}
                 <div className="px-4 py-4">
-                    <p className="text-[11px] font-bold text-neutral-400 uppercase tracking-widest px-2 mb-2">Langue</p>
+                    <p className="text-[11px] font-bold text-neutral-400 uppercase tracking-widest px-2 mb-2">{t('nav.language')}</p>
                     <LanguageSwitcher mobile />
                 </div>
 
@@ -212,7 +213,7 @@ export default function Navbar() {
                     {user ? (
                         <>
                             <p className="text-[13px] text-[#717171] px-2 mb-3">
-                                Connecté en tant que <strong className="text-[#1A1A1A]">{user.firstName}</strong>
+                                {t('nav.connected_as')} <strong className="text-[#1A1A1A]">{user.firstName}</strong>
                             </p>
                             <Button
                                 variant="ghost"

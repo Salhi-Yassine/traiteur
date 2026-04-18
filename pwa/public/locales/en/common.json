@@ -18,7 +18,14 @@
     "share": "Share",
     "need_help": "Need help?",
     "help_desc": "Our experts are here to guide you through every step.",
-    "see_experts": "See experts"
+    "see_experts": "See experts",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu",
+    "main_nav": "Main navigation",
+    "mobile_nav": "Mobile navigation",
+    "drawer": "Navigation menu",
+    "language": "Language",
+    "connected_as": "Signed in as"
   },
   "auth": {
     "planning_wedding": "I'm planning my wedding",

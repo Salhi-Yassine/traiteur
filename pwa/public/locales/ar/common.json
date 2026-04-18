@@ -18,7 +18,14 @@
     "share": "مشاركة",
     "need_help": "محتاج مساعدة؟",
     "help_desc": "الخبراء ديالنا هنا لمرافقتك في كل خطوة.",
-    "see_experts": "شوف الخبراء"
+    "see_experts": "شوف الخبراء",
+    "open_menu": "فتح القائمة",
+    "close_menu": "إغلاق القائمة",
+    "main_nav": "التنقل الرئيسي",
+    "mobile_nav": "تنقل الجوال",
+    "drawer": "قائمة التنقل",
+    "language": "اللغة",
+    "connected_as": "متصل كـ"
   },
   "auth": {
     "planning_wedding": "أخطط لزفافي",

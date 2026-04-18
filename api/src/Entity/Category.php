@@ -27,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['category:read']],
     denormalizationContext: ['groups' => ['category:write']],
 )]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \App\Repository\CategoryRepository::class)]
 #[Gedmo\TranslationEntity(class: Translation::class)]
 class Category implements Translatable
 {

@@ -56,31 +56,35 @@ export interface City extends HydraResource {
   updatedAt?: string;
 }
 
+/** Price range constants matching VendorProfile::PRICE_* */
+export type PriceRange = 'MAD' | 'MADMAD' | 'MADMADMAD' | 'MADMADMAD+';
+
 export interface VendorProfile extends HydraResource {
   '@type': 'VendorProfile';
   businessName: string;
   slug: string;
   tagline?: string;
-  description?: string;
+  description: string;
   category?: Category;
-  city?: City;
-  citiesServed?: City[];
-  priceRangeMin?: number;
-  priceRangeMax?: number;
+  /** Cities where vendor operates */
+  cities: City[];
+  priceRange: PriceRange;
+  startingPrice?: number;
+  coverImageUrl?: string;
+  galleryImages: string[];
+  tags: string[];
+  languagesSpoken: string[];
+  whatsapp: string;
+  website?: string;
+  instagram?: string;
+  minGuests?: string;
+  maxGuests?: string;
   averageRating?: string; // Doctrine decimal → string
-  reviewCount?: number;
-  isVerified?: boolean;
-  isFeatured?: boolean;
-  whatsappNumber?: string;
-  instagramUrl?: string;
-  facebookUrl?: string;
-  coverPhotoUrl?: string;
-  galleryPhotos?: string[];
-  amenities?: string[];
-  status: 'pending' | 'approved' | 'rejected';
-  subscriptionTier?: 'free' | 'premium' | 'featured';
+  reviewCount: number;
+  isVerified: boolean;
+  isFeatured: boolean;
+  subscriptionTier: 'free' | 'premium' | 'featured';
   owner?: string; // IRI reference to User
-  reviews?: Review[];
   menuItems?: MenuItem[];
   createdAt: string;
   updatedAt?: string;
@@ -88,9 +92,10 @@ export interface VendorProfile extends HydraResource {
 
 export interface Review extends HydraResource {
   '@type': 'Review';
-  rating: number; // 1-5
-  comment?: string;
-  authorName?: string;
+  rating: number; // 1–5
+  title?: string;
+  body: string;
+  author?: Pick<User, '@id' | 'id' | 'firstName' | 'lastName'>;
   vendorProfile?: string; // IRI reference
   createdAt: string;
   updatedAt?: string;
@@ -112,6 +117,8 @@ export interface User extends HydraResource {
   lastName: string;
   roles: string[];
   userType: 'couple' | 'vendor' | 'admin';
+  vendorProfile?: Pick<VendorProfile, '@id' | 'id' | 'slug'> | null;
+  weddingProfile?: Pick<WeddingProfile, '@id' | 'id'> | null;
   createdAt: string;
 }
 
@@ -119,7 +126,7 @@ export interface WeddingProfile extends HydraResource {
   '@type': 'WeddingProfile';
   weddingDate?: string;
   totalBudget?: number;
-  owner?: string; // IRI reference to User
+  user?: string; // IRI reference to User
   budgetItems?: BudgetItem[];
   guests?: Guest[];
   checklistTasks?: ChecklistTask[];
@@ -183,17 +190,32 @@ export interface QuoteRequest extends HydraResource {
   updatedAt?: string;
 }
 
-export interface AppStats extends HydraResource {
-  '@type': 'AppStats';
-  totalVendors: number;
-  totalCities: number;
-  verifiedVendors: number;
-  averageRating: string;
-  categories?: Array<{
+export interface AppStats {
+  vendorCount: number;
+  cityCount: number;
+  reviewCount: number;
+  averageRating: number;
+  availableCities: Array<{ name: string; slug: string }>;
+  availableCategories: Array<{
     name: string;
     slug: string;
     emoji?: string;
     vendorCount: number;
+  }>;
+  featuredVendors: Array<{
+    id: number;
+    slug: string;
+    businessName: string;
+    tagline?: string;
+    serviceArea: string;
+    cities: Array<{ name: string; slug: string }>;
+    priceRange: PriceRange;
+    startingPrice?: number;
+    coverImageUrl?: string;
+    averageRating?: number;
+    reviewCount: number;
+    isVerified: boolean;
+    category?: { name: string; slug: string } | null;
   }>;
 }
 

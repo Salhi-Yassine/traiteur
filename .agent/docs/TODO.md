@@ -31,6 +31,12 @@
 
 ### Tech Debt & Quality
 - [ ] Missing Storybook stories: `command`, `popover`, `SuccessAnimation`, `ProtectedRoute`, `Layout`, `PlanningLayout`, `Admin/App`
+- [ ] RTL: Navbar drawer translation animation (`translate-x-full` → direction-aware in RTL)
+- [ ] RTL audit: `select.tsx` slide-in animations use non-logical direction classes
+- [ ] Add `useEffect + fetch` scan — confirm no pages bypass TanStack Query
+- [ ] Extract custom hooks: `useVendorFilters`, `useQueryParams` from `pages/vendors/index.tsx` (658 lines)
+- [ ] Backend: `ReviewAggregationService` — recalculate `averageRating` + `reviewCount` on review create/delete
+- [ ] Backend: Makefile `remove-migration-files` target uses wrong path (`api/migrations` vs `/app/migrations` in container)
 
 ---
 
