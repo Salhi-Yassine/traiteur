@@ -10,17 +10,22 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
+import { Copy, MessageCircle, Check } from "lucide-react";
 
 interface Guest {
     id: number;
-    name: string;
+    fullName: string;
     rsvpStatus: string;
     side: string;
     mealPreference: string;
+    guestToken?: string;
+    phone?: string;
+    invitationSent?: boolean;
 }
 
 interface WeddingProfile {
     id: number;
+    slug: string;
 }
 
 export default function InvitesPage() {
@@ -29,10 +34,12 @@ export default function InvitesPage() {
     const [isAdding, setIsAdding] = useState(false);
     const [newGuest, setNewGuest] = useState({
         fullName: "",
+        phone: "",
         rsvpStatus: "pending",
         side: "bride",
         mealPreference: "standard",
     });
+    const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
     const { data: profileData } = useQuery({
         queryKey: ["weddingProfile"],
@@ -56,7 +63,7 @@ export default function InvitesPage() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["guests", profileId] });
             setIsAdding(false);
-            setNewGuest({ fullName: "", rsvpStatus: "pending", side: "bride", mealPreference: "standard" });
+            setNewGuest({ fullName: "", phone: "", rsvpStatus: "pending", side: "bride", mealPreference: "standard" });
         },
     });
 
@@ -69,17 +76,43 @@ export default function InvitesPage() {
         e.preventDefault();
         if (!profileId) return;
         addMutation.mutate({
-            name: newGuest.fullName,
+            fullName: newGuest.fullName,
+            phone: newGuest.phone || undefined,
             rsvpStatus: newGuest.rsvpStatus,
             side: newGuest.side,
             mealPreference: newGuest.mealPreference,
             weddingProfile: `/api/wedding_profiles/${profileId}`,
-        });
+        } as any);
     };
 
     const handleDeleteGuest = (id: number) => {
         if (!window.confirm(t("invites.delete_confirm"))) return;
         deleteMutation.mutate(id);
+    };
+
+    const handleCopyLink = (token?: string) => {
+        if (!token || !profile?.slug) return;
+        const link = `${window.location.origin}/e/${profile.slug}?guest=${token}`;
+        navigator.clipboard.writeText(link);
+        setCopiedToken(token);
+        setTimeout(() => setCopiedToken(null), 2000);
+    };
+
+    const handleWhatsApp = (guest: Guest) => {
+        if (!guest.guestToken || !profile?.slug) return;
+        const link = `${window.location.origin}/e/${profile.slug}?guest=${guest.guestToken}`;
+        const name = guest.fullName.split(" ")[0] || "";
+        const message = `Salam ${name} ! Nous sommes ravis de t'inviter à notre mariage. Voici ton lien VIP pour confirmer ta présence : ${link}`;
+        
+        let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+        if (guest.phone) {
+            // Remove any non-numeric characters from phone
+            const cleanPhone = guest.phone.replace(/\D/g, '');
+            if (cleanPhone.length > 0) {
+                url += `&phone=${cleanPhone}`;
+            }
+        }
+        window.open(url, '_blank');
     };
 
     return (
@@ -143,20 +176,21 @@ export default function InvitesPage() {
                                 <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.side")}</th>
                                 <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.rsvp")}</th>
                                 <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.meal")}</th>
+                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.share", "Partager")}</th>
                                 <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-end">{t("invites.actions")}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[var(--color-background)]">
                             {guests.length === 0 && (
                                 <tr>
-                                    <td colSpan={5} className="px-10 py-20 text-center text-[var(--color-charcoal-400)] italic font-medium">
+                                    <td colSpan={6} className="px-10 py-20 text-center text-[var(--color-charcoal-400)] italic font-medium">
                                         {t("invites.empty")}
                                     </td>
                                 </tr>
                             )}
                             {guests.map((guest) => (
                                 <tr key={guest.id} className="hover:bg-[var(--color-background)]/30 transition-colors group">
-                                    <td className="px-10 py-6 font-bold text-[var(--color-primary)]">{guest.name}</td>
+                                    <td className="px-10 py-6 font-bold text-[var(--color-primary)]">{guest.fullName}</td>
                                     <td className="px-10 py-6">
                                         <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
                                             guest.side === "bride" ? "bg-[var(--color-accent-light)]/10 text-[var(--color-accent)]" : "bg-[var(--color-primary)]/10 text-[var(--color-primary)]"
@@ -174,6 +208,28 @@ export default function InvitesPage() {
                                     </td>
                                     <td className="px-10 py-6 text-sm font-medium text-[var(--color-charcoal-500)] capitalize">
                                         {t(`invites.meals.${guest.mealPreference}`)}
+                                    </td>
+                                    <td className="px-10 py-6">
+                                        <div className="flex items-center gap-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => handleCopyLink(guest.guestToken)}
+                                                className={`h-8 w-8 p-0 rounded-lg border-[var(--color-charcoal-100)] ${copiedToken === guest.guestToken ? 'text-green-600 bg-green-50' : 'text-[var(--color-charcoal-400)] hover:text-[var(--color-primary)]'}`}
+                                                title="Copier le lien"
+                                            >
+                                                {copiedToken === guest.guestToken ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => handleWhatsApp(guest)}
+                                                className="h-8 w-8 p-0 rounded-lg text-[#25D366] bg-[#25D366]/10 border-[#25D366]/20 hover:bg-[#25D366] hover:text-white transition-all shadow-sm shadow-[#25D366]/10"
+                                                title="Envoyer via WhatsApp"
+                                            >
+                                                <MessageCircle className="w-4 h-4" />
+                                            </Button>
+                                        </div>
                                     </td>
                                     <td className="px-10 py-6 text-end">
                                         <Button
@@ -208,16 +264,28 @@ export default function InvitesPage() {
                         )}
 
                         <form onSubmit={handleAddGuest} className="space-y-6">
-                            <div className="space-y-2">
-                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.full_name")}</Label>
-                                <Input
-                                    type="text"
-                                    required
-                                    value={newGuest.fullName}
-                                    onChange={(e) => setNewGuest({...newGuest, fullName: e.target.value})}
-                                    placeholder={t("invites.name_placeholder")}
-                                    className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] outline-none transition-all"
-                                />
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.full_name")}</Label>
+                                    <Input
+                                        type="text"
+                                        required
+                                        value={newGuest.fullName}
+                                        onChange={(e) => setNewGuest({...newGuest, fullName: e.target.value})}
+                                        placeholder={t("invites.name_placeholder")}
+                                        className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] outline-none transition-all"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("invites.phone", "Téléphone (Optionnel)")}</Label>
+                                    <Input
+                                        type="tel"
+                                        value={newGuest.phone}
+                                        onChange={(e) => setNewGuest({...newGuest, phone: e.target.value})}
+                                        placeholder="+212 ..."
+                                        className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] outline-none transition-all"
+                                    />
+                                </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">

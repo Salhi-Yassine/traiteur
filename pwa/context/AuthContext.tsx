@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { fetchApi, setAuthToken, removeAuthToken, getAuthToken } from "../utils/apiClient";
 import { useRouter } from "next/router";
+import type { NextRouter } from "next/router";
 
 interface User {
     id: string;
@@ -10,6 +11,8 @@ interface User {
     firstName: string;
     lastName: string;
     userType: "couple" | "vendor" | "admin";
+    weddingProfile: { id: number } | null;
+    vendorProfile: { id: number; slug?: string } | null;
 }
 
 interface AuthContextType {
@@ -19,23 +22,38 @@ interface AuthContextType {
     loginWithToken: (token: string) => Promise<void>;
     register: (data: any) => Promise<void>;
     logout: () => void;
+    refreshUser: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+function redirectAfterAuth(userData: User, router: NextRouter) {
+    if (userData.userType === "couple") {
+        router.push(userData.weddingProfile ? "/mariage" : "/onboarding/couple");
+    } else if (userData.userType === "vendor") {
+        router.push(userData.vendorProfile ? "/dashboard/vendor" : "/onboarding/vendor");
+    } else {
+        router.push("/admin");
+    }
+}
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
 
+    const fetchMe = async (): Promise<User> => {
+        return fetchApi("/api/me");
+    };
+
     useEffect(() => {
         const initAuth = async () => {
             const token = getAuthToken();
             if (token) {
                 try {
-                    const userData = await fetchApi("/api/me");
+                    const userData = await fetchMe();
                     setUser(userData);
-                } catch (error) {
+                } catch {
                     removeAuthToken();
                     setUser(null);
                 }
@@ -44,44 +62,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         };
 
         initAuth();
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const login = async (credentials: any) => {
         const data = await fetchApi("/auth", {
             method: "POST",
-            jsonld: false, // JWT endpoint is standard JSON
+            jsonld: false,
             body: JSON.stringify(credentials),
         });
 
         if (data.token) {
             setAuthToken(data.token);
-            const userData = await fetchApi("/api/me");
+            const userData = await fetchMe();
             setUser(userData);
-            
-            // Smarter redirection based on user type
-            if (userData.userType === "couple") {
-                router.push("/mariage");
-            } else if (userData.userType === "vendor") {
-                router.push("/onboarding");
-            } else {
-                router.push("/");
-            }
+            redirectAfterAuth(userData, router);
         }
     };
 
     /** Used by the OAuth callback page — token already issued by Symfony. */
     const loginWithToken = async (token: string) => {
         setAuthToken(token);
-        const userData = await fetchApi("/api/me");
+        const userData = await fetchMe();
         setUser(userData);
-        
-        if (userData.userType === "couple") {
-            router.push("/mariage");
-        } else if (userData.userType === "vendor") {
-            router.push("/onboarding");
-        } else {
-            router.push("/");
-        }
+        redirectAfterAuth(userData, router);
     };
 
     const register = async (userData: any) => {
@@ -89,19 +92,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             method: "POST",
             body: JSON.stringify(userData),
         });
-
-        // Automatically login after registration
         await login({ email: userData.email, password: userData.plainPassword });
+    };
+
+    const refreshUser = async () => {
+        const userData = await fetchMe();
+        setUser(userData);
     };
 
     const logout = () => {
         removeAuthToken();
         setUser(null);
-        router.push("/login");
+        router.push("/");
     };
 
     return (
-        <AuthContext.Provider value={{ user, isLoading, login, loginWithToken, register, logout }}>
+        <AuthContext.Provider value={{ user, isLoading, login, loginWithToken, register, logout, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );

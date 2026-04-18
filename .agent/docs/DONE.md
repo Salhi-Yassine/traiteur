@@ -4,6 +4,32 @@
 
 ---
 
+## 2026-04-17
+
+### User onboarding UX — all 3 user types (Airbnb-like flow)
+- [2026-04-17] `pwa/context/AuthContext.tsx` — extended `User` type with `weddingProfile`/`vendorProfile`, added `refreshUser()`, added `redirectAfterAuth()` helper used by login/register/loginWithToken
+- [2026-04-17] `pwa/pages/onboarding/index.tsx` — guard router: reads user type + profile state, redirects to correct wizard or dashboard; fixes broken `/onboarding` URL vendors were sent to
+- [2026-04-17] `pwa/pages/onboarding/couple.tsx` — 4-step wizard (names → date+city → budget+guests → success), Formik, per-step validation, POSTs `/api/wedding_profiles`, SuccessAnimation summary card
+- [2026-04-17] `pwa/pages/onboarding/vendor.tsx` — added welcome screen with 3 feature bullets, "Passer pour l'instant" skip on all steps, fixed final redirect to `/dashboard/vendor`
+- [2026-04-17] `pwa/pages/dashboard/vendor.tsx` — new vendor dashboard: sidebar nav, status banners (pending/approved), profile completeness bar, stats row, quick actions (edit/view/WhatsApp share), recent inquiries list
+- [2026-04-17] `pwa/pages/account/profile.tsx` — shared account settings page: personal info form (PATCH `/api/users/{id}`), email display, password change link, logout danger zone
+- [2026-04-17] All 4 i18n locale files (fr/en/ar/ary) updated with `onboarding.couple.*`, `onboarding.vendor.*`, `dashboard.vendor.*`, `account.*` keys
+
+### Discovery audit — features found complete (no new code written)
+- [2026-04-17] Google OAuth 2.0: `api/src/Controller/GoogleAuthController.php` (redirect + callback + JWT issuance) + `pwa/pages/auth/callback.tsx` (token handoff to AuthContext) — fully wired end-to-end
+- [2026-04-17] Vendor directory — price range filter (`priceRange[]`), min rating (`averageRating[gte]`), verified toggle (`isVerified`) — all wired to API via `getServerSideProps`
+- [2026-04-17] Vendor directory — sort: 4 options (rating, reviews, price_asc, price_desc) via `sortToApiParams()` helper
+- [2026-04-17] Vendor directory — pagination: `<Pagination>` component driven by `hydra:totalItems`, scroll-to-top on page change
+- [2026-04-17] Vendor directory — grid/list toggle: `view` state, `variant` prop passed to `VendorCard`
+- [2026-04-17] Vendor directory — active filter pills: removable chips + clear-all button
+- [2026-04-17] Vendor directory — mobile filters: `FilterModal` uses `Drawer` on mobile, `Dialog` on desktop
+- [2026-04-17] Vendor onboarding wizard: 5-step flow (basic info → description+cities → price range → cover+gallery → preview+languages), per-step Formik validation, submits to API and redirects to vendor profile
+- [2026-04-17] RSVP page (`/rsvp/[token]`): 3-step flow (welcome → meal preferences → success), loads guest via `guestToken`, submits to `/api/public/guests/{token}`, includes confetti animation
+- [2026-04-17] Budget page (`budget.tsx`): confirmed using TanStack Query (`useQuery` + `useMutation`) — the useEffect tech debt item was stale
+- [2026-04-17] i18n: ar/ary/en locale files confirmed as real translations (ar: 437 lines, ary: 444 lines, en: 445 lines) — not stubs
+
+---
+
 ## 2026-04-16
 
 ### Auth — Airbnb-like redesign + password reset (Closes #41)

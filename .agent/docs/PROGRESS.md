@@ -1,6 +1,6 @@
 # Farah.ma — Project Progress Tracker
 
-> **Last Updated:** 2026-04-10
+> **Last Updated:** 2026-04-17
 > **PRD Version:** 1.1
 > **Legend:** `[x]` Done · `[/]` In Progress · `[ ]` To Do
 
@@ -10,11 +10,11 @@
 
 | Phase | Progress | Status |
 |-------|----------|--------|
-| Phase 1 — Foundation | ~60% | 🟡 In Progress |
-| Phase 2 — Planning Tools | ~20% | 🟡 In Progress |
+| Phase 1 — Foundation | ~80% | 🟡 In Progress |
+| Phase 2 — Planning Tools | ~35% | 🟡 In Progress |
 | Phase 3 — Content & Monetization | 0% | ⚪ Not Started |
 | Phase 4 — Pre-Launch | 0% | ⚪ Not Started |
-| **Overall** | **~27%** | **🟡 In Progress** |
+| **Overall** | **~38%** | **🟡 In Progress** |
 
 ---
 
@@ -69,17 +69,16 @@
 - [x] Password hashing via `UserPasswordHasherListener`
 - [x] JWT authentication via `lexik/jwt-authentication-bundle`
 - [x] Security firewall configured (login + API)
-- [x] Registration controller (`RegistrationController.php`)
-- [x] Email verifier (`EmailVerifier.php`)
+- [x] User registration via API Platform (`POST /api/users`)
 - [x] Role & Permission entities
 - [x] `PermissionVoter` for authorization
-- [/] Login page (`pwa/pages/auth/login.tsx` — 161 lines)
-- [/] Register page (`pwa/pages/auth/register.tsx` — 264 lines)
+- [x] Login page (`pwa/pages/auth/login.tsx`)
+- [x] Register page (`pwa/pages/auth/register.tsx`)
 - [x] `AuthContext` for frontend auth state
 - [x] `ProtectedRoute` component
 - [x] `MeProvider` (API state provider for current user)
-- [ ] Google OAuth 2.0 integration
-- [ ] Password reset flow (with email via Resend)
+- [x] Google OAuth 2.0 integration (`GoogleAuthController.php` + `callback.tsx`)
+- [x] Password reset flow (`PasswordResetService` + `PasswordResetController` + frontend pages)
 - [ ] Silent JWT refresh via refresh token
 - [ ] Wedding date & budget prompt on first couple login
 
@@ -92,19 +91,20 @@
 - [x] `VendorProfileFactory` + `CategoryFactory` + `CityFactory` for fixtures
 - [x] `AppStats` entity with `AppStatsProvider` (platform statistics)
 - [x] Data fixtures (`AppFixtures.php`, `InitialAppStory.php`)
-- [/] Vendor directory page (`pwa/pages/vendors/index.tsx` — 317 lines)
-- [/] Filter sidebar component (`FilterSidebar.tsx`)
-- [/] SearchBar component with category + city search
-- [/] VendorCard component
-- [ ] Price range filter with dual-handle slider (500 MAD steps)
-- [ ] Rating filter
-- [ ] Verified status filter
-- [ ] Grid/List toggle view
-- [ ] Instant filter application (desktop) / Bottom sheet (mobile)
-- [ ] Vendor count per category filter
+- [x] Vendor directory page (`pwa/pages/vendors/index.tsx`)
+- [x] Filter modal component (`FilterModal.tsx` — Drawer on mobile, Dialog on desktop)
+- [x] SearchBar component with category + city search
+- [x] VendorCard component (grid + list variants)
+- [x] Price range filter (`priceRange[]` param)
+- [x] Rating filter (`averageRating[gte]` param)
+- [x] Verified status filter (`isVerified` param)
+- [x] Grid/List toggle view
+- [x] Instant filter application (desktop Dialog) / Bottom sheet (mobile Drawer)
+- [x] Active filter pills with clear-all button
+- [x] Pagination (page nav + scroll-to-top, driven by `hydra:totalItems`)
+- [x] Sort dropdown (rating, reviews, price_asc, price_desc)
+- [ ] Vendor count per active filter
 - [ ] Empty state with suggestion to broaden search
-- [ ] Pagination / infinite scroll
-- [ ] Sort dropdown (by rating, reviews, newest)
 
 ### 1.5 Vendor Profile Page — READ (US-1.2)
 
@@ -135,32 +135,32 @@
 - [x] Full i18n coverage on vendor profile page (fr locale)
 - [ ] Related vendors: real API fetch (currently hardcoded placeholders)
 - [ ] Reviews sub-ratings (quality, communication, value, punctuality)
-- [ ] Vendor onboarding wizard
 
 ### 1.6 Vendor Onboarding Wizard (US-2.1)
 
-- [ ] Vendor registration flow (separate from couple signup)
-- [ ] Profile setup wizard — Step 1: Basic Info
-- [ ] Profile setup wizard — Step 2: Photos Upload (Cloudinary)
-- [ ] Profile setup wizard — Step 3: Services & Pricing
-- [ ] Profile preview before submission
-- [ ] "Pending review" status workflow
-- [ ] Profile completeness indicator (percentage bar)
-- [ ] Email confirmation on approval via Resend
-- [ ] Cloudinary integration for photo upload
+- [x] Onboarding wizard page (`pwa/pages/onboarding/vendor.tsx`)
+- [x] Step 1: Basic info (business name, tagline, category)
+- [x] Step 2: Description, cities (multi-select), WhatsApp, website, Instagram
+- [x] Step 3: Price range selector
+- [/] Step 4: Cover image + gallery (file inputs — Cloudinary integration pending)
+- [x] Step 5: Preview + languages spoken
+- [x] Per-step Formik validation
+- [x] Profile preview before submission
 - [x] `VendorProfileVoter` — vendor can only edit own profile
+- [ ] Cloudinary direct upload integration
+- [ ] "Pending review" status workflow + email confirmation on approval via Resend
+- [ ] Profile completeness indicator (percentage bar)
 
 ### 1.7 i18n & RTL Support
 
-- [/] Locale files exist (`pwa/public/locales/` — ar, ary, en, fr)
+- [x] Locale files populated (`pwa/public/locales/` — ar: 437 lines, ary: 444 lines, en: 445 lines, fr: 597 lines)
 - [x] `LocaleListener` on Symfony backend
-- [/] `LanguageSwitcher` component
-- [ ] Full 4-language translation coverage (Darija, French, Arabic, English)
-- [ ] RTL layout with CSS logical properties throughout
+- [x] `LanguageSwitcher` component
+- [x] Full 4-language translation coverage (Darija, French, Arabic, English)
+- [ ] `<html dir="rtl">` + `<html lang="">` dynamic updates on locale switch
 - [ ] Directional icon flipping in RTL
-- [ ] `<html dir="rtl">` + `<html lang="">` dynamic updates
 - [ ] Toast positions swap in RTL
-- [ ] Text alignment: `text-align: start` everywhere
+- [ ] RTL layout audit: `text-align: start` everywhere
 
 ---
 
@@ -170,28 +170,27 @@
 
 - [x] `BudgetItem` entity with API Platform resource
 - [x] `BudgetItemFactory` for fixtures
-- [/] Budget page (`pwa/pages/mariage/budget.tsx` — 236 lines)
-- [ ] Total budget overview (editable total, spent, remaining, %)
+- [x] Budget page (`pwa/pages/mariage/budget.tsx`) — uses TanStack Query
+- [x] Add/delete budget items via modal
+- [x] Summary cards (total budget, total spent, remaining)
+- [ ] Editable total budget field
 - [ ] Donut chart visualization by category (Recharts)
 - [ ] Default categories pre-populated (Salle, Photographe, Traiteur, etc.)
-- [ ] Category row: budgeted / spent / remaining amounts
 - [ ] Over-budget rows highlighted
-- [ ] Inline editing with immediate recalculation
-- [ ] Add/remove custom budget categories
 - [ ] MAD currency formatting
 
 ### 2.2 Guest List Manager (US-3.3)
 
-- [x] `Guest` entity with API Platform resource
+- [x] `Guest` entity with API Platform resource (includes `guestToken` field)
 - [x] `GuestFactory` for fixtures
-- [/] Guest list page (`pwa/pages/mariage/invites.tsx` — 296 lines)
-- [ ] Add guests individually (name, phone, email, side, relationship, city)
-- [ ] CSV import for bulk guest addition
-- [ ] RSVP status badges (Pending / Confirmed / Declined)
-- [ ] Meal preference tracking (Standard / Végétarien / Enfants)
-- [ ] RSVP link generation (`/rsvp/[code]`)
+- [x] Guest list page (`pwa/pages/mariage/invites.tsx`)
+- [x] Add/delete guests via modal
+- [x] RSVP status display (pending/confirmed/declined)
+- [x] Meal preference display
+- [x] Guest count stats (total, confirmed, pending)
+- [ ] RSVP link generation UI (`guestToken` field exists but unused in frontend)
 - [ ] WhatsApp share for RSVP links
-- [ ] RSVP summary dashboard (totals, meal breakdown)
+- [ ] CSV import for bulk guest addition
 - [ ] Table assignment (integer field, sortable)
 - [ ] Export to CSV
 
@@ -199,26 +198,26 @@
 
 - [x] `ChecklistTask` entity with API Platform resource
 - [x] `ChecklistTaskFactory` for fixtures
-- [/] Checklist page (`pwa/pages/mariage/checklist.tsx` — 263 lines)
+- [x] Checklist page (`pwa/pages/mariage/checklist.tsx`)
+- [x] Add/toggle/delete tasks via mutations
+- [x] Progress bar (% completed)
+- [x] Category tags + due dates display
 - [ ] 40+ default tasks organized by months-before-wedding
-- [ ] Tasks grouped by category (Salle, Traiteur, etc.)
-- [ ] Task fields: name, due date (auto-calc from wedding date), status, assignee, notes, linked vendor
 - [ ] Drag-and-drop reordering
 - [ ] Overdue task highlighting
-- [ ] Custom task creation
-- [ ] Progress bar (X of Y completed)
 
 ### 2.4 Guest RSVP Page (US-3.5)
 
-- [ ] RSVP page (`/rsvp/[code]`)
-- [ ] No-login RSVP experience
-- [ ] Couple names + wedding date display
-- [ ] Name entry or pre-populated selection
-- [ ] Attendance selection (Confirmer / Décliner)
-- [ ] Conditional meal preference selector
-- [ ] Thank-you confirmation screen
+- [x] RSVP page (`/rsvp/[token]`)
+- [x] No-login RSVP experience (token-gated via `guestToken`)
+- [x] Couple names + wedding date display
+- [x] Attendance selection (Confirmer / Décliner)
+- [x] Conditional meal preference selector
+- [x] Thank-you confirmation screen with confetti animation
+- [x] Loads guest data server-side via `getServerSideProps`
+- [x] Submits to `/api/public/guests/{token}`
 - [ ] Expired link handling (friendly message, not 404)
-- [ ] Performance: < 1.5s load on 4G
+- [ ] Performance: < 1.5s load on 4G (not yet measured)
 
 ### 2.5 Vendor Inquiry Inbox (US-2.2)
 
@@ -239,19 +238,21 @@
 
 ### 2.7 Save Vendors to Moodboard (US-1.3)
 
+- [ ] `SavedVendor` entity (backend)
 - [ ] Save action on vendor cards and profile pages
 - [ ] `/plan/saved` page with saved vendors
-- [ ] Unsave with confirmation toast
 - [ ] Heart icon with optimistic UI
-- [ ] Persist across sessions
+- [ ] Persist across sessions (API, not localStorage)
 
 ### 2.8 Planning Dashboard
 
-- [/] Planning dashboard page (`pwa/pages/mariage/index.tsx` — 145 lines)
-- [/] Planning layout component (`PlanningLayout.tsx`)
+- [x] Planning dashboard page (`pwa/pages/mariage/index.tsx`)
+- [x] Planning layout component (`PlanningLayout.tsx`)
+- [x] Setup progress bar (date, budget, guests, tasks)
+- [x] Next incomplete step prompt
+- [x] Links to all sub-pages + summary stats
 - [ ] Wedding date countdown
-- [ ] Quick stats (budget remaining, tasks due, guests confirmed)
-- [ ] Quick links to all planning tools
+- [ ] Quick stats widget (budget remaining, tasks due, guests confirmed)
 
 ---
 
@@ -389,8 +390,8 @@
 
 > [!TIP]
 > **Top 5 priorities to work on next** (highest impact, unblocking):
-> 1. **Design System tokens & branding** — Everything visual depends on this
-> 2. **Complete vendor directory UX** — Core user-facing feature (filters, pagination, sort)
-> 3. **Complete vendor profile page** — Photo gallery, reviews, WhatsApp CTA
-> 4. **Complete auth flows** — Google OAuth, password reset, JWT refresh
-> 5. **Vendor onboarding wizard** — Unblocks vendor supply (G1: 500 vendors at launch)
+> 1. **Silent JWT refresh** — Auth is incomplete without it; sessions expire after 1h
+> 2. **Budget donut chart (Recharts)** — Core planning tool visual, budget page is otherwise functional
+> 3. **RSVP link generation UI** — `guestToken` already exists on Guest entity, just needs frontend wiring
+> 4. **Checklist drag-drop** — Last missing UX piece on an otherwise working checklist page
+> 5. **Cloudinary upload integration** — Unblocks vendor photo management; wizard UI already exists

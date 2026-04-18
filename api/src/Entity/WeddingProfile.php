@@ -101,6 +101,30 @@ class WeddingProfile
     #[Groups(['wedding:read', 'wedding:write', 'wedding:public'])]
     private ?string $accommodationInfo = null;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['wedding:read', 'wedding:write', 'wedding:public'])]
+    private ?string $ourStory = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    #[Groups(['wedding:read', 'wedding:write', 'wedding:public'])]
+    private ?array $qa = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['wedding:read', 'wedding:write', 'wedding:public'])]
+    private ?string $travelInfo = null;
+
+    #[ORM\Column(length: 50, options: ['default' => 'modern'])]
+    #[Groups(['wedding:read', 'wedding:write', 'wedding:public'])]
+    private string $selectedTheme = 'modern';
+
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['wedding:read', 'wedding:write', 'wedding:public'])]
+    private ?string $themeColor = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    #[Groups(['wedding:read', 'wedding:write', 'wedding:public'])]
+    private ?array $galleryImages = null;
+
     #[ORM\OneToMany(mappedBy: 'weddingProfile', targetEntity: Guest::class, cascade: ['persist', 'remove'])]
     #[Groups(['wedding:read'])]
     private Collection $guests;
@@ -312,6 +336,72 @@ class WeddingProfile
     public function setCoverImage(?string $coverImage): static
     {
         $this->coverImage = $coverImage;
+        return $this;
+    }
+
+    public function getOurStory(): ?string
+    {
+        return $this->ourStory;
+    }
+
+    public function setOurStory(?string $ourStory): static
+    {
+        $this->ourStory = $ourStory;
+        return $this;
+    }
+
+    public function getQa(): ?array
+    {
+        return $this->qa;
+    }
+
+    public function setQa(?array $qa): static
+    {
+        $this->qa = $qa;
+        return $this;
+    }
+
+    public function getTravelInfo(): ?string
+    {
+        return $this->travelInfo;
+    }
+
+    public function setTravelInfo(?string $travelInfo): static
+    {
+        $this->travelInfo = $travelInfo;
+        return $this;
+    }
+
+    public function getSelectedTheme(): string
+    {
+        return $this->selectedTheme;
+    }
+
+    public function setSelectedTheme(string $selectedTheme): static
+    {
+        $this->selectedTheme = $selectedTheme;
+        return $this;
+    }
+
+    public function getThemeColor(): ?string
+    {
+        return $this->themeColor;
+    }
+
+    public function setThemeColor(?string $themeColor): static
+    {
+        $this->themeColor = $themeColor;
+        return $this;
+    }
+
+    public function getGalleryImages(): ?array
+    {
+        return $this->galleryImages;
+    }
+
+    public function setGalleryImages(?array $galleryImages): static
+    {
+        $this->galleryImages = $galleryImages;
         return $this;
     }
 

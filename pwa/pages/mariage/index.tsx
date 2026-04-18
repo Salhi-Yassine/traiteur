@@ -53,6 +53,7 @@ export default function WeddingDashboard() {
         { key: "budget", met: (wp?.totalBudgetMad ?? 0) > 0, label: t("dashboard.setup_budget"), href: "/mariage/budget" },
         { key: "guests", met: (wp?.guests?.length ?? 0) > 0, label: t("dashboard.setup_guests"), href: "/mariage/invites" },
         { key: "tasks", met: tasksDone > 0, label: t("dashboard.setup_tasks"), href: "/mariage/checklist" },
+        { key: "website", met: !!wp?.ourStory || (wp?.galleryImages?.length ?? 0) > 0, label: t("dashboard.setup_website"), href: "/mariage/site" },
     ];
     
     const setupDoneCount = setupSteps.filter(s => s.met).length;
@@ -193,6 +194,27 @@ export default function WeddingDashboard() {
                         </div>
                     </div>
                 </Link>
+
+                {/* Wedding Website Card */}
+                <Link href="/mariage/site" className="group p-8 bg-neutral-900 text-white rounded-xl border border-neutral-800 hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-110 transition-transform">
+                        <svg className="w-32 h-32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9-9c1.657 0 3 1.343 3 3s-1.343 3-3 3m0-6c-1.657 0-3 1.343-3 3s1.343 3 3 3m-3-7V7m0 0l-1 1m1-1l1 1m0 0v2" />
+                        </svg>
+                    </div>
+                    <div className="relative z-10">
+                        <div className="flex items-center justify-between mb-6">
+                            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-white">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                            </div>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-primary">{t("dashboard.website")}</span>
+                        </div>
+                        <h3 className="font-display font-bold text-2xl mb-2">{t("dashboard.my_website")}</h3>
+                        <p className="text-neutral-400 text-sm">{t("dashboard.website_desc")}</p>
+                    </div>
+                </Link>
             </div>
 
             {/* Tip of the day */}
@@ -200,7 +222,7 @@ export default function WeddingDashboard() {
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
                 <h4 className="text-primary text-[10px] font-black uppercase tracking-[0.3em] mb-4">{t("dashboard.expert_tip")}</h4>
                 <p className="font-display text-2xl text-neutral-900 leading-relaxed italic max-w-2xl relative z-10">
-                    "{t("dashboard.tip_content")}"
+                    &ldquo;{t("dashboard.tip_content")}&rdquo;
                 </p>
                 <p className="mt-6 text-neutral-500 font-bold text-sm">— {t("dashboard.tip_author")}</p>
             </div>

@@ -1,6 +1,6 @@
 # Farah.ma — Claude Code Guide
 
-Morocco's first wedding planning platform. Next.js 15 PWA + Symfony 7.2 API, ~25% complete.
+Morocco's first wedding planning platform. Next.js 15 PWA + Symfony 7.2 API, ~38% complete.
 
 > Full PRD, skills, and workflows → `.agent/`
 
@@ -107,7 +107,8 @@ traiteur/
 │   │   ├── ui/           # shadcn/ui primitives + .stories.tsx
 │   │   └── vendors/      # Vendor-specific components
 │   ├── context/          # AuthContext, MeProvider, DirectionProvider
-│   ├── lib/              # api.ts, hooks.ts, utils.ts
+│   ├── utils/            # apiClient.ts (HTTP client), utils.ts
+│   ├── lib/              # hooks.ts, shared utilities
 │   ├── styles/           # globals.css (design tokens)
 │   └── public/locales/   # i18n translation files
 ├── .agent/           # PRD, skills, workflows, rules (read this for deep context)
@@ -121,7 +122,12 @@ traiteur/
 
 ```tsx
 // Data fetching — always TanStack Query
-const { data } = useQuery({ queryKey: ['vendors'], queryFn: () => api.get('/api/vendor_profiles') });
+import { apiClient } from '@/utils/apiClient';
+const { data } = useQuery({ queryKey: ['vendors'], queryFn: () => apiClient.get('/api/vendor_profiles') });
+
+// API responses are Hydra JSON-LD collections:
+// { "hydra:member": [...], "hydra:totalItems": 42 }
+// Single resources have "@id", "@type", "id" fields
 
 // i18n — always
 const { t } = useTranslation('common');
@@ -129,36 +135,43 @@ const { t } = useTranslation('common');
 
 // Auth guard
 const { user } = useAuth(); // from context/AuthContext
+// user.userType: "couple" | "vendor" | "admin"
 
 // getStaticProps → public SEO pages
 // getServerSideProps → authenticated or dynamic pages
+
+// API filter params (vendor directory pattern):
+// cities.slug, category.slug, averageRating[gte], priceRange[], isVerified, order[field]=asc|desc
 ```
 
 ---
 
-## Current project state (2026-04-10)
+## Current project state (2026-04-17)
 
 | Phase | Status |
 |-------|--------|
-| Phase 1 — Foundation | ~60% |
-| Phase 2 — Planning Tools | ~20% |
-| Overall | ~25% |
+| Phase 1 — Foundation | ~80% |
+| Phase 2 — Planning Tools | ~35% |
+| Overall | ~38% |
 
 ### What's done
 - Symfony + Next.js scaffolded, Docker/Makefile/CI wired
 - Design system tokens, shadcn/ui primitives, Moroccan patterns
-- Entities: User, VendorProfile, Category, City, Review, MenuItem, WeddingProfile, BudgetItem, ChecklistTask, Guest, QuoteRequest
-- Auth: JWT, registration, login pages (partial), AuthContext, ProtectedRoute
-- Vendor profile page (full layout, gallery, calendar, widget, i18n)
-- Vendor directory page (partial — needs filters, pagination)
-- Planning tools pages: budget, guests, checklist, dashboard (all partial)
+- Entities: User, VendorProfile, Category, City, Review, MenuItem, WeddingProfile, BudgetItem, ChecklistTask, Guest, QuoteRequest, TimelineItem, Role, Permission
+- Auth: JWT, registration, login, Google OAuth (`GoogleAuthController` + `/auth/callback`), password reset (backend + frontend), AuthContext, ProtectedRoute
+- Vendor directory page — fully functional (filters, sort, pagination, grid/list toggle, mobile drawer)
+- Vendor profile page — full layout, gallery, calendar, widget, i18n, RTL
+- Vendor onboarding wizard — 5-step Formik wizard (`/onboarding/vendor`)
+- Planning tools: budget, guests, checklist, dashboard (pages exist with TanStack Query, core CRUD works)
+- RSVP page (`/rsvp/[token]`) — full 3-step public flow, wired to API
+- i18n: real translations in all 4 locales (fr/ar/ary/en)
 
 ### Missing backend entities
 `InspirationPhoto`, `SavedVendor`, `SavedPhoto`, `Subscription`, `RsvpLink`
 
 ### Top priorities
-1. Complete vendor directory (filters, pagination, sort)
-2. Vendor onboarding wizard (unblocks vendor supply)
-3. Auth: Google OAuth + password reset + JWT refresh
-4. Planning tools completion (budget donut chart, guest RSVP, checklist drag)
-5. Inspiration gallery (Phase 3)
+1. Silent JWT refresh (no refresh token interceptor yet)
+2. Budget donut chart (Recharts)
+3. RSVP link generation UI (guestToken field exists, frontend not wired)
+4. Checklist drag-drop reordering
+5. Cloudinary upload in onboarding wizard (Step 4 uses file inputs only)

@@ -13,7 +13,7 @@ import { Button } from "../../components/ui/button";
 import { FloatingInput } from "../../components/ui/floating-input";
 import { AuthCard } from "../../components/auth/AuthCard";
 import { cn } from "@/lib/utils";
-import { Eye, EyeOff, CheckCircle2, Circle } from "lucide-react";
+import { Eye, EyeOff, CheckCircle2, Circle, Camera, MessageSquare, BarChart2 } from "lucide-react";
 
 // ── Google logo ──────────────────────────────────────────────────────────────
 function GoogleIcon() {
@@ -108,25 +108,57 @@ export default function RegisterPage() {
                 </p>
 
                 {/* Account type toggle */}
-                <div className="flex gap-2 mb-6" role="group">
-                    {(["couple", "vendor"] as const).map((type) => (
-                        <button
-                            key={type}
-                            type="button"
-                            onClick={() => handleTypeSwitch(type)}
-                            className={cn(
-                                "flex-1 h-[44px] rounded-full text-[14px] font-bold border transition-all duration-200",
-                                userType === type
-                                    ? "bg-primary text-white border-primary shadow-sm"
-                                    : "bg-white text-neutral-500 border-neutral-200 hover:border-primary hover:text-primary",
-                            )}
-                        >
-                            {type === "couple"
-                                ? `💍 ${t("auth.planning_wedding")}`
-                                : `🏛️ ${t("nav.for_vendors")}`}
-                        </button>
-                    ))}
+                <div className="flex gap-2 mb-6" role="group" aria-label={t("auth.account_type")}>
+                    <button
+                        type="button"
+                        onClick={() => handleTypeSwitch("couple")}
+                        className={cn(
+                            "flex-1 h-[52px] rounded-2xl text-[13px] font-bold border transition-all duration-200 flex flex-col items-center justify-center gap-0.5",
+                            userType === "couple"
+                                ? "bg-primary text-white border-primary shadow-sm"
+                                : "bg-white text-neutral-500 border-neutral-200 hover:border-primary hover:text-primary",
+                        )}
+                    >
+                        <span>💍</span>
+                        <span>{t("auth.planning_wedding")}</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => handleTypeSwitch("vendor")}
+                        className={cn(
+                            "flex-1 h-[52px] rounded-2xl border transition-all duration-200 flex flex-col items-center justify-center gap-0",
+                            userType === "vendor"
+                                ? "bg-primary text-white border-primary shadow-sm"
+                                : "bg-white text-neutral-500 border-neutral-200 hover:border-primary hover:text-primary",
+                        )}
+                    >
+                        <span className="text-[13px] font-bold">{t("auth.i_am_vendor")}</span>
+                        <span className="text-[11px] font-medium opacity-80">{t("auth.vendor_sub_label")}</span>
+                    </button>
                 </div>
+
+                {/* Vendor value card — shown only when vendor tab active */}
+                {userType === "vendor" && (
+                    <div className="mb-6 p-4 bg-[#FEF0ED] border border-[#E8472A]/20 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-300">
+                        <p className="text-[12px] font-bold text-[#E8472A] uppercase tracking-wider mb-3">
+                            {t("auth.vendor_value_title")}
+                        </p>
+                        <div className="space-y-2">
+                            {[
+                                { icon: Camera,        label: t("onboarding.vendor.welcome_bullet_1") },
+                                { icon: MessageSquare, label: t("onboarding.vendor.welcome_bullet_2") },
+                                { icon: BarChart2,     label: t("onboarding.vendor.welcome_bullet_3") },
+                            ].map(({ icon: Icon, label }, i) => (
+                                <div key={i} className="flex items-center gap-2.5">
+                                    <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center shrink-0">
+                                        <Icon className="w-3.5 h-3.5 text-[#E8472A]" />
+                                    </div>
+                                    <span className="text-[13px] text-[#484848] font-medium">{label}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {serverError && (
                     <div
@@ -257,11 +289,6 @@ export default function RegisterPage() {
                         </div>
                     </div>
 
-                    {userType === "vendor" && (
-                        <div className="p-3.5 bg-[#FEF0ED] border border-[#E8472A]/20 rounded-xl text-[13px] text-[#484848]">
-                            {t("auth.vendor_notice")}
-                        </div>
-                    )}
 
                     <p className="text-[12px] text-[#717171] leading-relaxed">
                         <Trans
