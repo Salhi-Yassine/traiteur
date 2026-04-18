@@ -687,6 +687,8 @@
     }
   },
   "event": {
+    "invitation_title": "أنتم مدعوون لعرس {{bride}} و {{groom}} ! ",
+    "invitation_desc": "جيوا عندنا نهار {{date}} في {{city}} باش نحتفلوا بمجموعنا.",
     "save_the_date": "حجز الموعد",
     "our_story_title": "قصتنا",
     "our_story_placeholder": "كنفرحو بيكم فهاد اللحظة الرائعة. حضورتكم هي أحسن هدية.",

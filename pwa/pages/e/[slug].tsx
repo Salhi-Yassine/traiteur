@@ -2,6 +2,7 @@ import { GetServerSideProps } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -149,6 +150,7 @@ const THEME_STYLES: Record<string, any> = {
 
 export default function PublicWeddingPage({ wedding }: { wedding: PublicWeddingData | null }) {
     const { t } = useTranslation("common");
+    const router = useRouter();
     const [isScrolled, setIsScrolled] = useState(false);
     const data = wedding || FALLBACK_WEDDING;
 
@@ -193,29 +195,63 @@ export default function PublicWeddingPage({ wedding }: { wedding: PublicWeddingD
         ...(data.themeColor === "indigo" ? { "--primary": "226.5 57% 53%" } : {}),
     } as React.CSSProperties;
 
+    const baseUrl = (wedding as any)?.baseUrl || "https://farah.ma";
+    const ogImageUrl = `${baseUrl}/api/og/wedding?bride=${encodeURIComponent(data.brideName)}&groom=${encodeURIComponent(data.groomName)}&image=${encodeURIComponent(data.coverImage || "")}&locale=${router.locale || "fr"}`;
+    const invitationTitle = t("event.invitation_title", { bride: data.brideName, groom: data.groomName });
+    const invitationDesc = t("event.invitation_desc", { date: formattedDate, city: data.weddingCity });
+
+    // Structured Data
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "WeddingEvent",
+        "name": invitationTitle,
+        "description": invitationDesc,
+        "startDate": data.weddingDate,
+        "location": {
+            "@type": "Place",
+            "name": data.venueName || data.weddingCity,
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": data.weddingCity,
+                "streetAddress": data.venueAddress || ""
+            }
+        },
+        "image": ogImageUrl,
+        "eventStatus": "https://schema.org/EventScheduled",
+    };
+
     return (
         <div className="min-h-screen bg-white selection:bg-primary/20" style={themeColorStyle}>
             <Head>
-                <title>{data.brideName} & {data.groomName} — Farah.ma</title>
-                <meta name="description" content={t("event.seo_desc", { bride: data.brideName, groom: data.groomName, city: data.weddingCity })} />
+                <title>{invitationTitle} — Farah.ma</title>
+                <meta name="description" content={invitationDesc} />
                 
                 {/* Canonical */}
-                <link rel="canonical" href={`https://farah.ma/e/${data.slug}`} />
+                <link rel="canonical" href={`${baseUrl}/e/${data.slug}`} />
 
                 {/* OpenGraph / Facebook */}
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content={`https://farah.ma/e/${data.slug}`} />
-                <meta property="og:title" content={`${data.brideName} & ${data.groomName} — Invitation de Mariage`} />
-                <meta property="og:description" content={`Rejoignez-nous le ${formattedDate} à ${data.weddingCity} pour célébrer notre union.`} />
-                <meta property="og:image" content={data.coverImage || "https://farah.ma/og-default.jpg"} />
+                <meta property="og:url" content={`${baseUrl}/e/${data.slug}`} />
+                <meta property="og:title" content={invitationTitle} />
+                <meta property="og:description" content={invitationDesc} />
+                <meta property="og:image" content={ogImageUrl} />
+                <meta property="og:image:width" content="1200" />
+                <meta property="og:image:height" content="630" />
+                <meta property="og:image:alt" content={`Invitation au mariage de ${data.brideName} et ${data.groomName}`} />
                 <meta property="og:site_name" content="Farah.ma" />
 
                 {/* Twitter */}
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:url" content={`https://farah.ma/e/${data.slug}`} />
-                <meta name="twitter:title" content={`${data.brideName} & ${data.groomName} — Invitation de Mariage`} />
-                <meta name="twitter:description" content={`Rejoignez-nous le ${formattedDate} à ${data.weddingCity} pour célébrer notre union.`} />
-                <meta name="twitter:image" content={data.coverImage || "https://farah.ma/og-default.jpg"} />
+                <meta name="twitter:url" content={`${baseUrl}/e/${data.slug}`} />
+                <meta name="twitter:title" content={invitationTitle} />
+                <meta name="twitter:description" content={invitationDesc} />
+                <meta name="twitter:image" content={ogImageUrl} />
+
+                {/* JSON-LD Structured Data */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                />
             </Head>
 
             {/* Airbnb-style Sticky Header */}
@@ -811,10 +847,15 @@ export default function PublicWeddingPage({ wedding }: { wedding: PublicWeddingD
     );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ params, query, locale }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params, query, locale, req }) => {
     try {
         const { slug } = params as { slug: string };
         const { guest } = query as { guest?: string };
+        
+        // Determine base URL for OG tags
+        const protocol = req.headers["x-forwarded-proto"] || "http";
+        const host = req.headers.host || "localhost:3000";
+        const baseUrl = `${protocol}://${host}`;
         
         let preloadedGuest = null;
         if (guest) {
@@ -839,7 +880,10 @@ export const getServerSideProps: GetServerSideProps = async ({ params, query, lo
         
         return {
             props: {
-                wedding: response,
+                wedding: {
+                    ...response,
+                    baseUrl
+                },
                 ...(await serverSideTranslations(locale || "fr", ["common"])),
             },
         };

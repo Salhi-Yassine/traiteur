@@ -747,5 +747,25 @@
       "explore_more": "Explorer la Galerie des Thèmes",
       "current_theme": "Thème Actuel"
     }
+  },
+  "event": {
+    "invitation_title": "Vous êtes invités au mariage de {{bride}} & {{groom}} !",
+    "invitation_desc": "Rejoignez-nous le {{date}} à {{city}} pour célébrer notre union.",
+    "save_the_date": "Save the date",
+    "rsvp_btn": "Confirmer ma présence",
+    "programme_label": "Programme",
+    "programme_title": "Déroulement de la journée",
+    "registry_label": "Cadeaux",
+    "registry_title": "Liste de mariage",
+    "registry_desc": "Votre présence est notre plus beau cadeau. Si vous souhaitez nous gâter davantage, notre liste est disponible ici.",
+    "registry_btn": "Voir la liste",
+    "accommodation_label": "Hébergement",
+    "accommodation_title": "Où dormir",
+    "accommodation_fallback": "Des chambres ont été pré-réservées pour nos invités dans les hôtels à proximité.",
+    "ready_label": "Prêt ?",
+    "powered_by": "Propulsé par",
+    "gallery_title": "Album photo",
+    "gallery_desc": "Les photos seront disponibles après la cérémonie",
+    "gallery_photo_alt": "Photo du mariage"
   }
 }

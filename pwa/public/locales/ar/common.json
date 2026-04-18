@@ -680,6 +680,8 @@
     }
   },
   "event": {
+    "invitation_title": "أنتم مدعوون لحفل زفاف {{bride}} و {{groom}} ! ",
+    "invitation_desc": "انضموا إلينا يوم {{date}} في {{city}} للاحتفال باتحادنا.",
     "save_the_date": "احجز الموعد",
     "our_story_title": "قصتنا",
     "our_story_placeholder": "نحن متحمسون للاحتفال بهذه اللحظة الفريدة معكم. حضوركم هو أجمل هدية.",
