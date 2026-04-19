@@ -151,7 +151,7 @@ export default function RSVPFlow({ initialGuest, onComplete }: RSVPFlowProps) {
                                             <p className="text-xs text-neutral-500 mt-1">{t("rsvp.choice_yes_desc")}</p>
                                         </div>
                                     </div>
-                                    <ArrowRight className="w-5 h-5 text-neutral-300 group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0" />
+                                    <ArrowRight className="w-5 h-5 text-neutral-300 group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0 rtl:-scale-x-100" />
                                 </button>
 
                                 <button
@@ -168,7 +168,7 @@ export default function RSVPFlow({ initialGuest, onComplete }: RSVPFlowProps) {
                                             <p className="text-xs text-neutral-500 mt-1">{t("rsvp.choice_no_desc")}</p>
                                         </div>
                                     </div>
-                                    <ArrowRight className="w-5 h-5 text-neutral-300 group-hover:text-neutral-900 group-hover:translate-x-1 transition-all shrink-0" />
+                                    <ArrowRight className="w-5 h-5 text-neutral-300 group-hover:text-neutral-900 group-hover:translate-x-1 transition-all shrink-0 rtl:-scale-x-100" />
                                 </button>
                             </div>
                         </motion.div>
@@ -243,7 +243,7 @@ export default function RSVPFlow({ initialGuest, onComplete }: RSVPFlowProps) {
             
             {/* Horizontal progress bar mapping current step */}
             {step < 3 && (
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-neutral-100">
+                <div className="absolute bottom-0 start-0 w-full h-1 bg-neutral-100">
                     <motion.div 
                         initial={{ width: "0%" }}
                         animate={{ width: step === 1 ? "50%" : "100%" }}

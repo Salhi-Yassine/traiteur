@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Textarea } from "./textarea";
 import { Label } from "./label";
@@ -44,26 +45,28 @@ export const Disabled: Story = {
   },
 };
 
+const TextareaWithCharacterCount = () => {
+  const [val, setVal] = useState("");
+  const max = 2000;
+
+  return (
+    <div className="flex flex-col gap-2 w-96">
+      <Label htmlFor="counted">Vos précisions</Label>
+      <Textarea
+        id="counted"
+        rows={4}
+        value={val}
+        onChange={(e) => setVal(e.target.value)}
+        maxLength={max}
+        placeholder="Décrivez votre projet…"
+      />
+      <p className="text-xs text-neutral-400 text-end">
+        {val.length}/{max}
+      </p>
+    </div>
+  );
+};
+
 export const WithCharacterCount: Story = {
-  render: () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [val, setVal] = require("react").useState("");
-    const max = 2000;
-    return (
-      <div className="flex flex-col gap-2 w-96">
-        <Label htmlFor="counted">Vos précisions</Label>
-        <Textarea
-          id="counted"
-          rows={4}
-          value={val}
-          onChange={(e) => setVal(e.target.value)}
-          maxLength={max}
-          placeholder="Décrivez votre projet…"
-        />
-        <p className="text-xs text-neutral-400 text-end">
-          {val.length}/{max}
-        </p>
-      </div>
-    );
-  },
+  render: () => <TextareaWithCharacterCount />,
 };

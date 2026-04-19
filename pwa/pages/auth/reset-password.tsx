@@ -2,8 +2,9 @@ import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
@@ -13,7 +14,6 @@ import { AuthCard } from "../../components/auth/AuthCard";
 import { fetchApi } from "../../utils/apiClient";
 import { CheckCircle, Eye, EyeOff } from "lucide-react";
 
-// ── Page ─────────────────────────────────────────────────────────────────────
 export default function ResetPasswordPage() {
     const { t } = useTranslation("common");
     const router = useRouter();
@@ -22,36 +22,35 @@ export default function ResetPasswordPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
 
-    // Token comes from ?token= query param — same pattern as callback.tsx
     const token = router.isReady ? (router.query.token as string | undefined) : undefined;
     const tokenMissing = router.isReady && !token;
 
-    const formik = useFormik({
-        initialValues: { password: "", confirmPassword: "" },
-        validationSchema: Yup.object({
-            password: Yup.string()
-                .min(8, t("auth.password_min"))
-                .required(t("auth.required_password")),
-            confirmPassword: Yup.string()
-                .oneOf([Yup.ref("password")], t("auth.passwords_dont_match"))
-                .required(t("auth.required_password")),
-        }),
-        onSubmit: async (values, helpers) => {
-            setServerError(null);
-            try {
-                await fetchApi("/api/auth/reset-password", {
-                    method: "POST",
-                    jsonld: false,
-                    body: JSON.stringify({ token, password: values.password }),
-                });
-                setSuccess(true);
-            } catch {
-                setServerError(t("auth.reset_password_error_invalid"));
-            } finally {
-                helpers.setSubmitting(false);
-            }
-        },
+    const schema = z.object({
+        password: z.string().min(8, t("auth.password_min")),
+        confirmPassword: z.string().min(1, t("auth.required_password")),
+    }).refine((d) => d.password === d.confirmPassword, {
+        message: t("auth.passwords_dont_match"),
+        path: ["confirmPassword"],
     });
+    type FormValues = z.infer<typeof schema>;
+
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({
+        resolver: zodResolver(schema),
+    });
+
+    const onSubmit = async (values: FormValues) => {
+        setServerError(null);
+        try {
+            await fetchApi("/api/auth/reset-password", {
+                method: "POST",
+                jsonld: false,
+                body: JSON.stringify({ token, password: values.password }),
+            });
+            setSuccess(true);
+        } catch {
+            setServerError(t("auth.reset_password_error_invalid"));
+        }
+    };
 
     return (
         <>
@@ -61,37 +60,29 @@ export default function ResetPasswordPage() {
 
             <AuthCard closeHref="/auth/login" closeLabelKey="auth.back_to_login">
                 {success ? (
-                    /* ── Success state ── */
                     <div className="flex flex-col items-center text-center py-4 space-y-5">
                         <CheckCircle className="w-12 h-12 text-primary" strokeWidth={1.5} />
                         <p className="font-display text-[22px] text-neutral-900 leading-snug max-w-[380px]">
                             {t("auth.reset_password_success")}
                         </p>
                         <Link href="/auth/login" className="w-full">
-                            <Button
-                                className="w-full h-[52px] text-[15px] font-semibold rounded-xl"
-                            >
+                            <Button className="w-full h-[52px] text-[15px] font-semibold rounded-xl">
                                 {t("auth.login_btn")}
                             </Button>
                         </Link>
                     </div>
                 ) : tokenMissing ? (
-                    /* ── Invalid / missing token state ── */
                     <div className="flex flex-col items-center text-center py-4 space-y-5">
                         <p className="font-display text-[22px] text-neutral-900 leading-snug max-w-[380px]">
                             {t("auth.reset_password_error_invalid")}
                         </p>
                         <Link href="/auth/forgot-password" className="w-full">
-                            <Button
-                                variant="secondary"
-                                className="w-full h-[52px] text-[15px] font-semibold rounded-xl"
-                            >
+                            <Button variant="secondary" className="w-full h-[52px] text-[15px] font-semibold rounded-xl">
                                 {t("auth.forgot_password_btn")}
                             </Button>
                         </Link>
                     </div>
                 ) : (
-                    /* ── Form state ── */
                     <>
                         <p className="font-display text-[26px] text-neutral-900 leading-tight mb-3">
                             {t("auth.reset_password_title")}
@@ -109,18 +100,14 @@ export default function ResetPasswordPage() {
                             </div>
                         )}
 
-                        <form onSubmit={formik.handleSubmit} noValidate className="space-y-4">
+                        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
                             <FloatingInput
                                 id="password"
                                 label={t("auth.password_label")}
                                 type={showPassword ? "text" : "password"}
                                 autoComplete="new-password"
-                                {...formik.getFieldProps("password")}
-                                error={
-                                    formik.touched.password && formik.errors.password
-                                        ? formik.errors.password
-                                        : undefined
-                                }
+                                {...register("password")}
+                                error={errors.password?.message}
                                 trailingSlot={
                                     <button
                                         type="button"
@@ -138,12 +125,8 @@ export default function ResetPasswordPage() {
                                 label={t("auth.confirm_password_label")}
                                 type={showConfirm ? "text" : "password"}
                                 autoComplete="new-password"
-                                {...formik.getFieldProps("confirmPassword")}
-                                error={
-                                    formik.touched.confirmPassword && formik.errors.confirmPassword
-                                        ? formik.errors.confirmPassword
-                                        : undefined
-                                }
+                                {...register("confirmPassword")}
+                                error={errors.confirmPassword?.message}
                                 trailingSlot={
                                     <button
                                         type="button"
@@ -158,8 +141,8 @@ export default function ResetPasswordPage() {
 
                             <Button
                                 type="submit"
-                                disabled={formik.isSubmitting}
-                                loading={formik.isSubmitting}
+                                disabled={isSubmitting}
+                                loading={isSubmitting}
                                 className="w-full h-[52px] mt-2 text-[15px] font-semibold rounded-xl"
                             >
                                 {t("auth.reset_password_btn")}

@@ -217,7 +217,9 @@
     "confirm": "تأكيد",
     "no_results": "لا نتائج",
     "no_results_desc": "حاول توسيع معايير البحث.",
-    "view": "عرض"
+    "view": "عرض",
+    "prev_page": "السابق",
+    "next_page": "التالي"
   },
   "errors": {
     "something_went_wrong": "حدث خطأ ما. حاول مرة أخرى.",
@@ -443,7 +445,9 @@
       "available": "متاح",
       "selected": "مختار",
       "unavailable": "غير متاح"
-    }
+    },
+    "link_copied": "تم نسخ الرابط!",
+    "share_text": "اكتشف {name} على Farah.ma"
   },
   "filters": {
     "title": "الفلاتر",
@@ -468,7 +472,9 @@
     },
     "help_title": "تحتاج مساعدة؟",
     "help_desc": "خبراؤنا يساعدونك في إيجاد أفضل المزودين وفق معاييرك.",
-    "contact_us": "تواصل مع خبير"
+    "contact_us": "تواصل مع خبير",
+    "grid_view": "عرض شبكي",
+    "list_view": "عرض قائمة"
   },
   "categories_page": {
     "title": "جميع الفئات",
@@ -712,5 +718,33 @@
     "accommodation_fallback": "تم حجز غرف مسبقاً لضيوفنا في الفنادق المجاورة.",
     "ready_label": "مستعد؟",
     "powered_by": "مدعوم من"
+  },
+  "quote_modal": {
+    "header_label": "طلب عرض سعر",
+    "header_title": "احجز {{name}}",
+    "header_desc": "أملأ هذا النموذج لتلقي عرض مخصص.",
+    "event_type_label": "نوع المناسبة",
+    "event_type_placeholder": "اختر…",
+    "event_type_required": "يرجى اختيار نوع المناسبة",
+    "event_type_wedding": "زفاف",
+    "event_type_engagement": "خطوبة",
+    "event_type_haqiqa": "سبوع",
+    "event_type_henna": "ليلة الحناء",
+    "event_type_reception": "حفل استقبال",
+    "event_type_other": "أخرى",
+    "date_label": "التاريخ المطلوب",
+    "date_required": "التاريخ مطلوب",
+    "date_future": "يجب أن يكون التاريخ في المستقبل",
+    "guests_label": "عدد المدعوين",
+    "guests_min": "على الأقل ضيف واحد",
+    "guests_max": "10,000 ضيف كحد أقصى",
+    "budget_label": "الميزانية التقديرية (درهم)",
+    "budget_placeholder": "مثال: 80,000",
+    "message_label": "تفاصيل إضافية",
+    "message_placeholder": "الطابع، الخدمات المطلوبة، الأسئلة…",
+    "message_min": "الرسالة قصيرة جداً (10 أحرف على الأقل)",
+    "submit": "إرسال طلبي",
+    "submitting": "جاري الإرسال…",
+    "success": "تم إرسال طلب عرض السعر بنجاح!"
   }
 }

@@ -61,7 +61,7 @@ export const TemplateCard = ({
             >
                 {/* Scroll Wrapper: Replicates the hovering scroll (Parallax effect) */}
                 <div className="w-full h-full relative overflow-hidden group-hover:[&>.scroll-container]:-translate-y-1/2">
-                    <div className="scroll-container w-full h-[200%] transition-transform duration-[3000ms] ease-out absolute top-0 left-0 bg-neutral-100">
+                    <div className="scroll-container w-full h-[200%] transition-transform duration-[3000ms] ease-out absolute top-0 start-0 bg-neutral-100">
                         {/* Hero Section Mockup - Dynamic live rendering */}
                         <div className={cn("w-full h-1/2 relative flex flex-col items-center justify-center p-6 text-center shadow-lg", getThemeStyles(id))}>
                             {imageSrc && (

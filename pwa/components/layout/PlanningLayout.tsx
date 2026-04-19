@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 interface PlanningLayoutProps {
     children: React.ReactNode;
@@ -49,54 +50,63 @@ export default function PlanningLayout({ children, title, description }: Plannin
     if (isLoading || !user) return <div className="min-h-screen bg-neutral-100" />;
 
     return (
-        <div className="bg-neutral-100 min-h-screen pb-20">
+        <div className="bg-[#F7F7F7] min-h-screen pb-20">
             <Navbar />
             
             <div className="pt-24 lg:pt-32">
                 <div className="container mx-auto px-6 max-w-7xl">
-                    <div className="flex flex-col lg:flex-row gap-10">
+                    <div className="flex flex-col lg:flex-row gap-12">
                         {/* Sidebar Navigation */}
-                        <aside className="lg:w-72 shrink-0">
-                            <div className="sticky top-32 space-y-2">
-                                <div className="px-6 py-4 mb-4">
-                                    <h2 className="font-display font-black text-2xl text-neutral-900">
+                        <aside className="lg:w-80 shrink-0">
+                            <div className="sticky top-32 space-y-4">
+                                <div className="px-6 py-2 mb-2">
+                                    <h2 className="font-display font-black text-3xl text-neutral-900 leading-tight">
                                         {t("nav.my_wedding")}
                                     </h2>
-                                    <p className="text-neutral-500 text-xs font-bold uppercase tracking-widest mt-1">
+                                    <p className="text-[#717171] text-[11px] font-bold uppercase tracking-widest mt-2">
                                         {t("nav.mgmt_desc")}
                                     </p>
                                 </div>
-                                <nav className="space-y-1">
+                                <nav className="space-y-2">
                                     {NAV_LINKS.map((link) => {
                                         const isActive = router.pathname === link.href;
                                         return (
                                             <Link
                                                 key={link.href}
                                                 href={link.href}
-                                                className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all group ${
+                                                className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all duration-300 group ${
                                                     isActive 
-                                                    ? "bg-neutral-900 text-white shadow-3" 
-                                                    : "text-neutral-700 hover:bg-white hover:text-neutral-900 hover:translate-x-1"
+                                                    ? "bg-white text-neutral-900 shadow-2 border border-neutral-100" 
+                                                    : "text-[#717171] hover:bg-white/50 hover:text-neutral-900 hover:translate-x-1"
                                                 }`}
                                             >
-                                                <div className={`${isActive ? "text-[var(--color-accent)]" : "text-[var(--color-charcoal-400)] group-hover:text-[var(--color-accent)]"}`}>
+                                                <div className={cn(
+                                                    "transition-colors",
+                                                    isActive ? "text-primary" : "text-[#B0B0B0] group-hover:text-primary"
+                                                )}>
                                                     {link.icon}
                                                 </div>
-                                                {link.label}
+                                                <span className="text-[15px]">{link.label}</span>
                                             </Link>
                                         );
                                     })}
                                 </nav>
 
-                                {/* Quick tips / Decoration Card */}
-                                <div className="mt-12 p-8 rounded-xl bg-primary text-white relative overflow-hidden group shadow-3">
-                                    <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                                    <h4 className="font-display font-bold text-xl mb-3 relative z-10">{t("nav.need_help")}</h4>
-                                    <p className="text-white/80 text-sm leading-relaxed mb-6 font-medium relative z-10">
+                                {/* Expert Help Center Card */}
+                                <div className="mt-8 p-10 rounded-[2.5rem] bg-neutral-900 text-white relative overflow-hidden group shadow-3">
+                                    <div className="absolute top-0 end-0 w-32 h-32 bg-primary/20 rounded-full -me-16 -mt-16 blur-3xl group-hover:scale-150 transition-transform duration-1000" />
+                                    <h4 className="font-display font-bold text-2xl mb-4 relative z-10">{t("nav.need_help")}</h4>
+                                    <p className="text-white/60 text-[14px] leading-relaxed mb-8 font-medium relative z-10">
                                         {t("nav.help_desc")}
                                     </p>
-                                    <Link href="/vendors" className="relative z-10 text-white font-black text-xs uppercase tracking-widest hover:underline">
-                                        {t("nav.see_experts")} →
+                                    <Link 
+                                        href="/vendors" 
+                                        className="relative z-10 flex items-center gap-2 text-white font-black text-[12px] uppercase tracking-widest group-hover:text-primary transition-colors"
+                                    >
+                                        {t("nav.see_experts")}
+                                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary group-hover:translate-x-1 transition-all">
+                                            →
+                                        </div>
                                     </Link>
                                 </div>
                             </div>

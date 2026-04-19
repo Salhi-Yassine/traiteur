@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Gesdinet\JWTRefreshTokenBundle\Generator\RefreshTokenGeneratorInterface;
+use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,8 +22,8 @@ use Symfony\Component\Routing\Attribute\Route;
  *
  * Flow:
  *   1. GET /auth/google          → redirect to Google consent screen
- *   2. GET /auth/google/callback → exchange code, find/create user, issue JWT
- *                                  then redirect to {FRONTEND_URL}/auth/callback?token=JWT
+ *   2. GET /auth/google/callback → exchange code, find/create user, issue JWT + refresh token
+ *                                  then redirect to {FRONTEND_URL}/auth/callback?token=JWT&refresh_token=...
  */
 class GoogleAuthController extends AbstractController
 {
@@ -31,8 +33,12 @@ class GoogleAuthController extends AbstractController
         private readonly EntityManagerInterface $em,
         private readonly JWTTokenManagerInterface $jwtManager,
         private readonly UserPasswordHasherInterface $hasher,
+        private readonly RefreshTokenGeneratorInterface $refreshTokenGenerator,
+        private readonly RefreshTokenManagerInterface $refreshTokenManager,
         #[Autowire(env: 'FRONTEND_URL')]
         private readonly string $frontendUrl,
+        #[Autowire('%env(int:REFRESH_TOKEN_TTL)%')]
+        private readonly int $refreshTokenTtl,
     ) {
     }
 
@@ -47,8 +53,8 @@ class GoogleAuthController extends AbstractController
 
     /**
      * Google sends the user back here after consent.
-     * We find or create the local User, issue a Lexik JWT, then redirect to the
-     * Next.js frontend with the token in the query string so the PWA can store it.
+     * We find or create the local User, issue a Lexik JWT and a refresh token,
+     * then redirect to the Next.js frontend with both tokens in the query string.
      */
     #[Route('/auth/google/callback', name: 'auth_google_callback', methods: ['GET'])]
     public function callback(Request $request): Response
@@ -59,7 +65,6 @@ class GoogleAuthController extends AbstractController
                 ->getClient('google')
                 ->fetchUser();
         } catch (\Exception $e) {
-            // Pass the error message to the frontend callback so it's visible during dev
             return new RedirectResponse(
                 $this->frontendUrl.'/auth/callback?error='.urlencode($e->getMessage())
             );
@@ -102,8 +107,15 @@ class GoogleAuthController extends AbstractController
 
             $token = $this->jwtManager->create($user);
 
+            // Issue a refresh token for the OAuth user (the gesdinet listener only fires
+            // on password-login success, not on manually created JWTs)
+            $refreshToken = $this->refreshTokenGenerator->createForUserWithTtl($user, $this->refreshTokenTtl);
+            $this->refreshTokenManager->save($refreshToken);
+
             return new RedirectResponse(
-                $this->frontendUrl.'/auth/callback?token='.urlencode($token)
+                $this->frontendUrl
+                .'/auth/callback?token='.urlencode($token)
+                .'&refresh_token='.urlencode($refreshToken->getRefreshToken() ?? '')
             );
         } catch (\Exception $e) {
             return new RedirectResponse(

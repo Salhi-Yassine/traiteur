@@ -2,6 +2,7 @@ import { useTranslation } from "next-i18next";
 import Head from "next/head";
 import PlanningLayout from "../../components/layout/PlanningLayout";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "../../utils/apiClient";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -9,12 +10,15 @@ import type { GetServerSideProps } from "next";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { Label } from "../../components/ui/label";
+import { Wallet, TrendingUp, Plus, PieChart, ArrowUpRight, Trash2 } from "lucide-react";
 
 interface BudgetItem {
     id: number;
+    title: string;
     category: string;
-    budgetedAmount: number;
+    estimatedAmount: number;
     spentAmount: number;
+    isPaid: boolean;
 }
 
 interface WeddingProfile {
@@ -26,15 +30,15 @@ export default function BudgetPage() {
     const { t } = useTranslation("common");
     const queryClient = useQueryClient();
     const [isAdding, setIsAdding] = useState(false);
-    const [newItem, setNewItem] = useState({ category: "", budgetedAmount: 0 });
+    const [newItem, setNewItem] = useState({ title: "", category: "", estimatedAmount: 0 });
 
     const { data: profileData } = useQuery({
         queryKey: ["weddingProfile"],
         queryFn: () => apiClient.get("/api/wedding_profiles?itemsPerPage=1"),
     });
 
-    const profile: WeddingProfile | null = profileData?.["hydra:member"]?.[0] ?? null;
-    const profileId = profile?.id ?? null;
+    const wp: WeddingProfile | null = (profileData as any)?.["hydra:member"]?.[0] ?? null;
+    const profileId = wp?.id ?? null;
 
     const { data: budgetData } = useQuery({
         queryKey: ["budgetItems", profileId],
@@ -42,16 +46,16 @@ export default function BudgetPage() {
         enabled: profileId !== null,
     });
 
-    const items: BudgetItem[] = budgetData?.["hydra:member"] ?? [];
-    const totalBudget = profile?.totalBudgetMad ?? 0;
+    const items: BudgetItem[] = (budgetData as any)?.["hydra:member"] ?? [];
+    const totalBudget = wp?.totalBudgetMad ?? 0;
 
     const addMutation = useMutation({
-        mutationFn: (data: { category: string; budgetedAmount: number; weddingProfile: string; spentAmount: number; displayOrder: number }) =>
+        mutationFn: (data: { title: string; category: string; estimatedAmount: number; weddingProfile: string; spentAmount: number; isPaid: boolean }) =>
             apiClient.post("/api/budget_items", data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["budgetItems", profileId] });
             setIsAdding(false);
-            setNewItem({ category: "", budgetedAmount: 0 });
+            setNewItem({ title: "", category: "", estimatedAmount: 0 });
         },
     });
 
@@ -67,18 +71,12 @@ export default function BudgetPage() {
             ...newItem,
             weddingProfile: `/api/wedding_profiles/${profileId}`,
             spentAmount: 0,
-            displayOrder: items.length,
+            isPaid: false,
         });
     };
 
-    const handleDeleteItem = (id: number) => {
-        if (!window.confirm(t("budget.delete_confirm"))) return;
-        deleteMutation.mutate(id);
-    };
-
     const totalSpent = items.reduce((acc, curr) => acc + curr.spentAmount, 0);
-    const totalBudgeted = items.reduce((acc, curr) => acc + curr.budgetedAmount, 0);
-    const remainingBudget = totalBudget - totalSpent;
+    const progressPercent = totalBudget > 0 ? Math.min((totalSpent / totalBudget) * 100, 100) : 0;
 
     return (
         <PlanningLayout
@@ -89,152 +87,169 @@ export default function BudgetPage() {
                 <title>{t("nav.budget")} — Farah.ma</title>
             </Head>
 
-            {/* Summary Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-                <div className="bg-white p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">{t("budget.summary_total")}</p>
-                    <div className="flex items-end gap-2 text-[var(--color-primary)]">
-                        <span className="text-3xl font-black">{totalBudget.toLocaleString()}</span>
-                        <span className="text-sm font-bold mb-1.5 opacity-60">{t("common.currency")}</span>
+            {/* Premium Financial Overview */}
+            <div className="bg-neutral-900 p-12 md:p-16 rounded-[3rem] text-white shadow-3 mb-12 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
+                
+                <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-12">
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-2 text-primary font-bold text-[13px] uppercase tracking-widest">
+                            <Wallet size={16} />
+                            Financial Hub
+                        </div>
+                        <h3 className="font-display text-5xl md:text-6xl">{t("budget.summary_title")}</h3>
+                        <div className="flex items-center gap-6">
+                            <div>
+                                <p className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-1">Total Spent</p>
+                                <span className="text-3xl font-black text-white">{totalSpent.toLocaleString()} MAD</span>
+                            </div>
+                            <div className="w-px h-10 bg-white/10" />
+                            <div>
+                                <p className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-1">Remaining</p>
+                                <span className="text-3xl font-black text-primary">{(totalBudget - totalSpent).toLocaleString()} MAD</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div className="bg-white p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">{t("budget.summary_spent")}</p>
-                    <div className="flex items-end gap-2 text-[var(--color-accent)]">
-                        <span className="text-3xl font-black">{totalSpent.toLocaleString()}</span>
-                        <span className="text-sm font-bold mb-1.5 opacity-60">{t("common.currency")}</span>
-                    </div>
-                </div>
-                <div className="bg-[var(--color-primary)] p-8 rounded-[2.5rem] shadow-xl shadow-[var(--color-primary)]/10 text-white">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-2">{t("budget.summary_remaining")}</p>
-                    <div className="flex items-end gap-2">
-                        <span className="text-3xl font-black">{remainingBudget.toLocaleString()}</span>
-                        <span className="text-sm font-bold mb-1.5 opacity-60">{t("common.currency")}</span>
+
+                    {/* Circular Chart */}
+                    <div className="flex items-center gap-10 bg-white/5 p-8 rounded-[2.5rem] backdrop-blur-md border border-white/10">
+                        <div className="relative w-32 h-32 flex items-center justify-center">
+                            <svg className="w-full h-full transform -rotate-90">
+                                <circle cx="64" cy="64" r="56" stroke="currentColor" strokeWidth="10" fill="transparent" className="text-white/10" />
+                                <circle cx="64" cy="64" r="56" stroke="currentColor" strokeWidth="10" fill="transparent" strokeDasharray={352} strokeDashoffset={352 - (352 * progressPercent) / 100} strokeLinecap="round" className="text-primary transition-all duration-1000" />
+                            </svg>
+                            <span className="absolute text-2xl font-black">{Math.round(progressPercent)}%</span>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                                <TrendingUp size={16} className="text-primary" />
+                                <span className="text-sm font-bold">{t("budget.total_label")}:</span>
+                            </div>
+                            <p className="text-2xl font-black text-white">{totalBudget.toLocaleString()} MAD</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* Delete error */}
-            {deleteMutation.isError && (
-                <div className="mb-6 px-6 py-4 rounded-2xl bg-red-50 border border-red-100 text-red-600 text-sm font-bold">
-                    {t("budget.error_delete")}
-                </div>
-            )}
+            {/* Action Bar */}
+            <div className="flex items-center justify-between px-4 mb-8">
+                <h4 className="font-display text-3xl text-neutral-900">{t("budget.items_title")}</h4>
+                <Button
+                    onClick={() => setIsAdding(true)}
+                    className="rounded-full px-10 h-14 font-black text-[13px] uppercase shadow-xl shadow-primary/20"
+                >
+                    <Plus size={18} className="mr-2" />
+                    {t("budget.add_item")}
+                </Button>
+            </div>
 
-            {/* Budget Table / List */}
-            <div className="bg-white rounded-[2.5rem] border border-[var(--color-charcoal-100)] overflow-hidden shadow-sm">
-                <div className="px-10 py-8 border-b border-[var(--color-background)] flex items-center justify-between">
-                    <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">{t("budget.postes_title")}</h3>
-                    <Button
-                        onClick={() => setIsAdding(true)}
-                        className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-lg shadow-[var(--color-accent)]/20 h-auto"
-                    >
-                        + {t("budget.add_poste")}
-                    </Button>
-                </div>
-
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-[var(--color-background)]/50">
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("budget.col_category")}</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-end">{t("budget.col_budgeted")}</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-end">{t("budget.col_paid")}</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-end">{t("budget.col_actions")}</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[var(--color-background)]">
-                            {items.length === 0 && (
-                                <tr>
-                                    <td colSpan={4} className="px-10 py-20 text-center text-[var(--color-charcoal-400)] italic font-medium">
-                                        {t("budget.empty")}
-                                    </td>
-                                </tr>
-                            )}
-                            {items.map((item) => (
-                                <tr key={item.id} className="hover:bg-[var(--color-background)]/30 transition-colors group">
-                                    <td className="px-10 py-6 font-bold text-[var(--color-primary)]">{item.category}</td>
-                                    <td className="px-10 py-6 text-end font-bold text-[var(--color-charcoal-600)]">{item.budgetedAmount.toLocaleString()} MAD</td>
-                                    <td className="px-10 py-6 text-end font-black text-[var(--color-accent)]">{item.spentAmount.toLocaleString()} MAD</td>
-                                    <td className="px-10 py-6 text-end">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => handleDeleteItem(item.id)}
-                                            className="text-[var(--color-charcoal-300)] hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-                                        >
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                        {items.length > 0 && (
-                            <tfoot className="bg-[var(--color-background)]/20">
-                                <tr>
-                                    <td className="px-10 py-6 font-black text-[var(--color-primary)] uppercase tracking-widest text-xs">{t("budget.totals")}</td>
-                                    <td className="px-10 py-6 text-end font-black text-[var(--color-primary)]">{totalBudgeted.toLocaleString()} MAD</td>
-                                    <td className="px-10 py-6 text-end font-black text-[var(--color-accent)]">{totalSpent.toLocaleString()} MAD</td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        )}
-                    </table>
-                </div>
+            {/* Budget Grid */}
+            <div className="bg-white rounded-[3rem] border border-neutral-100 overflow-hidden shadow-sm divide-y divide-neutral-50">
+                {items.length === 0 ? (
+                    <div className="p-20 text-center space-y-4">
+                        <div className="w-20 h-20 rounded-full bg-neutral-50 border border-neutral-100 flex items-center justify-center mx-auto text-[#B0B0B0]">
+                            <PieChart size={32} />
+                        </div>
+                        <p className="text-[#717171] font-medium text-lg italic">{t("budget.empty")}</p>
+                    </div>
+                ) : (
+                    items.map((item) => (
+                        <div key={item.id} className="group flex items-center justify-between px-10 py-8 hover:bg-[#F7F7F7]/50 transition-all">
+                            <div className="flex items-center gap-8">
+                                <div className="w-14 h-14 rounded-2xl bg-neutral-100 flex items-center justify-center text-neutral-900 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
+                                    <ArrowUpRight size={24} />
+                                </div>
+                                <div>
+                                    <h4 className="text-[19px] font-bold text-neutral-900 group-hover:text-primary transition-colors">
+                                        {item.title}
+                                    </h4>
+                                    <div className="flex items-center gap-3 mt-1.5">
+                                        <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-neutral-100 text-[#717171] rounded-full">
+                                            {t(`budget.categories.${item.category}`)}
+                                        </span>
+                                        {item.isPaid && (
+                                            <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-green-500/10 text-green-500 rounded-full">
+                                                Paid
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="flex items-center gap-12">
+                                <div className="text-right">
+                                    <p className="text-2xl font-black text-neutral-900">{item.spentAmount.toLocaleString()} MAD</p>
+                                    <p className="text-[12px] font-bold text-[#B0B0B0] uppercase tracking-wider mt-1">
+                                        Estimated: {item.estimatedAmount.toLocaleString()}
+                                    </p>
+                                </div>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => {
+                                        if (window.confirm(t("budget.delete_confirm"))) {
+                                            deleteMutation.mutate(item.id);
+                                        }
+                                    }}
+                                    className="w-12 h-12 rounded-2xl text-[#B0B0B0] hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                                >
+                                    <Trash2 size={20} />
+                                </Button>
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
 
             {/* Add Modal */}
             {isAdding && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-                    <div className="absolute inset-0 bg-[var(--color-primary)]/40 backdrop-blur-md" onClick={() => setIsAdding(false)} />
-                    <div className="relative bg-white rounded-[2.5rem] w-full max-w-md p-10 shadow-2xl border border-[var(--color-accent)]/10 animate-in fade-in zoom-in duration-300">
-                        <h3 className="font-display font-black text-2xl text-[var(--color-primary)] mb-8">{t("budget.new_poste_title")}</h3>
-
-                        {addMutation.isError && (
-                            <div className="mb-6 px-4 py-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-bold">
-                                {t("budget.error_add")}
-                            </div>
-                        )}
-
+                    <div className="absolute inset-0 bg-neutral-900/40 backdrop-blur-md" onClick={() => setIsAdding(false)} />
+                    <div className="relative bg-white rounded-[3rem] w-full max-w-lg p-12 shadow-2xl animate-in fade-in zoom-in duration-300">
+                        <h3 className="font-display text-3xl text-neutral-900 mb-8">{t("budget.new_poste_title")}</h3>
                         <form onSubmit={handleAddItem} className="space-y-6">
                             <div className="space-y-2">
-                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("budget.col_category")}</Label>
+                                <Label className="text-[11px] font-black uppercase tracking-widest text-[#717171]">Title</Label>
                                 <Input
-                                    type="text"
-                                    required
-                                    value={newItem.category}
-                                    onChange={(e) => setNewItem({...newItem, category: e.target.value})}
-                                    placeholder={t("budget.category_placeholder")}
-                                    className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] outline-none transition-all"
+                                    value={newItem.title}
+                                    onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
+                                    className="rounded-2xl h-14 bg-[#F7F7F7] border-0 focus:ring-2 focus:ring-primary"
+                                    placeholder="e.g. Negafa"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-charcoal-400)]">{t("budget.budgeted_label")}</Label>
+                                <Label className="text-[11px] font-black uppercase tracking-widest text-[#717171]">Category</Label>
                                 <Input
-                                    type="number"
-                                    required
-                                    value={newItem.budgetedAmount}
-                                    onChange={(e) => setNewItem({...newItem, budgetedAmount: Number(e.target.value)})}
-                                    className="w-full h-auto bg-[var(--color-background)] border-0.5 border-[var(--color-charcoal-100)] rounded-2xl px-6 py-4 text-sm font-bold text-[var(--color-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] outline-none transition-all"
+                                    value={newItem.category}
+                                    onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+                                    className="rounded-2xl h-14 bg-[#F7F7F7] border-0 focus:ring-2 focus:ring-primary"
+                                    placeholder="e.g. venues"
                                 />
                             </div>
-                            <div className="flex gap-4 pt-4">
+                            <div className="space-y-2">
+                                <Label className="text-[11px] font-black uppercase tracking-widest text-[#717171]">Estimated Amount (MAD)</Label>
+                                <Input
+                                    type="number"
+                                    value={newItem.estimatedAmount}
+                                    onChange={(e) => setNewItem({ ...newItem, estimatedAmount: Number(e.target.value) })}
+                                    className="rounded-2xl h-14 bg-[#F7F7F7] border-0 focus:ring-2 focus:ring-primary"
+                                />
+                            </div>
+                            <div className="flex gap-4 pt-6">
                                 <Button
                                     type="button"
                                     variant="outline"
                                     onClick={() => setIsAdding(false)}
-                                    className="flex-1 py-6 border-2 border-[var(--color-primary)] rounded-2xl text-xs font-black uppercase tracking-widest text-[var(--color-primary)] hover:bg-[var(--color-background)] transition-all"
+                                    className="flex-1 h-14 rounded-2xl border-2 font-black uppercase text-[12px]"
                                 >
                                     {t("common.cancel")}
                                 </Button>
                                 <Button
                                     type="submit"
                                     disabled={addMutation.isPending}
-                                    className="flex-1 py-6 bg-[var(--color-accent)] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-xl shadow-[var(--color-accent)]/20 disabled:opacity-60"
+                                    className="flex-1 h-14 rounded-2xl font-black uppercase text-[12px] shadow-lg shadow-primary/20"
                                 >
-                                    {addMutation.isPending ? t("common.loading") : t("common.save")}
+                                    {t("common.save")}
                                 </Button>
                             </div>
                         </form>

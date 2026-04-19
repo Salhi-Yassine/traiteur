@@ -224,7 +224,9 @@
     "confirm": "Confirm",
     "no_results": "No results",
     "no_results_desc": "Try broadening your search criteria.",
-    "view": "View"
+    "view": "View",
+    "prev_page": "Previous",
+    "next_page": "Next"
   },
   "errors": {
     "something_went_wrong": "Something went wrong. Please try again.",
@@ -396,72 +398,74 @@
     "guarantee_label": "Guarantee",
     "guarantee_text": "Farah.ma Peace of Mind",
     "gallery": {
-       "show_all": "Show all photos",
-       "title": "All photos",
-       "close": "Close"
+      "show_all": "Show all photos",
+      "title": "All photos",
+      "close": "Close"
     },
     "amenities": {
-       "title": "What this place offers",
-       "wifi": "Wifi available",
-       "ac": "Air conditioning",
-       "parking": "Free parking on site",
-       "kitchen": "Equipped kitchen",
-       "cleaning": "Cleaning service included",
-       "security": "24/7 Security",
-       "show_all": "Show amenities",
-       "show_more": "Show more",
-       "show_less": "Show less"
+      "title": "What this place offers",
+      "wifi": "Wifi available",
+      "ac": "Air conditioning",
+      "parking": "Free parking on site",
+      "kitchen": "Equipped kitchen",
+      "cleaning": "Cleaning service included",
+      "security": "24/7 Security",
+      "show_all": "Show amenities",
+      "show_more": "Show more",
+      "show_less": "Show less"
     },
     "know_before_you_go": {
-       "title": "Things to Know",
-       "house_rules": "House rules",
-       "safety": "Safety & property",
-       "cancellation": "Cancellation policy"
+      "title": "Things to Know",
+      "house_rules": "House rules",
+      "safety": "Safety & property",
+      "cancellation": "Cancellation policy"
     },
     "rules": {
-       "check_in": "Check-in: 2:00 PM - 4:00 PM",
-       "check_out": "Check-out before 11:00 AM",
-       "parties": "No loud parties after 4 AM",
-       "smoking": "No smoking indoors"
+      "check_in": "Check-in: 2:00 PM - 4:00 PM",
+      "check_out": "Check-out before 11:00 AM",
+      "parties": "No loud parties after 4 AM",
+      "smoking": "No smoking indoors"
     },
     "safety": {
-       "exits": "Emergency exits marked",
-       "alarm": "Working fire alarm",
-       "capacity": "Max capacity respected"
+      "exits": "Emergency exits marked",
+      "alarm": "Working fire alarm",
+      "capacity": "Max capacity respected"
     },
     "cancellation": {
-       "standard_desc": "Free cancellation for 48 hours after booking."
+      "standard_desc": "Free cancellation for 48 hours after booking."
     },
     "host": {
-       "meet_title": "Meet your host, {{name}}",
-       "member_since": "Member since",
-       "verified": "Identity verified",
-       "contact": "Contact via WhatsApp",
-       "contact_label": "Contact host"
+      "meet_title": "Meet your host, {{name}}",
+      "member_since": "Member since",
+      "verified": "Identity verified",
+      "contact": "Contact via WhatsApp",
+      "contact_label": "Contact host"
     },
     "location_desc": "Located in a prestigious neighborhood in {{city}}, this property is easily accessible and offers a quiet and secure environment for your guests.",
     "report_listing": "Report listing",
     "similar": {
-       "title": "Discover other options in {{city}}",
-       "view_all": "View all"
+      "title": "Discover other options in {{city}}",
+      "view_all": "View all"
     },
     "reservation": {
-       "check_in": "Check-in",
-       "check_out": "Checkout",
-       "add_date": "Add date",
-       "reserve": "Reserve",
-       "no_payment": "You won't be charged yet",
-       "service_fee": "Farah.ma service fee",
-       "total_estimated": "Total (estimated)",
-       "to_be_confirmed": "To be confirmed"
+      "check_in": "Check-in",
+      "check_out": "Checkout",
+      "add_date": "Add date",
+      "reserve": "Reserve",
+      "no_payment": "You won't be charged yet",
+      "service_fee": "Farah.ma service fee",
+      "total_estimated": "Total (estimated)",
+      "to_be_confirmed": "To be confirmed"
     },
     "availability": {
-       "title": "Availability",
-       "subtitle": "Select your event dates",
-       "available": "Available",
-       "selected": "Selected",
-       "unavailable": "Unavailable"
-    }
+      "title": "Availability",
+      "subtitle": "Select your event dates",
+      "available": "Available",
+      "selected": "Selected",
+      "unavailable": "Unavailable"
+    },
+    "link_copied": "Link copied!",
+    "share_text": "Discover {name} on Farah.ma"
   },
   "filters": {
     "title": "Filters",
@@ -486,7 +490,9 @@
     },
     "help_title": "Need help?",
     "help_desc": "Our experts help you find the perfect vendors based on your criteria.",
-    "contact_us": "Contact an expert"
+    "contact_us": "Contact an expert",
+    "grid_view": "Grid view",
+    "list_view": "List view"
   },
   "categories_page": {
     "title": "All Categories",
@@ -671,5 +677,33 @@
     "accommodation_fallback": "Rooms have been pre-reserved for our guests at nearby hotels.",
     "ready_label": "Ready?",
     "powered_by": "Powered by"
+  },
+  "quote_modal": {
+    "header_label": "Quote Request",
+    "header_title": "Book {{name}}",
+    "header_desc": "Fill in this form to receive a custom proposal.",
+    "event_type_label": "Event Type",
+    "event_type_placeholder": "Select…",
+    "event_type_required": "Please select an event type",
+    "event_type_wedding": "Wedding",
+    "event_type_engagement": "Engagement",
+    "event_type_haqiqa": "Sbouâ (Haqiqa)",
+    "event_type_henna": "Henna Party",
+    "event_type_reception": "Reception",
+    "event_type_other": "Other",
+    "date_label": "Desired Date",
+    "date_required": "Date is required",
+    "date_future": "Date must be in the future",
+    "guests_label": "Number of Guests",
+    "guests_min": "Minimum 1 guest",
+    "guests_max": "Maximum 10,000 guests",
+    "budget_label": "Estimated Budget (MAD)",
+    "budget_placeholder": "e.g. 80,000",
+    "message_label": "Your Details",
+    "message_placeholder": "Theme, services needed, questions…",
+    "message_min": "Message is too short (10 characters minimum)",
+    "submit": "Send My Request",
+    "submitting": "Sending…",
+    "success": "Your quote request was sent successfully!"
   }
 }

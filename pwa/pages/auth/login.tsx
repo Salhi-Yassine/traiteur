@@ -1,7 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
 import { useTranslation } from "next-i18next";
@@ -10,10 +11,8 @@ import type { GetServerSideProps } from "next";
 import { Button } from "../../components/ui/button";
 import { FloatingInput } from "../../components/ui/floating-input";
 import { AuthCard } from "../../components/auth/AuthCard";
-import { cn } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
 
-// ── Google logo (official brand colours) ────────────────────────────────────
 function GoogleIcon() {
     return (
         <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" aria-hidden="true">
@@ -25,7 +24,6 @@ function GoogleIcon() {
     );
 }
 
-// ── "── ou ──" separator ─────────────────────────────────────────────────────
 function OrDivider({ label }: { label: string }) {
     return (
         <div className="relative flex items-center my-5" role="separator" aria-label={label}>
@@ -36,36 +34,31 @@ function OrDivider({ label }: { label: string }) {
     );
 }
 
-// ── Validation ───────────────────────────────────────────────────────────────
-const validationSchema = (t: (key: string) => string) =>
-    Yup.object({
-        email:    Yup.string().email(t("auth.invalid_email")).required(t("auth.required_email")),
-        password: Yup.string().required(t("auth.required_password")),
-    });
-
-// ── Page ─────────────────────────────────────────────────────────────────────
 export default function LoginPage() {
     const { t } = useTranslation("common");
     const { login } = useAuth();
     const [serverError, setServerError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
 
-    const formik = useFormik({
-        initialValues: { email: "", password: "" },
-        validationSchema: validationSchema(t),
-        onSubmit: async (values, helpers) => {
-            setServerError(null);
-            try {
-                await login({ email: values.email, password: values.password });
-            } catch (err: any) {
-                const msg = err instanceof Error ? err.message : null;
-                setServerError(msg || t("auth.login_error"));
-                helpers.setErrors({ email: " " });
-            } finally {
-                helpers.setSubmitting(false);
-            }
-        },
+    const schema = z.object({
+        email:    z.string().email(t("auth.invalid_email")),
+        password: z.string().min(1, t("auth.required_password")),
     });
+    type FormValues = z.infer<typeof schema>;
+
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({
+        resolver: zodResolver(schema),
+    });
+
+    const onSubmit = async (values: FormValues) => {
+        setServerError(null);
+        try {
+            await login({ email: values.email, password: values.password });
+        } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : null;
+            setServerError(msg || t("auth.login_error"));
+        }
+    };
 
     return (
         <>
@@ -88,31 +81,22 @@ export default function LoginPage() {
                     </div>
                 )}
 
-                {/* Google OAuth */}
-                <AuthCard.SocialButton
-                    href="/api/auth/google"
-                    onClick={() => {}}
-                >
+                <AuthCard.SocialButton href="/api/auth/google" onClick={() => {}}>
                     <GoogleIcon />
                     {t("auth.continue_with_google")}
                 </AuthCard.SocialButton>
 
                 <OrDivider label={t("auth.or")} />
 
-                <form onSubmit={formik.handleSubmit} noValidate className="space-y-4">
-
+                <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
                     <FloatingInput
                         id="email"
                         label={t("auth.email_label")}
                         type="email"
                         autoComplete="email"
                         autoFocus
-                        {...formik.getFieldProps("email")}
-                        error={
-                            formik.touched.email && formik.errors.email?.trim()
-                                ? formik.errors.email
-                                : undefined
-                        }
+                        {...register("email")}
+                        error={errors.email?.message}
                     />
 
                     <div className="space-y-1">
@@ -121,12 +105,8 @@ export default function LoginPage() {
                             label={t("auth.password_label")}
                             type={showPassword ? "text" : "password"}
                             autoComplete="current-password"
-                            {...formik.getFieldProps("password")}
-                            error={
-                                formik.touched.password && formik.errors.password
-                                    ? formik.errors.password
-                                    : undefined
-                            }
+                            {...register("password")}
+                            error={errors.password?.message}
                             trailingSlot={
                                 <button
                                     type="button"
@@ -150,8 +130,8 @@ export default function LoginPage() {
 
                     <Button
                         type="submit"
-                        disabled={formik.isSubmitting}
-                        loading={formik.isSubmitting}
+                        disabled={isSubmitting}
+                        loading={isSubmitting}
                         className="w-full h-[52px] mt-2 text-[15px] font-semibold rounded-xl"
                     >
                         {t("auth.login_btn")}

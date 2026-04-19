@@ -6,6 +6,79 @@
 
 ## 2026-04-18
 
+### RTL audit — full sweep (2026-04-18)
+- [2026-04-18] `components/quotes/QuoteRequestModal.tsx` — 8× `pl-4` → `ps-4` on form labels and error messages
+- [2026-04-18] `components/vendors/SearchBar.tsx` — 2× `pr-0.5` → `pe-0.5` on scroll containers
+- [2026-04-18] `components/guest/RSVPFlow.tsx` — 2× `ArrowRight` icons: added `rtl:-scale-x-100`
+- [2026-04-18] `components/guest/RSVPSearchWidget.tsx` — `ArrowRight`: added `rtl:-scale-x-100`
+- [2026-04-18] `pages/dashboard/vendor.tsx` — `ChevronRight` nav link: added `rtl:-scale-x-100`
+- [2026-04-18] `pages/e/[slug].tsx` — `ChevronLeft` + `ChevronRight` carousel controls: added `rtl:-scale-x-100`
+- [2026-04-18] `components/layout/PlanningLayout.tsx` — decorative blob: `right-0 -mr-12` → `end-0 -me-12`
+- [2026-04-18] `pages/mariage/index.tsx` — decorative blob: `right-0 -mr-32` → `end-0 -me-32`
+
+### Tech debt & RTL refactor (2026-04-18)
+- [2026-04-18] `pwa/components/ui/select.tsx` — RTL: `pl-2 pr-8` → `ps-2 pe-8`, `right-2` → `end-2` on SelectItem
+- [2026-04-18] `pwa/components/layout/Navbar.tsx` — RTL: fixed mobile drawer close animation (`translate-x-full` → `translate-x-full rtl:-translate-x-full`); removed duplicate `aria-label` attribute on drawer dialog
+- [2026-04-18] `pwa/lib/useVendorFilters.ts` — extracted all filter state + handlers from 658-line vendors page into a reusable hook; `SortKey` type exported from hook
+- [2026-04-18] `pwa/pages/vendors/index.tsx` — replaced inline filter state with `useVendorFilters` hook; page reduced ~80 lines
+- [2026-04-18] `api/src/Repository/ReviewRepository.php` — added `computeStats(VendorProfile)` returning avg + count in one query
+- [2026-04-18] `api/src/Service/ReviewAggregationService.php` — created; calls `computeStats` and updates `averageRating` + `reviewCount` on VendorProfile
+- [2026-04-18] `api/src/State/ReviewProcessor.php` — injected `ReviewAggregationService` + remove processor; recalculates stats after both POST and DELETE
+- [2026-04-18] `api/src/Entity/Review.php` — wired `ReviewProcessor` to the Delete operation (was missing)
+- [2026-04-18] `Makefile` — fixed `remove-migration-files`: `find $(PROJECT_DIR)/migrations` (ran on host) → `$(EXEC_PHP) find /app/migrations` (runs in container)
+- [2026-04-18] `pwa/pages/_document.tsx` — confirmed SSR `dir`/`lang` already correct via `__NEXT_DATA__.locale`; no change needed
+
+### Phase A tooling improvements — quick wins (2026-04-19)
+- [2026-04-19] `pwa/pages/_app.tsx` — wired `ErrorBoundary` around app root; added `ReactQueryDevtools` (dev-only, lazy import)
+- [2026-04-19] `Makefile` — removed `remove-migration-files` from `full-migrat` target (was silently deleting migration history)
+- [2026-04-19] `pwa/.eslintrc.json` — extended with `@typescript-eslint/recommended`; added `@typescript-eslint/no-explicit-any: error` and `import/order` rules
+- [2026-04-19] `pwa/package.json` — replaced `formik + yup` with `react-hook-form + zod + @hookform/resolvers`; added `vitest`, `@testing-library/react`, `@testing-library/jest-dom`, `jsdom`, `vite`; added `test`, `test:watch`, `test:ui` scripts
+- [2026-04-19] Migrated all 7 forms from Formik → React Hook Form + Zod: `auth/login.tsx`, `auth/register.tsx`, `auth/forgot-password.tsx`, `auth/reset-password.tsx`, `account/profile.tsx`, `onboarding/couple.tsx`, `quotes/QuoteRequestModal.tsx`
+- [2026-04-19] `pwa/components/quotes/QuoteRequestModal.tsx` — replaced raw `fetch()` with `apiClient.post()`; replaced all hardcoded French strings with `t()` calls; replaced `alert()` with `toast.success()` (sonner)
+- [2026-04-19] All 4 locale files — added `quote_modal.*` keys (17 keys each: header, event types, validation messages, submit states) and `common.close`, `common.cancel`
+- [2026-04-19] `pwa/vitest.config.ts` — created Vitest config (jsdom environment, globals, @/ alias)
+- [2026-04-19] `pwa/tests/setup.ts` — created test setup with `@testing-library/jest-dom` matchers
+- [2026-04-19] `pwa/tests/apiClient.test.ts` — created 16 unit tests covering: token helpers (set/get/remove), ApiError class, fetchApi (200/204/422/404), Authorization header, Accept-Language, silent refresh (no token → logout, valid refresh → retry + token rotation, invalid refresh → logout)
+
+### Deep refactor pass — clean code, system design, best practices (2026-04-19)
+- [2026-04-19] `api/src/Voter/VendorProfileVoter.php` — created; implements `profile:create` (vendor-only), `profile:edit` (owner or admin), `profile:view` (public); fixes silent deny that was blocking all vendor profile creation/editing
+- [2026-04-19] `api/src/Voter/QuoteRequestVoter.php` — created; `quote:create` (any auth), `quote:view` (client or vendor), `quote:manage` (vendor or admin)
+- [2026-04-19] `api/src/State/QuoteRequestProcessor.php` — created; auto-sets authenticated user as `client` on POST (mirrors ReviewProcessor pattern)
+- [2026-04-19] `api/src/Entity/QuoteRequest.php` — added 4 ORM indexes (vendor_profile_id, client_id, status, created_at); wired QuoteRequestProcessor; wired QuoteRequestVoter security attributes
+- [2026-04-19] `api/src/Entity/VendorProfile.php` — added 4 indexes (avg_rating, review_count, created_at, is_verified); `#[Assert\Url]` on coverImageUrl; whatsapp regex + length=20; minGuests/maxGuests: varchar→smallint + Range + GreaterThanOrEqual; `@internal` docblock on aggregate setters
+- [2026-04-19] `api/src/Entity/Review.php` — added ORM index on created_at
+- [2026-04-19] `api/src/Entity/WeddingProfile.php` — added ORM indexes on user_id and slug
+- [2026-04-19] `api/src/Entity/User.php` — phone length 30→20, added Regex constraint
+- [2026-04-19] `api/migrations/Version20260419002303.php` — executed; PostgreSQL-safe varchar→smallint cast (`DROP DEFAULT` + `USING ::SMALLINT`); all new indexes applied
+- [2026-04-19] `pwa/constants/paths.ts` — created; centralized `PATHS` object for all app routes (type-safe `AppPath` union type)
+- [2026-04-19] `pwa/utils/fetchServerSide.ts` — created; SSR-safe fetch wrapper (no localStorage) for use in `getServerSideProps`/`getStaticProps`
+- [2026-04-19] `pwa/components/ui/ErrorBoundary.tsx` — created; class component with `getDerivedStateFromError` + `componentDidCatch`, custom `fallback` prop support
+- [2026-04-19] `pwa/types/api.ts` — fixed `QuoteRequest` (was completely wrong schema); added `VendorProfilePayload`; fixed `minGuests`/`maxGuests` string→number
+- [2026-04-19] `pwa/pages/dashboard/vendor.tsx` — proper TanStack Query generics (`useQuery<VendorProfileType>`, `useQuery<HydraCollection<QuoteRequest>>`); eliminated all `any`
+- [2026-04-19] `pwa/pages/onboarding/vendor.tsx` — mutation typed with `VendorProfilePayload`; PATHS auth guard
+- [2026-04-19] `pwa/pages/vendors/[slug].tsx` — hardcoded alert/share text → `t()` calls; fetchServerSide in SSR
+- [2026-04-19] `pwa/pages/vendors/index.tsx` — hardcoded aria-labels/pagination → `t()` calls; `window.location.href` → `onClear()`; fetchServerSide in SSR
+- [2026-04-19] `pwa/pages/index.tsx` — fetchServerSide replaces raw fetch() in getStaticProps
+- [2026-04-19] `pwa/pages/categories/index.tsx` — fetchServerSide replaces raw fetch() in getStaticProps
+- [2026-04-19] `pwa/context/AuthContext.tsx` — all hardcoded paths → PATHS constants; `auth:logout` → PATHS.AUTH_LOGIN
+- [2026-04-19] `pwa/pages/dashboard/vendor.tsx` + `onboarding/vendor.tsx` — auth guards use PATHS constants
+- [2026-04-19] All 4 locale files — added `vendor_profile.link_copied`, `vendor_profile.share_text`, `filters.grid_view`, `filters.list_view`, `common.prev_page`, `common.next_page`
+- [2026-04-19] `pwa/pages/e/[slug].tsx` → `pwa/pages/invitation/[slug].tsx` — renamed for SEO; 6 URL references updated (Navbar, OG generation, links)
+
+### Silent JWT refresh — full implementation (Closes #43)
+- [2026-04-18] `api/src/Entity/RefreshToken.php` — created; extends bundle base class with `#[ORM\Entity]` + `#[ORM\Table]` only (no field redeclarations — base XML mapping covers id/refreshToken/username/valid)
+- [2026-04-18] `api/config/packages/gesdinet_jwt_refresh_token.yaml` — created; `single_use: true` (token rotation), ttl from env
+- [2026-04-18] `api/config/packages/security.yaml` — added `api_token_refresh` firewall using gesdinet v2.0 `refresh-jwt:` authenticator; added `PUBLIC_ACCESS` access_control entry
+- [2026-04-18] `api/config/packages/lexik_jwt_authentication.yaml` — added `token_ttl` from env
+- [2026-04-18] `api/.env` — added `JWT_TOKEN_TTL=3600` and `REFRESH_TOKEN_TTL=2592000`
+- [2026-04-18] `api/src/Controller/GoogleAuthController.php` — injects `RefreshTokenGeneratorInterface` + `RefreshTokenManagerInterface`; issues refresh token on OAuth callback and appends `&refresh_token=` to frontend redirect
+- [2026-04-18] `api/config/bundles.php` — registered `GesdinedJWTRefreshTokenBundle` (Flex contrib recipes disabled)
+- [2026-04-18] DB migration executed: `refresh_token` table created
+- [2026-04-18] `pwa/utils/apiClient.ts` — added `getRefreshToken/setRefreshToken/removeRefreshToken`; module-level refresh lock (`refreshPromise`); `attemptRefresh()`; 401 interceptor with single-flight retry; `dispatchLogout()` fires `auth:logout` DOM event; `ApiError` gains `status?: number`
+- [2026-04-18] `pwa/context/AuthContext.tsx` — stores refresh token on login; clears on logout; `loginWithToken` accepts optional `refreshToken` param; `auth:logout` event listener drives forced-logout redirect
+- [2026-04-18] `pwa/pages/auth/callback.tsx` — reads `refresh_token` query param from Google OAuth redirect and stores it via `setRefreshToken` before calling `loginWithToken`
+- [2026-04-18] `pwa/pages/_app.tsx` — QueryClient configured with retry=false for 401 `ApiError` (prevents React Query from racing the single refresh with 3 redundant retries)
+
 ### Structural review & refactor — full audit pass (Closes #42)
 - [2026-04-18] `pwa/types/api.ts` — synced all interfaces with actual Doctrine entities: fixed `VendorProfile` (coverImageUrl, whatsapp, cities, priceRange, galleryImages, tags, etc.), `Review` (body, title, author), `AppStats` (matches AppStatsProvider output), removed phantom fields (status, facebookUrl, coverPhotoUrl, priceRangeMin/Max)
 - [2026-04-18] `pwa/utils/apiClient.ts` — added generics to `fetchApi<T>`, `get<T>`, `post<T>`, `patch<T>`, `delete<T>`; `ApiError.data` typed as `Record<string, unknown>` instead of `any`

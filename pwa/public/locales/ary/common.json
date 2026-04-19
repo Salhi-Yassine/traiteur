@@ -219,12 +219,14 @@
     "in": "ف",
     "read_more": "قرا كتر",
     "morocco": "المغرب",
-    "close": "سد",
+    "close": "سكر",
     "retry": "عاود",
     "confirm": "أكد",
     "no_results": "ما لقينا والو",
     "no_results_desc": "جرب تبدل شنو كتقلب عليه.",
-    "view": "شوف"
+    "view": "شوف",
+    "prev_page": "السابق",
+    "next_page": "التالي"
   },
   "errors": {
     "something_went_wrong": "كاين شي مشكل. عاود من بعد.",
@@ -450,7 +452,9 @@
       "available": "موجود",
       "selected": "مختار",
       "unavailable": "عامر"
-    }
+    },
+    "link_copied": "تنسخات الرابط!",
+    "share_text": "شوف {name} على Farah.ma"
   },
   "filters": {
     "title": "فلاتر",
@@ -475,7 +479,9 @@
     },
     "help_title": "محتاج مساعدة؟",
     "help_desc": "الخبراء ديالنا غيعاونوك تلقى أحسن المزيّنين على حساب طلبك.",
-    "contact_us": "تواصل مع خبير"
+    "contact_us": "تواصل مع خبير",
+    "grid_view": "عرض شبكي",
+    "list_view": "عرض لستة"
   },
   "categories_page": {
     "title": "كاع الفئات",
@@ -719,5 +725,33 @@
     "accommodation_fallback": "حجزنا بيوت للضيوف ديالنا في الفنادق القريبة.",
     "ready_label": "واعر؟",
     "powered_by": "مصنوع بـ"
+  },
+  "quote_modal": {
+    "header_label": "طلب تقدير ثمن",
+    "header_title": "احجز {{name}}",
+    "header_desc": "عمر هاد النموذج باش تجيك عرض على قياسك.",
+    "event_type_label": "نوع المناسبة",
+    "event_type_placeholder": "اختار…",
+    "event_type_required": "خير تختار نوع المناسبة",
+    "event_type_wedding": "عرس",
+    "event_type_engagement": "خطوبة",
+    "event_type_haqiqa": "سبوع",
+    "event_type_henna": "ليلة الحناء",
+    "event_type_reception": "حفل استقبال",
+    "event_type_other": "آخر",
+    "date_label": "التاريخ اللي كاتحب",
+    "date_required": "التاريخ مطلوب",
+    "date_future": "التاريخ خاصو يكون في المستقبل",
+    "guests_label": "عدد المدعوين",
+    "guests_min": "واحد على الأقل",
+    "guests_max": "10,000 كأقصى",
+    "budget_label": "الميزانية (درهم)",
+    "budget_placeholder": "مثال: 80,000",
+    "message_label": "تفاصيل زيادة",
+    "message_placeholder": "الطابع، الخدمات، الأسئلة…",
+    "message_min": "الرسالة قصيرة بزاف (10 أحرف على الأقل)",
+    "submit": "ابعت طلبي",
+    "submitting": "كاتبعت…",
+    "success": "تبعت طلبك بنجاح!"
   }
 }

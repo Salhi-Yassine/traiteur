@@ -1,13 +1,16 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { type Resolver, useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "sonner";
+import { useTranslation } from "next-i18next";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { cn } from "@/lib/utils";
+import apiClient from "@/utils/apiClient";
 
 interface QuoteRequestModalProps {
     isOpen: boolean;
@@ -16,71 +19,54 @@ interface QuoteRequestModalProps {
     vendorName: string;
 }
 
-const EVENT_TYPES = [
-    "Mariage",
-    "Fiançailles",
-    "Sbouâ (Haqiqa)",
-    "Henné",
-    "Réception",
-    "Autre",
-];
+const EVENT_TYPE_KEYS = [
+    "quote_modal.event_type_wedding",
+    "quote_modal.event_type_engagement",
+    "quote_modal.event_type_haqiqa",
+    "quote_modal.event_type_henna",
+    "quote_modal.event_type_reception",
+    "quote_modal.event_type_other",
+] as const;
 
-const validationSchema = Yup.object({
-    eventType: Yup.string().required("Veuillez choisir un type d'événement"),
-    eventDate: Yup.date().min(new Date(), "La date doit être dans le futur").required("La date est requise"),
-    guestCount: Yup.number().min(1, "Minimum 1 invité").max(10000, "Maximum 10,000").required("Le nombre d'invités est requis"),
-    budget: Yup.number().min(0, "Le budget ne peut pas être négatif").nullable(),
-    message: Yup.string().min(10, "Le message est trop court").max(2000).required("Veuillez décrire votre événement"),
-});
-
-export default function QuoteRequestModal({
-    isOpen,
-    onClose,
-    vendorProfileId,
-    vendorName,
-}: QuoteRequestModalProps) {
+export default function QuoteRequestModal({ isOpen, onClose, vendorProfileId, vendorName }: QuoteRequestModalProps) {
+    const { t } = useTranslation("common");
     const overlayRef = useRef<HTMLDivElement>(null);
 
-    const formik = useFormik({
-        initialValues: {
-            eventType: "",
-            eventDate: "",
-            guestCount: 50,
-            budget: "",
-            message: "",
-        },
-        validationSchema,
-        onSubmit: async (values, helpers) => {
-            try {
-                const res = await fetch("/api/quote_requests", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/ld+json" },
-                    body: JSON.stringify({
-                        eventType: values.eventType,
-                        eventDate: values.eventDate,
-                        guestCount: Number(values.guestCount),
-                        budget: values.budget ? Number(values.budget) : null,
-                        message: values.message,
-                        vendorProfile: `/api/vendor_profiles/${vendorProfileId}`,
-                    }),
-                });
-                if (!res.ok) throw new Error("Failed to submit");
-                helpers.resetForm();
-                onClose();
-                // We'll replace this with a better toast/notif later
-                alert("✅ Votre demande de devis a été envoyée avec succès !");
-            } catch {
-                alert("Une erreur est survenue. Veuillez réessayer.");
-            } finally {
-                helpers.setSubmitting(false);
-            }
-        },
+    const schema = z.object({
+        eventType:  z.string().min(1, t("quote_modal.event_type_required")),
+        eventDate:  z.string().min(1, t("quote_modal.date_required")).refine(
+            (d) => new Date(d) > new Date(),
+            t("quote_modal.date_future"),
+        ),
+        guestCount: z.coerce.number().min(1, t("quote_modal.guests_min")).max(10000, t("quote_modal.guests_max")),
+        budget:     z.coerce.number().min(0).optional(),
+        message:    z.string().min(10, t("quote_modal.message_min")).max(2000),
+    });
+    type FormValues = z.infer<typeof schema>;
+
+    const { register, handleSubmit, control, watch, reset, formState: { errors, isSubmitting } } = useForm<FormValues>({
+        resolver: zodResolver(schema) as Resolver<FormValues>,
+        defaultValues: { eventType: "", eventDate: "", guestCount: 50, budget: undefined, message: "" },
     });
 
+    const messageLength = watch("message")?.length ?? 0;
+
+    const onSubmit = async (values: FormValues) => {
+        await apiClient.post("/api/quote_requests", {
+            eventType:     values.eventType,
+            eventDate:     values.eventDate,
+            guestCount:    values.guestCount,
+            budget:        values.budget ?? null,
+            message:       values.message,
+            vendorProfile: `/api/vendor_profiles/${vendorProfileId}`,
+        });
+        reset();
+        onClose();
+        toast.success(t("quote_modal.success"));
+    };
+
     useEffect(() => {
-        const handler = (e: KeyboardEvent) => {
-            if (e.key === "Escape") onClose();
-        };
+        const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
         if (isOpen) document.addEventListener("keydown", handler);
         return () => document.removeEventListener("keydown", handler);
     }, [isOpen, onClose]);
@@ -101,31 +87,27 @@ export default function QuoteRequestModal({
             role="dialog"
             aria-labelledby="modal-title"
         >
-            {/* Backdrop */}
             <div className="absolute inset-0 bg-primary/40 backdrop-blur-xl animate-in fade-in duration-500" />
 
-            {/* Modal */}
             <div className="relative bg-white rounded-[3rem] shadow-premium w-full max-w-2xl max-h-full overflow-y-auto border border-border/50 animate-in fade-in zoom-in-95 duration-500">
-                {/* Decorative Pattern */}
-                <div className="absolute top-0 left-0 w-full h-32 bg-primary opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/moroccan-flower.png')]" />
+                <div className="absolute top-0 start-0 w-full h-32 bg-primary opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/moroccan-flower.png')]" />
 
-                {/* Header */}
                 <div className="px-12 py-10 flex items-start justify-between relative z-10">
                     <div>
                         <span className="text-secondary font-black tracking-[0.4em] uppercase text-[10px] mb-2 block">
-                            Demande de Devis
+                            {t("quote_modal.header_label")}
                         </span>
                         <h2 id="modal-title" className="font-display font-black text-3xl text-primary leading-tight">
-                            Réserver {vendorName}
+                            {t("quote_modal.header_title", { name: vendorName })}
                         </h2>
                         <p className="text-muted-foreground text-xs mt-2 font-medium">
-                            Remplissez ce formulaire d&apos;intention pour recevoir une proposition sur mesure.
+                            {t("quote_modal.header_desc")}
                         </p>
                     </div>
                     <button
                         onClick={onClose}
                         className="p-3 rounded-2xl bg-accent/5 text-primary/40 hover:bg-secondary/10 hover:text-secondary transition-all"
-                        aria-label="Fermer"
+                        aria-label={t("common.close")}
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
@@ -133,126 +115,88 @@ export default function QuoteRequestModal({
                     </button>
                 </div>
 
-                {/* Form */}
-                <form onSubmit={formik.handleSubmit} className="px-12 pb-12 space-y-10 relative z-10">
+                <form onSubmit={handleSubmit(onSubmit)} className="px-12 pb-12 space-y-10 relative z-10">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        {/* Event type */}
                         <div className="space-y-3">
-                            <Label htmlFor="eventType" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
-                                Type d&apos;Événement <span className="text-secondary">*</span>
+                            <Label htmlFor="eventType" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 ps-4">
+                                {t("quote_modal.event_type_label")} <span className="text-secondary">*</span>
                             </Label>
-                            <Select 
-                                value={formik.values.eventType} 
-                                onValueChange={(val) => formik.setFieldValue("eventType", val)}
-                            >
-                                <SelectTrigger 
-                                    id="eventType" 
-                                    className="w-full bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-6 text-xs font-black text-primary uppercase tracking-widest focus:border-secondary focus:bg-white outline-none transition-all h-auto"
-                                >
-                                    <SelectValue placeholder="Sélectionnez…" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {EVENT_TYPES.map((t) => (
-                                        <SelectItem key={t} value={t}>{t}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {formik.touched.eventType && formik.errors.eventType && (
-                                <p className="text-secondary text-[10px] font-black uppercase tracking-tight pl-4">{formik.errors.eventType}</p>
-                            )}
+                            <Controller
+                                name="eventType"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select value={field.value} onValueChange={field.onChange}>
+                                        <SelectTrigger id="eventType" className="w-full bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-6 text-xs font-black text-primary uppercase tracking-widest focus:border-secondary focus:bg-white outline-none transition-all h-auto">
+                                            <SelectValue placeholder={t("quote_modal.event_type_placeholder")} />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {EVENT_TYPE_KEYS.map((key) => (
+                                                <SelectItem key={key} value={t(key)}>{t(key)}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
+                            {errors.eventType && <p className="text-secondary text-[10px] font-black uppercase tracking-tight ps-4">{errors.eventType.message}</p>}
                         </div>
 
-                        {/* Date */}
                         <div className="space-y-3">
-                            <Label htmlFor="eventDate" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
-                                Date Souhaitée <span className="text-secondary">*</span>
+                            <Label htmlFor="eventDate" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 ps-4">
+                                {t("quote_modal.date_label")} <span className="text-secondary">*</span>
                             </Label>
                             <Input
                                 type="date"
                                 id="eventDate"
-                                {...formik.getFieldProps("eventDate")}
+                                {...register("eventDate")}
                                 min={new Date().toISOString().split("T")[0]}
-                                className="w-full h-auto bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary uppercase tracking-widest focus:border-secondary focus:bg-white focus-visible:ring-0 outline-none transition-all placeholder:normal-case placeholder:tracking-normal"
+                                className="w-full h-auto bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary uppercase tracking-widest focus:border-secondary focus:bg-white focus-visible:ring-0 outline-none transition-all"
                             />
-                            {formik.touched.eventDate && formik.errors.eventDate && (
-                                <p className="text-secondary text-[10px] font-black uppercase tracking-tight pl-4">{String(formik.errors.eventDate)}</p>
-                            )}
+                            {errors.eventDate && <p className="text-secondary text-[10px] font-black uppercase tracking-tight ps-4">{errors.eventDate.message}</p>}
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        {/* Guests */}
                         <div className="space-y-3">
-                            <Label htmlFor="guestCount" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
-                                Nombre d&apos;Invités <span className="text-secondary">*</span>
+                            <Label htmlFor="guestCount" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 ps-4">
+                                {t("quote_modal.guests_label")} <span className="text-secondary">*</span>
                             </Label>
-                            <Input
-                                type="number"
-                                id="guestCount"
-                                {...formik.getFieldProps("guestCount")}
-                                min="1"
-                                max="10000"
-                                className="w-full h-auto bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary transition-all focus:border-secondary focus:bg-white focus-visible:ring-0 outline-none"
-                            />
-                            {formik.touched.guestCount && formik.errors.guestCount && (
-                                <p className="text-secondary text-[10px] font-black uppercase tracking-tight pl-4">{formik.errors.guestCount}</p>
-                            )}
+                            <Input type="number" id="guestCount" {...register("guestCount")} min="1" max="10000" className="w-full h-auto bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary transition-all focus:border-secondary focus:bg-white focus-visible:ring-0 outline-none" />
+                            {errors.guestCount && <p className="text-secondary text-[10px] font-black uppercase tracking-tight ps-4">{errors.guestCount.message}</p>}
                         </div>
 
-                        {/* Budget */}
                         <div className="space-y-3">
-                            <Label htmlFor="budget" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
-                                Budget Estimé (MAD)
+                            <Label htmlFor="budget" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 ps-4">
+                                {t("quote_modal.budget_label")}
                             </Label>
-                            <Input
-                                type="number"
-                                id="budget"
-                                {...formik.getFieldProps("budget")}
-                                placeholder="ex: 80 000"
-                                className="w-full h-auto bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary transition-all focus-visible:ring-0 focus:border-secondary focus:bg-white outline-none"
-                            />
+                            <Input type="number" id="budget" {...register("budget")} placeholder={t("quote_modal.budget_placeholder")} className="w-full h-auto bg-accent/5 border-2 border-transparent rounded-2xl px-6 py-4 text-xs font-black text-primary transition-all focus-visible:ring-0 focus:border-secondary focus:bg-white outline-none" />
                         </div>
                     </div>
 
-                    {/* Message */}
                     <div className="space-y-3">
-                        <Label htmlFor="message" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 pl-4">
-                            Vos Précisions <span className="text-secondary">*</span>
+                        <Label htmlFor="message" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 ps-4">
+                            {t("quote_modal.message_label")} <span className="text-secondary">*</span>
                         </Label>
                         <Textarea
                             id="message"
-                            {...formik.getFieldProps("message")}
+                            {...register("message")}
                             rows={4}
-                            placeholder="Thème du mariage, prestations souhaitées, questions particulières..."
+                            placeholder={t("quote_modal.message_placeholder")}
                             className="w-full bg-accent/5 border-2 border-transparent rounded-[2rem] px-8 py-6 text-sm font-medium text-primary resize-none transition-all focus:border-secondary focus:bg-white focus-visible:ring-0 outline-none leading-relaxed"
                         />
                         <div className="flex justify-between px-4">
-                            {formik.touched.message && formik.errors.message ? (
-                                <p className="text-secondary text-[10px] font-black uppercase tracking-tight">{formik.errors.message}</p>
+                            {errors.message ? (
+                                <p className="text-secondary text-[10px] font-black uppercase tracking-tight">{errors.message.message}</p>
                             ) : <span />}
-                            <span className="text-[10px] font-black text-muted-foreground/60 tracking-widest">
-                                {formik.values.message.length}/2000
-                            </span>
+                            <span className="text-[10px] font-black text-muted-foreground/60 tracking-widest">{messageLength}/2000</span>
                         </div>
                     </div>
 
-                    {/* Actions */}
                     <div className="flex flex-col sm:flex-row gap-6 pt-6">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={onClose}
-                            className="flex-1 rounded-2xl"
-                        >
-                            Annuler
+                        <Button type="button" variant="outline" onClick={onClose} className="flex-1 rounded-2xl">
+                            {t("common.cancel")}
                         </Button>
-                        <Button
-                            type="submit"
-                            variant="default"
-                            disabled={formik.isSubmitting}
-                            className="flex-1"
-                        >
-                            {formik.isSubmitting ? "Envoi en cours..." : "Transmettre ma Demande"}
+                        <Button type="submit" variant="default" disabled={isSubmitting} className="flex-1">
+                            {isSubmitting ? t("quote_modal.submitting") : t("quote_modal.submit")}
                         </Button>
                     </div>
                 </form>

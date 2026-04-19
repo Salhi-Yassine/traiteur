@@ -6,6 +6,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "../../utils/apiClient";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
+import type { HydraCollection } from "@/types/api";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { Label } from "../../components/ui/label";
@@ -40,9 +41,9 @@ export default function WeddingWebsiteBuilder() {
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState("general");
     
-    const { data: profileData, isLoading } = useQuery({
+    const { data: profileData, isLoading } = useQuery<HydraCollection<WeddingProfile>>({
         queryKey: ["weddingProfile"],
-        queryFn: () => apiClient.get("/api/wedding_profiles?itemsPerPage=1"),
+        queryFn: () => apiClient.get<HydraCollection<WeddingProfile>>("/api/wedding_profiles?itemsPerPage=1"),
     });
 
     const initialProfile: WeddingProfile | null = profileData?.["hydra:member"]?.[0] ?? null;
@@ -218,7 +219,7 @@ export default function WeddingWebsiteBuilder() {
                                                         variant="ghost" 
                                                         size="icon" 
                                                         onClick={() => removeQA(idx)}
-                                                        className="absolute top-4 right-4 text-neutral-300 hover:text-red-500 hover:bg-red-50 rounded-full"
+                                                        className="absolute top-4 end-4 text-neutral-300 hover:text-red-500 hover:bg-red-50 rounded-full"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
                                                     </Button>
@@ -337,7 +338,7 @@ export default function WeddingWebsiteBuilder() {
                                 </div>
                             )}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                            <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                            <div className="absolute bottom-4 start-4 end-4 flex justify-between items-end">
                                 <div>
                                     <p className="text-white text-[10px] uppercase tracking-widest font-bold mb-1 opacity-80">{t("event.save_the_date")}</p>
                                     <p className="text-white font-serif text-2xl leading-none">

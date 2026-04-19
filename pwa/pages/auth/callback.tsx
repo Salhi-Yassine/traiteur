@@ -6,6 +6,7 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
 import { useAuth } from "../../context/AuthContext";
+import { setRefreshToken } from "../../utils/apiClient";
 
 /**
  * /auth/callback
@@ -27,12 +28,16 @@ export default function AuthCallbackPage() {
         // Wait for the router to be ready so query params are available
         if (!router.isReady) return;
 
-        const { token, error: oauthError } = router.query;
+        const { token, refresh_token, error: oauthError } = router.query;
 
         if (oauthError || !token || typeof token !== "string") {
             const detail = typeof oauthError === "string" ? oauthError : "";
             setError(`${t("auth.google_callback_error")}${detail ? ` — ${detail}` : ""}`);
             return;
+        }
+
+        if (refresh_token && typeof refresh_token === "string") {
+            setRefreshToken(refresh_token);
         }
 
         loginWithToken(token).catch(() => {

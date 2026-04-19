@@ -77,12 +77,13 @@ export interface VendorProfile extends HydraResource {
   whatsapp: string;
   website?: string;
   instagram?: string;
-  minGuests?: string;
-  maxGuests?: string;
+  minGuests?: number;
+  maxGuests?: number;
   averageRating?: string; // Doctrine decimal → string
   reviewCount: number;
   isVerified: boolean;
   isFeatured: boolean;
+  status?: 'pending' | 'approved';
   subscriptionTier: 'free' | 'premium' | 'featured';
   owner?: string; // IRI reference to User
   menuItems?: MenuItem[];
@@ -177,17 +178,30 @@ export interface ChecklistTask extends HydraResource {
 
 export interface QuoteRequest extends HydraResource {
   '@type': 'QuoteRequest';
-  name: string;
-  email: string;
-  phone?: string;
-  weddingDate?: string;
-  guestCount?: number;
-  budgetMad?: number;
+  eventType: string;
+  eventDate: string | null;
+  guestCount: number;
+  budget?: string;
   message: string;
-  status: 'new' | 'read' | 'replied';
-  vendorProfile?: string; // IRI reference
+  status: 'pending' | 'accepted' | 'declined' | 'expired';
+  client: Pick<User, '@id' | 'id' | 'firstName' | 'lastName'>;
+  vendorProfile: Pick<VendorProfile, '@id' | 'id'>;
   createdAt: string;
   updatedAt?: string;
+}
+
+/** Payload sent to POST /api/vendor_profiles */
+export interface VendorProfilePayload {
+  businessName: string;
+  tagline?: string;
+  category: string;       // IRI e.g. "/api/categories/3"
+  description: string;
+  cities: string[];        // IRIs e.g. ["/api/cities/1"]
+  whatsapp: string;
+  website?: string;
+  priceRange: string;
+  startingPrice?: number;
+  galleryImages: string[];
 }
 
 export interface AppStats {

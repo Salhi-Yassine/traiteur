@@ -26,7 +26,7 @@ export default function SuccessAnimation({
     title,
     subtitle
 }: SuccessAnimationProps) {
-    const [animationData, setAnimationData] = useState<any>(null);
+    const [animationData, setAnimationData] = useState<Record<string, unknown> | null>(null);
 
     useEffect(() => {
         if (show) {

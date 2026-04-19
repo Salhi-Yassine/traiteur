@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(),
         new Get(),
         new Post(security: "is_granted('ROLE_USER')", processor: ReviewProcessor::class),
-        new Delete(security: "is_granted('ROLE_ADMIN') or object.getAuthor() == user"),
+        new Delete(security: "is_granted('ROLE_ADMIN') or object.getAuthor() == user", processor: ReviewProcessor::class),
     ],
     normalizationContext: ['groups' => ['review:read']],
     denormalizationContext: ['groups' => ['review:write']],
@@ -30,7 +30,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(SearchFilter::class, properties: ['vendorProfile' => 'exact'])]
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[ORM\Index(columns: ['vendor_profile_id'], name: 'idx_review_vendor_profile')]
-#[ORM\Index(columns: ['author_id'], name: 'idx_review_author')]
+#[ORM\Index(columns: ['author_id'],         name: 'idx_review_author')]
+#[ORM\Index(columns: ['created_at'],        name: 'idx_review_created')]
 class Review
 {
     #[ORM\Id]

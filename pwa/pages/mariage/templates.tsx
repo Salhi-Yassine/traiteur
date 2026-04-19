@@ -31,6 +31,12 @@ const COLOR_PALETTES = [
     { id: "indigo", name: "Indigo", classInfo: "bg-indigo-600" },
 ];
 
+type WeddingProfileQuery = {
+    brideName?: string;
+    groomName?: string;
+    selectedTheme?: string;
+};
+
 export default function TemplatesGallery() {
     const { t } = useTranslation("common");
     const router = useRouter();
@@ -45,9 +51,9 @@ export default function TemplatesGallery() {
     const [showPremiumModal, setShowPremiumModal] = useState(false);
 
     // Fetch existing profile to populate names & current theme
-    const { data: profile } = useQuery({
+    const { data: profile } = useQuery<WeddingProfileQuery | null>({
         queryKey: ["weddingProfile"],
-        queryFn: () => apiClient.get("/api/dashboard/wedding-profile").catch(() => null),
+        queryFn: () => apiClient.get<WeddingProfileQuery>("/api/dashboard/wedding-profile").catch(() => null),
     });
 
     useEffect(() => {

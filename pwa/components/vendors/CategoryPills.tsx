@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "next-i18next";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     Building2,
     Camera,
@@ -80,24 +81,31 @@ export default function CategoryPills({ activeCategory, onSelect }: CategoryPill
     return (
         <div className="relative">
             {/* Left fade + arrow */}
-            {canScrollLeft && (
-                <div className="absolute start-0 top-0 bottom-0 z-10 flex items-center">
-                    <div className="w-12 h-full bg-gradient-to-e from-white to-transparent absolute start-0 pointer-events-none" />
-                    <button
-                        type="button"
-                        onClick={() => scroll("left")}
-                        className="relative z-20 w-7 h-7 rounded-full border border-[#DDDDDD] bg-white shadow-sm flex items-center justify-center ms-1 hover:shadow-md hover:scale-105 transition-all"
-                        aria-label="Scroll left"
+            <AnimatePresence>
+                {canScrollLeft && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute start-0 top-0 bottom-0 z-10 flex items-center"
                     >
-                        <ChevronLeft className="w-3.5 h-3.5 text-[#1A1A1A] rtl:-scale-x-100" />
-                    </button>
-                </div>
-            )}
+                        <div className="w-16 h-full bg-gradient-to-e from-white via-white/80 to-transparent absolute start-0 pointer-events-none" />
+                        <button
+                            type="button"
+                            onClick={() => scroll("left")}
+                            className="relative z-20 w-8 h-8 rounded-full border border-[#DDDDDD] bg-white shadow-md flex items-center justify-center ms-1 hover:scale-110 active:scale-95 transition-all"
+                            aria-label="Scroll left"
+                        >
+                            <ChevronLeft className="w-4 h-4 text-[#1A1A1A] rtl:-scale-x-100" />
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Scrollable tabs */}
             <div
                 ref={scrollRef}
-                className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-1"
+                className="flex gap-8 overflow-x-auto scrollbar-hide scroll-smooth px-2"
             >
                 {CATEGORIES.map(({ value, labelKey, Icon }) => {
                     const isActive = value === "all" ? activeCategory === "" : activeCategory === value;
@@ -107,23 +115,20 @@ export default function CategoryPills({ activeCategory, onSelect }: CategoryPill
                             type="button"
                             onClick={() => handleClick(value)}
                             className={cn(
-                                "group flex flex-col items-center gap-1.5 pb-3 pt-1 shrink-0 border-b-2 transition-all duration-200 min-w-[56px]",
-                                isActive
-                                    ? "border-[#1A1A1A] text-[#1A1A1A]"
-                                    : "border-transparent text-[#717171] hover:text-[#1A1A1A] hover:border-[#DDDDDD]"
+                                "group relative flex flex-col items-center gap-2 pb-4 pt-1 shrink-0 transition-all duration-300 min-w-[56px]",
+                                isActive ? "text-[#1A1A1A]" : "text-[#717171] hover:text-[#1A1A1A]"
                             )}
                         >
                             <span
                                 className={cn(
-                                    "w-5 h-5 flex items-center justify-center transition-opacity",
-                                    isActive ? "opacity-100" : "opacity-70 group-hover:opacity-100"
+                                    "w-6 h-6 flex items-center justify-center transition-all duration-300",
+                                    isActive ? "scale-110" : "opacity-60 group-hover:opacity-100 hover:scale-105"
                                 )}
                             >
                                 {Icon ? (
-                                    <Icon size={20} strokeWidth={1.5} />
+                                    <Icon size={24} strokeWidth={1.5} />
                                 ) : (
-                                    /* "All" icon — a simple grid */
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                         <rect x="3" y="3" width="7" height="7" rx="1.5" />
                                         <rect x="14" y="3" width="7" height="7" rx="1.5" />
                                         <rect x="3" y="14" width="7" height="7" rx="1.5" />
@@ -132,30 +137,46 @@ export default function CategoryPills({ activeCategory, onSelect }: CategoryPill
                                 )}
                             </span>
                             <span className={cn(
-                                "text-[12px] font-medium whitespace-nowrap leading-none",
-                                isActive ? "font-semibold" : ""
+                                "text-[12px] font-medium whitespace-nowrap leading-none transition-all",
+                                isActive ? "font-bold" : "font-medium"
                             )}>
                                 {t(labelKey)}
                             </span>
+
+                            {/* Active Indicator */}
+                            {isActive && (
+                                <motion.div
+                                    layoutId="activeCategory"
+                                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#1A1A1A]"
+                                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                />
+                            )}
                         </button>
                     );
                 })}
             </div>
 
             {/* Right fade + arrow */}
-            {canScrollRight && (
-                <div className="absolute end-0 top-0 bottom-0 z-10 flex items-center">
-                    <div className="w-12 h-full bg-gradient-to-s from-white to-transparent absolute end-0 pointer-events-none" />
-                    <button
-                        type="button"
-                        onClick={() => scroll("right")}
-                        className="relative z-20 w-7 h-7 rounded-full border border-[#DDDDDD] bg-white shadow-sm flex items-center justify-center me-1 hover:shadow-md hover:scale-105 transition-all"
-                        aria-label="Scroll right"
+            <AnimatePresence>
+                {canScrollRight && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute end-0 top-0 bottom-0 z-10 flex items-center"
                     >
-                        <ChevronRight className="w-3.5 h-3.5 text-[#1A1A1A] rtl:-scale-x-100" />
-                    </button>
-                </div>
-            )}
+                        <div className="w-16 h-full bg-gradient-to-s from-white via-white/80 to-transparent absolute end-0 pointer-events-none" />
+                        <button
+                            type="button"
+                            onClick={() => scroll("right")}
+                            className="relative z-20 w-8 h-8 rounded-full border border-[#DDDDDD] bg-white shadow-md flex items-center justify-center me-1 hover:scale-110 active:scale-95 transition-all"
+                            aria-label="Scroll right"
+                        >
+                            <ChevronRight className="w-4 h-4 text-[#1A1A1A] rtl:-scale-x-100" />
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

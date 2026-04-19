@@ -9,6 +9,8 @@ const mockUser = {
   firstName: "Yassine",
   lastName: "Salhi",
   userType: "couple" as const,
+  weddingProfile: null,
+  vendorProfile: null,
 };
 
 const withAuth = (user: typeof mockUser | null, isLoading = false) =>
@@ -19,8 +21,10 @@ const withAuth = (user: typeof mockUser | null, isLoading = false) =>
           user,
           isLoading,
           login: async () => {},
+          loginWithToken: async () => {},
           register: async () => {},
           logout: () => {},
+          refreshUser: async () => {},
         }}
       >
         <Story />

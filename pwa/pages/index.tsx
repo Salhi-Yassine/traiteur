@@ -9,6 +9,8 @@ import { useTranslation, Trans } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { fetchServerSide } from "../utils/fetchServerSide";
+import WeddingStoriesSection from "../components/inspiration/WeddingStoriesSection";
 
 interface CategoryFromApi {
   name: string;
@@ -321,6 +323,9 @@ export default function HomePage({ featuredVendors, stats }: HomeProps) {
         </div>
       </section>
 
+      {/* ─── REAL WEDDING STORIES (Inspiration) ─── */}
+      <WeddingStoriesSection />
+
       {/* ─── FEATURED VENDORS ─── */}
       <section className="py-32 bg-[#F7F7F7]" aria-labelledby="vendors-heading">
         <div className="container mx-auto max-w-7xl px-6">
@@ -408,16 +413,7 @@ export default function HomePage({ featuredVendors, stats }: HomeProps) {
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_ENTRYPOINT || "https://localhost";
-
-    const res = await fetch(`${baseUrl}/api/app_stats`, {
-      headers: {
-        Accept: "application/ld+json",
-        "Accept-Language": locale || 'fr'
-      }
-    });
-
-    const stats = res.ok ? await res.json() : null;
+    const stats = await fetchServerSide("/api/app_stats", { locale: locale || "fr" }).catch(() => null) as any;
 
     const featuredVendors: VendorCardProps[] = (stats?.featuredVendors || []).map((v: any) => ({
       id: v.id ?? 0,

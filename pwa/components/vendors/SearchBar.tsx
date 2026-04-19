@@ -6,6 +6,7 @@ import { useTranslation } from "next-i18next";
 import { Search, MapPin, LayoutGrid, X, Building2, Camera, Car, Gem, Music2, Palette, Sparkles, UtensilsCrossed } from "lucide-react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerFooter } from "../ui/drawer";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface SearchBarProps {
     initialLocation?: string;
@@ -40,6 +41,17 @@ export default function SearchBar({
     const [cityFilter, setCityFilter] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("");
     const [mounted, setMounted] = useState(false);
+    const [isShrunk, setIsShrunk] = useState(false);
+
+    // Scroll listener for shrinking (Page variant only)
+    useEffect(() => {
+        if (variant !== "page") return;
+        const handleScroll = () => {
+            setIsShrunk(window.scrollY > 120);
+        };
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [variant]);
 
     // Panel position (set from getBoundingClientRect when a section opens)
     const [panelCoords, setPanelCoords] = useState<{
@@ -246,110 +258,154 @@ export default function SearchBar({
 
     // ── Pill JSX (shared) ────────────────────────────────────────────────────
     const pill = (
-        <div className={cn(
-            "flex items-center rounded-full p-1.5 transition-all duration-200",
-            pillHeight,
-            anyActive
-                ? "bg-[#EBEBEB] shadow-[0_6px_20px_rgba(0,0,0,0.12)]"
-                : variant === "hero"
-                    ? "bg-white/80 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:bg-white/90"
-                    : "bg-white border border-[#DDDDDD] shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_2px_14px_rgba(0,0,0,0.12)]"
-        )}>
-            {/* SEARCH section */}
-            <div
-                className={cn(
-                    "flex items-center gap-2.5 flex-[2] h-full rounded-full px-4 cursor-text transition-all duration-150",
-                    sectionBg("search")
-                )}
-                onClick={() => setActiveSection("search")}
-            >
-                <Search className={cn("text-[#717171] shrink-0", variant === "hero" ? "w-5 h-5" : "w-4 h-4")} />
-                <input
-                    ref={queryInputRef}
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    onFocus={() => setActiveSection("search")}
-                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                    onClick={(e) => e.stopPropagation()}
-                    placeholder={t("search_bar.placeholder")}
-                    className={cn(
-                        "flex-1 min-w-0 bg-transparent border-0 outline-none focus:outline-none focus:ring-0 text-[#1A1A1A] placeholder:text-[#717171]",
-                        inputTextSize
-                    )}
-                />
-                {query && (
-                    <button
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); setQuery(""); queryInputRef.current?.focus(); }}
-                        className="w-5 h-5 rounded-full bg-[#717171] hover:bg-[#1A1A1A] flex items-center justify-center shrink-0 transition-colors"
-                        aria-label="Effacer"
+        <motion.div 
+            layout
+            initial={false}
+            animate={{ 
+                width: isShrunk && !anyActive ? "280px" : "100%",
+                height: isShrunk && !anyActive ? "48px" : (variant === "hero" ? "64px" : "56px")
+            }}
+            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+            className={cn(
+                "flex items-center rounded-full p-1.5 mx-auto transition-all duration-300",
+                anyActive
+                    ? "bg-[#EBEBEB] shadow-[0_6px_20px_rgba(0,0,0,0.12)]"
+                    : variant === "hero"
+                        ? "bg-white/80 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:bg-white/90"
+                        : "bg-white border border-[#DDDDDD] shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_2px_14px_rgba(0,0,0,0.12)]"
+            )}
+        >
+            <AnimatePresence mode="wait">
+                {isShrunk && !anyActive ? (
+                    <motion.button
+                        key="shrunk"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        onClick={() => setIsShrunk(false)}
+                        className="flex items-center gap-3 w-full px-4 h-full"
                     >
-                        <X className="w-2.5 h-2.5 text-white" />
-                    </button>
-                )}
-            </div>
+                        <span className="text-[13px] font-bold text-[#1A1A1A]">
+                            {query || t("search_bar.placeholder")}
+                        </span>
+                        <div className="w-px h-3 bg-neutral-300" />
+                        <span className="text-[12px] font-medium text-[#717171] truncate">
+                            {cityLabel || t("search_bar.anywhere")}
+                        </span>
+                        <div className="ms-auto w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+                            <Search className="w-3.5 h-3.5 text-white" />
+                        </div>
+                    </motion.button>
+                ) : (
+                    <motion.div 
+                        key="full"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="flex items-center w-full h-full"
+                    >
+                        {/* SEARCH section */}
+                        <div
+                            className={cn(
+                                "flex items-center gap-2.5 flex-[2] h-full rounded-full px-4 cursor-text transition-all duration-150",
+                                sectionBg("search")
+                            )}
+                            onClick={() => setActiveSection("search")}
+                        >
+                            <Search className={cn("text-[#717171] shrink-0", variant === "hero" ? "w-5 h-5" : "w-4 h-4")} />
+                            <input
+                                ref={queryInputRef}
+                                type="text"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                onFocus={() => setActiveSection("search")}
+                                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                                onClick={(e) => e.stopPropagation()}
+                                placeholder={t("search_bar.placeholder")}
+                                className={cn(
+                                    "flex-1 min-w-0 bg-transparent border-0 outline-none focus:outline-none focus:ring-0 text-[#1A1A1A] placeholder:text-[#717171]",
+                                    inputTextSize
+                                )}
+                            />
+                            {query && (
+                                <button
+                                    type="button"
+                                    onClick={(e) => { e.stopPropagation(); setQuery(""); queryInputRef.current?.focus(); }}
+                                    className="w-5 h-5 rounded-full bg-[#717171] hover:bg-[#1A1A1A] flex items-center justify-center shrink-0 transition-colors"
+                                    aria-label="Effacer"
+                                >
+                                    <X className="w-2.5 h-2.5 text-white" />
+                                </button>
+                            )}
+                        </div>
 
-            <span aria-hidden className={cn("w-px h-5 shrink-0 bg-[#C8C8C8] transition-opacity duration-150 mx-0.5", d1Hidden && "opacity-0")} />
+                        <span aria-hidden className={cn("w-px h-5 shrink-0 bg-[#C8C8C8] transition-opacity duration-150 mx-0.5", d1Hidden && "opacity-0")} />
 
-            {/* WHERE section */}
-            <button
-                ref={whereSectionRef}
-                type="button"
-                onClick={() => setActiveSection(activeSection === "where" ? null : "where")}
-                className={cn(
-                    "flex flex-col justify-center items-start flex-1 min-w-[120px] h-full rounded-full px-4 transition-all duration-150",
-                    sectionBg("where")
-                )}
-            >
-                <span className={cn("font-bold text-[#1A1A1A] tracking-widest uppercase leading-none", labelSize)}>
-                    {t("search_bar.where")}
-                </span>
-                <span className={cn("mt-0.5 truncate w-full", valueSize, cityLabel ? "text-[#1A1A1A] font-medium" : "text-[#717171]")}>
-                    {cityLabel ?? t("search_bar.anywhere")}
-                </span>
-            </button>
+                        {/* WHERE section */}
+                        <button
+                            ref={whereSectionRef}
+                            type="button"
+                            onClick={() => setActiveSection(activeSection === "where" ? null : "where")}
+                            className={cn(
+                                "flex flex-col justify-center items-start flex-1 min-w-[120px] h-full rounded-full px-4 transition-all duration-150",
+                                sectionBg("where")
+                            )}
+                        >
+                            <span className={cn("font-bold text-[#1A1A1A] tracking-widest uppercase leading-none", labelSize)}>
+                                {t("search_bar.where")}
+                            </span>
+                            <span className={cn("mt-0.5 truncate w-full pt-1", valueSize, cityLabel ? "text-[#1A1A1A] font-medium" : "text-[#717171]")}>
+                                {cityLabel ?? t("search_bar.anywhere")}
+                            </span>
+                        </button>
 
-            <span aria-hidden className={cn("w-px h-5 shrink-0 bg-[#C8C8C8] transition-opacity duration-150 mx-0.5", d2Hidden && "opacity-0")} />
+                        <span aria-hidden className={cn("w-px h-5 shrink-0 bg-[#C8C8C8] transition-opacity duration-150 mx-0.5", d2Hidden && "opacity-0")} />
 
-            {/* WHAT section */}
-            <button
-                ref={whatSectionRef}
-                type="button"
-                onClick={() => setActiveSection(activeSection === "what" ? null : "what")}
-                className={cn(
-                    "flex flex-col justify-center items-start flex-1 min-w-[120px] h-full rounded-full px-4 transition-all duration-150",
-                    sectionBg("what")
-                )}
-            >
-                <span className={cn("font-bold text-[#1A1A1A] tracking-widest uppercase leading-none", labelSize)}>
-                    {t("search_bar.what")}
-                </span>
-                <span className={cn("mt-0.5 truncate w-full", valueSize, categoryLabel ? "text-[#1A1A1A] font-medium" : "text-[#717171]")}>
-                    {categoryLabel ?? t("search_bar.any_category")}
-                </span>
-            </button>
+                        {/* WHAT section */}
+                        <button
+                            ref={whatSectionRef}
+                            type="button"
+                            onClick={() => setActiveSection(activeSection === "what" ? null : "what")}
+                            className={cn(
+                                "flex flex-col justify-center items-start flex-1 min-w-[120px] h-full rounded-full px-4 transition-all duration-150",
+                                sectionBg("what")
+                            )}
+                        >
+                            <span className={cn("font-bold text-[#1A1A1A] tracking-widest uppercase leading-none", labelSize)}>
+                                {t("search_bar.what")}
+                            </span>
+                            <span className={cn("mt-0.5 truncate w-full pt-1", valueSize, categoryLabel ? "text-[#1A1A1A] font-medium" : "text-[#717171]")}>
+                                {categoryLabel ?? t("search_bar.any_category")}
+                            </span>
+                        </button>
 
-            {/* Search button */}
-            <button
-                type="button"
-                onClick={() => handleSearch()}
-                aria-label={t("search_bar.cta")}
-                className={cn(
-                    "shrink-0 rounded-full flex items-center justify-center bg-[#E8472A] hover:bg-[#C43A20] active:scale-95 transition-all duration-200 ms-1.5",
-                    anyActive
-                        ? "h-[42px] px-4 gap-2"
-                        : variant === "hero" ? "w-[46px] h-[46px]" : "w-[42px] h-[42px]"
+                        {/* Search button */}
+                        <button
+                            type="button"
+                            onClick={() => handleSearch()}
+                            aria-label={t("search_bar.cta")}
+                            className={cn(
+                                "shrink-0 rounded-full flex items-center justify-center bg-primary hover:bg-[#C43A20] active:scale-95 transition-all duration-200 ms-1.5 shadow-lg shadow-primary/20",
+                                anyActive
+                                    ? "h-[42px] px-4 gap-2"
+                                    : variant === "hero" ? "w-[46px] h-[46px]" : "w-[42px] h-[42px]"
+                            )}
+                        >
+                            <Search className="w-4 h-4 text-white shrink-0" />
+                            {anyActive && (
+                                <motion.span 
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    className="text-white text-[13px] font-semibold whitespace-nowrap"
+                                >
+                                    {t("search_bar.cta")}
+                                </motion.span>
+                            )}
+                        </button>
+                    </motion.div>
                 )}
-            >
-                <Search className="w-4 h-4 text-white shrink-0" />
-                {anyActive && (
-                    <span className="text-white text-[13px] font-semibold whitespace-nowrap">
-                        {t("search_bar.cta")}
-                    </span>
-                )}
-            </button>
-        </div>
+            </AnimatePresence>
+        </motion.div>
     );
 
     // ── Portaled dropdown panels ──────────────────────────────────────────────
@@ -385,7 +441,7 @@ export default function SearchBar({
                 )}
             </div>
             {filteredCities.length > 0 ? (
-                <div className="overflow-y-auto max-h-[220px] pr-0.5">
+                <div className="overflow-y-auto max-h-[220px] pe-0.5">
                     <div className="grid grid-cols-2 gap-2">
                         {filteredCities.map((c) => (
                             <button key={c.value} type="button" onClick={() => handleCitySelect(c.value)}
@@ -447,7 +503,7 @@ export default function SearchBar({
                 )}
             </div>
             {filteredCategories.length > 0 ? (
-                <div className="overflow-y-auto max-h-[260px] pr-0.5">
+                <div className="overflow-y-auto max-h-[260px] pe-0.5">
                     <div className="grid grid-cols-3 gap-2">
                         {filteredCategories.map((c) => {
                             const CatIcon = CATEGORY_ICON_MAP[c.value] ?? LayoutGrid;

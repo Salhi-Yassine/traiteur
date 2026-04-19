@@ -66,7 +66,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:write', 'caterer:read', 'review:read', 'quote:read'])]
     private string $lastName = '';
 
-    #[ORM\Column(length: 30, nullable: true)]
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Regex(pattern: '/^\+?[\d\s\-]{7,15}$/', message: 'Phone must be a valid international phone number')]
     #[Groups(['user:read', 'user:write'])]
     private ?string $phone = null;
 

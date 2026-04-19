@@ -28,6 +28,8 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuth } from "../../context/AuthContext";
 import apiClient from "../../utils/apiClient";
+import { PATHS } from "../../constants/paths";
+import type { QuoteRequest, VendorProfile as VendorProfileType, HydraCollection } from "../../types/api";
 import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import Navbar from "../../components/layout/Navbar";
@@ -175,28 +177,28 @@ export default function VendorDashboardPage() {
     useEffect(() => {
         if (authLoading) return;
         if (!user) {
-            router.replace("/auth/login");
+            router.replace(PATHS.AUTH_LOGIN);
         } else if (user.userType !== "vendor") {
-            router.replace("/");
+            router.replace(PATHS.HOME);
         }
     }, [user, authLoading, router]);
 
-    const { data: vendorProfile } = useQuery({
+    const { data: vendorProfile } = useQuery<VendorProfileType>({
         queryKey: ["vendorProfile", user?.vendorProfile?.id],
         queryFn: () => apiClient.get(`/api/vendor_profiles/${user!.vendorProfile!.id}`),
         enabled: !!user?.vendorProfile?.id,
     });
 
-    const { data: inquiriesData } = useQuery({
+    const { data: inquiriesData } = useQuery<HydraCollection<QuoteRequest>>({
         queryKey: ["recentInquiries", vendorProfile?.["@id"]],
         queryFn: () =>
             apiClient.get(
-                `/api/quote_requests?vendorProfile=${encodeURIComponent(vendorProfile?.["@id"])}&itemsPerPage=5&order[id]=desc`,
+                `/api/quote_requests?vendorProfile=${encodeURIComponent(vendorProfile?.["@id"] ?? "")}&itemsPerPage=5&order[id]=desc`,
             ),
         enabled: !!vendorProfile?.["@id"],
     });
 
-    const inquiries = inquiriesData?.["hydra:member"] ?? [];
+    const inquiries: QuoteRequest[] = inquiriesData?.["hydra:member"] ?? [];
 
     if (authLoading || !user || user.userType !== "vendor") {
         return (
@@ -215,7 +217,7 @@ export default function VendorDashboardPage() {
         [!!vendorProfile?.businessName,          "completion_add_description", "/onboarding/vendor"],
         [!!vendorProfile?.description,           "completion_add_description", "/onboarding/vendor"],
         [!!vendorProfile?.category,              "completion_add_category",    "/onboarding/vendor"],
-        [vendorProfile?.cities?.length > 0,      "completion_add_cities",      "/onboarding/vendor"],
+        [Boolean(vendorProfile?.cities?.length), "completion_add_cities",      "/onboarding/vendor"],
         [!!vendorProfile?.whatsapp,              "completion_add_whatsapp",    "/onboarding/vendor"],
         [!!vendorProfile?.coverImageUrl,         "completion_add_cover",       "/onboarding/vendor"],
         [!!vendorProfile?.priceRange,            "completion_add_price",       "/onboarding/vendor"],
@@ -433,7 +435,7 @@ export default function VendorDashboardPage() {
                                         className="text-[13px] text-primary font-semibold hover:text-primary-dark flex items-center gap-1"
                                     >
                                         {t("dashboard.vendor.view_all_inquiries")}
-                                        <ChevronRight className="w-3.5 h-3.5" />
+                                        <ChevronRight className="w-3.5 h-3.5 rtl:-scale-x-100" />
                                     </Link>
                                 </div>
 
@@ -463,7 +465,7 @@ export default function VendorDashboardPage() {
                                     </div>
                                 ) : (
                                     <div className="divide-y divide-neutral-100">
-                                        {inquiries.map((inq: any) => (
+                                        {inquiries.map((inq) => (
                                             <div key={inq.id} className="py-4 flex items-start justify-between gap-4">
                                                 <div>
                                                     <p className="text-[14px] font-semibold text-neutral-900">

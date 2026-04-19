@@ -1,9 +1,9 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/router";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { useAuth } from "../../context/AuthContext";
 import { ApiError } from "../../utils/apiClient";
 import { useTranslation, Trans } from "next-i18next";
@@ -15,7 +15,6 @@ import { AuthCard } from "../../components/auth/AuthCard";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff, CheckCircle2, Circle, Camera, MessageSquare, BarChart2 } from "lucide-react";
 
-// ── Google logo ──────────────────────────────────────────────────────────────
 function GoogleIcon() {
     return (
         <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" aria-hidden="true">
@@ -27,7 +26,6 @@ function GoogleIcon() {
     );
 }
 
-// ── "── ou ──" separator ─────────────────────────────────────────────────────
 function OrDivider({ label }: { label: string }) {
     return (
         <div className="relative flex items-center my-5" role="separator" aria-label={label}>
@@ -38,61 +36,49 @@ function OrDivider({ label }: { label: string }) {
     );
 }
 
-// ── Validation ───────────────────────────────────────────────────────────────
-const validationSchema = (t: (key: string) => string) =>
-    Yup.object({
-        firstName: Yup.string().required(t("auth.first_name_req")),
-        lastName:  Yup.string().required(t("auth.last_name_req")),
-        email:     Yup.string().email(t("auth.invalid_email")).required(t("auth.required_email")),
-        password:  Yup.string().min(8, t("auth.password_min")).required(t("auth.required_password")),
-        userType:  Yup.string().oneOf(["couple", "vendor"]).required(),
-    });
-
-// ── Page ─────────────────────────────────────────────────────────────────────
 export default function RegisterPage() {
     const { t } = useTranslation("common");
-    const router = useRouter();
-    const { register } = useAuth();
+    const { register: registerUser } = useAuth();
     const [serverError, setServerError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
 
-    const defaultType = (router.query.type as string) === "vendor" ? "vendor" : "couple";
-    const [userType, setUserType] = useState<"couple" | "vendor">(defaultType);
+    const schema = z.object({
+        firstName: z.string().min(1, t("auth.first_name_req")),
+        lastName:  z.string().min(1, t("auth.last_name_req")),
+        email:     z.string().email(t("auth.invalid_email")),
+        password:  z.string().min(8, t("auth.password_min")),
+        userType:  z.enum(["couple", "vendor"]),
+    });
+    type FormValues = z.infer<typeof schema>;
 
-    const formik = useFormik({
-        initialValues: { firstName: "", lastName: "", email: "", password: "", userType },
-        validationSchema: validationSchema(t),
-        enableReinitialize: true,
-        onSubmit: async (values, helpers) => {
-            setServerError(null);
-            try {
-                await register({
-                    firstName:     values.firstName,
-                    lastName:      values.lastName,
-                    email:         values.email,
-                    plainPassword: values.password,
-                    userType:      values.userType,
-                });
-            } catch (err: unknown) {
-                if (err instanceof ApiError && err.data?.violations) {
-                    const formErrors: Record<string, string> = {};
-                    err.data.violations.forEach((v: { propertyPath: string; message: string }) => {
-                        formErrors[v.propertyPath] = v.message;
-                    });
-                    helpers.setErrors(formErrors);
-                } else {
-                    const msg = err instanceof Error ? err.message : null;
-                    setServerError(msg || t("auth.register_error"));
-                }
-            } finally {
-                helpers.setSubmitting(false);
-            }
-        },
+    const { register, handleSubmit, watch, control, setError, formState: { errors, isSubmitting } } = useForm<FormValues>({
+        resolver: zodResolver(schema),
+        defaultValues: { userType: "couple" },
     });
 
-    const handleTypeSwitch = (type: "couple" | "vendor") => {
-        setUserType(type);
-        formik.setFieldValue("userType", type);
+    const userType = watch("userType");
+    const password = watch("password") ?? "";
+
+    const onSubmit = async (values: FormValues) => {
+        setServerError(null);
+        try {
+            await registerUser({
+                firstName:     values.firstName,
+                lastName:      values.lastName,
+                email:         values.email,
+                plainPassword: values.password,
+                userType:      values.userType,
+            });
+        } catch (err: unknown) {
+            if (err instanceof ApiError && err.data?.violations) {
+                (err.data.violations as { propertyPath: string; message: string }[]).forEach((v) => {
+                    setError(v.propertyPath as keyof FormValues, { message: v.message });
+                });
+            } else {
+                const msg = err instanceof Error ? err.message : null;
+                setServerError(msg || t("auth.register_error"));
+            }
+        }
     };
 
     return (
@@ -108,36 +94,40 @@ export default function RegisterPage() {
                 </p>
 
                 {/* Account type toggle */}
-                <div className="flex gap-2 mb-6" role="group" aria-label={t("auth.account_type")}>
-                    <button
-                        type="button"
-                        onClick={() => handleTypeSwitch("couple")}
-                        className={cn(
-                            "flex-1 h-[52px] rounded-2xl text-[13px] font-bold border transition-all duration-200 flex flex-col items-center justify-center gap-0.5",
-                            userType === "couple"
-                                ? "bg-primary text-white border-primary shadow-sm"
-                                : "bg-white text-neutral-500 border-neutral-200 hover:border-primary hover:text-primary",
-                        )}
-                    >
-                        <span>💍</span>
-                        <span>{t("auth.planning_wedding")}</span>
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => handleTypeSwitch("vendor")}
-                        className={cn(
-                            "flex-1 h-[52px] rounded-2xl border transition-all duration-200 flex flex-col items-center justify-center gap-0",
-                            userType === "vendor"
-                                ? "bg-primary text-white border-primary shadow-sm"
-                                : "bg-white text-neutral-500 border-neutral-200 hover:border-primary hover:text-primary",
-                        )}
-                    >
-                        <span className="text-[13px] font-bold">{t("auth.i_am_vendor")}</span>
-                        <span className="text-[11px] font-medium opacity-80">{t("auth.vendor_sub_label")}</span>
-                    </button>
-                </div>
+                <Controller
+                    name="userType"
+                    control={control}
+                    render={({ field }) => (
+                        <div className="flex gap-2 mb-6" role="group" aria-label={t("auth.account_type")}>
+                            {(["couple", "vendor"] as const).map((type) => (
+                                <button
+                                    key={type}
+                                    type="button"
+                                    onClick={() => field.onChange(type)}
+                                    className={cn(
+                                        "flex-1 h-[52px] rounded-2xl text-[13px] font-bold border transition-all duration-200 flex flex-col items-center justify-center gap-0.5",
+                                        field.value === type
+                                            ? "bg-primary text-white border-primary shadow-sm"
+                                            : "bg-white text-neutral-500 border-neutral-200 hover:border-primary hover:text-primary",
+                                    )}
+                                >
+                                    {type === "couple" ? (
+                                        <>
+                                            <span>💍</span>
+                                            <span>{t("auth.planning_wedding")}</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span className="text-[13px] font-bold">{t("auth.i_am_vendor")}</span>
+                                            <span className="text-[11px] font-medium opacity-80">{t("auth.vendor_sub_label")}</span>
+                                        </>
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                />
 
-                {/* Vendor value card — shown only when vendor tab active */}
                 {userType === "vendor" && (
                     <div className="mb-6 p-4 bg-[#FEF0ED] border border-[#E8472A]/20 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-300">
                         <p className="text-[12px] font-bold text-[#E8472A] uppercase tracking-wider mb-3">
@@ -161,28 +151,19 @@ export default function RegisterPage() {
                 )}
 
                 {serverError && (
-                    <div
-                        role="alert"
-                        className="mb-5 p-4 bg-[#FEECEC] border border-[#C13030]/20 rounded-xl text-[14px] text-[#C13030]"
-                    >
+                    <div role="alert" className="mb-5 p-4 bg-[#FEECEC] border border-[#C13030]/20 rounded-xl text-[14px] text-[#C13030]">
                         {serverError}
                     </div>
                 )}
 
-                {/* Google OAuth */}
-                <AuthCard.SocialButton
-                    href="/api/auth/google"
-                    onClick={() => {}}
-                >
+                <AuthCard.SocialButton href="/api/auth/google" onClick={() => {}}>
                     <GoogleIcon />
                     {t("auth.continue_with_google")}
                 </AuthCard.SocialButton>
 
                 <OrDivider label={t("auth.or")} />
 
-                <form onSubmit={formik.handleSubmit} noValidate className="space-y-4">
-
-                    {/* Name row */}
+                <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
                     <div className="grid grid-cols-2 gap-3">
                         <FloatingInput
                             id="firstName"
@@ -190,24 +171,16 @@ export default function RegisterPage() {
                             type="text"
                             autoComplete="given-name"
                             autoFocus
-                            {...formik.getFieldProps("firstName")}
-                            error={
-                                formik.touched.firstName && formik.errors.firstName
-                                    ? formik.errors.firstName
-                                    : undefined
-                            }
+                            {...register("firstName")}
+                            error={errors.firstName?.message}
                         />
                         <FloatingInput
                             id="lastName"
                             label={t("auth.last_name")}
                             type="text"
                             autoComplete="family-name"
-                            {...formik.getFieldProps("lastName")}
-                            error={
-                                formik.touched.lastName && formik.errors.lastName
-                                    ? formik.errors.lastName
-                                    : undefined
-                            }
+                            {...register("lastName")}
+                            error={errors.lastName?.message}
                         />
                     </div>
 
@@ -216,12 +189,8 @@ export default function RegisterPage() {
                         label={t("auth.email_label")}
                         type="email"
                         autoComplete="email"
-                        {...formik.getFieldProps("email")}
-                        error={
-                            formik.touched.email && formik.errors.email
-                                ? formik.errors.email
-                                : undefined
-                        }
+                        {...register("email")}
+                        error={errors.email?.message}
                     />
 
                     <FloatingInput
@@ -229,12 +198,8 @@ export default function RegisterPage() {
                         label={t("auth.password_label")}
                         type={showPassword ? "text" : "password"}
                         autoComplete="new-password"
-                        {...formik.getFieldProps("password")}
-                        error={
-                            formik.touched.password && formik.errors.password
-                                ? formik.errors.password
-                                : undefined
-                        }
+                        {...register("password")}
+                        error={errors.password?.message}
                         trailingSlot={
                             <button
                                 type="button"
@@ -246,49 +211,25 @@ export default function RegisterPage() {
                             </button>
                         }
                     />
+
                     <div className="space-y-2.5 pb-2">
                         <p className="text-[12px] font-bold text-neutral-900 ps-1 uppercase tracking-wider">
                             {t("auth.password_requirements")}
                         </p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 ps-1">
                             {[
-                                { 
-                                    label: t("auth.req_min_chars"), 
-                                    met: formik.values.password.length >= 8 
-                                },
-                                { 
-                                    label: t("auth.req_number"), 
-                                    met: /[0-9]/.test(formik.values.password) 
-                                },
-                                { 
-                                    label: t("auth.req_uppercase"), 
-                                    met: /[A-Z]/.test(formik.values.password) 
-                                },
-                                { 
-                                    label: t("auth.req_special"), 
-                                    met: /[^A-Za-z0-9]/.test(formik.values.password) 
-                                }
+                                { label: t("auth.req_min_chars"), met: password.length >= 8 },
+                                { label: t("auth.req_number"),    met: /[0-9]/.test(password) },
+                                { label: t("auth.req_uppercase"), met: /[A-Z]/.test(password) },
+                                { label: t("auth.req_special"),   met: /[^A-Za-z0-9]/.test(password) },
                             ].map((req, i) => (
-                                <div 
-                                    key={i} 
-                                    className={cn(
-                                        "flex items-center gap-2 text-[12px] transition-colors duration-300",
-                                        req.met ? "text-green-600" : "text-neutral-400"
-                                    )}
-                                >
-                                    {req.met ? (
-                                        <CheckCircle2 className="w-3.5 h-3.5" />
-                                    ) : (
-                                        <Circle className="w-3.5 h-3.5" />
-                                    )}
-                                    <span className={cn(req.met ? "font-bold" : "font-medium")}>
-                                        {req.label}
-                                    </span>
+                                <div key={i} className={cn("flex items-center gap-2 text-[12px] transition-colors duration-300", req.met ? "text-green-600" : "text-neutral-400")}>
+                                    {req.met ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
+                                    <span className={cn(req.met ? "font-bold" : "font-medium")}>{req.label}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
-
 
                     <p className="text-[12px] text-[#717171] leading-relaxed">
                         <Trans
@@ -303,8 +244,8 @@ export default function RegisterPage() {
 
                     <Button
                         type="submit"
-                        disabled={formik.isSubmitting}
-                        loading={formik.isSubmitting}
+                        disabled={isSubmitting}
+                        loading={isSubmitting}
                         className="w-full h-[52px] mt-2 text-[15px] font-semibold rounded-xl"
                     >
                         {t("auth.create_acc_btn")}
@@ -313,10 +254,7 @@ export default function RegisterPage() {
 
                 <p className="text-center text-[14px] text-[#717171] mt-7 pb-1">
                     {t("auth.already_registered")}{" "}
-                    <Link
-                        href="/auth/login"
-                        className="text-[#E8472A] font-semibold underline underline-offset-2 hover:text-[#C43A20] transition-colors"
-                    >
+                    <Link href="/auth/login" className="text-[#E8472A] font-semibold underline underline-offset-2 hover:text-[#C43A20] transition-colors">
                         {t("auth.login_btn")}
                     </Link>
                 </p>

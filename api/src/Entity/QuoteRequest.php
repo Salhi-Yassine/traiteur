@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),
         new Get(security: "is_granted('quote:view', object)"),
-        new Post(security: "is_granted('quote:create')"),
+        new Post(security: "is_granted('quote:create')", processor: \App\State\QuoteRequestProcessor::class),
         new Patch(
             security: "is_granted('quote:manage', object)",
             denormalizationContext: ['groups' => ['quote:status']]
@@ -32,6 +32,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ApiFilter(SearchFilter::class, properties: ['vendorProfile' => 'exact', 'client' => 'exact', 'status' => 'exact'])]
 #[ORM\Entity(repositoryClass: QuoteRequestRepository::class)]
+#[ORM\Index(columns: ['vendor_profile_id'], name: 'idx_quote_vendor_profile')]
+#[ORM\Index(columns: ['client_id'],         name: 'idx_quote_client')]
+#[ORM\Index(columns: ['status'],            name: 'idx_quote_status')]
+#[ORM\Index(columns: ['created_at'],        name: 'idx_quote_created')]
 class QuoteRequest
 {
     public const STATUS_PENDING = 'pending';

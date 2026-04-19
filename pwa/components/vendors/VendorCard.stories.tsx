@@ -72,11 +72,15 @@ export const ListVariant: Story = {
 };
 
 export const ListStack: Story = {
-  render: () => (
-    <div style={{ width: "640px", display: "flex", flexDirection: "column", gap: "12px" }}>
-      <VendorCard {...(Default.args as any)} variant="list" id={1} businessName="Palais des Roses" averageRating={4.9} reviewCount={128} priceRange="MADMADMAD" />
-      <VendorCard {...(Default.args as any)} variant="list" id={2} businessName="Traiteur El Bahia" averageRating={4.7} reviewCount={95} priceRange="MADMAD" />
-      <VendorCard {...(Default.args as any)} variant="list" id={3} businessName="Négafa Dar El Makhzen" averageRating={5.0} reviewCount={64} priceRange="MADMADMAD+" />
-    </div>
-  ),
+  args: Default.args,
+  render: () => {
+    const defaultArgs = Default.args as Story["args"];
+    return (
+      <div style={{ width: "640px", display: "flex", flexDirection: "column", gap: "12px" }}>
+        <VendorCard {...defaultArgs} variant="list" id={1} businessName="Palais des Roses" averageRating={4.9} reviewCount={128} priceRange="MADMADMAD" />
+        <VendorCard {...defaultArgs} variant="list" id={2} businessName="Traiteur El Bahia" averageRating={4.7} reviewCount={95} priceRange="MADMAD" />
+        <VendorCard {...defaultArgs} variant="list" id={3} businessName="Négafa Dar El Makhzen" averageRating={5.0} reviewCount={64} priceRange="MADMADMAD+" />
+      </div>
+    );
+  },
 };

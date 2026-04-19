@@ -16,27 +16,21 @@
 - [ ] Similar vendors section — real API fetch (currently hardcoded placeholders)
 - [ ] Reviews sub-ratings (quality, communication, value, punctuality)
 
-### Auth (US-3.1)
-- [ ] Silent JWT refresh (refresh token)
-
 ### Vendor Onboarding Wizard (US-2.1)
 - [ ] Cloudinary direct upload integration (Step 2 currently uses file inputs only)
 - [ ] "Pending review" status + email confirmation on approval
 - [ ] Profile completeness indicator
 
 ### i18n & RTL
-- [ ] `<html dir="rtl">` dynamic update on locale switch
-- [ ] RTL audit: text-align: start everywhere, icon flipping
-- [ ] Toast positions swap in RTL
+- [ ] RTL audit: text-align: start everywhere (run follow-up scan after new components are added)
 
 ### Tech Debt & Quality
-- [ ] Missing Storybook stories: `command`, `popover`, `SuccessAnimation`, `ProtectedRoute`, `Layout`, `PlanningLayout`, `Admin/App`
-- [ ] RTL: Navbar drawer translation animation (`translate-x-full` → direction-aware in RTL)
-- [ ] RTL audit: `select.tsx` slide-in animations use non-logical direction classes
-- [ ] Add `useEffect + fetch` scan — confirm no pages bypass TanStack Query
-- [ ] Extract custom hooks: `useVendorFilters`, `useQueryParams` from `pages/vendors/index.tsx` (658 lines)
-- [ ] Backend: `ReviewAggregationService` — recalculate `averageRating` + `reviewCount` on review create/delete
-- [ ] Backend: Makefile `remove-migration-files` target uses wrong path (`api/migrations` vs `/app/migrations` in container)
+- [ ] Missing Storybook stories: `command`, `popover`, `SuccessAnimation`, `ProtectedRoute`, `Layout`, `PlanningLayout`, `Admin/App`, `ErrorBoundary`, `QuoteRequestModal`
+- [ ] Toast positions swap in RTL (Toaster uses sonner — check RTL position in Arabic locale)
+- [ ] Add more Vitest tests: AuthContext (login/logout/forced-logout), useVendorFilters (filter state machine), fetchServerSide (error branches)
+- [ ] Phase B: Redis + rate limiting + Messenger (async emails) — see plan file
+- [ ] Phase C: Cloudinary uploads (onboarding wizard) + Meilisearch (vendor search)
+- [ ] Phase D: Bundle analysis (@next/bundle-analyzer) + PgBouncer
 
 ---
 

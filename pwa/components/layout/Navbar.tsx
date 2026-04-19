@@ -6,6 +6,9 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import LanguageSwitcher from "./LanguageSwitcher";
+import UserMenu from "./UserMenu";
+import { LayoutDashboard } from "lucide-react";
+import { PATHS } from "../../constants/paths";
 
 // v3.0 nav items per PRD section 7
 const NAV_ITEM_KEYS = [
@@ -90,25 +93,9 @@ export default function Navbar() {
                             <div className="w-px h-6 bg-current opacity-10 mx-1" />
 
                             {isLoading ? (
-                                <div className="w-20 h-8 bg-white/10 animate-pulse rounded-lg" />
+                                <div className="w-20 h-8 bg-white/10 animate-pulse rounded-full" />
                             ) : user ? (
-                                <div className="flex items-center gap-3">
-                                    <span className={cn(
-                                        "text-[14px] font-medium",
-                                        isSolid ? "text-[#484848]" : "text-white/85"
-                                    )}>
-                                        {user.firstName}
-                                    </span>
-                                    <button
-                                        onClick={logout}
-                                        className={cn(
-                                            "text-[13px] transition-colors underline underline-offset-2",
-                                            isSolid ? "text-[#717171] hover:text-[#1A1A1A]" : "text-white/60 hover:text-white"
-                                        )}
-                                    >
-                                        {t('nav.logout', 'Déconnexion')}
-                                    </button>
-                                </div>
+                                <UserMenu scrolled={isSolid} />
                             ) : (
                                 <>
                                     <Link
@@ -162,12 +149,11 @@ export default function Navbar() {
             <div
                 id="mobile-drawer"
                 role="dialog"
-                aria-label="Menu navigation"
                 aria-modal="true"
                 aria-label={t('nav.drawer')}
                 className={cn(
                     "fixed top-0 end-0 bottom-0 z-[70] w-[300px] bg-white shadow-[0_8px_28px_rgba(0,0,0,0.12)] flex flex-col lg:hidden transition-transform duration-300 ease-out",
-                    mobileOpen ? "translate-x-0" : "translate-x-full"
+                    mobileOpen ? "translate-x-0" : "translate-x-full rtl:-translate-x-full"
                 )}
             >
                 {/* Drawer header */}
@@ -211,18 +197,28 @@ export default function Navbar() {
                 {/* Auth CTAs */}
                 <div className="p-4 mt-auto space-y-2 border-t border-[#DDDDDD]">
                     {user ? (
-                        <>
-                            <p className="text-[13px] text-[#717171] px-2 mb-3">
-                                {t('nav.connected_as')} <strong className="text-[#1A1A1A]">{user.firstName}</strong>
-                            </p>
+                        <div className="space-y-3">
+                            <Button
+                                variant="default"
+                                className="w-full h-12 rounded-xl bg-primary shadow-lg shadow-primary/20"
+                                asChild
+                            >
+                                <Link 
+                                    href={user.userType === "vendor" ? PATHS.DASHBOARD_VENDOR : PATHS.DASHBOARD_COUPLE} 
+                                    onClick={() => setMobileOpen(false)}
+                                >
+                                    <LayoutDashboard className="w-4 h-4 me-2" />
+                                    {user.userType === "vendor" ? t("nav.user_menu.vendor_dashboard") : t("nav.user_menu.couple_dashboard")}
+                                </Link>
+                            </Button>
                             <Button
                                 variant="ghost"
-                                className="w-full"
+                                className="w-full h-12 rounded-xl text-neutral-400 font-bold"
                                 onClick={() => { logout(); setMobileOpen(false); }}
                             >
                                 {t('nav.logout', 'Déconnexion')}
                             </Button>
-                        </>
+                        </div>
                     ) : (
                         <>
                             <Button variant="ghost" className="w-full" asChild>

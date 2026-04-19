@@ -25,7 +25,15 @@
     "mobile_nav": "Navigation mobile",
     "drawer": "Menu navigation",
     "language": "Langue",
-    "connected_as": "Connecté en tant que"
+    "connected_as": "Connecté en tant que",
+    "user_menu": {
+      "dashboard": "Mon Tableau de bord",
+      "couple_dashboard": "Mon Mariage",
+      "vendor_dashboard": "Mon Business",
+      "profile": "Mes Paramètres",
+      "help": "Besoin d'aide ?",
+      "logout": "Déconnexion"
+    }
   },
   "auth": {
     "planning_wedding": "Je planifie mon mariage",
@@ -238,7 +246,9 @@
     "confirm": "Confirmer",
     "no_results": "Aucun résultat",
     "no_results_desc": "Essayez d'élargir vos critères de recherche.",
-    "view": "Voir"
+    "view": "Voir",
+    "prev_page": "Précédent",
+    "next_page": "Suivant"
   },
   "errors": {
     "something_went_wrong": "Une erreur est survenue. Veuillez réessayer.",
@@ -493,7 +503,9 @@
       "available": "Disponible",
       "selected": "Sélectionné",
       "unavailable": "Indisponible"
-    }
+    },
+    "link_copied": "Lien copié !",
+    "share_text": "Découvrez {name} sur Farah.ma"
   },
   "filters": {
     "title": "Filtres",
@@ -528,7 +540,9 @@
     "verified_only": "Prestataires vérifiés",
     "help_title": "Besoin d'aide ?",
     "help_desc": "Nos experts vous aident à trouver les prestataires parfaits selon vos critères.",
-    "contact_us": "Contacter un expert"
+    "contact_us": "Contacter un expert",
+    "grid_view": "Vue grille",
+    "list_view": "Vue liste"
   },
   "categories_page": {
     "title": "Toutes les catégories",
@@ -774,5 +788,33 @@
     "gallery_title": "Album photo",
     "gallery_desc": "Les photos seront disponibles après la cérémonie",
     "gallery_photo_alt": "Photo du mariage"
+  },
+  "quote_modal": {
+    "header_label": "Demande de Devis",
+    "header_title": "Réserver {{name}}",
+    "header_desc": "Remplissez ce formulaire pour recevoir une proposition sur mesure.",
+    "event_type_label": "Type d'Événement",
+    "event_type_placeholder": "Sélectionnez…",
+    "event_type_required": "Veuillez choisir un type d'événement",
+    "event_type_wedding": "Mariage",
+    "event_type_engagement": "Fiançailles",
+    "event_type_haqiqa": "Sbouâ (Haqiqa)",
+    "event_type_henna": "Henné",
+    "event_type_reception": "Réception",
+    "event_type_other": "Autre",
+    "date_label": "Date Souhaitée",
+    "date_required": "La date est requise",
+    "date_future": "La date doit être dans le futur",
+    "guests_label": "Nombre d'Invités",
+    "guests_min": "Minimum 1 invité",
+    "guests_max": "Maximum 10 000 invités",
+    "budget_label": "Budget Estimé (MAD)",
+    "budget_placeholder": "ex: 80 000",
+    "message_label": "Vos Précisions",
+    "message_placeholder": "Thème, prestations souhaitées, questions…",
+    "message_min": "Le message est trop court (10 caractères minimum)",
+    "submit": "Transmettre ma Demande",
+    "submitting": "Envoi en cours…",
+    "success": "Votre demande de devis a été envoyée avec succès !"
   }
 }

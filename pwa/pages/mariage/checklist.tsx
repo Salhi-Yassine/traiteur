@@ -10,6 +10,9 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
+import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
+import { Calendar, CheckCircle2, Clock, Plus, Trash2, ChevronRight, Zap } from "lucide-react";
 
 interface ChecklistTask {
     id: number;
@@ -42,7 +45,7 @@ export default function ChecklistPage() {
         queryFn: () => apiClient.get("/api/wedding_profiles?itemsPerPage=1"),
     });
 
-    const profile: WeddingProfile | null = profileData?.["hydra:member"]?.[0] ?? null;
+    const profile: WeddingProfile | null = (profileData as any)?.["hydra:member"]?.[0] ?? null;
     const profileId = profile?.id ?? null;
 
     const { data: taskData } = useQuery({
@@ -51,7 +54,7 @@ export default function ChecklistPage() {
         enabled: profileId !== null,
     });
 
-    const tasks: ChecklistTask[] = taskData?.["hydra:member"] ?? [];
+    const tasks: ChecklistTask[] = (taskData as any)?.["hydra:member"] ?? [];
 
     const addMutation = useMutation({
         mutationFn: (data: typeof newTask & { weddingProfile: string }) =>
@@ -91,6 +94,27 @@ export default function ChecklistPage() {
     const completedCount = tasks.filter((task) => task.isCompleted).length;
     const progressPercent = tasks.length > 0 ? (completedCount / tasks.length) * 100 : 0;
 
+    // ── Pre-defined Phases ──────────────────────────────────────────────────
+    const PHASES = [
+        { id: "foundations", label: "Les Fondamentations", months: "12-9 months before" },
+        { id: "details", label: "Le Planning Détail", months: "6-3 months before" },
+        { id: "final", label: "Le Sprint Final", months: "1 month before" },
+        { id: "day_of", label: "Le Jour J", months: "Wedding Day" }
+    ];
+
+    const MOROCCAN_TASKS = [
+        { title: "Choisir la Negafa", category: "tenues", phase: "foundations" },
+        { title: "Réservation de la Salle/Riad", category: "salles", phase: "foundations" },
+        { title: "Dégustation Traiteur (Pastilla & Méchoui)", category: "traiteur", phase: "details" },
+        { title: "Sélection de l'Ammariya", category: "tenues", phase: "details" },
+        { title: "Organisation de la Nuit du Henné", category: "autre", phase: "final" },
+    ];
+
+    const tasksByPhase = PHASES.map(phase => ({
+        ...phase,
+        tasks: tasks.filter(t => (t as any).phase === phase.id || (! (t as any).phase && phase.id === "foundations"))
+    }));
+
     return (
         <PlanningLayout
             title={t("checklist.title")}
@@ -100,98 +124,123 @@ export default function ChecklistPage() {
                 <title>{t("nav.checklist")} — Farah.ma</title>
             </Head>
 
-            {/* Progress Bar Top */}
-            <div className="bg-white p-10 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm mb-12">
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">{t("checklist.progress_title")}</h3>
-                        <span className="text-[var(--color-charcoal-400)] text-xs font-bold uppercase tracking-widest mt-1">
-                            {t("checklist.progress_stats", { done: completedCount, total: tasks.length })}
-                        </span>
+            {/* Progress Journey Header */}
+            <div className="bg-neutral-900 p-12 md:p-16 rounded-[3rem] text-white shadow-3 mb-12 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
+                
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-primary font-bold text-[13px] uppercase tracking-widest">
+                            <Zap size={16} />
+                            Planning Journey
+                        </div>
+                        <h3 className="font-display text-4xl md:text-5xl">{t("checklist.progress_title")}</h3>
+                        <p className="text-white/60 text-[16px] max-w-md font-medium">
+                            {t("checklist.progress_stats", { done: completedCount, total: tasks.length })} tasks completed.
+                        </p>
                     </div>
-                    <span className="text-4xl font-black text-[var(--color-accent)]">{Math.round(progressPercent)}%</span>
-                </div>
-                <div className="h-4 w-full bg-[var(--color-background)] rounded-full overflow-hidden">
-                    {/* Dynamic width is a runtime value — inline style is the correct approach here */}
-                    <div
-                        className="h-full bg-[var(--color-accent)] transition-all duration-1000 shadow-lg shadow-[var(--color-accent)]/20"
-                        style={{ width: `${progressPercent}%` }}
-                    />
+
+                    <div className="flex items-center gap-8">
+                        <div className="text-right">
+                            <span className="block text-5xl md:text-7xl font-black text-primary leading-none">
+                                {Math.round(progressPercent)}%
+                            </span>
+                            <span className="text-white/40 text-[12px] font-bold uppercase tracking-widest mt-2 block">
+                                Overall Progress
+                            </span>
+                        </div>
+                        <div className="w-24 h-24 rounded-full border-4 border-white/10 flex items-center justify-center relative">
+                            <svg className="w-full h-full transform -rotate-90">
+                                <circle cx="48" cy="48" r="40" stroke="currentColor" strokeWidth="4" fill="transparent" className="text-white/5" />
+                                <circle cx="48" cy="48" r="40" stroke="currentColor" strokeWidth="4" fill="transparent" strokeDasharray={251} strokeDashoffset={251 - (251 * progressPercent) / 100} strokeLinecap="round" className="text-primary transition-all duration-1000" />
+                            </svg>
+                            <Calendar className="absolute text-white/20" size={32} />
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Delete error */}
-            {deleteMutation.isError && (
-                <div className="mb-6 px-6 py-4 rounded-2xl bg-red-50 border border-red-100 text-red-600 text-sm font-bold">
-                    {t("checklist.error_delete")}
-                </div>
-            )}
-
-            {/* Task List */}
-            <div className="bg-white rounded-[2.5rem] border border-[var(--color-charcoal-100)] overflow-hidden shadow-sm">
-                <div className="px-10 py-8 border-b border-[var(--color-background)] flex items-center justify-between">
-                    <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">{t("checklist.tasks_title")}</h3>
-                    <Button
-                        onClick={() => setIsAdding(true)}
-                        className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-[var(--color-accent)]/20 h-auto"
-                    >
-                        + {t("checklist.add_task")}
-                    </Button>
-                </div>
-
-                <div className="grid grid-cols-1 divide-y divide-[var(--color-background)]">
-                    {tasks.length === 0 && (
-                        <div className="px-10 py-20 text-center text-[var(--color-charcoal-400)] italic font-medium">
-                            {t("checklist.empty")}
-                        </div>
-                    )}
-                    {tasks
-                        .slice()
-                        .sort((a, b) => Number(a.isCompleted) - Number(b.isCompleted))
-                        .map((task) => (
-                            <div key={task.id} className="flex items-center justify-between px-10 py-6 hover:bg-[var(--color-background)]/30 transition-all group">
-                                <div className="flex items-center gap-6">
-                                    <button
-                                        onClick={() => toggleMutation.mutate(task)}
-                                        className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center transition-all ${
-                                            task.isCompleted
-                                            ? "bg-[var(--color-primary)] border-[var(--color-primary)] text-white"
-                                            : "border-[var(--color-charcoal-200)] hover:border-[var(--color-accent)] text-transparent"
-                                        }`}
-                                    >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </button>
-                                    <div>
-                                        <h4 className={`font-bold transition-all ${task.isCompleted ? "text-[var(--color-charcoal-400)] line-through" : "text-[var(--color-primary)]"}`}>
-                                            {task.title}
-                                        </h4>
-                                        <div className="flex items-center gap-3 mt-1">
-                                            <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 bg-[var(--color-background)] text-[var(--color-charcoal-400)] rounded-md border border-[var(--color-charcoal-100)]">
-                                                {t(`checklist.categories.${task.category}`)}
-                                            </span>
-                                            {task.dueDate && (
-                                                <p className="text-[10px] font-medium text-[var(--color-charcoal-400)] mt-1">
-                                                    {t("checklist.due_date", { date: new Date(task.dueDate).toLocaleDateString() })}
-                                                </p>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => handleDeleteTask(task.id)}
-                                    className="text-[var(--color-charcoal-300)] hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
-                                >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                </Button>
+            {/* Task Area */}
+            <div className="space-y-12">
+                {tasksByPhase.map((phase, phaseIdx) => (
+                    <div key={phase.id} className="space-y-6">
+                        <div className="flex items-end justify-between px-4">
+                            <div>
+                                <h4 className="font-display text-3xl text-neutral-900">{phase.label}</h4>
+                                <p className="text-[#717171] text-xs font-bold uppercase tracking-widest mt-1">{phase.months}</p>
                             </div>
-                        ))}
-                </div>
+                            {phaseIdx === 0 && (
+                                <Button
+                                    onClick={() => setIsAdding(true)}
+                                    className="rounded-full px-8 h-12 font-black text-[12px] uppercase shadow-xl shadow-primary/20"
+                                >
+                                    <Plus size={16} className="mr-2" />
+                                    {t("checklist.add_task")}
+                                </Button>
+                            )}
+                        </div>
+
+                        <div className="bg-white rounded-[2.5rem] border border-neutral-100 overflow-hidden shadow-sm divide-y divide-neutral-50">
+                            {phase.tasks.length === 0 ? (
+                                <div className="p-12 text-center space-y-4">
+                                    <div className="w-16 h-16 rounded-full bg-neutral-50 border border-neutral-100 flex items-center justify-center mx-auto text-[#B0B0B0]">
+                                        <Clock size={24} />
+                                    </div>
+                                    <p className="text-[#717171] font-medium italic">No tasks yet for this phase.</p>
+                                </div>
+                            ) : (
+                                phase.tasks.map((task) => (
+                                    <motion.div
+                                        key={task.id}
+                                        layout
+                                        className="flex items-center justify-between px-8 py-6 hover:bg-[#F7F7F7]/50 transition-all group"
+                                    >
+                                        <div className="flex items-center gap-6">
+                                            <button
+                                                onClick={() => toggleMutation.mutate(task)}
+                                                className={cn(
+                                                    "w-10 h-10 rounded-2xl border-2 flex items-center justify-center transition-all duration-300",
+                                                    task.isCompleted
+                                                    ? "bg-primary border-primary text-white shadow-lg shadow-primary/30"
+                                                    : "bg-white border-neutral-200 text-transparent hover:border-primary"
+                                                )}
+                                            >
+                                                <CheckCircle2 size={24} className={task.isCompleted ? "scale-100" : "scale-50 opacity-0"} />
+                                            </button>
+                                            <div>
+                                                <h4 className={cn(
+                                                    "text-[17px] font-bold transition-all duration-300",
+                                                    task.isCompleted ? "text-[#B0B0B0] line-through" : "text-neutral-900"
+                                                )}>
+                                                    {task.title}
+                                                </h4>
+                                                <div className="flex items-center gap-3 mt-1.5">
+                                                    <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-neutral-100 text-[#717171] rounded-full">
+                                                        {t(`checklist.categories.${task.category}`)}
+                                                    </span>
+                                                    {task.dueDate && (
+                                                        <div className="flex items-center gap-1 text-[11px] font-bold text-[#717171]">
+                                                            <Calendar size={12} />
+                                                            {new Date(task.dueDate).toLocaleDateString()}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => handleDeleteTask(task.id)}
+                                            className="w-12 h-12 rounded-2xl text-[#B0B0B0] hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                                        >
+                                            <Trash2 size={20} />
+                                        </Button>
+                                    </motion.div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                ))}
             </div>
 
             {/* Add Modal */}

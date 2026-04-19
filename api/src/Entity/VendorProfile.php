@@ -39,8 +39,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(OrderFilter::class, properties: ['averageRating', 'reviewCount', 'priceRange', 'createdAt'], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(RangeFilter::class, properties: ['averageRating'])]
 #[ORM\Entity(repositoryClass: VendorProfileRepository::class)]
-#[ORM\Index(columns: ['category_id'], name: 'idx_vendor_profile_category')]
-#[ORM\Index(columns: ['owner_id'], name: 'idx_vendor_profile_owner')]
+#[ORM\Index(columns: ['category_id'],    name: 'idx_vendor_profile_category')]
+#[ORM\Index(columns: ['owner_id'],       name: 'idx_vendor_profile_owner')]
+#[ORM\Index(columns: ['average_rating'], name: 'idx_vendor_profile_avg_rating')]
+#[ORM\Index(columns: ['review_count'],   name: 'idx_vendor_profile_review_count')]
+#[ORM\Index(columns: ['created_at'],     name: 'idx_vendor_profile_created')]
+#[ORM\Index(columns: ['is_verified'],    name: 'idx_vendor_profile_verified')]
 #[UniqueEntity(fields: ['slug'], message: 'This slug is already taken')]
 #[Gedmo\TranslationEntity(class: Translation::class)]
 class VendorProfile implements Translatable
@@ -124,11 +128,13 @@ class VendorProfile implements Translatable
     }
 
     #[ORM\Column(length: 500, nullable: true)]
+    #[Assert\Url(message: 'Cover image must be a valid URL')]
     #[Groups(['vendor:read', 'vendor:write'])]
     private ?string $coverImageUrl = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 20)]
     #[Assert\NotBlank]
+    #[Assert\Regex(pattern: '/^\+?[\d\s\-]{7,15}$/', message: 'WhatsApp must be a valid international phone number')]
     #[Groups(['vendor:read', 'vendor:write'])]
     private string $whatsapp = '';
 
@@ -163,13 +169,18 @@ class VendorProfile implements Translatable
     #[Groups(['vendor:read'])]
     private string $subscriptionTier = 'free';
 
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(type: 'smallint', nullable: true)]
+    #[Assert\Positive]
+    #[Assert\LessThanOrEqual(10000)]
     #[Groups(['vendor:read', 'vendor:write'])]
-    private ?string $minGuests = null;
+    private ?int $minGuests = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(type: 'smallint', nullable: true)]
+    #[Assert\Positive]
+    #[Assert\LessThanOrEqual(10000)]
+    #[Assert\GreaterThanOrEqual(propertyPath: 'minGuests', message: 'Max guests must be ≥ min guests')]
     #[Groups(['vendor:read', 'vendor:write'])]
-    private ?string $maxGuests = null;
+    private ?int $maxGuests = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['vendor:read', 'vendor:write'])]
@@ -375,6 +386,9 @@ class VendorProfile implements Translatable
         return $this->averageRating;
     }
 
+    /**
+     * @internal Only ReviewAggregationService should call this.
+     */
     public function setAverageRating(?string $averageRating): static
     {
         $this->averageRating = $averageRating;
@@ -387,6 +401,9 @@ class VendorProfile implements Translatable
         return $this->reviewCount;
     }
 
+    /**
+     * @internal Only ReviewAggregationService should call this.
+     */
     public function setReviewCount(int $reviewCount): static
     {
         $this->reviewCount = $reviewCount;
@@ -430,24 +447,24 @@ class VendorProfile implements Translatable
         return $this;
     }
 
-    public function getMinGuests(): ?string
+    public function getMinGuests(): ?int
     {
         return $this->minGuests;
     }
 
-    public function setMinGuests(?string $minGuests): static
+    public function setMinGuests(?int $minGuests): static
     {
         $this->minGuests = $minGuests;
 
         return $this;
     }
 
-    public function getMaxGuests(): ?string
+    public function getMaxGuests(): ?int
     {
         return $this->maxGuests;
     }
 
-    public function setMaxGuests(?string $maxGuests): static
+    public function setMaxGuests(?int $maxGuests): static
     {
         $this->maxGuests = $maxGuests;
 

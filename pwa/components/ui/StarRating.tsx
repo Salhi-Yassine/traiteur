@@ -52,7 +52,7 @@ export default function StarRating({
                 <span className={`${textSizes[size]} font-semibold text-[#484848]`}>
                     {rating.toFixed(1)}
                     {reviewCount !== undefined && reviewCount > 0 && (
-                        <span className="font-normal text-[#717171] ml-0.5">
+                        <span className="font-normal text-[#717171] ms-0.5">
                             ({reviewCount})
                         </span>
                     )}

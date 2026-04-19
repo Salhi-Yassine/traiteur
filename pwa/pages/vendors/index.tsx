@@ -12,6 +12,9 @@ import VendorCard, { VendorCardProps } from "../../components/vendors/VendorCard
 import FilterModal from "../../components/vendors/FilterModal";
 import SearchBar from "../../components/vendors/SearchBar";
 import { Button } from "../../components/ui/button";
+import { useVendorFilters } from "../../lib/useVendorFilters";
+import { fetchServerSide } from "../../utils/fetchServerSide";
+import type { SortKey } from "../../lib/useVendorFilters";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -27,7 +30,6 @@ interface VendorsPageProps {
     isVerified: boolean;
 }
 
-type SortKey = "rating" | "reviews" | "price_asc" | "price_desc";
 type ViewMode = "grid" | "list";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -119,25 +121,39 @@ export default function VendorsPage({
 }: VendorsPageProps) {
     const { t } = useTranslation("common");
     const router = useRouter();
-
-    // ── State ──────────────────────────────────────────────────────────────────
-    const [activeCategory, setActiveCategory] = useState<string>(category?.slug ?? "");
-    const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>(initialPriceRanges);
-    const [sort, setSort] = useState<SortKey>((initialSort as SortKey) || "rating");
     const [view, setView] = useState<ViewMode>("grid");
     const [isNavigating, setIsNavigating] = useState(false);
     const [filterModalOpen, setFilterModalOpen] = useState(false);
-    const [minRating, setMinRating] = useState<number | null>(initialMinRating);
-    const [isVerified, setIsVerified] = useState<boolean>(initialIsVerified);
+
+    const {
+        activeCategory,
+        selectedPriceRanges,
+        sort,
+        minRating,
+        isVerified,
+        hasActiveFilters,
+        modalFilterCount,
+        handlePriceChange,
+        handleSortChange,
+        handleRatingChange,
+        handleVerifiedChange,
+        handleModalClear,
+        handleClearAll,
+        removePriceFilter,
+        goToPage,
+    } = useVendorFilters({
+        category: category?.slug,
+        priceRanges: initialPriceRanges,
+        sort: (initialSort as SortKey) || "rating",
+        minRating: initialMinRating,
+        isVerified: initialIsVerified,
+    });
 
     // ── Derived ────────────────────────────────────────────────────────────────
-    const hasActiveFilters = selectedPriceRanges.length > 0 || !!minRating || isVerified;
-    // Show demo fallback only when no filters are active and the API returned nothing
-    const showFallback    = vendors.length === 0 && !hasActiveFilters && !serviceArea && !activeCategory;
-    const displayVendors  = showFallback ? FALLBACK_VENDORS : vendors;
-    const displayTotal    = showFallback ? FALLBACK_VENDORS.length : total;
-    const totalPages      = Math.ceil(displayTotal / ITEMS_PER_PAGE);
-    const modalFilterCount = selectedPriceRanges.length + (sort !== "rating" ? 1 : 0) + (minRating ? 1 : 0) + (isVerified ? 1 : 0);
+    const showFallback   = vendors.length === 0 && !hasActiveFilters && !serviceArea && !activeCategory;
+    const displayVendors = showFallback ? FALLBACK_VENDORS : vendors;
+    const displayTotal   = showFallback ? FALLBACK_VENDORS.length : total;
+    const totalPages     = Math.ceil(displayTotal / ITEMS_PER_PAGE);
 
     // ── Navigation skeleton ───────────────────────────────────────────────────
     useEffect(() => {
@@ -152,69 +168,6 @@ export default function VendorsPage({
             router.events.off("routeChangeError",    onComplete);
         };
     }, [router]);
-
-    // ── Helpers ────────────────────────────────────────────────────────────────
-    const pushQuery = (patch: Record<string, string | string[] | undefined>) => {
-        const next: Record<string, string | string[] | undefined> = { ...router.query, ...patch, page: "1" };
-        Object.keys(next).forEach(k => {
-            if (!next[k] || (Array.isArray(next[k]) && (next[k] as string[]).length === 0)) {
-                delete next[k];
-            }
-        });
-        router.push({ pathname: "/vendors", query: next }, undefined, { shallow: true });
-    };
-
-    // Price range toggle in modal
-    const handlePriceChange = (value: string, checked: boolean) => {
-        setSelectedPriceRanges(prev => {
-            const next = checked ? [...prev, value] : prev.filter(v => v !== value);
-            pushQuery({ priceRange: next.length ? next : undefined });
-            return next;
-        });
-    };
-
-    // Clear all modal filters
-    const handleModalClear = () => {
-        setSelectedPriceRanges([]);
-        setSort("rating");
-        setMinRating(null);
-        setIsVerified(false);
-        pushQuery({ priceRange: undefined, sort: undefined, minRating: undefined, isVerified: undefined });
-    };
-
-    // Full reset
-    const handleClearAll = () => {
-        setActiveCategory("");
-        setSelectedPriceRanges([]);
-        setSort("rating");
-        setMinRating(null);
-        setIsVerified(false);
-        router.push("/vendors");
-    };
-
-    const handleSortChange = (value: string) => {
-        setSort(value as SortKey);
-        pushQuery({ sort: value });
-    };
-
-    const handleRatingChange = (val: number | null) => {
-        setMinRating(val);
-        pushQuery({ minRating: val != null ? String(val) : undefined });
-    };
-
-    const handleVerifiedChange = (val: boolean) => {
-        setIsVerified(val);
-        pushQuery({ isVerified: val ? "true" : undefined });
-    };
-
-    const removePriceFilter = (value: string) => {
-        handlePriceChange(value, false);
-    };
-
-    const goToPage = (p: number) => {
-        router.push({ pathname: "/vendors", query: { ...router.query, page: p } });
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
 
     // ── SEO strings ───────────────────────────────────────────────────────────
     const activeCategoryName = category?.name;
@@ -341,7 +294,7 @@ export default function VendorsPage({
                     <div className="hidden sm:flex items-center gap-1 border border-[#DDDDDD] rounded-xl p-1">
                         <button
                             onClick={() => setView("grid")}
-                            aria-label="Vue grille"
+                            aria-label={t("filters.grid_view")}
                             className={cn(
                                 "p-1.5 rounded-lg transition-colors",
                                 view === "grid"
@@ -353,7 +306,7 @@ export default function VendorsPage({
                         </button>
                         <button
                             onClick={() => setView("list")}
-                            aria-label="Vue liste"
+                            aria-label={t("filters.list_view")}
                             className={cn(
                                 "p-1.5 rounded-lg transition-colors",
                                 view === "list"
@@ -487,8 +440,8 @@ function EmptyState({
                     </Button>
                 )}
                 {serviceArea && (
-                    <Button onClick={() => window.location.href = "/vendors"} variant="ghost">
-                        {t("common.search_all_morocco", "Chercher dans tout le Maroc")}
+                    <Button onClick={() => onClear()} variant="ghost">
+                        {t("common.search_all_morocco")}
                     </Button>
                 )}
             </div>
@@ -505,6 +458,8 @@ function Pagination({
     totalPages: number;
     onPageChange: (p: number) => void;
 }) {
+    const { t } = useTranslation("common");
+
     const getPages = (): (number | "…")[] => {
         if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
         if (page <= 4) return [1, 2, 3, 4, 5, "…", totalPages];
@@ -520,10 +475,10 @@ function Pagination({
                 onClick={() => onPageChange(page - 1)}
                 disabled={page <= 1}
                 className="flex items-center gap-1.5 rounded-xl"
-                aria-label="Page précédente"
+                aria-label={t("common.prev_page")}
             >
                 <ChevronLeft className="w-4 h-4 rtl:-scale-x-100" />
-                <span className="hidden sm:inline">Précédent</span>
+                <span className="hidden sm:inline">{t("common.prev_page")}</span>
             </Button>
 
             <div className="flex items-center gap-1">
@@ -557,9 +512,9 @@ function Pagination({
                 onClick={() => onPageChange(page + 1)}
                 disabled={page >= totalPages}
                 className="flex items-center gap-1.5 rounded-xl"
-                aria-label="Page suivante"
+                aria-label={t("common.next_page")}
             >
-                <span className="hidden sm:inline">Suivant</span>
+                <span className="hidden sm:inline">{t("common.next_page")}</span>
                 <ChevronRight className="w-4 h-4 rtl:-scale-x-100" />
             </Button>
         </nav>
@@ -594,16 +549,10 @@ export const getServerSideProps: GetServerSideProps<VendorsPageProps> = async ({
 
         Object.entries(sortToApiParams(sort)).forEach(([k, v]) => params.set(k, v));
 
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://localhost";
-        const res = await fetch(`${baseUrl}/api/vendor_profiles?${params}`, {
-            headers: {
-                Accept: "application/ld+json",
-                "Accept-Language": locale || "fr",
-            },
-        });
-
-        if (!res.ok) throw new Error("API unavailable");
-        const data = await res.json();
+        const data = await fetchServerSide<{ "hydra:member": Record<string, unknown>[]; "hydra:totalItems": number }>(
+            `/api/vendor_profiles?${params}`,
+            { locale: locale || "fr" },
+        );
         const members: Record<string, unknown>[] = data["hydra:member"] ?? [];
         const total: number = data["hydra:totalItems"] ?? 0;
 

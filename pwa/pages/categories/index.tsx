@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { fetchServerSide } from "../../utils/fetchServerSide";
 
 
 interface CategoryFromApi {
@@ -80,20 +81,12 @@ export default function CategoriesPage({ categories }: CategoriesPageProps) {
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_ENTRYPOINT || "https://localhost";
+    const stats = await fetchServerSide<{ availableCategories?: CategoryFromApi[] }>(
+      "/api/app_stats",
+      { locale: locale || "fr" },
+    ).catch(() => null);
 
-    const statsRes = await fetch(`${baseUrl}/api/app_stats`, {
-      headers: { 
-        Accept: "application/ld+json",
-        "Accept-Language": locale || 'fr' 
-      }
-    });
-
-    let categories: CategoryFromApi[] = [];
-    if (statsRes.ok) {
-      const stats = await statsRes.json();
-      categories = stats.availableCategories || [];
-    }
+    const categories: CategoryFromApi[] = stats?.availableCategories || [];
 
     return {
       props: {

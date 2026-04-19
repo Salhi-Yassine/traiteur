@@ -10,7 +10,11 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
-import { Copy, MessageCircle, Check } from "lucide-react";
+import { Copy, MessageCircle, Check, Upload, Download, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import Papa from "papaparse";
+import { useRef } from "react";
+import { Skeleton } from "../../components/ui/skeleton";
 
 interface Guest {
     id: number;
@@ -40,8 +44,15 @@ export default function InvitesPage() {
         mealPreference: "standard",
     });
     const [copiedToken, setCopiedToken] = useState<string | null>(null);
+    const [isImporting, setIsImporting] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const { data: profileData } = useQuery({
+    // Filtering State
+    const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
+    const [sideFilter, setSideFilter] = useState("all");
+
+    const { data: profileData } = useQuery<any>({
         queryKey: ["weddingProfile"],
         queryFn: () => apiClient.get("/api/wedding_profiles?itemsPerPage=1"),
     });
@@ -49,13 +60,20 @@ export default function InvitesPage() {
     const profile: WeddingProfile | null = profileData?.["hydra:member"]?.[0] ?? null;
     const profileId = profile?.id ?? null;
 
-    const { data: guestData } = useQuery({
+    const { data: guestData } = useQuery<any>({
         queryKey: ["guests", profileId],
         queryFn: () => apiClient.get(`/api/guests?weddingProfile=${profileId}`),
         enabled: profileId !== null,
     });
 
     const guests: Guest[] = guestData?.["hydra:member"] ?? [];
+
+    const filteredGuests = guests.filter((guest) => {
+        const matchesSearch = guest.fullName.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesStatus = statusFilter === "all" || guest.rsvpStatus === statusFilter;
+        const matchesSide = sideFilter === "all" || guest.side === sideFilter;
+        return matchesSearch && matchesStatus && matchesSide;
+    });
 
     const addMutation = useMutation({
         mutationFn: (data: { name: string; rsvpStatus: string; side: string; mealPreference: string; weddingProfile: string }) =>
@@ -64,12 +82,22 @@ export default function InvitesPage() {
             queryClient.invalidateQueries({ queryKey: ["guests", profileId] });
             setIsAdding(false);
             setNewGuest({ fullName: "", phone: "", rsvpStatus: "pending", side: "bride", mealPreference: "standard" });
+            toast.success(t("invites.guest_added_success"));
         },
+        onError: () => {
+            toast.error(t("invites.error_add"));
+        }
     });
 
     const deleteMutation = useMutation({
         mutationFn: (id: number) => apiClient.delete(`/api/guests/${id}`),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["guests", profileId] }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["guests", profileId] });
+            toast.success(t("invites.guest_deleted_success"));
+        },
+        onError: () => {
+            toast.error(t("invites.error_delete"));
+        }
     });
 
     const handleAddGuest = (e: React.FormEvent) => {
@@ -95,7 +123,82 @@ export default function InvitesPage() {
         const link = `${window.location.origin}/e/${profile.slug}?guest=${token}`;
         navigator.clipboard.writeText(link);
         setCopiedToken(token);
+        toast.success(t("invites.link_copied_toast"), {
+            description: t("invites.link_copied_desc"),
+        });
         setTimeout(() => setCopiedToken(null), 2000);
+    };
+
+    const handleDownloadTemplate = () => {
+        const csvContent = "Full Name,Phone,Side,Meal Preference\nJohn Doe,+212600000000,bride,standard\nJane Smith,,groom,vegetarian";
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "farah_guest_template.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    const handleImportClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsImporting(true);
+        const loadingToast = toast.loading(t("invites.importing_guests"));
+
+        Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: async (results) => {
+                const rows = results.data as any[];
+                let successCount = 0;
+                let errorCount = 0;
+
+                for (const row of rows) {
+                    try {
+                        const fullName = row["Full Name"] || row["Name"] || row["Nom"];
+                        if (!fullName) continue;
+
+                        await apiClient.post("/api/guests", {
+                            fullName,
+                            phone: row["Phone"] || row["Telephone"] || undefined,
+                            side: (row["Side"] || "bride").toLowerCase().includes("groom") ? "groom" : "bride",
+                            mealPreference: (row["Meal Preference"] || "standard").toLowerCase(),
+                            rsvpStatus: "pending",
+                            weddingProfile: `/api/wedding_profiles/${profileId}`,
+                        });
+                        successCount++;
+                    } catch (err) {
+                        errorCount++;
+                    }
+                }
+
+                setIsImporting(false);
+                toast.dismiss(loadingToast);
+                queryClient.invalidateQueries({ queryKey: ["guests", profileId] });
+
+                if (successCount > 0) {
+                    toast.success(t("invites.import_complete"), {
+                        description: t("invites.import_complete_desc", { success: successCount, failed: errorCount }),
+                    });
+                } else if (errorCount > 0) {
+                    toast.error(t("invites.import_failed"));
+                }
+                
+                if (fileInputRef.current) fileInputRef.current.value = "";
+            },
+            error: () => {
+                setIsImporting(false);
+                toast.dismiss(loadingToast);
+                toast.error(t("invites.error_parsing_csv"));
+            }
+        });
     };
 
     const handleWhatsApp = (guest: Guest) => {
@@ -158,14 +261,72 @@ export default function InvitesPage() {
 
             {/* Guest List */}
             <div className="bg-white rounded-[2.5rem] border border-[var(--color-charcoal-100)] overflow-hidden shadow-sm">
-                <div className="px-10 py-8 border-b border-[var(--color-background)] flex items-center justify-between">
+                <div className="px-10 py-8 border-b border-[var(--color-background)] flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">{t("invites.list_title")}</h3>
-                    <Button
-                        onClick={() => setIsAdding(true)}
-                        className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-lg shadow-[var(--color-accent)]/20 h-auto"
-                    >
-                        + {t("invites.new_guest")}
-                    </Button>
+                    <div className="flex flex-wrap items-center gap-3">
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            className="hidden"
+                            accept=".csv"
+                            onChange={handleFileUpload}
+                        />
+                        <Button
+                            variant="outline"
+                            onClick={handleDownloadTemplate}
+                            className="border-[var(--color-charcoal-100)] text-[var(--color-charcoal-400)] px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:text-[var(--color-primary)] h-auto transition-all"
+                        >
+                            <Download className="w-3.5 h-3.5 me-2" />
+                            {t("invites.download_template", "Template")}
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={handleImportClick}
+                            disabled={isImporting}
+                            className="border-[var(--color-charcoal-100)] text-[var(--color-primary)] px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[var(--color-background)] h-auto transition-all"
+                        >
+                            {isImporting ? <Loader2 className="w-3.5 h-3.5 me-2 animate-spin" /> : <Upload className="w-3.5 h-3.5 me-2" />}
+                            {t("invites.import_csv", "Importer")}
+                        </Button>
+                        <Button
+                            onClick={() => setIsAdding(true)}
+                            className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-lg shadow-[var(--color-accent)]/20 h-auto"
+                        >
+                            + {t("invites.new_guest")}
+                        </Button>
+                    </div>
+                </div>
+
+                <div className="px-10 py-6 bg-[var(--color-background)]/30 border-b border-[var(--color-background)] flex flex-wrap items-center gap-4">
+                    <div className="relative flex-1 min-w-[200px]">
+                        <Input
+                            placeholder={t("common.search")}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full h-10 bg-white border-[var(--color-charcoal-100)] rounded-xl px-4 text-xs font-medium"
+                        />
+                    </div>
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                        <SelectTrigger className="w-[160px] h-10 bg-white border-[var(--color-charcoal-100)] rounded-xl text-xs font-bold text-[var(--color-primary)]">
+                            <SelectValue placeholder={t("invites.rsvp")} />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl">
+                            <SelectItem value="all">{t("common.all_categories", "Tous les statuts")}</SelectItem>
+                            <SelectItem value="pending">{t("invites.rsvp_status.pending")}</SelectItem>
+                            <SelectItem value="confirmed">{t("invites.rsvp_status.confirmed")}</SelectItem>
+                            <SelectItem value="declined">{t("invites.rsvp_status.declined")}</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Select value={sideFilter} onValueChange={setSideFilter}>
+                        <SelectTrigger className="w-[160px] h-10 bg-white border-[var(--color-charcoal-100)] rounded-xl text-xs font-bold text-[var(--color-primary)]">
+                            <SelectValue placeholder={t("invites.side")} />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl">
+                            <SelectItem value="all">{t("common.all_categories", "Tous les côtés")}</SelectItem>
+                            <SelectItem value="bride">{t("invites.sides.bride")}</SelectItem>
+                            <SelectItem value="groom">{t("invites.sides.groom")}</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 <div className="overflow-x-auto">
@@ -181,14 +342,28 @@ export default function InvitesPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[var(--color-background)]">
-                            {guests.length === 0 && (
+                            {!guestData && (
+                                <>
+                                    {[...Array(5)].map((_, i) => (
+                                        <tr key={i} className="animate-pulse">
+                                            <td className="px-10 py-6"><Skeleton className="h-4 w-32" /></td>
+                                            <td className="px-10 py-6"><Skeleton className="h-6 w-20 rounded-full" /></td>
+                                            <td className="px-10 py-6"><Skeleton className="h-6 w-16 rounded-lg" /></td>
+                                            <td className="px-10 py-6"><Skeleton className="h-4 w-24" /></td>
+                                            <td className="px-10 py-6"><Skeleton className="h-8 w-16 rounded-lg" /></td>
+                                            <td className="px-10 py-6 text-end"><Skeleton className="h-8 w-8 rounded-xl ms-auto" /></td>
+                                        </tr>
+                                    ))}
+                                </>
+                            )}
+                            {guestData && filteredGuests.length === 0 && (
                                 <tr>
                                     <td colSpan={6} className="px-10 py-20 text-center text-[var(--color-charcoal-400)] italic font-medium">
-                                        {t("invites.empty")}
+                                        {searchTerm || statusFilter !== "all" || sideFilter !== "all" ? t("common.no_results") : t("invites.empty")}
                                     </td>
                                 </tr>
                             )}
-                            {guests.map((guest) => (
+                            {guestData && filteredGuests.map((guest) => (
                                 <tr key={guest.id} className="hover:bg-[var(--color-background)]/30 transition-colors group">
                                     <td className="px-10 py-6 font-bold text-[var(--color-primary)]">{guest.fullName}</td>
                                     <td className="px-10 py-6">

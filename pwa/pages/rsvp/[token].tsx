@@ -24,8 +24,8 @@ export default function RSVPPage({ initialGuest }: { initialGuest: GuestData | n
             <div className="w-full max-w-xl bg-white md:rounded-[3rem] md:shadow-2xl md:shadow-black/5 overflow-hidden flex flex-col min-h-screen md:min-h-0 relative">
                 
                 {/* Background Blobs (Premium Touch) */}
-                <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute top-0 end-0 -translate-y-1/2 translate-x-1/2 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 start-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
                 <RSVPFlow initialGuest={data} />
             </div>

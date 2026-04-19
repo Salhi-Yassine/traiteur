@@ -1,0 +1,16 @@
+{
+  "name": "Farah.ma — Planificateur de Mariage",
+  "short_name": "Farah",
+  "description": "Le premier planificateur de mariage au Maroc.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#E8472A",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}

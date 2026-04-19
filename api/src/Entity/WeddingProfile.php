@@ -34,6 +34,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[UniqueEntity(fields: ['slug'])]
 #[ORM\Entity(repositoryClass: WeddingProfileRepository::class)]
+#[ORM\Index(columns: ['user_id'],    name: 'idx_wedding_profile_user')]
+#[ORM\Index(columns: ['slug'],       name: 'idx_wedding_profile_slug')]
 class WeddingProfile
 {
     #[ORM\Id]

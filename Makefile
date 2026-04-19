@@ -94,13 +94,13 @@ session: ## ⚙️ Create application sessions
 ##############################################
 .PHONY: full-migrat make-migrat remove-migration-files migrate migrate-diff db-test
 
-full-migrat: make-migrat migrate remove-migration-files ## ��🛫🗑️ Full migration cycle
+full-migrat: make-migrat migrate ## 📜🛫 Full migration cycle (create + run)
 
 make-migrat: ## 📜 Create a migration
 	$(CONSOLE) make:migration --no-interaction
 
 remove-migration-files: ## 🗑️ Delete migration files
-	@find $(PROJECT_DIR)/migrations -maxdepth 1 -name 'Version[0-9]*.php' -type f -delete
+	$(EXEC_PHP) find /app/migrations -maxdepth 1 -name 'Version[0-9]*.php' -type f -delete
 
 migrate: ## 🛫 Run database migrations
 	$(CONSOLE) doctrine:migrations:migrate --no-interaction
