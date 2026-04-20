@@ -16,6 +16,8 @@ Morocco's first full-featured, deeply localized wedding planning platform. Conne
 | [features/epic-2-vendor-dashboard.md](features/epic-2-vendor-dashboard.md) | US-2.1 Onboarding, US-2.2 Inbox, US-2.3 Analytics |
 | [features/epic-3-planning-tools.md](features/epic-3-planning-tools.md) | US-3.1 Auth, US-3.2 Budget, US-3.3 Guests, US-3.4 Checklist, US-3.5 RSVP |
 | [features/epic-4-inspiration.md](features/epic-4-inspiration.md) | US-4.1 Inspiration Gallery |
+| [features/epic-6-couple-dashboard.md](features/epic-6-couple-dashboard.md) | US-6.1 Greeting, US-6.2 Summary Widgets, US-6.3 Recommendations |
+
 | [03-architecture.md](03-architecture.md) | System overview, data model, API contracts, infra, security |
 | [04-design.md](04-design.md) | UX philosophy, user flows, wireframes, RTL, accessibility |
 | [05-metrics.md](05-metrics.md) | KPIs, GA4 event plan, launch go/no-go criteria |

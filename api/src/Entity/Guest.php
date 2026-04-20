@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Get(
             uriTemplate: '/public/guests/{guestToken}',
             uriVariables: [
-                'guestToken' => new Link(fromClass: Guest::class, identifiers: ['guestToken'])
+                'guestToken' => new Link(fromClass: Guest::class, identifiers: ['guestToken']),
             ],
             requirements: ['guestToken' => '[a-zA-Z0-9]{16,64}'],
             normalizationContext: ['groups' => ['guest:public:read']]
@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Patch(
             uriTemplate: '/public/guests/{guestToken}',
             uriVariables: [
-                'guestToken' => new Link(fromClass: Guest::class, identifiers: ['guestToken'])
+                'guestToken' => new Link(fromClass: Guest::class, identifiers: ['guestToken']),
             ],
             requirements: ['guestToken' => '[a-zA-Z0-9]{16,64}'],
             normalizationContext: ['groups' => ['guest:public:read']],
@@ -286,13 +286,14 @@ class Guest
     public function setGuestToken(string $guestToken): static
     {
         $this->guestToken = $guestToken;
+
         return $this;
     }
 
     #[ORM\PrePersist]
     public function generateGuestToken(): void
     {
-        if ($this->guestToken === null) {
+        if (null === $this->guestToken) {
             $this->guestToken = bin2hex(random_bytes(16));
         }
     }

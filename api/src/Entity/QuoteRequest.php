@@ -33,9 +33,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(SearchFilter::class, properties: ['vendorProfile' => 'exact', 'client' => 'exact', 'status' => 'exact'])]
 #[ORM\Entity(repositoryClass: QuoteRequestRepository::class)]
 #[ORM\Index(columns: ['vendor_profile_id'], name: 'idx_quote_vendor_profile')]
-#[ORM\Index(columns: ['client_id'],         name: 'idx_quote_client')]
-#[ORM\Index(columns: ['status'],            name: 'idx_quote_status')]
-#[ORM\Index(columns: ['created_at'],        name: 'idx_quote_created')]
+#[ORM\Index(columns: ['client_id'], name: 'idx_quote_client')]
+#[ORM\Index(columns: ['status'], name: 'idx_quote_status')]
+#[ORM\Index(columns: ['created_at'], name: 'idx_quote_created')]
 class QuoteRequest
 {
     public const STATUS_PENDING = 'pending';

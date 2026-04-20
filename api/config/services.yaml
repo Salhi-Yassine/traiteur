@@ -28,3 +28,8 @@ services:
     Gedmo\Translatable\TranslatableListener:
         alias: stof_doctrine_extensions.listener.translatable
         public: true
+
+    App\EventListener\ArticlePublishListener:
+        arguments:
+            $pwaBaseUrl: '%env(default::PWA_INTERNAL_URL)%'
+            $revalidateSecret: '%env(default::PWA_REVALIDATE_SECRET)%'

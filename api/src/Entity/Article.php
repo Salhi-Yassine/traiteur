@@ -2,16 +2,17 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Metadata\ApiFilter;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Translatable\Translatable;
@@ -30,7 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['article:write']],
     order: ['publishedAt' => 'DESC'],
 )]
-#[ApiFilter(SearchFilter::class, properties: ['category.slug' => 'exact', 'title' => 'ipartial', 'isPublished' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['category.slug' => 'exact', 'title' => 'ipartial', 'isPublished' => 'exact', 'isFeatured' => 'exact', 'tags' => 'partial'])]
 #[ApiFilter(OrderFilter::class, properties: ['publishedAt', 'title'])]
 #[ORM\Entity]
 #[Gedmo\TranslationEntity(class: Translation::class)]
@@ -106,8 +107,26 @@ class Article implements Translatable
     #[Groups(['article:read', 'article:write'])]
     private array $tags = [];
 
+    /** hamlou | budget | null */
+    #[ORM\Column(length: 32, nullable: true)]
+    #[Groups(['article:read', 'article:write'])]
+    private ?string $widgetType = null;
+
+    /**
+     * @var Collection<int, VendorProfile>
+     */
+    #[ORM\ManyToMany(targetEntity: VendorProfile::class)]
+    #[ORM\JoinTable(name: 'article_vendor_profile')]
+    #[Groups(['article:read', 'article:write'])]
+    private Collection $relatedVendors;
+
     #[Gedmo\Locale]
     private ?string $locale = null;
+
+    public function __construct()
+    {
+        $this->relatedVendors = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -227,16 +246,6 @@ class Article implements Translatable
         return $this->createdAt;
     }
 
-    public function setTranslatableLocale(string $locale): void
-    {
-        $this->locale = $locale;
-    }
-
-    public function getLocale(): ?string
-    {
-        return $this->locale;
-    }
-
     public function isFeatured(): bool
     {
         return $this->isFeatured;
@@ -271,5 +280,59 @@ class Article implements Translatable
         $this->tags = $tags;
 
         return $this;
+    }
+
+    public function getWidgetType(): ?string
+    {
+        return $this->widgetType;
+    }
+
+    public function setWidgetType(?string $widgetType): static
+    {
+        $this->widgetType = $widgetType;
+
+        return $this;
+    }
+
+    #[Groups(['article:read'])]
+    public function getReadingTimeMinutes(): int
+    {
+        $words = str_word_count(strip_tags($this->content ?? ''));
+
+        return max(1, (int) ceil($words / 200));
+    }
+
+    /**
+     * @return Collection<int, VendorProfile>
+     */
+    public function getRelatedVendors(): Collection
+    {
+        return $this->relatedVendors;
+    }
+
+    public function addRelatedVendor(VendorProfile $vendor): static
+    {
+        if (!$this->relatedVendors->contains($vendor)) {
+            $this->relatedVendors->add($vendor);
+        }
+
+        return $this;
+    }
+
+    public function removeRelatedVendor(VendorProfile $vendor): static
+    {
+        $this->relatedVendors->removeElement($vendor);
+
+        return $this;
+    }
+
+    public function setTranslatableLocale(string $locale): void
+    {
+        $this->locale = $locale;
+    }
+
+    public function getLocale(): ?string
+    {
+        return $this->locale;
     }
 }

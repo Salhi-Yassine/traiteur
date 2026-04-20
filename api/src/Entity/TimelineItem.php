@@ -76,6 +76,7 @@ class TimelineItem
     public function setWeddingProfile(?WeddingProfile $weddingProfile): static
     {
         $this->weddingProfile = $weddingProfile;
+
         return $this;
     }
 
@@ -87,6 +88,7 @@ class TimelineItem
     public function setTime(string $time): static
     {
         $this->time = $time;
+
         return $this;
     }
 
@@ -98,6 +100,7 @@ class TimelineItem
     public function setTitle(string $title): static
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -109,6 +112,7 @@ class TimelineItem
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -120,6 +124,7 @@ class TimelineItem
     public function setIcon(?string $icon): static
     {
         $this->icon = $icon;
+
         return $this;
     }
 
@@ -131,6 +136,7 @@ class TimelineItem
     public function setDisplayOrder(int $displayOrder): static
     {
         $this->displayOrder = $displayOrder;
+
         return $this;
     }
 }

@@ -32,7 +32,7 @@ class ReviewRepository extends ServiceEntityRepository
             ->getSingleResult();
 
         return [
-            'avg'   => (float) ($result['avg'] ?? 0),
+            'avg' => (float) ($result['avg'] ?? 0),
             'count' => (int) ($result['cnt'] ?? 0),
         ];
     }

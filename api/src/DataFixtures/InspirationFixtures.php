@@ -53,10 +53,12 @@ class InspirationFixtures extends Fixture implements FixtureGroupInterface
         $article1->setExcerpt('Planning a wedding in a Riad requires special attention to guest count and acoustics.');
         $article1->setContent('Riads offer an intimate and authentic Moroccan experience. However, when choosing one for your wedding, consider the layout, the central patio capacity, and the noise regulations in the Médina...');
         $article1->setCategory($planningCat);
-        if ($author) $article1->setAuthor($author);
+        if ($author) {
+            $article1->setAuthor($author);
+        }
         $article1->setIsPublished(true);
         $article1->setPublishedAt(new \DateTimeImmutable());
-        $article1->setFeaturedImage('moroccan_wedding_centerpiece'); 
+        $article1->setFeaturedImage('moroccan_wedding_centerpiece');
         $article1->setIsFeatured(true);
         $article1->setFeaturedOrder(1);
         $article1->setTags(['#RiadWedding', '#Casablanca', '#Planning101']);
@@ -67,7 +69,9 @@ class InspirationFixtures extends Fixture implements FixtureGroupInterface
         $article2->setExcerpt('Understand the pivotal role of the Negrafa in a traditional Moroccan wedding.');
         $article2->setContent('The Negrafa is more than just a stylist; she is the guardian of tradition. From the Lebssa Mezgouda to the Amariya entrance, she ensures every moment is majestic...');
         $article2->setCategory($traditionCat);
-        if ($author) $article2->setAuthor($author);
+        if ($author) {
+            $article2->setAuthor($author);
+        }
         $article2->setIsPublished(true);
         $article2->setPublishedAt(new \DateTimeImmutable());
         $article2->setFeaturedImage('moroccan_bride_negafa');
@@ -84,7 +88,7 @@ class InspirationFixtures extends Fixture implements FixtureGroupInterface
         $story1->setGallery([
             'riad_sunset_wedding',
             'moroccan_table_setting',
-            'moroccan_wedding_cake'
+            'moroccan_wedding_cake',
         ]);
         $story1->setVendorCredits([
             ['role' => 'Venue', 'name' => 'El Fenn Marrakech', 'slug' => 'el-fenn'],
@@ -99,7 +103,7 @@ class InspirationFixtures extends Fixture implements FixtureGroupInterface
             ['time' => '19:30', 'event' => 'Initial Reception', 'description' => 'Guests arrive to the sounds of traditional Dekka Marrakchia and mint tea service.'],
             ['time' => '21:00', 'event' => 'The First Entrance', 'description' => 'The couple enters on the Amaria, heralded by negafa songs and high-energy drumming.'],
             ['time' => '00:00', 'event' => 'Dinner Service', 'description' => 'A traditional three-course Moroccan feast served under the stars.'],
-            ['time' => '02:00', 'event' => 'Last Dress (Labssa)', 'description' => 'The bride appears in her final, most grand Lebssa before the couple departs.']
+            ['time' => '02:00', 'event' => 'Last Dress (Labssa)', 'description' => 'The bride appears in her final, most grand Lebssa before the couple departs.'],
         ]);
         $manager->persist($story1);
 
@@ -119,14 +123,14 @@ class InspirationFixtures extends Fixture implements FixtureGroupInterface
             $photo->setCaption($img['caption']);
             $photo->setStyle($img['style']);
             $photo->setIsApproved(true);
-            
+
             if ($catDecoration && str_contains($img['caption'], 'table')) {
                 $photo->setCategory($catDecoration);
             }
             if ($catNegrafa && str_contains($img['caption'], 'bride')) {
                 $photo->setCategory($catNegrafa);
             }
-            
+
             $photo->setCity($cityMarrakech);
             $manager->persist($photo);
         }

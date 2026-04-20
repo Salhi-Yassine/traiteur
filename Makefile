@@ -92,7 +92,7 @@ session: ## ⚙️ Create application sessions
 ##############################################
 ## 🗃️ DATABASE & MIGRATIONS
 ##############################################
-.PHONY: full-migrat make-migrat remove-migration-files migrate migrate-diff db-test
+.PHONY: full-migrat make-migrat remove-migration-files migrate migrate-diff db-test magazine-seed
 
 full-migrat: make-migrat migrate ## 📜🛫 Full migration cycle (create + run)
 
@@ -110,6 +110,9 @@ migrate-diff: ## � Generate migration diff
 
 db-test: ## ✅ Test DB connection
 	$(CONSOLE) dbal:run-sql -q "SELECT 1" && echo "✅ DB OK" || echo "❌ DB FAILED"
+
+magazine-seed: ## 📰 Seed 15 Farah Magazine anchor articles (safe, non-destructive)
+	$(CONSOLE) doctrine:fixtures:load --group=magazine --no-interaction --append
 
 ##############################################
 ## 🧪 TESTING

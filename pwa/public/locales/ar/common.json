@@ -847,5 +847,47 @@
     "copied": "تم النسخ!",
     "copy_hex": "نسخ HEX",
     "palette_desc": "مستخرج من صور الزفاف"
+  },
+  "magazine": {
+    "title": "مجلة فرح",
+    "min_read": "دقيقة قراءة",
+    "read_more": "اقرأ المقال",
+    "featured": "مميز",
+    "all_articles": "جميع المقالات",
+    "latest_articles": "أحدث المقالات",
+    "no_articles": "لا توجد مقالات في هذه الفئة",
+    "back_to_magazine": "العودة إلى المجلة",
+    "related_articles": "مقالات ذات صلة",
+    "seo": {
+      "title": "مجلة فرح — إلهام الزفاف في المغرب",
+      "description": "نصائح وصيحات وإلهام لزفاف مغربي لا يُنسى."
+    },
+    "category_bar": {
+      "all": "الكل"
+    },
+    "hire_pros": {
+      "title": "ابحث عن أفضل المختصين",
+      "subtitle": "مزودو خدمات معتمدون ليومك الكبير",
+      "subtitle_category": "ابحث عن أفضل {{category}} لزفافك",
+      "cta": "تصفح مزودي الخدمات",
+      "close": "إغلاق"
+    },
+    "hamlau_calculator": {
+      "title": "حاسبة الحمالو",
+      "subtitle": "قدّر الكميات لحفل استقبالك",
+      "guest_count_label": "عدد الضيوف",
+      "guest_count_placeholder": "مثال: 200",
+      "tea_label": "الشاي بالنعناع",
+      "tea_unit": "لتر",
+      "pastry_label": "الحلويات المغربية",
+      "pastry_unit": "كغ",
+      "dates_label": "التمر",
+      "dates_unit": "كغ",
+      "cta": "ابحث عن طباخ",
+      "note": "بناءً على معايير الطباخين المغاربة المعتمدين"
+    },
+    "shop_the_look": {
+      "title": "ابحث عنهم على Farah.ma"
+    }
   }
 }

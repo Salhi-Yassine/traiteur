@@ -32,7 +32,7 @@ class ReviewProcessor implements ProcessorInterface
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
     {
-        if (!($data instanceof Review)) {
+        if (!$data instanceof Review) {
             return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
         }
 
@@ -40,7 +40,7 @@ class ReviewProcessor implements ProcessorInterface
 
         if ($operation instanceof Delete) {
             $result = $this->removeProcessor->process($data, $operation, $uriVariables, $context);
-            if ($vendorProfile !== null) {
+            if (null !== $vendorProfile) {
                 $this->aggregationService->recalculate($vendorProfile);
             }
 
@@ -53,7 +53,7 @@ class ReviewProcessor implements ProcessorInterface
         }
 
         $result = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
-        if ($vendorProfile !== null) {
+        if (null !== $vendorProfile) {
             $this->aggregationService->recalculate($vendorProfile);
         }
 

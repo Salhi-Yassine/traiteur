@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Metadata\ApiFilter;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Translatable\Translatable;
@@ -30,10 +30,10 @@ use Symfony\Component\Validator\Constraints as Assert;
     order: ['createdAt' => 'DESC'],
 )]
 #[ApiFilter(SearchFilter::class, properties: [
-    'category.slug' => 'exact', 
-    'city.slug' => 'exact', 
+    'category.slug' => 'exact',
+    'city.slug' => 'exact',
     'style' => 'exact',
-    'isApproved' => 'exact'
+    'isApproved' => 'exact',
 ])]
 #[ApiFilter(OrderFilter::class, properties: ['createdAt'])]
 #[ORM\Entity]
@@ -67,7 +67,7 @@ class InspirationPhoto implements Translatable
     private ?City $city = null;
 
     /**
-     * @var string Traditional, Modern, Bohème, Andalou, etc.
+     * @var string traditional, Modern, Bohème, Andalou, etc
      */
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['inspiration:read', 'inspiration:write'])]

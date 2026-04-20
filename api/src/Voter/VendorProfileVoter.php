@@ -17,8 +17,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class VendorProfileVoter extends Voter
 {
     public const CREATE = 'profile:create';
-    public const EDIT   = 'profile:edit';
-    public const VIEW   = 'profile:view';
+    public const EDIT = 'profile:edit';
+    public const VIEW = 'profile:view';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -36,9 +36,9 @@ class VendorProfileVoter extends Voter
 
         return match ($attribute) {
             self::CREATE => $this->canCreate($user),
-            self::EDIT   => $this->canEdit($subject, $user),
-            self::VIEW   => true,
-            default      => false,
+            self::EDIT => $this->canEdit($subject, $user),
+            self::VIEW => true,
+            default => false,
         };
     }
 

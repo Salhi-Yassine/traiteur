@@ -855,5 +855,47 @@
     "copied": "تنسخ!",
     "copy_hex": "نسخ HEX",
     "palette_desc": "مستخرج من صور العرس"
+  },
+  "magazine": {
+    "title": "مجلة فرح",
+    "min_read": "دقيقة قراية",
+    "read_more": "قرا المقال",
+    "featured": "مبرز",
+    "all_articles": "جميع المقالات",
+    "latest_articles": "آخر المقالات",
+    "no_articles": "ما كاينش مقالات فهاد الفئة",
+    "back_to_magazine": "رجع للمجلة",
+    "related_articles": "مقالات مشابهة",
+    "seo": {
+      "title": "مجلة فرح — إيلهام ديال الزفاف فالمغرب",
+      "description": "نصايح، تريندات وإيلهام لزفاف مغربي ما ينسى."
+    },
+    "category_bar": {
+      "all": "الكل"
+    },
+    "hire_pros": {
+      "title": "لقا أحسن المختصين",
+      "subtitle": "مقدمي خدمات معتمدين ليومك الكبير",
+      "subtitle_category": "لقا أحسن {{category}} لزفافك",
+      "cta": "شوف مقدمي الخدمات",
+      "close": "سكر"
+    },
+    "hamlau_calculator": {
+      "title": "حساب الحمالو",
+      "subtitle": "حسب الكميات ديال حفلتك",
+      "guest_count_label": "عدد الضيوف",
+      "guest_count_placeholder": "مثلا: 200",
+      "tea_label": "أتاي",
+      "tea_unit": "لتر",
+      "pastry_label": "الحلويات المغربية",
+      "pastry_unit": "كغ",
+      "dates_label": "التمر",
+      "dates_unit": "كغ",
+      "cta": "لقا طباخ",
+      "note": "مبني على معايير الطباخين المغاربة المعتمدين"
+    },
+    "shop_the_look": {
+      "title": "لقاهم على Farah.ma"
+    }
   }
 }

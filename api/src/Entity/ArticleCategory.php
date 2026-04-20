@@ -48,6 +48,10 @@ class ArticleCategory implements Translatable
     #[Groups(['article_category:read', 'article:read'])]
     private ?string $slug = null;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['article_category:read', 'article_category:write', 'article:read'])]
+    private ?string $iconSvg = null;
+
     #[Gedmo\Locale]
     private ?string $locale = null;
 
@@ -87,6 +91,18 @@ class ArticleCategory implements Translatable
     public function setSlug(?string $slug): static
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getIconSvg(): ?string
+    {
+        return $this->iconSvg;
+    }
+
+    public function setIconSvg(?string $iconSvg): static
+    {
+        $this->iconSvg = $iconSvg;
 
         return $this;
     }

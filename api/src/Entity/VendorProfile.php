@@ -39,12 +39,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(OrderFilter::class, properties: ['averageRating', 'reviewCount', 'priceRange', 'createdAt'], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(RangeFilter::class, properties: ['averageRating'])]
 #[ORM\Entity(repositoryClass: VendorProfileRepository::class)]
-#[ORM\Index(columns: ['category_id'],    name: 'idx_vendor_profile_category')]
-#[ORM\Index(columns: ['owner_id'],       name: 'idx_vendor_profile_owner')]
+#[ORM\Index(columns: ['category_id'], name: 'idx_vendor_profile_category')]
+#[ORM\Index(columns: ['owner_id'], name: 'idx_vendor_profile_owner')]
 #[ORM\Index(columns: ['average_rating'], name: 'idx_vendor_profile_avg_rating')]
-#[ORM\Index(columns: ['review_count'],   name: 'idx_vendor_profile_review_count')]
-#[ORM\Index(columns: ['created_at'],     name: 'idx_vendor_profile_created')]
-#[ORM\Index(columns: ['is_verified'],    name: 'idx_vendor_profile_verified')]
+#[ORM\Index(columns: ['review_count'], name: 'idx_vendor_profile_review_count')]
+#[ORM\Index(columns: ['created_at'], name: 'idx_vendor_profile_created')]
+#[ORM\Index(columns: ['is_verified'], name: 'idx_vendor_profile_verified')]
 #[UniqueEntity(fields: ['slug'], message: 'This slug is already taken')]
 #[Gedmo\TranslationEntity(class: Translation::class)]
 class VendorProfile implements Translatable
@@ -387,7 +387,7 @@ class VendorProfile implements Translatable
     }
 
     /**
-     * @internal Only ReviewAggregationService should call this.
+     * @internal only ReviewAggregationService should call this
      */
     public function setAverageRating(?string $averageRating): static
     {
@@ -402,7 +402,7 @@ class VendorProfile implements Translatable
     }
 
     /**
-     * @internal Only ReviewAggregationService should call this.
+     * @internal only ReviewAggregationService should call this
      */
     public function setReviewCount(int $reviewCount): static
     {

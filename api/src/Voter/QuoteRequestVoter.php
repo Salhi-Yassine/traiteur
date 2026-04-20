@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class QuoteRequestVoter extends Voter
 {
     public const CREATE = 'quote:create';
-    public const VIEW   = 'quote:view';
+    public const VIEW = 'quote:view';
     public const MANAGE = 'quote:manage';
 
     protected function supports(string $attribute, mixed $subject): bool
@@ -40,9 +40,9 @@ class QuoteRequestVoter extends Voter
 
         return match ($attribute) {
             self::CREATE => true, // any authenticated user
-            self::VIEW   => $this->canView($subject, $user),
+            self::VIEW => $this->canView($subject, $user),
             self::MANAGE => $this->canManage($subject, $user),
-            default      => false,
+            default => false,
         };
     }
 

@@ -922,5 +922,47 @@
     "copied": "Copié",
     "copy_hex": "Copier le code hex",
     "palette_desc": "Cliquez pour copier le code hex"
+  },
+  "magazine": {
+    "title": "Farah Magazine",
+    "min_read": "min de lecture",
+    "read_more": "Lire l'article",
+    "featured": "À la une",
+    "all_articles": "Tous les articles",
+    "latest_articles": "Derniers articles",
+    "no_articles": "Aucun article dans cette catégorie",
+    "back_to_magazine": "Retour au Magazine",
+    "related_articles": "Articles similaires",
+    "seo": {
+      "title": "Farah Magazine — Inspirations mariage au Maroc",
+      "description": "Conseils, tendances et inspirations pour un mariage marocain inoubliable."
+    },
+    "category_bar": {
+      "all": "Tout"
+    },
+    "hire_pros": {
+      "title": "Trouvez les meilleurs pros",
+      "subtitle": "Des prestataires vérifiés pour votre grand jour",
+      "subtitle_category": "Trouvez les meilleurs {{category}} pour votre mariage",
+      "cta": "Voir les prestataires",
+      "close": "Fermer"
+    },
+    "hamlau_calculator": {
+      "title": "Calculateur Hamlou",
+      "subtitle": "Estimez les quantités pour votre réception",
+      "guest_count_label": "Nombre d'invités",
+      "guest_count_placeholder": "Ex: 200",
+      "tea_label": "Thé à la menthe",
+      "tea_unit": "litres",
+      "pastry_label": "Gâteaux marocains",
+      "pastry_unit": "kg",
+      "dates_label": "Dattes",
+      "dates_unit": "kg",
+      "cta": "Trouver un traiteur",
+      "note": "Basé sur les standards des traiteurs marocains vérifiés"
+    },
+    "shop_the_look": {
+      "title": "À retrouver sur Farah.ma"
+    }
   }
 }

@@ -807,5 +807,47 @@
     "copied": "Copied!",
     "copy_hex": "Copy HEX",
     "palette_desc": "Extracted from the wedding photos"
+  },
+  "magazine": {
+    "title": "Farah Magazine",
+    "min_read": "min read",
+    "read_more": "Read article",
+    "featured": "Featured",
+    "all_articles": "All articles",
+    "latest_articles": "Latest articles",
+    "no_articles": "No articles in this category",
+    "back_to_magazine": "Back to Magazine",
+    "related_articles": "Related articles",
+    "seo": {
+      "title": "Farah Magazine — Wedding Inspiration in Morocco",
+      "description": "Tips, trends and inspiration for an unforgettable Moroccan wedding."
+    },
+    "category_bar": {
+      "all": "All"
+    },
+    "hire_pros": {
+      "title": "Find the best pros",
+      "subtitle": "Verified vendors for your big day",
+      "subtitle_category": "Find the best {{category}} for your wedding",
+      "cta": "Browse vendors",
+      "close": "Close"
+    },
+    "hamlau_calculator": {
+      "title": "Hamlou Calculator",
+      "subtitle": "Estimate quantities for your reception",
+      "guest_count_label": "Guest count",
+      "guest_count_placeholder": "e.g. 200",
+      "tea_label": "Mint tea",
+      "tea_unit": "litres",
+      "pastry_label": "Moroccan pastries",
+      "pastry_unit": "kg",
+      "dates_label": "Dates",
+      "dates_unit": "kg",
+      "cta": "Find a caterer",
+      "note": "Based on verified Moroccan caterer standards"
+    },
+    "shop_the_look": {
+      "title": "Find them on Farah.ma"
+    }
   }
 }

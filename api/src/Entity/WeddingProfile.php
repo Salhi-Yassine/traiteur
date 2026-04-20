@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Get(
             uriTemplate: '/public/weddings/{slug}',
             uriVariables: [
-                'slug' => new Link(fromClass: WeddingProfile::class, identifiers: ['slug'])
+                'slug' => new Link(fromClass: WeddingProfile::class, identifiers: ['slug']),
             ],
             normalizationContext: ['groups' => ['wedding:public']]
         ),
@@ -34,8 +34,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[UniqueEntity(fields: ['slug'])]
 #[ORM\Entity(repositoryClass: WeddingProfileRepository::class)]
-#[ORM\Index(columns: ['user_id'],    name: 'idx_wedding_profile_user')]
-#[ORM\Index(columns: ['slug'],       name: 'idx_wedding_profile_slug')]
+#[ORM\Index(columns: ['user_id'], name: 'idx_wedding_profile_user')]
+#[ORM\Index(columns: ['slug'], name: 'idx_wedding_profile_slug')]
 class WeddingProfile
 {
     #[ORM\Id]
@@ -267,6 +267,7 @@ class WeddingProfile
     public function setRegistryUrl(?string $registryUrl): static
     {
         $this->registryUrl = $registryUrl;
+
         return $this;
     }
 
@@ -278,6 +279,7 @@ class WeddingProfile
     public function setAccommodationInfo(?string $accommodationInfo): static
     {
         $this->accommodationInfo = $accommodationInfo;
+
         return $this;
     }
 
@@ -313,6 +315,7 @@ class WeddingProfile
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
+
         return $this;
     }
 
@@ -324,6 +327,7 @@ class WeddingProfile
     public function setVenueName(?string $venueName): static
     {
         $this->venueName = $venueName;
+
         return $this;
     }
 
@@ -335,6 +339,7 @@ class WeddingProfile
     public function setVenueAddress(?string $venueAddress): static
     {
         $this->venueAddress = $venueAddress;
+
         return $this;
     }
 
@@ -346,6 +351,7 @@ class WeddingProfile
     public function setCoverImage(?string $coverImage): static
     {
         $this->coverImage = $coverImage;
+
         return $this;
     }
 
@@ -357,6 +363,7 @@ class WeddingProfile
     public function setOurStory(?string $ourStory): static
     {
         $this->ourStory = $ourStory;
+
         return $this;
     }
 
@@ -368,6 +375,7 @@ class WeddingProfile
     public function setQa(?array $qa): static
     {
         $this->qa = $qa;
+
         return $this;
     }
 
@@ -379,6 +387,7 @@ class WeddingProfile
     public function setTravelInfo(?string $travelInfo): static
     {
         $this->travelInfo = $travelInfo;
+
         return $this;
     }
 
@@ -390,6 +399,7 @@ class WeddingProfile
     public function setSelectedTheme(string $selectedTheme): static
     {
         $this->selectedTheme = $selectedTheme;
+
         return $this;
     }
 
@@ -401,6 +411,7 @@ class WeddingProfile
     public function setThemeColor(?string $themeColor): static
     {
         $this->themeColor = $themeColor;
+
         return $this;
     }
 
@@ -412,6 +423,7 @@ class WeddingProfile
     public function setGalleryImages(?array $galleryImages): static
     {
         $this->galleryImages = $galleryImages;
+
         return $this;
     }
 

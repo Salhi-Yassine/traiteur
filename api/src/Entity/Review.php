@@ -30,8 +30,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(SearchFilter::class, properties: ['vendorProfile' => 'exact'])]
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[ORM\Index(columns: ['vendor_profile_id'], name: 'idx_review_vendor_profile')]
-#[ORM\Index(columns: ['author_id'],         name: 'idx_review_author')]
-#[ORM\Index(columns: ['created_at'],        name: 'idx_review_created')]
+#[ORM\Index(columns: ['author_id'], name: 'idx_review_author')]
+#[ORM\Index(columns: ['created_at'], name: 'idx_review_created')]
 class Review
 {
     #[ORM\Id]
