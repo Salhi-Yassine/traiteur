@@ -3,7 +3,7 @@
  * Cannot use apiClient (it reads localStorage which is browser-only).
  */
 
-const ENTRYPOINT = process.env.NEXT_PUBLIC_API_URL || "https://localhost";
+const ENTRYPOINT = process.env.NEXT_PUBLIC_ENTRYPOINT || process.env.NEXT_PUBLIC_API_URL || "https://localhost";
 
 interface ServerSideOptions {
     locale?: string;

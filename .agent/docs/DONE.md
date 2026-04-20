@@ -97,6 +97,34 @@
 
 ---
 
+## 2026-04-20
+
+### Farah Magazine feature (P5.4) — Complete (Closes #44)
+- [2026-04-20] `api/src/Entity/Article.php` — added `isFeatured`, `tags`, `widgetType`, `relatedVendors` fields; added `getReadingTimeMinutes()` computed getter (strips HTML, counts words ÷ 200 wpm)
+- [2026-04-20] `api/src/Entity/ArticleCategory.php` — added `iconSvg` nullable text field for inline SVG icons
+- [2026-04-20] `api/src/EventListener/ArticlePublishListener.php` — created; listens to postPersist/postUpdate Doctrine events, triggers non-blocking ISR revalidation via webhook
+- [2026-04-20] `api/config/services.yaml` — wired ArticlePublishListener with env var injection (PWA_INTERNAL_URL, PWA_REVALIDATE_SECRET)
+- [2026-04-20] `api/.env` — added PWA_INTERNAL_URL and PWA_REVALIDATE_SECRET config
+- [2026-04-20] `api/src/DataFixtures/MagazineFixtures.php` — created; seeded 15 anchor articles across 6 French categories with 400+ words HTML content, Unsplash images, Darija translations, reading times; gastronomie articles set widgetType='hamlau'
+- [2026-04-20] `api/migrations/Version20260420005612.php` + `Version20260420013014.php` — executed; added article fields, indexes, and translations
+- [2026-04-20] `pwa/pages/api/revalidate.ts` — created; NextJS ISR webhook endpoint (validates secret, revalidates paths array)
+- [2026-04-20] `pwa/pages/magazine/index.tsx` — created; landing page with featured hero, category bar filtering, 3-col article grid, TanStack Query with initial SSG data
+- [2026-04-20] `pwa/pages/magazine/[slug].tsx` — created; article detail with reading progress bar, JSON-LD Article schema, shop-the-look vendor cards, HamlauCalculator/HireTheProsWidget rendering
+- [2026-04-20] `pwa/components/magazine/ArticleCard.tsx` — created; article preview card (featured/grid variants) with image, excerpt, category, reading time, date
+- [2026-04-20] `pwa/components/magazine/MagazineCategoryBar.tsx` — created; responsive sticky pill selector with shimmer skeleton during TanStack Query fetch
+- [2026-04-20] `pwa/components/magazine/ReadingProgressBar.tsx` — created; fixed 3px terracotta line tracking scroll progress (0-100%)
+- [2026-04-20] `pwa/components/magazine/InlineVendorCard.tsx` — created; single vendor card + ShopTheLook group component for article shop-the-look CTAs
+- [2026-04-20] `pwa/components/magazine/HamlauCalculator.tsx` — created; interactive widget for catering quantity planning
+- [2026-04-20] `pwa/components/magazine/HireTheProsWidget.tsx` — created; inline call-to-action linking to vendor directory filtered by category
+- [2026-04-20] `pwa/lib/mockMagazineData.ts` — created; mock articles, categories, vendors matching exact API format for Storybook testing
+- [2026-04-20] `pwa/pages/magazine/index.stories.tsx` — created; page-level Storybook stories (Default + EmptyState)
+- [2026-04-20] `pwa/pages/magazine/[slug].stories.tsx` — created; page-level stories (Default with HamlauCalculator, WithoutWidgetCalculator, WithRelatedVendors)
+- [2026-04-20] `pwa/components/magazine/*.stories.tsx` — created Storybook stories for all components (ArticleCard, HamlauCalculator, HireTheProsWidget, InlineVendorCard, ReadingProgressBar)
+- [2026-04-20] i18n — added `magazine.seo.*`, `magazine.all_articles`, `magazine.latest_articles`, `magazine.no_articles`, `magazine.shop_the_look.title` keys to all 4 locales (fr/en/ar/ary)
+- [2026-04-20] `Makefile` — added `magazine-seed` target for fixture loading; added `pwa-storybook` target for development
+
+---
+
 ## 2026-04-17
 
 ### User onboarding UX — all 3 user types (Airbnb-like flow)
