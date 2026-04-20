@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, MapPin, Building2, Store, ExternalLink } from "lucide-react";
+import { X, MapPin, Building2, Store, ExternalLink, Clock, Sparkles, ArrowRight, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WeddingStory } from "./WeddingStoryCard";
 import { Button } from "../ui/button";
+import { useTranslation } from "next-i18next";
+import { cn } from "@/lib/utils";
 
 interface WeddingStoryModalProps {
     story: WeddingStory | null;
@@ -22,6 +24,8 @@ export default function WeddingStoryModal({ story, isOpen, onClose }: WeddingSto
         }
         return () => { document.body.style.overflow = 'unset'; };
     }, [isOpen]);
+
+    const { t } = useTranslation("common");
 
     if (!story) return null;
 
@@ -48,7 +52,7 @@ export default function WeddingStoryModal({ story, isOpen, onClose }: WeddingSto
                         {/* Close Button */}
                         <button
                             onClick={onClose}
-                            className="absolute top-6 right-6 z-50 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md flex items-center justify-center text-white transition-all hover:scale-110 md:text-[#1A1A1A] md:bg-[#F7F7F7] md:hover:bg-[#EBEBEB]"
+                            className="absolute top-6 end-6 z-50 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md flex items-center justify-center text-white transition-all hover:scale-110 md:text-[#1A1A1A] md:bg-[#F7F7F7] md:hover:bg-[#EBEBEB]"
                         >
                             <X size={24} />
                         </button>
@@ -76,21 +80,65 @@ export default function WeddingStoryModal({ story, isOpen, onClose }: WeddingSto
                                 </p>
                             </div>
 
+                            {/* Celebration Timeline */}
+                            {story.celebrationTimeline && story.celebrationTimeline.length > 0 && (
+                                <div className="space-y-12 py-12 border-y border-[#F1F1F1]">
+                                    <div className="space-y-2">
+                                        <h3 className="font-display text-[32px] text-[#1A1A1A]">
+                                            {t("inspiration.celebration_flow")}
+                                        </h3>
+                                        <p className="text-[14px] text-[#717171] uppercase font-bold tracking-widest flex items-center gap-2">
+                                            <Sparkles size={14} className="text-[#E8472A]" />
+                                            {t("inspiration.anatomy_of_the_day")}
+                                        </p>
+                                    </div>
+
+                                    <div className="space-y-10 relative before:absolute before:start-[11px] before:top-2 before:bottom-2 before:w-[1px] before:bg-neutral-200">
+                                        {story.celebrationTimeline?.map((item: any, i: number) => (
+                                            <motion.div
+                                                key={i}
+                                                initial={{ opacity: 0, x: -10 }}
+                                                whileInView={{ opacity: 1, x: 0 }}
+                                                viewport={{ once: true }}
+                                                className="relative ps-12 space-y-2 group"
+                                            >
+                                                <div className="absolute start-0 top-1 w-[24px] h-[24px] rounded-full bg-white border-2 border-[#E8472A] group-hover:bg-[#E8472A] group-hover:scale-110 transition-all z-10" />
+                                                <div className="flex flex-wrap items-center gap-3">
+                                                    <span className="px-3 py-1 bg-[#FEF0ED] rounded-full text-[11px] font-black text-[#E8472A] flex items-center gap-1">
+                                                        <Clock size={12} />
+                                                        {item.time}
+                                                    </span>
+                                                    <h4 className="font-display text-xl text-[#1A1A1A]">{item.event}</h4>
+                                                </div>
+                                                <p className="text-[15px] text-[#717171] leading-relaxed max-w-xl">
+                                                    {item.description}
+                                                </p>
+                                            </motion.div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
                             {/* Simple Gallery Stack */}
                             <div className="grid grid-cols-1 gap-6">
                                 {story.gallery.map((img, i) => (
                                     <div key={i} className="relative aspect-video w-full rounded-[2rem] overflow-hidden shadow-sm">
-                                        <Image src={img} alt="" fill className="object-cover" />
+                                        <Image 
+                                            src={img.startsWith('http') ? img : `/images/inspiration/${img}.png`} 
+                                            alt="" 
+                                            fill 
+                                            className="object-cover" 
+                                        />
                                     </div>
                                 ))}
                             </div>
                         </div>
 
-                        {/* Right Side: Vendor Showcase ("Shop the Look") */}
-                        <div className="w-full md:w-[380px] bg-[#F7F7F7] p-8 md:p-12 flex flex-col gap-8 border-l border-[#EBEBEB] overflow-y-auto">
+                        {/* End Side: Vendor Showcase ("Shop the Look") */}
+                        <div className="w-full md:w-[380px] bg-[#F7F7F7] p-8 md:p-12 flex flex-col gap-8 border-s border-[#EBEBEB] overflow-y-auto">
                             <div className="space-y-2">
-                                <h3 className="font-display text-[28px] text-[#1A1A1A]">Shop the look</h3>
-                                <p className="text-[14px] text-[#717171]">The professionals who made this dream a reality.</p>
+                                <h3 className="font-display text-[28px] text-[#1A1A1A]">{t("inspiration.shop_the_look")}</h3>
+                                <p className="text-[14px] text-[#717171]">{t("inspiration.vendors_made_it")}</p>
                             </div>
 
                             <div className="space-y-4">
@@ -120,7 +168,7 @@ export default function WeddingStoryModal({ story, isOpen, onClose }: WeddingSto
                                                 <h4 className="font-bold text-[#1A1A1A] leading-tight group-hover:text-[#E8472A] transition-colors">
                                                     {vendor.name}
                                                 </h4>
-                                                <p className="text-[13px] text-[#717171] mt-0.5">Verified Partner</p>
+                                                <p className="text-[13px] text-[#717171] mt-0.5">{t("inspiration.verified_partner")}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -129,7 +177,7 @@ export default function WeddingStoryModal({ story, isOpen, onClose }: WeddingSto
 
                             <div className="mt-auto pt-8 border-t border-[#DDDDDD] hidden md:block">
                                 <Button className="w-full rounded-full h-14 font-bold text-[15px]" variant="secondary">
-                                    Plan your wedding with us
+                                    {t("inspiration.plan_with_us")}
                                 </Button>
                             </div>
                         </div>

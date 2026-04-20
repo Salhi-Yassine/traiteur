@@ -34,8 +34,8 @@ export default function WeddingGallery({ images, fontTitle }: WeddingGalleryProp
                                 className={cn(
                                     "relative overflow-hidden group cursor-pointer",
                                     isFirst ? "md:col-span-2 md:row-span-2 rounded-t-[2rem] md:rounded-t-none md:rounded-s-[2rem]" : "hidden md:block",
-                                    idx === 2 ? "md:rounded-tr-[2rem]" : "",
-                                    idx === 4 ? "md:rounded-br-[2rem]" : ""
+                                    idx === 2 ? "md:rounded-se-[2rem]" : "",
+                                    idx === 4 ? "md:rounded-ee-[2rem]" : ""
                                 )}
                             >
                                 <Image src={img} alt={t("event.gallery_photo_alt")} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />

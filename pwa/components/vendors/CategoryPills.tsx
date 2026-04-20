@@ -147,7 +147,7 @@ export default function CategoryPills({ activeCategory, onSelect }: CategoryPill
                             {isActive && (
                                 <motion.div
                                     layoutId="activeCategory"
-                                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#1A1A1A]"
+                                    className="absolute bottom-0 inset-x-0 h-[2px] bg-[#1A1A1A]"
                                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                                 />
                             )}

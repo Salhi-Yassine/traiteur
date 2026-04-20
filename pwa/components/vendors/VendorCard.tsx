@@ -171,7 +171,7 @@ export default function VendorCard({
                         <div className="absolute bottom-4 start-4">
                             <div className="bg-white/95 backdrop-blur-md text-[#0A7A4B] rounded-full px-2 py-1 shadow-sm border border-[#0A7A4B]/20 flex items-center gap-1.5">
                                 <BadgeCheck className="w-3.5 h-3.5" strokeWidth={2.5} />
-                                <span className="text-[10px] font-bold uppercase tracking-widest">Vérifié</span>
+                                <span className="text-[10px] font-bold uppercase tracking-widest">{t("vendor_card.verified")}</span>
                             </div>
                         </div>
                     )}

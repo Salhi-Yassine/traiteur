@@ -195,7 +195,8 @@
     "verified": "موثوق",
     "view_profile": "شاهد الملف",
     "whatsapp_aria": "تواصل مع {{name}} عبر واتساب",
-    "starting_at": "ابتداءً من"
+    "starting_at": "ابتداءً من",
+    "no_reviews": "لا توجد تقييمات بعد"
   },
   "common": {
     "save": "حفظ",
@@ -248,7 +249,45 @@
     "budgeted_label": "الميزانية المتوقعة (درهم)",
     "delete_confirm": "واش بصح بغيتي تمسح هاد الفئة؟",
     "error_add": "خطأ أثناء الإضافة.",
-    "error_delete": "خطأ أثناء الحذف."
+    "error_delete": "خطأ أثناء الحذف.",
+    "summary_title": "ملخص الميزانية",
+    "items_title": "بنود المصاريف",
+    "add_item": "إضافة بند",
+    "total_label": "إجمالي الميزانية",
+    "spent_label": "المصروف",
+    "chart_by_category": "حسب الفئة",
+    "financial_hub": "المركز المالي",
+    "total_spent": "إجمالي المصروف",
+    "remaining": "المتبقي",
+    "estimated": "المقدّر",
+    "paid_badge": "مدفوع",
+    "form_title_label": "العنوان",
+    "form_category_label": "الفئة",
+    "form_estimated_label": "المبلغ التقديري (درهم)",
+    "view_estimated": "المخطط",
+    "view_spent": "المصروف",
+    "unallocated": "غير مخصص",
+    "over_budget_item": "تجاوز الميزانية",
+    "over_budget_global": "تم تجاوز الميزانية الإجمالية",
+    "mark_paid": "وضع علامة مدفوع",
+    "mark_unpaid": "إلغاء علامة مدفوع",
+    "edit_spent_label": "المصروف (درهم)",
+    "edit_estimated_label": "المقدّر (درهم)",
+    "total_budget_label": "الميزانية الإجمالية",
+    "edit_budget_placeholder": "مثلاً: 150000",
+    "set_budget_cta": "حدد ميزانيتك الإجمالية للبدء",
+    "categories": {
+      "salle": "قاعة الأفراح",
+      "traiteur": "تموين",
+      "photographe": "تصوير وفيديو",
+      "decoration": "تزيين",
+      "negafa": "نقافة وأزياء",
+      "musique": "موسيقى وترفيه",
+      "voiture": "سيارة الزفاف",
+      "invitation": "بطاقات الدعوة",
+      "beaute": "تجميل وتسريح",
+      "autre": "أخرى"
+    }
   },
   "checklist": {
     "title": "قائمة المهام",
@@ -351,6 +390,29 @@
       "nav_profile": "ملفي",
       "nav_inquiries": "طلبات العروض",
       "nav_account": "حسابي"
+    },
+    "couple": {
+      "welcome": "مرحباً، {{name}} 👋",
+      "subtitle": "يومك الكبير يقترب. إليك ما تم إنجازه.",
+      "onboarding": "ابدأ التخطيط",
+      "finalized": "✓ مكتمل",
+      "complete_setup": "إتمام الإعداد",
+      "ready_title": "أنت جاهز!",
+      "ready_desc": "ملف زفافك مكتمل. استكشف مزودي الخدمات وأدوات التخطيط.",
+      "setup_desc": "أتم إعداد حفل زفافك لفتح جميع أدوات التخطيط.",
+      "setup_success_title": "تم الحفظ!",
+      "setup_success_desc": "تم تحديث ملف زفافك بنجاح.",
+      "setup_date": "تاريخ الزفاف",
+      "setup_budget": "الميزانية التقديرية",
+      "setup_guests": "عدد المدعوين",
+      "setup_tasks": "المهام المنشأة",
+      "setup_website": "الموقع منشور",
+      "website": "الموقع الإلكتروني",
+      "my_website": "موقعي",
+      "website_desc": "صفحة دعوتك الشخصية منشورة.",
+      "expert_tip": "نصيحة الخبير",
+      "tip_content": "الأزواج الذين يستخدمون أدوات التخطيط لدينا منذ البداية يوفرون في المتوسط 15% من ميزانيتهم ويعانون من ضغط أقل بكثير.",
+      "tip_author": "— فريق فرح"
     }
   },
   "vendor_profile": {
@@ -717,7 +779,13 @@
     "accommodation_title": "أماكن الإقامة القريبة",
     "accommodation_fallback": "تم حجز غرف مسبقاً لضيوفنا في الفنادق المجاورة.",
     "ready_label": "مستعد؟",
-    "powered_by": "مدعوم من"
+    "powered_by": "مدعوم من",
+    "countdown": {
+      "days": "أيام",
+      "hours": "ساعات",
+      "minutes": "دقائق",
+      "seconds": "ثواني"
+    }
   },
   "quote_modal": {
     "header_label": "طلب عرض سعر",
@@ -746,5 +814,38 @@
     "submit": "إرسال طلبي",
     "submitting": "جاري الإرسال…",
     "success": "تم إرسال طلب عرض السعر بنجاح!"
+  },
+  "inspiration": {
+    "read_story": "اقرأ القصة",
+    "browse_all_trends": "استعرض كل الاتجاهات",
+    "scroll_label": "مرر للإلهام",
+    "read_article": "اقرأ المقالة",
+    "all_inspiration": "كل الإلهام",
+    "vendors_featured": "{{count}} مزود خدمة مميز",
+    "save_to_moodboard_success": "تم الحفظ في لوحة المزاج!",
+    "save_to_moodboard_error": "فشل في حفظ الصورة.",
+    "remove_from_moodboard_success": "تمت الإزالة من لوحة المزاج.",
+    "remove_from_moodboard_error": "فشل في إزالة الصورة.",
+    "login_to_save": "سجل الدخول لحفظ الصور في لوحتك.",
+    "login": "تسجيل الدخول",
+    "morocco": "المغرب",
+    "verified_professional": "محترف موثوق",
+    "wedding_expert": "خبير الزفاف",
+    "book_this_style": "احجز هذا الأسلوب",
+    "love_this_style": "أحب هذا الأسلوب",
+    "find_pro_desc": "تواصل مع محترف معتمد متخصص في هذا الأسلوب.",
+    "find_similar_vendors": "ابحث عن مزودين مماثلين",
+    "share_discovery": "شارك هذا الاكتشاف",
+    "invite_partner": "ادعُ شريكك",
+    "shop_the_look": "احصل على هذا الأسلوب",
+    "vendors_made_it": "المحترفون الذين حوّلوا هذا الحلم إلى حقيقة.",
+    "verified_partner": "شريك موثوق",
+    "plan_with_us": "خطط لزفافك معنا",
+    "celebration_flow": "مسار الاحتفال",
+    "anatomy_of_the_day": "تشريح اليوم",
+    "color_signature": "توقيع الألوان",
+    "copied": "تم النسخ!",
+    "copy_hex": "نسخ HEX",
+    "palette_desc": "مستخرج من صور الزفاف"
   }
 }

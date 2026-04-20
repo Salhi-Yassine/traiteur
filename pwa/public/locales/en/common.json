@@ -194,7 +194,9 @@
   "vendor_card": {
     "verified": "Verified",
     "view_profile": "View profile",
-    "whatsapp_aria": "Contact {{name}} via WhatsApp"
+    "whatsapp_aria": "Contact {{name}} via WhatsApp",
+    "starting_at": "Starting from",
+    "no_reviews": "No reviews yet"
   },
   "common": {
     "loading": "Loading...",
@@ -255,7 +257,45 @@
     "budgeted_label": "Budgeted Amount (MAD)",
     "delete_confirm": "Do you really want to delete this category?",
     "error_add": "Error while adding.",
-    "error_delete": "Error while deleting."
+    "error_delete": "Error while deleting.",
+    "summary_title": "Budget Summary",
+    "items_title": "Expense Items",
+    "add_item": "Add an item",
+    "total_label": "Total Budget",
+    "spent_label": "Spent",
+    "chart_by_category": "By category",
+    "financial_hub": "Financial Hub",
+    "total_spent": "Total Spent",
+    "remaining": "Remaining",
+    "estimated": "Estimated",
+    "paid_badge": "Paid",
+    "form_title_label": "Title",
+    "form_category_label": "Category",
+    "form_estimated_label": "Estimated Amount (MAD)",
+    "view_estimated": "Planned",
+    "view_spent": "Spent",
+    "unallocated": "Unallocated",
+    "over_budget_item": "Over budget",
+    "over_budget_global": "Total budget exceeded",
+    "mark_paid": "Mark as paid",
+    "mark_unpaid": "Mark as unpaid",
+    "edit_spent_label": "Spent (MAD)",
+    "edit_estimated_label": "Estimated (MAD)",
+    "total_budget_label": "Total Budget",
+    "edit_budget_placeholder": "e.g. 150000",
+    "set_budget_cta": "Set your total budget to get started",
+    "categories": {
+      "salle": "Venue",
+      "traiteur": "Catering",
+      "photographe": "Photography & Video",
+      "decoration": "Decoration",
+      "negafa": "Negafa & Outfit",
+      "musique": "Music & Entertainment",
+      "voiture": "Wedding Car",
+      "invitation": "Invitations",
+      "beaute": "Beauty & Hair",
+      "autre": "Other"
+    }
   },
   "checklist": {
     "title": "My Checklist",
@@ -369,6 +409,29 @@
       "nav_profile": "My profile",
       "nav_inquiries": "Quote requests",
       "nav_account": "My account"
+    },
+    "couple": {
+      "welcome": "Hello, {{name}} 👋",
+      "subtitle": "Your big day is getting closer. Here's where you stand.",
+      "onboarding": "Start planning",
+      "finalized": "✓ Finalized",
+      "complete_setup": "Finalize setup",
+      "ready_title": "You're all set!",
+      "ready_desc": "Your wedding profile is complete. Explore vendors and planning tools.",
+      "setup_desc": "Finalize your wedding configuration to unlock all planning tools.",
+      "setup_success_title": "Setup saved!",
+      "setup_success_desc": "Your wedding profile has been updated successfully.",
+      "setup_date": "Wedding date",
+      "setup_budget": "Estimated budget",
+      "setup_guests": "Guest count",
+      "setup_tasks": "Tasks created",
+      "setup_website": "Website created",
+      "website": "Website",
+      "my_website": "My website",
+      "website_desc": "Your personalized invitation page is live.",
+      "expert_tip": "Expert tip",
+      "tip_content": "Couples who use our planning tools from the start save an average of 15% on their budget and experience much lower stress.",
+      "tip_author": "— Farah Team"
     }
   },
   "vendor_profile": {
@@ -676,7 +739,13 @@
     "accommodation_title": "Where to stay",
     "accommodation_fallback": "Rooms have been pre-reserved for our guests at nearby hotels.",
     "ready_label": "Ready?",
-    "powered_by": "Powered by"
+    "powered_by": "Powered by",
+    "countdown": {
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds"
+    }
   },
   "quote_modal": {
     "header_label": "Quote Request",
@@ -705,5 +774,38 @@
     "submit": "Send My Request",
     "submitting": "Sending…",
     "success": "Your quote request was sent successfully!"
+  },
+  "inspiration": {
+    "read_story": "Read Story",
+    "browse_all_trends": "Browse all trends",
+    "scroll_label": "Scroll for inspiration",
+    "read_article": "Read article",
+    "all_inspiration": "All Inspiration",
+    "vendors_featured": "{{count}} vendors featured",
+    "save_to_moodboard_success": "Saved to your moodboard!",
+    "save_to_moodboard_error": "Failed to save photo.",
+    "remove_from_moodboard_success": "Removed from moodboard.",
+    "remove_from_moodboard_error": "Failed to remove photo.",
+    "login_to_save": "Sign in to save photos to your moodboard.",
+    "login": "Sign in",
+    "morocco": "Morocco",
+    "verified_professional": "Verified Professional",
+    "wedding_expert": "Wedding Expert",
+    "book_this_style": "Book This Style",
+    "love_this_style": "Love This Style",
+    "find_pro_desc": "Connect with a certified pro who specializes in this aesthetic.",
+    "find_similar_vendors": "Find Similar Vendors",
+    "share_discovery": "Share This Discovery",
+    "invite_partner": "Invite Your Partner",
+    "shop_the_look": "Shop the look",
+    "vendors_made_it": "The professionals who made this dream a reality.",
+    "verified_partner": "Verified Partner",
+    "plan_with_us": "Plan your wedding with us",
+    "celebration_flow": "Celebration Flow",
+    "anatomy_of_the_day": "Anatomy of the Day",
+    "color_signature": "Color Signature",
+    "copied": "Copied!",
+    "copy_hex": "Copy HEX",
+    "palette_desc": "Extracted from the wedding photos"
   }
 }

@@ -194,7 +194,9 @@
   "vendor_card": {
     "verified": "موثوق",
     "view_profile": "شوف البروفيل",
-    "whatsapp_aria": "تواصل مع {{name}} فـ واتساب"
+    "whatsapp_aria": "تواصل مع {{name}} فـ واتساب",
+    "starting_at": "بداية من",
+    "no_reviews": "ما كاين تقييمات بعد"
   },
   "common": {
     "save": "حفظ",
@@ -255,7 +257,45 @@
     "budgeted_label": "شحال ناوي تخسر (درهم)",
     "delete_confirm": "واش بصح بغيتي تمسح هاد الصنف؟",
     "error_add": "كاين غلط فاش كنزيدو.",
-    "error_delete": "كاين غلط فاش كنمسحو."
+    "error_delete": "كاين غلط فاش كنمسحو.",
+    "summary_title": "ملخص الميزانية",
+    "items_title": "فين مشات الفلوس",
+    "add_item": "زيد حاجة",
+    "total_label": "الميزانية الكلية",
+    "spent_label": "اللي تصرف",
+    "chart_by_category": "حسب الصنف",
+    "financial_hub": "المركز المالي",
+    "total_spent": "كاع اللي تصرف",
+    "remaining": "شنو بقا",
+    "estimated": "داكشي اللي كنتحسبو",
+    "paid_badge": "مخلص",
+    "form_title_label": "العنوان",
+    "form_category_label": "الصنف",
+    "form_estimated_label": "شحال ناوي تخسر (درهم)",
+    "view_estimated": "داكشي اللي خططتي",
+    "view_spent": "داكشي اللي تصرف",
+    "unallocated": "مازال ما وزعتيش",
+    "over_budget_item": "زادت على المحدد",
+    "over_budget_global": "الميزانية تجاوزت",
+    "mark_paid": "علم عليها مخلصة",
+    "mark_unpaid": "شيل علامة الخلاص",
+    "edit_spent_label": "اللي تصرف (درهم)",
+    "edit_estimated_label": "داكشي اللي كنتحسبو (درهم)",
+    "total_budget_label": "الميزانية الكلية",
+    "edit_budget_placeholder": "مثلاً: 150000",
+    "set_budget_cta": "حدد الميزانية ديالك باش تبدأ",
+    "categories": {
+      "salle": "الصالة",
+      "traiteur": "ترايتور",
+      "photographe": "مصور",
+      "decoration": "ديكور",
+      "negafa": "النقافة",
+      "musique": "موسيقى",
+      "voiture": "طوموبيل الزفاف",
+      "invitation": "الكارطة",
+      "beaute": "تزيين العروسة",
+      "autre": "حاجة أخرى"
+    }
   },
   "checklist": {
     "title": "شنو بقا ليك دير",
@@ -358,6 +398,29 @@
       "nav_profile": "البروفيل ديالي",
       "nav_inquiries": "طلبات العروض",
       "nav_account": "الحساب ديالي"
+    },
+    "couple": {
+      "welcome": "أهلاً، {{name}} 👋",
+      "subtitle": "اليوم الكبير ديالك كيقرب. شوف واش وصلتي.",
+      "onboarding": "بدا التخطيط",
+      "finalized": "✓ مكمّل",
+      "complete_setup": "كمّل الإعداد",
+      "ready_title": "واعر!",
+      "ready_desc": "البروفيل ديال العرس ديالك كامل. استكشف الخدمات والأدوات.",
+      "setup_desc": "كمّل الإعداد ديال العرس ديالك باش تحل كاع الأدوات.",
+      "setup_success_title": "تحفظ!",
+      "setup_success_desc": "تحدث البروفيل ديال العرس بنجاح.",
+      "setup_date": "تاريخ العرس",
+      "setup_budget": "الميزانية التقديرية",
+      "setup_guests": "عدد الضيوف",
+      "setup_tasks": "المهمات المنشأة",
+      "setup_website": "الموقع منشور",
+      "website": "الموقع",
+      "my_website": "الموقع ديالي",
+      "website_desc": "الصفحة ديال الدعوة ديالك منشورة.",
+      "expert_tip": "نصيحة الخبير",
+      "tip_content": "الأزواج لي كيخدموا بأدوات التخطيط ديالنا من البداية كيوفروا بمعدل 15% من الميزانية ديالهم.",
+      "tip_author": "— فريق فرح"
     }
   },
   "vendor_profile": {
@@ -724,7 +787,13 @@
     "accommodation_title": "فين تبات القريب",
     "accommodation_fallback": "حجزنا بيوت للضيوف ديالنا في الفنادق القريبة.",
     "ready_label": "واعر؟",
-    "powered_by": "مصنوع بـ"
+    "powered_by": "مصنوع بـ",
+    "countdown": {
+      "days": "أيام",
+      "hours": "ساعات",
+      "minutes": "دقائق",
+      "seconds": "ثواني"
+    }
   },
   "quote_modal": {
     "header_label": "طلب تقدير ثمن",
@@ -753,5 +822,38 @@
     "submit": "ابعت طلبي",
     "submitting": "كاتبعت…",
     "success": "تبعت طلبك بنجاح!"
+  },
+  "inspiration": {
+    "read_story": "قرا القصة",
+    "browse_all_trends": "شوف كاع الاتجاهات",
+    "scroll_label": "سكرول للإلهام",
+    "read_article": "قرا المقال",
+    "all_inspiration": "كاع الإلهام",
+    "vendors_featured": "{{count}} خدام مميز",
+    "save_to_moodboard_success": "تحفظ فـ لوحتك!",
+    "save_to_moodboard_error": "فشل الحفظ ديال الصورة.",
+    "remove_from_moodboard_success": "تحيّد من اللوحة.",
+    "remove_from_moodboard_error": "فشل الحذف.",
+    "login_to_save": "دخل للحساب باش تحفظ الصور.",
+    "login": "دخول",
+    "morocco": "المغرب",
+    "verified_professional": "محترف موثوق",
+    "wedding_expert": "خبير العرس",
+    "book_this_style": "احجز هاد الستايل",
+    "love_this_style": "عجبني هاد الستايل",
+    "find_pro_desc": "تواصل مع محترف موثوق متخصص فهاد الستايل.",
+    "find_similar_vendors": "قلب على خدامين مشابهين",
+    "share_discovery": "شارك هاد الاكتشاف",
+    "invite_partner": "دعوة الشريك",
+    "shop_the_look": "جيب هاد الستايل",
+    "vendors_made_it": "الخدامين لي خلاو هاد الحلم حقيقة.",
+    "verified_partner": "شريك موثوق",
+    "plan_with_us": "خطط للعرس ديالك معانا",
+    "celebration_flow": "مسار الاحتفال",
+    "anatomy_of_the_day": "تفاصيل اليوم",
+    "color_signature": "توقيع الألوان",
+    "copied": "تنسخ!",
+    "copy_hex": "نسخ HEX",
+    "palette_desc": "مستخرج من صور العرس"
   }
 }

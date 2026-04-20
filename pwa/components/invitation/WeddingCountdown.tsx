@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "next-i18next";
 
 interface TimeLeft {
     days: number;
@@ -13,6 +14,7 @@ interface WeddingCountdownProps {
 }
 
 export default function WeddingCountdown({ targetDate }: WeddingCountdownProps) {
+    const { t } = useTranslation("common");
     const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
 
     useEffect(() => {
@@ -44,10 +46,10 @@ export default function WeddingCountdown({ targetDate }: WeddingCountdownProps) 
 
     return (
         <div className="flex justify-center gap-4 md:gap-8">
-            <TimeUnit value={timeLeft.days} label="Jours" />
-            <TimeUnit value={timeLeft.hours} label="Heures" />
-            <TimeUnit value={timeLeft.minutes} label="Minutes" />
-            <TimeUnit value={timeLeft.seconds} label="Secondes" />
+            <TimeUnit value={timeLeft.days} label={t("event.countdown.days")} />
+            <TimeUnit value={timeLeft.hours} label={t("event.countdown.hours")} />
+            <TimeUnit value={timeLeft.minutes} label={t("event.countdown.minutes")} />
+            <TimeUnit value={timeLeft.seconds} label={t("event.countdown.seconds")} />
         </div>
     );
 }

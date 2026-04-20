@@ -126,7 +126,7 @@ export default function ChecklistPage() {
 
             {/* Progress Journey Header */}
             <div className="bg-neutral-900 p-12 md:p-16 rounded-[3rem] text-white shadow-3 mb-12 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
+                <div className="absolute top-0 end-0 w-96 h-96 bg-primary/20 rounded-full -me-32 -mt-32 blur-3xl opacity-50" />
                 
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
                     <div className="space-y-4">
@@ -141,7 +141,7 @@ export default function ChecklistPage() {
                     </div>
 
                     <div className="flex items-center gap-8">
-                        <div className="text-right">
+                        <div className="text-end">
                             <span className="block text-5xl md:text-7xl font-black text-primary leading-none">
                                 {Math.round(progressPercent)}%
                             </span>
@@ -174,7 +174,7 @@ export default function ChecklistPage() {
                                     onClick={() => setIsAdding(true)}
                                     className="rounded-full px-8 h-12 font-black text-[12px] uppercase shadow-xl shadow-primary/20"
                                 >
-                                    <Plus size={16} className="mr-2" />
+                                    <Plus size={16} className="me-2" />
                                     {t("checklist.add_task")}
                                 </Button>
                             )}

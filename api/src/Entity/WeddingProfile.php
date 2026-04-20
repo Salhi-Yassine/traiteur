@@ -149,6 +149,14 @@ class WeddingProfile
     #[Groups(['wedding:read'])]
     private \DateTimeImmutable $createdAt;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['wedding:read', 'wedding:write', 'wedding:public'])]
+    private ?string $stylePersona = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    #[Groups(['wedding:read', 'wedding:write'])]
+    private ?array $quizResults = null;
+
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     #[Gedmo\Timestampable(on: 'update')]
     #[Groups(['wedding:read'])]
@@ -415,5 +423,29 @@ class WeddingProfile
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    public function getStylePersona(): ?string
+    {
+        return $this->stylePersona;
+    }
+
+    public function setStylePersona(?string $stylePersona): static
+    {
+        $this->stylePersona = $stylePersona;
+
+        return $this;
+    }
+
+    public function getQuizResults(): ?array
+    {
+        return $this->quizResults;
+    }
+
+    public function setQuizResults(?array $quizResults): static
+    {
+        $this->quizResults = $quizResults;
+
+        return $this;
     }
 }

@@ -330,9 +330,9 @@ export default function InvitesPage() {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-start border-collapse">
                         <thead>
-                            <tr className="bg-[var(--color-background)]/50 text-left">
+                            <tr className="bg-[var(--color-background)]/50 text-start">
                                 <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.full_name")}</th>
                                 <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.side")}</th>
                                 <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.rsvp")}</th>

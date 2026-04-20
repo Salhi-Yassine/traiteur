@@ -138,7 +138,7 @@ export default function ProfileDetails({ vendor }: ProfileDetailsProps) {
                         <div key={idx} className="border border-neutral-200 rounded-2xl overflow-hidden bg-white hover:border-neutral-300 transition-colors">
                             <button 
                                 onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                                className="w-full text-left px-6 py-5 flex items-center justify-between gap-4 focus:outline-none"
+                                className="w-full text-start px-6 py-5 flex items-center justify-between gap-4 focus:outline-none"
                             >
                                 <span className="font-bold text-neutral-900 select-none">{faq.q}</span>
                                 <ChevronDown className={cn("w-5 h-5 text-neutral-500 shrink-0 transition-transform duration-300", openFaq === idx && "rotate-180")} />

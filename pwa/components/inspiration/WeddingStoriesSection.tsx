@@ -13,7 +13,7 @@ const MOCK_STORIES: WeddingStory[] = [
         coupleNames: "Sarah & Yassine",
         location: "Casablanca",
         vibe: "Palatial Elegance",
-        coverImageUrl: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1200&q=80",
+        coverImage: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1200&q=80",
         description: "A breathtaking celebration in the heart of Casablanca, blending traditional Moroccan hospitality with modern luxury. From the custom-designed Negafa sets to the 5-course gourmet catering, every detail was a testament to their love story.",
         gallery: [
             "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1200&q=80",
@@ -33,7 +33,7 @@ const MOCK_STORIES: WeddingStory[] = [
         coupleNames: "Leila & Anass",
         location: "Marrakech",
         vibe: "Boho Desert",
-        coverImageUrl: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1200&q=80",
+        coverImage: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1200&q=80",
         description: "A sunset ceremony in the Agafay desert. Leila and Anass wanted a celebration that felt raw, intimate, and deeply connected to the Moroccan landscape. Warm earth tones, hundreds of candles, and the sound of the Gnaoua.",
         gallery: [
             "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1200&q=80",
@@ -51,7 +51,7 @@ const MOCK_STORIES: WeddingStory[] = [
         coupleNames: "Kenza & Mehdi",
         location: "Tangier",
         vibe: "Mediterranean Glow",
-        coverImageUrl: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&q=80",
+        coverImage: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&q=80",
         description: "A sophisticated garden wedding overlooking the Strait of Gibraltar. Clean lines, white florals, and a focus on the stunning Tangier sunset.",
         gallery: [
             "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&q=80",
@@ -63,9 +63,14 @@ const MOCK_STORIES: WeddingStory[] = [
     }
 ];
 
-export default function WeddingStoriesSection() {
+interface WeddingStoriesSectionProps {
+    stories?: WeddingStory[];
+}
+
+export default function WeddingStoriesSection({ stories }: WeddingStoriesSectionProps) {
     const { t } = useTranslation("common");
     const [selectedStory, setSelectedStory] = useState<WeddingStory | null>(null);
+    const displayStories = stories && stories.length > 0 ? stories : MOCK_STORIES;
 
     return (
         <section className="py-24 bg-white overflow-hidden">
@@ -95,7 +100,7 @@ export default function WeddingStoriesSection() {
 
                 {/* Horizontal Scrolling Grid */}
                 <div className="flex gap-8 overflow-x-auto scrollbar-hide pb-12 px-1 snap-x snap-mandatory">
-                    {MOCK_STORIES.map((story, i) => (
+                    {displayStories.map((story, i) => (
                         <div key={story.id} className="min-w-[280px] sm:min-w-[340px] md:min-w-[400px] snap-start">
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
