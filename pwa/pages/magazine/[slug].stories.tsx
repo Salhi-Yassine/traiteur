@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ArticlePage from "./[slug]";
 import { mockArticleDetailPageProps } from "@/lib/mockMagazineData";
+import ArticlePage from "./[slug]";
 
 const meta = {
     title: "Pages/Magazine/Article Detail",

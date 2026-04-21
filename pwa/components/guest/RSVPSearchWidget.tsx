@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useTranslation } from "next-i18next";
 import { Sparkles, Loader2, ArrowRight, Search } from "lucide-react";
+import { findBestMatch } from "string-similarity";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Dialog, DialogContent } from "../../components/ui/dialog";
 import apiClient from "../../utils/apiClient";
 import RSVPFlow, { GuestData } from "./RSVPFlow";
-import { findBestMatch } from "string-similarity";
-import { motion, AnimatePresence } from "framer-motion";
 
 interface RSVPSearchWidgetProps {
     slug: string;

@@ -4,16 +4,16 @@ import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useAuth } from "../../context/AuthContext";
-import { ApiError } from "../../utils/apiClient";
 import { useTranslation, Trans } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
+import { Eye, EyeOff, CheckCircle2, Circle, Camera, MessageSquare, BarChart2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAuth } from "../../context/AuthContext";
+import { ApiError } from "../../utils/apiClient";
 import { Button } from "../../components/ui/button";
 import { FloatingInput } from "../../components/ui/floating-input";
 import { AuthCard } from "../../components/auth/AuthCard";
-import { cn } from "@/lib/utils";
-import { Eye, EyeOff, CheckCircle2, Circle, Camera, MessageSquare, BarChart2 } from "lucide-react";
 
 function GoogleIcon() {
     return (

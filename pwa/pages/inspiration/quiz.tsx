@@ -3,14 +3,14 @@ import Head from "next/head";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, Sparkles, Heart, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { useRouter } from "next/router";
-import { useAuth } from "@/context/AuthContext";
-import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
 import Image from "next/image";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { Button } from "@/components/ui/button";
+import { cn, getInspirationImageUrl } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
+import apiClient from "@/utils/apiClient";
 
 interface QuizOption {
     id: string;
@@ -212,7 +212,7 @@ export default function InspirationQuiz() {
                                         {option.image ? (
                                             <div className="relative aspect-[16/9] w-full rounded-3xl overflow-hidden bg-neutral-100">
                                                 <Image 
-                                                    src={`/images/inspiration/${option.image}.png`}
+                                                    src={getInspirationImageUrl(option.image)}
                                                     alt={option.label}
                                                     fill
                                                     className="object-cover"

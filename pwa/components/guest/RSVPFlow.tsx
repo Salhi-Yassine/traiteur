@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useTranslation } from "next-i18next";
 import { Check, X, Utensils, MessageSquare, ArrowRight, Heart, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 import apiClient from "../../utils/apiClient";
 import SuccessAnimation from "../../components/ui/SuccessAnimation";
-import { cn } from "@/lib/utils";
 import { Button } from "../../components/ui/button";
-import { motion, AnimatePresence } from "framer-motion";
 
 export interface GuestData {
     fullName: string;

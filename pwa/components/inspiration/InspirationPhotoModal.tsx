@@ -1,14 +1,14 @@
 import Image from "next/image";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Heart, MapPin, ExternalLink, Calendar, CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
 import { useTranslation } from "next-i18next";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { cn, getInspirationImageUrl } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
+import apiClient from "@/utils/apiClient";
 import { useColorSignature } from "@/hooks/useColorSignature";
 
 export interface InspirationPhoto {
@@ -50,7 +50,7 @@ export default function InspirationPhotoModal({
 
     const imageUrl = photo.imagePath.startsWith('http')
         ? photo.imagePath
-        : `/images/inspiration/${photo.imagePath}.png`;
+        : getInspirationImageUrl(photo.imagePath);
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>

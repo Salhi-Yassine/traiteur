@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import { useTranslation } from "next-i18next";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -14,6 +13,7 @@ import {
     UtensilsCrossed,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Category {
     value: string;

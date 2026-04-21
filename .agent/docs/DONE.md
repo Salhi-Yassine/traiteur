@@ -99,7 +99,19 @@
 
 ## 2026-04-20
 
+### Couple Dashboard redesign (Epic 6) — Complete
+- [2026-04-20] `pwa/types/api.ts` — added `Greeting` interface; extended `WeddingProfile` with `brideName`, `groomName`, `coverImage`, `totalBudgetMad`, `stylePersona`, `quizResults`, `greetings` fields
+- [2026-04-20] All 4 locale files — added `dashboard.couple.hero.*`, `stats.*`, `inspiration.*`, `vendors_section.*`, `milestones.*`, `plan_widget.*` keys; added missing `wall_of_love.*`, `consensus_match.*`, `elder_mode.*` to EN/AR/ARY locales
+- [2026-04-20] `pwa/components/dashboard/HeroBanner.tsx` + `.stories.tsx` — editorial hero with couple names, countdown, cover photo; elder mode collapses to text-only
+- [2026-04-20] `pwa/components/dashboard/StatsPillsRow.tsx` + `.stories.tsx` — horizontal pill row: days left, budget, tasks remaining, guest count
+- [2026-04-20] `pwa/components/dashboard/InspirationGallery.tsx` + `.stories.tsx` — CSS masonry of 4 curated Unsplash wedding photos with gradient labels
+- [2026-04-20] `pwa/components/dashboard/VendorDiscovery.tsx` + `.stories.tsx` — horizontally scrollable featured vendor cards; fetches `["featuredVendors"]` query; skeleton + empty CTA state
+- [2026-04-20] `pwa/components/dashboard/MilestoneCategories.tsx` + `.stories.tsx` — 6 category photo cards linking to vendor directory filtered by `category.slug`
+- [2026-04-20] `pwa/components/dashboard/WeddingPlanWidget.tsx` + `.stories.tsx` — mini checklist widget showing next 5 incomplete tasks with progress bar; elder mode hides progress bar
+- [2026-04-20] `pwa/pages/mariage/index.tsx` — full redesign: replaced setup-progress hero with `HeroBanner`; added `StatsPillsRow`; kept 4 nav stat cards; added 2-col magazine zone (InspirationGallery, VendorDiscovery, MilestoneCategories, WallOfLove in left; WeddingPlanWidget + ConsensusMatch in right); wired real `["greetings", profileId]` query replacing hardcoded mock; added pulse PATCH mutation; helper functions for `formatTimeAgo`, `computeConsensusScore`, `computeSharedStyles`
+
 ### Farah Magazine feature (P5.4) — Complete (Closes #44)
+- [2026-04-20] `pwa/utils/fetchServerSide.ts` — fixed env var — now reads `NEXT_PUBLIC_ENTRYPOINT` first (Docker internal `http://php`) before falling back to `NEXT_PUBLIC_API_URL` (resolves getStaticProps API failures)
 - [2026-04-20] `api/src/Entity/Article.php` — added `isFeatured`, `tags`, `widgetType`, `relatedVendors` fields; added `getReadingTimeMinutes()` computed getter (strips HTML, counts words ÷ 200 wpm)
 - [2026-04-20] `api/src/Entity/ArticleCategory.php` — added `iconSvg` nullable text field for inline SVG icons
 - [2026-04-20] `api/src/EventListener/ArticlePublishListener.php` — created; listens to postPersist/postUpdate Doctrine events, triggers non-blocking ISR revalidation via webhook
@@ -122,6 +134,14 @@
 - [2026-04-20] `pwa/components/magazine/*.stories.tsx` — created Storybook stories for all components (ArticleCard, HamlauCalculator, HireTheProsWidget, InlineVendorCard, ReadingProgressBar)
 - [2026-04-20] i18n — added `magazine.seo.*`, `magazine.all_articles`, `magazine.latest_articles`, `magazine.no_articles`, `magazine.shop_the_look.title` keys to all 4 locales (fr/en/ar/ary)
 - [2026-04-20] `Makefile` — added `magazine-seed` target for fixture loading; added `pwa-storybook` target for development
+- [2026-04-20] `pwa/components/magazine/MagazineHero.tsx` — created immersive featured article hero with parallax-ready design
+- [2026-04-20] `pwa/components/magazine/TopicGrid.tsx` — created visual category navigation with circular imagery
+- [2026-04-20] `pwa/components/magazine/TrendingSection.tsx` — created high-contrast dark-mode trending pulse section
+- [2026-04-20] `pwa/components/magazine/ArticleCard.tsx` — refactored with multiple editorial variants (landscape, compact, default)
+- [2026-04-20] `pwa/pages/magazine/index.tsx` — redesigned landing page with modular editorial layout (Closes #epic-5)
+- [2026-04-20] `pwa/pages/magazine/[slug].tsx` — redesigned article detail with parallax header and sticky editorial sidebars
+- [2026-04-20] `pwa/components/magazine/HireTheProsWidget.tsx` — added variant support for sidebar integration
+- [2026-04-20] `pwa/public/locales/fr/common.json` — added 10+ new editorial i18n keys for magazine redesign
 
 ---
 

@@ -8,11 +8,11 @@ import { z } from "zod";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
+import { CheckCircle, Eye, EyeOff } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { FloatingInput } from "../../components/ui/floating-input";
 import { AuthCard } from "../../components/auth/AuthCard";
 import { fetchApi } from "../../utils/apiClient";
-import { CheckCircle, Eye, EyeOff } from "lucide-react";
 
 export default function ResetPasswordPage() {
     const { t } = useTranslation("common");

@@ -1,7 +1,7 @@
-import { cn } from "@/lib/utils";
 import { Heart, Sparkles, MoveDown } from "lucide-react";
 import Image from "next/image";
 import { useTranslation } from "next-i18next";
+import { cn } from "@/lib/utils";
 
 export type ThemeId = 'modern' | 'romantic' | 'classic' | 'boho' | 'dark' | 'moroccan';
 

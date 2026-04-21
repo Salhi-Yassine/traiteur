@@ -1,11 +1,11 @@
 import { useTranslation } from "next-i18next";
+import Image from "next/image";
+import { Loader2 } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import { Loader2 } from "lucide-react";
 import SuccessAnimation from "@/components/ui/SuccessAnimation";
 import { HoneyFundItem } from "@/utils/invitationConfig";
 import { cn } from "@/lib/utils";

@@ -1,22 +1,22 @@
 import { useTranslation } from "next-i18next";
 import Head from "next/head";
-import PlanningLayout from "../../components/layout/PlanningLayout";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import apiClient from "../../utils/apiClient";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
+import { Heart, Camera, BookOpen, HelpCircle, MapPin, Palette, Globe, Plus, Trash2, ExternalLink, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/router";
 import type { HydraCollection } from "@/types/api";
+import { cn } from "@/lib/utils";
+import PlanningLayout from "../../components/layout/PlanningLayout";
+import apiClient from "../../utils/apiClient";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { Label } from "../../components/ui/label";
 import { Textarea } from "../../components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { Badge } from "../../components/ui/badge";
-import { Heart, Camera, BookOpen, HelpCircle, MapPin, Palette, Globe, Plus, Trash2, ExternalLink, Sparkles } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/router";
-import { cn } from "@/lib/utils";
 
 interface WeddingProfile {
     id: number;

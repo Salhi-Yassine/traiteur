@@ -446,7 +446,77 @@
       "website_desc": "Votre page d'invitation personnalisée est en ligne.",
       "expert_tip": "Conseil d'expert",
       "tip_content": "Les couples qui utilisent nos outils de planification dès le début économisent en moyenne 15% sur leur budget et ont un niveau de stress bien inférieur.",
-      "tip_author": "— Équipe Farah"
+      "tip_author": "— Équipe Farah",
+      "wall_of_love": {
+        "title": "Wall of Love",
+        "subtitle": "Les derniers mots doux de vos invités",
+        "pulse": "Envoyer un Pulse",
+        "pulse_sent": "Pulse envoyé !",
+        "no_greetings": "Pas encore de messages. Partagez votre site pour en recevoir !",
+        "anonymous": "Invité anonyme"
+      },
+      "consensus_match": {
+        "title": "Consensus Match",
+        "subtitle": "Votre vision commune",
+        "match_score": "{{score}}% de match",
+        "shared_styles": "Styles en commun",
+        "perfect_match": "Vision identique !",
+        "complementary": "Visions complémentaires"
+      },
+      "elder_mode": {
+        "toggle": "Mode Senior",
+        "simplified_view": "Vue simplifiée",
+        "high_contrast": "Contraste élevé",
+        "description": "Une interface épurée et accessible pour toute la famille."
+      },
+      "view_mode": {
+        "label": "Vue",
+        "full": "Complet",
+        "planning": "Planning",
+        "senior": "Senior",
+        "demo_banner": "Aperçu démo — connectez-vous pour voir vos vraies données"
+      },
+      "hero": {
+        "eyebrow": "Votre grand jour",
+        "days_to_go": "jours restants",
+        "no_date_set": "Date non définie"
+      },
+      "stats": {
+        "days": "Jours restants",
+        "budget": "Budget total",
+        "tasks_left": "Tâches restantes",
+        "guests": "Invités"
+      },
+      "inspiration": {
+        "title": "Style du jour",
+        "subtitle": "Tendances et inspirations pour votre mariage",
+        "view_all": "Toutes les inspirations",
+        "photo_1": "Décoration florale bohème",
+        "photo_2": "Table d'honneur en plein air",
+        "photo_3": "Cérémonie au coucher du soleil",
+        "photo_4": "Détails accessoires mariée"
+      },
+      "vendors_section": {
+        "title": "Trouvez et sauvegardez vos prestataires",
+        "subtitle": "Les mieux notés du Maroc, sélectionnés pour vous",
+        "see_all": "Voir tous les prestataires",
+        "explore": "Explorer les prestataires"
+      },
+      "milestones": {
+        "title": "Pour chaque moment de votre préparation",
+        "decoration": "Décoration",
+        "photographe": "Photo & Vidéo",
+        "traiteur": "Traiteur",
+        "negafa": "Negafa",
+        "musique": "Musique",
+        "voiture": "Voiture de mariage"
+      },
+      "plan_widget": {
+        "title": "Mon planning",
+        "progress": "{{done}} / {{total}} tâches",
+        "see_all": "Voir la checklist complète",
+        "no_tasks": "Aucune tâche en cours"
+      }
     }
   },
   "vendor_profile": {
@@ -961,8 +1031,29 @@
       "cta": "Trouver un traiteur",
       "note": "Basé sur les standards des traiteurs marocains vérifiés"
     },
-    "shop_the_look": {
-      "title": "À retrouver sur Farah.ma"
+    "read_article": "Lire l'article",
+    "popular_topics": "Sujets populaires",
+    "popular_topics_desc": "Tout ce dont vous avez besoin pour planifier le mariage de vos rêves au Maroc.",
+    "trending_now": "Tendances Actuelles",
+    "trending_subtitle": "Ce qui passionne les futurs mariés en ce moment.",
+    "editors_picks": "Coups de Cœur de la Rédac",
+    "latest_stories": "Dernières Histoires",
+    "articles_found": "articles trouvés",
+    "more_reads": "Plus de lectures",
+    "sidebar": {
+      "recommended": "Recommandé pour vous"
+    },
+    "shop_the_look": "À retrouver sur Farah.ma",
+    "search_placeholder": "Rechercher une idée...",
+    "save_article": "Sauvegarder l'article",
+    "saved": "Sauvegardé",
+    "listen_article": "Écouter l'article",
+    "share_article": "Partager",
+    "newsletter": {
+      "title": "Le Mag — L'insider du mariage marocain",
+      "subtitle": "Recevez nos conseils exclusifs, les nouvelles tendances caftans et nos adresses secrètes chaque semaine.",
+      "placeholder": "Votre adresse email...",
+      "button": "S'abonner"
     }
   }
 }

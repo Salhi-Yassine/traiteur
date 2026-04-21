@@ -4,9 +4,9 @@ import { createPortal } from "react-dom";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { Search, MapPin, LayoutGrid, X, Building2, Camera, Car, Gem, Music2, Palette, Sparkles, UtensilsCrossed } from "lucide-react";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerFooter } from "../ui/drawer";
-import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerFooter } from "../ui/drawer";
 
 interface SearchBarProps {
     initialLocation?: string;

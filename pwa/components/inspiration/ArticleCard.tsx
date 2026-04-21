@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Clock, ArrowUpRight } from "lucide-react";
 import { format } from "date-fns";
 import { useTranslation } from "next-i18next";
+import { getInspirationImageUrl } from "@/lib/utils";
 
 interface ArticleCardProps {
     article: {
@@ -29,7 +30,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
                 {/* Image Container */}
                 <div className="relative aspect-[16/10] overflow-hidden rounded-[2rem] bg-neutral-100">
                     <Image
-                        src={article.featuredImage.startsWith('http') ? article.featuredImage : `/images/inspiration/${article.featuredImage}.png`}
+                        src={article.featuredImage.startsWith('http') ? article.featuredImage : getInspirationImageUrl(article.featuredImage)}
                         alt={article.title}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-110"

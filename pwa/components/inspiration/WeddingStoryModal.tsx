@@ -3,10 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { X, MapPin, Building2, Store, ExternalLink, Clock, Sparkles, ArrowRight, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { WeddingStory } from "./WeddingStoryCard";
-import { Button } from "../ui/button";
 import { useTranslation } from "next-i18next";
-import { cn } from "@/lib/utils";
+import { cn, getInspirationImageUrl } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { WeddingStory } from "./WeddingStoryCard";
 
 interface WeddingStoryModalProps {
     story: WeddingStory | null;
@@ -124,7 +124,7 @@ export default function WeddingStoryModal({ story, isOpen, onClose }: WeddingSto
                                 {story.gallery.map((img, i) => (
                                     <div key={i} className="relative aspect-video w-full rounded-[2rem] overflow-hidden shadow-sm">
                                         <Image 
-                                            src={img.startsWith('http') ? img : `/images/inspiration/${img}.png`} 
+                                            src={img.startsWith('http') ? img : getInspirationImageUrl(img)} 
                                             alt="" 
                                             fill 
                                             className="object-cover" 

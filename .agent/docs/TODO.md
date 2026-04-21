@@ -68,10 +68,6 @@
 - [ ] Heart icon with optimistic UI
 - [ ] Persist across sessions (API, not just localStorage)
 
-### Planning Dashboard
-- [ ] Wedding date countdown
-- [ ] Quick stats widget (budget remaining, tasks due, guests confirmed)
-
 ---
 
 ## ⚪ Phase 3 — Content & Monetization

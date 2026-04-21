@@ -6,7 +6,6 @@ import type { GetServerSideProps } from "next";
 import { BadgeCheck, Grid, MapPin, ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-
 import { Button } from "@/components/ui/button";
 import StarRating from "@/components/ui/StarRating";
 import PriceRange from "@/components/ui/PriceRange";

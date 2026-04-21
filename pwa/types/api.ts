@@ -125,14 +125,36 @@ export interface User extends HydraResource {
 
 export interface WeddingProfile extends HydraResource {
   '@type': 'WeddingProfile';
+  brideName?: string;
+  groomName?: string;
   weddingDate?: string;
+  weddingCity?: string;
+  venueName?: string;
+  coverImage?: string;
+  totalBudgetMad?: number;
+  /** @deprecated use totalBudgetMad */
   totalBudget?: number;
+  stylePersona?: string;
+  quizResults?: Record<string, unknown> | null;
+  ourStory?: string;
+  galleryImages?: string[];
   user?: string; // IRI reference to User
   budgetItems?: BudgetItem[];
   guests?: Guest[];
   checklistTasks?: ChecklistTask[];
+  greetings?: Greeting[];
   createdAt: string;
   updatedAt?: string;
+}
+
+export interface Greeting extends HydraResource {
+  '@type': 'Greeting';
+  message: string;
+  photoUrl?: string;
+  isAcknowledged: boolean;
+  guest?: Pick<Guest, '@id' | 'id' | 'fullName'> | null;
+  weddingProfile?: string; // IRI reference
+  createdAt: string;
 }
 
 export interface BudgetItem extends HydraResource {

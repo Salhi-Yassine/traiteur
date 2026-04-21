@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { ChevronRight, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 import WeddingStoryCard, { WeddingStory } from "./WeddingStoryCard";
 import WeddingStoryModal from "./WeddingStoryModal";
-import { motion } from "framer-motion";
 
 const MOCK_STORIES: WeddingStory[] = [
     {

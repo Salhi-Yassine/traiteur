@@ -1,8 +1,8 @@
 "use client";
 
-import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/router";
 import { ReactNode, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 interface ProtectedRouteProps {
     children: ReactNode;

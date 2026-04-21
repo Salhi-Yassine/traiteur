@@ -1,11 +1,11 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { Calendar, MapPin, Heart, Share2 } from "lucide-react";
+import { useTranslation } from "next-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { PublicWeddingData } from "@/utils/invitationConfig";
-import { useTranslation } from "next-i18next";
 import WeddingCountdown from "./WeddingCountdown";
 
 interface InvitationHeroProps {

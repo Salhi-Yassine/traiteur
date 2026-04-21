@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
+import { LayoutDashboard } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAuth } from "../../context/AuthContext";
+import { Button } from "../ui/button";
+import { PATHS } from "../../constants/paths";
 import LanguageSwitcher from "./LanguageSwitcher";
 import UserMenu from "./UserMenu";
-import { LayoutDashboard } from "lucide-react";
-import { PATHS } from "../../constants/paths";
 
 // v3.0 nav items per PRD section 7
 const NAV_ITEM_KEYS = [

@@ -151,7 +151,10 @@ export const fetchApi = async <T = unknown>(
     });
 
     // ── Silent refresh on 401 ─────────────────────────────────────────────────
-    if (response.status === 401 && !_isRetry) {
+    // Only attempt refresh when the request was authenticated (had a token).
+    // A 401 on a public endpoint (e.g. /auth with wrong credentials) means bad
+    // credentials — not an expired session — so refresh would be wrong.
+    if (response.status === 401 && !_isRetry && !!token) {
         if (!refreshPromise) {
             refreshPromise = attemptRefresh().finally(() => {
                 refreshPromise = null;

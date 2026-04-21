@@ -1,13 +1,13 @@
 import { useState } from "react";
+import { useTranslation } from "next-i18next";
+import { Flame, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { useTranslation } from "next-i18next";
 import PriceRange from "../ui/PriceRange";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import AvailabilityCalendar from "./AvailabilityCalendar";
-import { Flame, Users } from "lucide-react";
 
 interface DateRange {
   from: string | null;

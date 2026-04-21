@@ -7,11 +7,12 @@ import Image from "next/image";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Heart } from "lucide-react";
-import { cn } from "@/lib/utils";
-import apiClient from "../../utils/apiClient";
 import Link from "next/link";
 import { motion, useScroll } from "framer-motion";
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import { WeddingProvider } from "@/context/WeddingContext";
+import apiClient from "../../utils/apiClient";
 
 // Components
 import RSVPSearchWidget from "../../components/guest/RSVPSearchWidget";
@@ -26,7 +27,6 @@ import DetailsGrid from "../../components/invitation/DetailsGrid";
 import VenueLocation from "../../components/invitation/VenueLocation";
 import RSVPBar from "../../components/invitation/RSVPBar";
 import GiftModal from "../../components/invitation/GiftModal";
-import { WeddingProvider } from "@/context/WeddingContext";
 import LenisProvider from "../../components/layout/LenisProvider";
 
 // Config & Utils

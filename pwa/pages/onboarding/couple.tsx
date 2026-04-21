@@ -7,14 +7,14 @@ import { z } from "zod";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
+import { Heart, MapPin, Wallet, Users, CheckCircle2, Calendar } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "../../components/ui/button";
 import { FloatingInput } from "../../components/ui/floating-input";
 import { AuthCard } from "../../components/auth/AuthCard";
 import SuccessAnimation from "../../components/ui/SuccessAnimation";
 import { useAuth } from "../../context/AuthContext";
 import apiClient from "../../utils/apiClient";
-import { cn } from "@/lib/utils";
-import { Heart, MapPin, Wallet, Users, CheckCircle2, Calendar } from "lucide-react";
 
 const TOTAL_STEPS = 4;
 

@@ -1,14 +1,14 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import SearchBar from "../components/vendors/SearchBar";
-import VendorCard, { VendorCardProps } from "../components/vendors/VendorCard";
 import type { GetStaticProps } from "next";
-import { Button } from "../components/ui/button";
 import { useTranslation, Trans } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "../components/ui/button";
+import VendorCard, { VendorCardProps } from "../components/vendors/VendorCard";
+import SearchBar from "../components/vendors/SearchBar";
 import { fetchServerSide } from "../utils/fetchServerSide";
 import WeddingStoriesSection from "../components/inspiration/WeddingStoriesSection";
 

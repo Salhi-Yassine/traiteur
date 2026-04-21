@@ -7,7 +7,6 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
 import { LayoutGrid, List, SlidersHorizontal, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-
 import VendorCard, { VendorCardProps } from "../../components/vendors/VendorCard";
 import FilterModal from "../../components/vendors/FilterModal";
 import SearchBar from "../../components/vendors/SearchBar";

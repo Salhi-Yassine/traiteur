@@ -1,8 +1,8 @@
 import { MapPin, Navigation, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 interface VenueLocationProps {
     venueName: string;

@@ -4,10 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { fetchServerSide } from "@/utils/fetchServerSide";
 import { ChevronLeft, Clock, Calendar, User, Share2 } from "lucide-react";
 import { format } from "date-fns";
+import { fetchServerSide } from "@/utils/fetchServerSide";
 import { Button } from "@/components/ui/button";
+import { getInspirationImageUrl } from "@/lib/utils";
 
 interface ArticleDetailProps {
     article: any;
@@ -92,7 +93,7 @@ export default function ArticleDetail({ article }: ArticleDetailProps) {
                 <div className="container mx-auto px-6 max-w-6xl mb-16">
                     <div className="relative aspect-[21/9] rounded-[2.5rem] overflow-hidden shadow-2xl">
                         <Image
-                            src={article.featuredImage.startsWith('http') ? article.featuredImage : `/images/inspiration/${article.featuredImage}.png`}
+                            src={article.featuredImage.startsWith('http') ? article.featuredImage : getInspirationImageUrl(article.featuredImage)}
                             alt={article.title}
                             fill
                             className="object-cover"

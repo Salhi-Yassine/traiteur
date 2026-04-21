@@ -5,12 +5,11 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import type { HydraCollection } from "@/types/api";
 import {
     X, ChevronLeft, ChevronRight, Clock, MessageSquare, BarChart2, Store,
 } from "lucide-react";
+import type { HydraCollection } from "@/types/api";
 import { cn } from "@/lib/utils";
-
 import { useAuth } from "@/context/AuthContext";
 import apiClient, { ApiError } from "@/utils/apiClient";
 import { PATHS } from "@/constants/paths";

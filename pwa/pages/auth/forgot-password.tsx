@@ -7,11 +7,11 @@ import { z } from "zod";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import type { GetServerSideProps } from "next";
+import { CheckCircle } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { FloatingInput } from "../../components/ui/floating-input";
 import { AuthCard } from "../../components/auth/AuthCard";
 import { fetchApi } from "../../utils/apiClient";
-import { CheckCircle } from "lucide-react";
 
 export default function ForgotPasswordPage() {
     const { t } = useTranslation("common");

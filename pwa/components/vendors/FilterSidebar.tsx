@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
 import { useTranslation } from "next-i18next";
 import { Star, ShieldCheck } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // Airbnb-style visual filter tiles — used inside FilterModal
 // Categories are handled by CategoryPills in the directory page

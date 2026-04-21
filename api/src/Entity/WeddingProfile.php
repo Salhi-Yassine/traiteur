@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
-        new Get(security: "is_granted('ROLE_ADMIN') or object.getUser() == user"),
+        new Get(security: "is_granted('WEDDING_VIEW', object)"),
         new Get(
             uriTemplate: '/public/weddings/{slug}',
             uriVariables: [
@@ -27,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => ['wedding:public']]
         ),
         new Post(security: "is_granted('ROLE_USER')"),
-        new Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user"),
+        new Patch(security: "is_granted('WEDDING_EDIT', object)"),
     ],
     normalizationContext: ['groups' => ['wedding:read']],
     denormalizationContext: ['groups' => ['wedding:write']],
@@ -144,6 +144,20 @@ class WeddingProfile
     #[Groups(['wedding:read', 'wedding:public'])]
     private Collection $timelineItems;
 
+    #[ORM\OneToMany(mappedBy: 'weddingProfile', targetEntity: Greeting::class, cascade: ['persist', 'remove'])]
+    #[Groups(['wedding:read'])]
+    private Collection $greetings;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['wedding:read', 'wedding:write'])]
+    private ?User $partner = null;
+
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\JoinTable(name: 'wedding_elders')]
+    #[Groups(['wedding:read', 'wedding:write'])]
+    private Collection $elders;
+
     #[ORM\Column(type: 'datetime_immutable')]
     #[Gedmo\Timestampable(on: 'create')]
     #[Groups(['wedding:read'])]
@@ -168,6 +182,8 @@ class WeddingProfile
         $this->budgetItems = new ArrayCollection();
         $this->checklistTasks = new ArrayCollection();
         $this->timelineItems = new ArrayCollection();
+        $this->greetings = new ArrayCollection();
+        $this->elders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -305,6 +321,46 @@ class WeddingProfile
     public function getTimelineItems(): Collection
     {
         return $this->timelineItems;
+    }
+
+    /** @return Collection<int, Greeting> */
+    public function getGreetings(): Collection
+    {
+        return $this->greetings;
+    }
+
+    public function getPartner(): ?User
+    {
+        return $this->partner;
+    }
+
+    public function setPartner(?User $partner): static
+    {
+        $this->partner = $partner;
+
+        return $this;
+    }
+
+    /** @return Collection<int, User> */
+    public function getElders(): Collection
+    {
+        return $this->elders;
+    }
+
+    public function addElder(User $elder): static
+    {
+        if (!$this->elders->contains($elder)) {
+            $this->elders->add($elder);
+        }
+
+        return $this;
+    }
+
+    public function removeElder(User $elder): static
+    {
+        $this->elders->removeElement($elder);
+
+        return $this;
     }
 
     public function getSlug(): ?string

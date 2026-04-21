@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
-import { cn } from '@/lib/utils';
 import { useTranslation } from 'next-i18next';
+import { cn } from '@/lib/utils';
 
 const LOCALES = [
   { code: 'fr',  label: 'FR' },

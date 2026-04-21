@@ -2,13 +2,13 @@ import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { fetchServerSide } from "@/utils/fetchServerSide";
-import WeddingStoryCard from "@/components/inspiration/WeddingStoryCard";
-import WeddingStoryModal from "@/components/inspiration/WeddingStoryModal";
 import { useState } from "react";
 import { ChevronLeft, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import WeddingStoryModal from "@/components/inspiration/WeddingStoryModal";
+import WeddingStoryCard from "@/components/inspiration/WeddingStoryCard";
+import { fetchServerSide } from "@/utils/fetchServerSide";
 
 interface InspirationStoriesProps {
     stories: any[];

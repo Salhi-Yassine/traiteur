@@ -1,13 +1,13 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Heart, MapPin } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useAuth } from "@/context/AuthContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
+import apiClient from "@/utils/apiClient";
+import { useAuth } from "@/context/AuthContext";
+import { cn, getInspirationImageUrl } from "@/lib/utils";
 
 interface InspirationCardProps {
     photo: {
@@ -97,7 +97,7 @@ export default function InspirationCard({ photo, onClick }: InspirationCardProps
         >
             <div className="relative aspect-auto min-h-[200px]">
                 <Image
-                    src={photo.imagePath.startsWith('http') ? photo.imagePath : `/images/inspiration/${photo.imagePath}.png`}
+                    src={photo.imagePath.startsWith('http') ? photo.imagePath : getInspirationImageUrl(photo.imagePath)}
                     alt={photo.caption}
                     width={500}
                     height={700}

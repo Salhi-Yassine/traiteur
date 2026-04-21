@@ -1,8 +1,10 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { MapPin, Users } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useTranslation } from "next-i18next";
+import { cn, getInspirationImageUrl } from "@/lib/utils";
+
+const BLUR_PLACEHOLDER = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
 
 export interface WeddingStory {
     id: string;
@@ -42,11 +44,13 @@ export default function WeddingStoryCard({ story, onClick }: WeddingStoryCardPro
             {/* Image Container */}
             <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[2rem] bg-neutral-100 shadow-lg group-hover:shadow-2xl transition-all duration-500">
                 <Image
-                    src={story.coverImage.startsWith('http') ? story.coverImage : `/images/inspiration/${story.coverImage}.png`}
+                    src={story.coverImage.startsWith('http') ? story.coverImage : getInspirationImageUrl(story.coverImage)}
                     alt={`${story.coupleNames}'s Wedding`}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
+                        placeholder="blur"
+                        blurDataURL={BLUR_PLACEHOLDER}
+                    />
                 
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />

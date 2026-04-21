@@ -2,6 +2,10 @@ import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { appWithTranslation } from 'next-i18next';
+import { DirectionProvider } from "@radix-ui/react-direction";
+import { Toaster } from "sonner";
+import { useEffect } from "react";
 import { AuthProvider } from "../context/AuthContext";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -10,11 +14,6 @@ import "../styles/globals.css";
 import "@fontsource/poppins";
 import "@fontsource/poppins/600.css";
 import "@fontsource/poppins/700.css";
-import { appWithTranslation } from 'next-i18next';
-import { DirectionProvider } from "@radix-ui/react-direction";
-import { Toaster } from "sonner";
-
-import { useEffect } from "react";
 import { ApiError } from "../utils/apiClient";
 
 const queryClient = new QueryClient({

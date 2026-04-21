@@ -431,7 +431,85 @@
       "website_desc": "Your personalized invitation page is live.",
       "expert_tip": "Expert tip",
       "tip_content": "Couples who use our planning tools from the start save an average of 15% on their budget and experience much lower stress.",
-      "tip_author": "— Farah Team"
+      "tip_author": "— Farah Team",
+      "manage": "Manage",
+      "list": "View list",
+      "tasks": "Tasks",
+      "guests_unit": "guests",
+      "tasks_done": "tasks completed",
+      "website": "Website",
+      "my_website": "My website",
+      "website_desc": "Your personalized invitation page is live.",
+      "wall_of_love": {
+        "title": "Wall of Love",
+        "subtitle": "The latest warm wishes from your guests",
+        "pulse": "Send a Pulse",
+        "pulse_sent": "Pulse sent!",
+        "no_greetings": "No messages yet. Share your site to receive some!",
+        "anonymous": "Anonymous guest"
+      },
+      "consensus_match": {
+        "title": "Consensus Match",
+        "subtitle": "Your shared vision",
+        "match_score": "{{score}}% match",
+        "shared_styles": "Shared styles",
+        "perfect_match": "Perfect vision match!",
+        "complementary": "Complementary visions"
+      },
+      "elder_mode": {
+        "toggle": "Senior Mode",
+        "simplified_view": "Simplified view",
+        "high_contrast": "High contrast",
+        "description": "A clean, accessible interface for the whole family."
+      },
+      "view_mode": {
+        "label": "View",
+        "full": "Full",
+        "planning": "Planning",
+        "senior": "Senior",
+        "demo_banner": "Demo preview — log in to see your real data"
+      },
+      "hero": {
+        "eyebrow": "Your big day",
+        "days_to_go": "days remaining",
+        "no_date_set": "Date not set"
+      },
+      "stats": {
+        "days": "Days remaining",
+        "budget": "Total budget",
+        "tasks_left": "Tasks remaining",
+        "guests": "Guests"
+      },
+      "inspiration": {
+        "title": "Style of the day",
+        "subtitle": "Trends and inspiration for your wedding",
+        "view_all": "All inspirations",
+        "photo_1": "Bohemian floral decor",
+        "photo_2": "Outdoor head table",
+        "photo_3": "Sunset ceremony",
+        "photo_4": "Bridal accessories details"
+      },
+      "vendors_section": {
+        "title": "Find and save your vendors",
+        "subtitle": "Morocco's top-rated, curated for you",
+        "see_all": "View all vendors",
+        "explore": "Explore vendors"
+      },
+      "milestones": {
+        "title": "For every moment of your preparation",
+        "decoration": "Decoration",
+        "photographe": "Photo & Video",
+        "traiteur": "Catering",
+        "negafa": "Negafa",
+        "musique": "Music",
+        "voiture": "Wedding car"
+      },
+      "plan_widget": {
+        "title": "My planning",
+        "progress": "{{done}} / {{total}} tasks",
+        "see_all": "View full checklist",
+        "no_tasks": "No tasks in progress"
+      }
     }
   },
   "vendor_profile": {

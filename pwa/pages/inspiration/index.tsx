@@ -2,20 +2,21 @@ import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { ArrowRight, Sparkles, BookOpen, PenTool, CheckCircle2, Star, Wand2 } from "lucide-react";
+import { useState, useEffect } from "react";
 import { fetchServerSide } from "@/utils/fetchServerSide";
 import InspirationHero from "@/components/inspiration/InspirationHero";
 import InspirationCategoryPills from "@/components/inspiration/InspirationCategoryPills";
 import ArticleCard from "@/components/inspiration/ArticleCard";
 import InspirationGrid from "@/components/inspiration/InspirationGrid";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import Image from "next/image";
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, BookOpen, PenTool, CheckCircle2, Star, Wand2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { cn, getInspirationImageUrl } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import apiClient from "@/utils/apiClient";
+import { mockArticles, mockArticleCategories, mockInspirationPhotos } from "@/lib/mockInspirationData";
 
 interface InspirationHubProps {
     articles: any[];
@@ -114,7 +115,7 @@ export default function InspirationHub({
                         {featuredArticle && (
                             <Link href={`/inspiration/articles/${featuredArticle.slug}`} className="group relative block aspect-[16/10] overflow-hidden rounded-[3rem] bg-neutral-100 shadow-xl">
                                 <Image 
-                                    src={featuredArticle.featuredImage?.startsWith('http') ? featuredArticle.featuredImage : `/images/inspiration/${featuredArticle.featuredImage}.png`}
+                                    src={featuredArticle.featuredImage?.startsWith('http') ? featuredArticle.featuredImage : getInspirationImageUrl(featuredArticle.featuredImage)}
                                     alt={featuredArticle.title}
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -143,7 +144,7 @@ export default function InspirationHub({
                                 >
                                     <div className="relative w-32 h-32 rounded-3xl overflow-hidden shrink-0">
                                         <Image 
-                                            src={article.featuredImage?.startsWith('http') ? article.featuredImage : `/images/inspiration/${article.featuredImage}.png`}
+                                            src={article.featuredImage?.startsWith('http') ? article.featuredImage : getInspirationImageUrl(article.featuredImage)}
                                             alt=""
                                             fill
                                             className="object-cover"
@@ -236,6 +237,107 @@ export default function InspirationHub({
                 </div>
             </section>
 
+            {/* ── 5.5  Farah Magazine — Editorial Bridge ──────────────────────────── */}
+            <section className="py-24 bg-[#1A1A1A] relative overflow-hidden">
+                {/* Subtle dot pattern */}
+                <div
+                    className="absolute inset-0 opacity-[0.04] pointer-events-none"
+                    style={{
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='1.5' fill='%23FFFFFF'/%3E%3C/svg%3E")`,
+                        backgroundRepeat: "repeat",
+                    }}
+                />
+                <div className="container mx-auto px-6 max-w-7xl relative z-10">
+                    {/* Header row */}
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2">
+                                <BookOpen size={16} className="text-[#E8472A]" />
+                                <span className="text-[#E8472A] font-bold text-[11px] uppercase tracking-widest">
+                                    Farah Magazine
+                                </span>
+                            </div>
+                            <h2 className="font-display text-[clamp(2rem,5vw,3.5rem)] text-white leading-[1.05]">
+                                Conseils d&apos;experts.<br />
+                                <span className="italic text-white/50">Lus par 40 000 futures mariées.</span>
+                            </h2>
+                            <p className="text-white/50 text-[16px] max-w-md">
+                                Guides, tendances et histoires vraies pour vous aider à organiser le mariage de vos rêves.
+                            </p>
+                        </div>
+                        <Link
+                            href="/magazine"
+                            className="group inline-flex items-center gap-3 bg-[#E8472A] text-white font-bold text-[14px] uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#D63D22] transition-colors shrink-0"
+                        >
+                            Lire le Magazine
+                            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    </div>
+
+                    {/* Article cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {articles.slice(0, 3).map((article: any, i: number) => (
+                            <motion.div
+                                key={article.id ?? i}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, margin: "-60px" }}
+                                transition={{ duration: 0.4, delay: i * 0.08, ease: [0.25, 0.1, 0.25, 1] }}
+                            >
+                                <Link
+                                    href={`/magazine/${article.slug}`}
+                                    className="group flex flex-col bg-white/5 border border-white/10 rounded-[2rem] overflow-hidden hover:bg-white/10 hover:border-[#E8472A]/30 transition-all duration-300 h-full"
+                                >
+                                    {/* Cover */}
+                                    <div className="relative aspect-[16/9] overflow-hidden shrink-0">
+                                        <Image
+                                            src={
+                                                article.featuredImage?.startsWith("http")
+                                                    ? article.featuredImage
+                                                    : getInspirationImageUrl(article.featuredImage)
+                                            }
+                                            alt={article.title}
+                                            fill
+                                            className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                                        {article.category?.name && (
+                                            <span className="absolute top-4 start-4 bg-[#E8472A] text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
+                                                {article.category.name}
+                                            </span>
+                                        )}
+                                    </div>
+                                    {/* Text */}
+                                    <div className="p-6 space-y-3 flex-1 flex flex-col">
+                                        <h3 className="text-white font-display text-[18px] leading-snug group-hover:text-[#E8472A] transition-colors line-clamp-2">
+                                            {article.title}
+                                        </h3>
+                                        {article.excerpt && (
+                                            <p className="text-white/40 text-[13px] leading-relaxed line-clamp-2 flex-1">
+                                                {article.excerpt}
+                                            </p>
+                                        )}
+                                        <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                                            <span className="text-white/30 text-[12px]">
+                                                {(article.readTime ?? article.readingTimeMinutes) ? `${article.readTime ?? article.readingTimeMinutes} min` : "Lire l'article"}
+                                            </span>
+                                            <span className="text-[#E8472A] text-[12px] font-bold uppercase tracking-widest flex items-center gap-1 group-hover:gap-2 transition-all">
+                                                Lire <ArrowRight size={12} />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </Link>
+                            </motion.div>
+                        ))}
+                    </div>
+
+                    <p className="text-center text-white/25 text-[13px] mt-12 tracking-wide">
+                        Nouveaux articles chaque semaine · Gratuit · Sans inscription
+                    </p>
+                </div>
+            </section>
+
             {/* 6. Submit Story CTA */}
             <section className="py-32 bg-[#1A1A1A] relative overflow-hidden">
                  <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -269,21 +371,27 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
             fetchServerSide("/api/inspiration_photos", { locale: locale || "fr" }),
         ]) as [any, any, any];
 
+        // Use API data if available, otherwise fall back to mock data for UI/UX testing
+        const articlesData = articles?.['hydra:member']?.length > 0 ? articles['hydra:member'] : mockArticles;
+        const categoriesData = articleCategories?.['hydra:member']?.length > 0 ? articleCategories['hydra:member'] : mockArticleCategories;
+        const photosData = photos?.['hydra:member']?.length > 0 ? photos['hydra:member'] : mockInspirationPhotos;
+
         return {
             props: {
-                articles: articles?.['member'] || [],
-                articleCategories: articleCategories?.['member'] || [],
-                photos: photos?.['member'] || [],
+                articles: articlesData,
+                articleCategories: categoriesData,
+                photos: photosData,
                 ...(await serverSideTranslations(locale || "fr", ["common"])),
             },
         };
     } catch (e) {
         console.error("Error fetching inspiration data:", e);
+        // Fall back to mock data for UI/UX testing when API is not available
         return {
             props: {
-                articles: [],
-                articleCategories: [],
-                photos: [],
+                articles: mockArticles,
+                articleCategories: mockArticleCategories,
+                photos: mockInspirationPhotos,
                 ...(await serverSideTranslations(locale || "fr", ["common"])),
             },
         };

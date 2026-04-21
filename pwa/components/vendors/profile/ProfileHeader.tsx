@@ -1,8 +1,8 @@
+import { BadgeCheck } from "lucide-react";
+import { useTranslation } from "next-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BadgeCheck } from "lucide-react";
 import StarRating from "@/components/ui/StarRating";
-import { useTranslation } from "next-i18next";
 import { cn } from "@/lib/utils";
 import { VendorProfileData } from "./ProfileTypes";
 

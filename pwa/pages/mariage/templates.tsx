@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "next-i18next";
 import Head from "next/head";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import type { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
+import { ArrowLeft, Check, Laptop, Smartphone, X, Crown, Palette } from "lucide-react";
+import { cn } from "@/lib/utils";
 import PlanningLayout from "../../components/layout/PlanningLayout";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "../../utils/apiClient";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import type { GetServerSideProps } from "next";
 import { TemplateCard, ThemeId } from "../../components/templates/TemplateCard";
-import { useRouter } from "next/router";
-import { cn } from "@/lib/utils";
-import { ArrowLeft, Check, Laptop, Smartphone, X, Crown, Palette } from "lucide-react";
 import { Dialog, DialogContent, DialogClose, DialogTitle, DialogDescription } from "../../components/ui/dialog";
 
 const THEMES_DATA = [

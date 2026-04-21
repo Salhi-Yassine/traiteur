@@ -3,17 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "next-i18next";
 import { cn } from "@/lib/utils";
 import apiClient from "@/utils/apiClient";
-
-interface ArticleCategory {
-    id: number;
-    name: string;
-    slug: string;
-    iconSvg?: string;
-}
-
-interface HydraCollection<T> {
-    "hydra:member": T[];
-}
+import { mockArticleCategories } from "@/lib/mockMagazineData";
+import { ArticleCategory, HydraCollection } from "@/types/magazine";
 
 interface MagazineCategoryBarProps {
     activeSlug: string | null;
@@ -28,12 +19,19 @@ export default function MagazineCategoryBar({ activeSlug, onChange }: MagazineCa
 
     const { data } = useQuery({
         queryKey: ["article_categories"],
-        queryFn: () => apiClient.get<HydraCollection<ArticleCategory>>("/api/article_categories"),
+        queryFn: async () => {
+            try {
+                return await apiClient.get<HydraCollection<ArticleCategory>>("/api/article_categories");
+            } catch (error) {
+                console.error("Article Categories API Error, using mocks:", error);
+                return { "hydra:member": mockArticleCategories };
+            }
+        },
         staleTime: 1000 * 60 * 10,
     });
 
     const categories = data?.["hydra:member"] ?? [];
-    const isLoading = !data;
+    const isLoading = !data && categories.length === 0;
 
     function updateFades() {
         const el = scrollRef.current;
@@ -90,6 +88,23 @@ export default function MagazineCategoryBar({ activeSlug, onChange }: MagazineCa
                         onClick={() => onChange(null)}
                     />
 
+                    {/* Wisdom Smart Search */}
+                    <div className="relative flex items-center shrink-0 ml-2 mr-6 rtl:ml-6 rtl:mr-2">
+                        <div className="absolute left-3 rtl:right-3 rtl:left-auto text-neutral-400">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input
+                            type="text"
+                            placeholder={t("magazine.search_placeholder")}
+                            className="bg-neutral-50/50 hover:bg-neutral-50 border border-transparent hover:border-neutral-200 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 rounded-full py-2.5 pl-10 pr-4 rtl:pr-10 rtl:pl-4 text-[13px] w-48 focus:w-64 transition-all duration-300 outline-none placeholder:text-neutral-400"
+                        />
+                    </div>
+
+                    {/* Categories */}
+                    <div className="hidden md:block w-px h-8 bg-neutral-200 shrink-0 mx-2" />
+
                     {categories.map((cat) => (
                         <CategoryPill
                             key={cat.id}
@@ -102,6 +117,7 @@ export default function MagazineCategoryBar({ activeSlug, onChange }: MagazineCa
                 </div>
             )}
         </div>
+
     );
 }
 

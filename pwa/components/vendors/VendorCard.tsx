@@ -2,12 +2,12 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import StarRating from "../ui/StarRating";
-import { Badge } from "../ui/badge";
-import PriceRange from "../ui/PriceRange";
 import { useTranslation } from "next-i18next";
 import { BadgeCheck, MapPin, ChevronRight, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import StarRating from "../ui/StarRating";
+import { Badge } from "../ui/badge";
+import PriceRange from "../ui/PriceRange";
 
 export interface VendorCardProps {
     id: number;

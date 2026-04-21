@@ -2,12 +2,12 @@ import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { fetchServerSide } from "@/utils/fetchServerSide";
-import ArticleCard from "@/components/inspiration/ArticleCard";
-import InspirationCategoryPills from "@/components/inspiration/InspirationCategoryPills";
 import { useState } from "react";
 import { ChevronLeft, Search } from "lucide-react";
 import Link from "next/link";
+import { fetchServerSide } from "@/utils/fetchServerSide";
+import ArticleCard from "@/components/inspiration/ArticleCard";
+import InspirationCategoryPills from "@/components/inspiration/InspirationCategoryPills";
 
 interface InspirationArticlesProps {
     articles: any[];

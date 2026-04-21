@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "next-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -13,6 +12,7 @@ import {
     Sparkles
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "../../context/AuthContext";
 import { PATHS } from "../../constants/paths";
 
 interface UserMenuProps {

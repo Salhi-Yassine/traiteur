@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Get(security: "is_granted('ROLE_ADMIN') or object.getWeddingProfile().getUser() == user"),
+        new Get(security: "is_granted('WEDDING_VIEW', object.getWeddingProfile())"),
         new Get(
             uriTemplate: '/public/guests/{guestToken}',
             uriVariables: [
@@ -40,8 +40,8 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => ['guest:public:write']]
         ),
         new Post(security: "is_granted('ROLE_USER')"),
-        new Patch(security: "is_granted('ROLE_ADMIN') or object.getWeddingProfile().getUser() == user"),
-        new Delete(security: "is_granted('ROLE_ADMIN') or object.getWeddingProfile().getUser() == user"),
+        new Patch(security: "is_granted('WEDDING_EDIT', object.getWeddingProfile())"),
+        new Delete(security: "is_granted('WEDDING_EDIT', object.getWeddingProfile())"),
     ],
     normalizationContext: ['groups' => ['guest:read']],
     denormalizationContext: ['groups' => ['guest:write']],

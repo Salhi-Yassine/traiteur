@@ -279,7 +279,45 @@
     background-color: #20BA5A;
   }
 
-  /* ── Respect prefers-reduced-motion ── */
+  /* ─── Glassmorphism — used for Wall of Love ─── */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  }
+
+  /* ─── Editorial Elements ─── */
+  .editorial-gradient {
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);
+  }
+  
+  /* Horizontal Snap Scroll */
+  .snap-x-mandatory {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .snap-item {
+    scroll-snap-align: start;
+  }
+
+  /* ─── Elder Mode — Accessibility & High Contrast ─── */
+  .elder-mode {
+    font-size: 110%; /* Increase base font size slightly */
+    --color-neutral-900: #000000;
+    --color-neutral-700: #1a1a1a;
+    --color-neutral-500: #2b2b2b;
+    --color-primary: #D03D20; /* Slightly darker/sharper terracotta */
+  }
+  .elder-mode * {
+    letter-spacing: 0.01em;
+  }
+  .elder-mode .text-neutral-500 {
+    color: var(--color-neutral-700) !important; /* Force higher contrast */
+  }
+
+  /* ─── Respect prefers-reduced-motion ─── */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0ms !important;

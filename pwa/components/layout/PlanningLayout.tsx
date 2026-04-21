@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "../../context/AuthContext";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 interface PlanningLayoutProps {
     children: React.ReactNode;
