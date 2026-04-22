@@ -13,6 +13,18 @@ export function formatMAD(amount: number, locale = "fr"): string {
   return `${fmt.format(amount)} MAD`;
 }
 
+export function formatMADK(amount: number, locale = "fr"): string {
+  if (amount >= 1000) {
+    const kAmount = amount / 1000;
+    const fmt = new Intl.NumberFormat(
+      locale === "ar" || locale === "ary" ? "ar-MA" : "fr-MA",
+      { maximumFractionDigits: 1 }
+    );
+    return `${fmt.format(kAmount)}k MAD`;
+  }
+  return formatMAD(amount, locale);
+}
+
 export function getInspirationImageUrl(imageName: string, width = 800, quality = 80): string {
   // For UI/UX testing, use placeholder images when local images don't exist
   const placeholderImages: Record<string, string> = {

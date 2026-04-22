@@ -31,6 +31,10 @@ function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const dir = ["ar", "ary"].includes(router.locale || "") ? "rtl" : "ltr";
 
+  // Dashboard pages use PlanningLayout which renders its own Navbar + Footer.
+  // Suppress the global shell for those routes to avoid duplicates.
+  const isDashboardPage = router.pathname.startsWith("/mariage");
+
   // Update HTML tag attributes on the client side when locale changes
   useEffect(() => {
     if (typeof document !== 'undefined') {
@@ -46,13 +50,17 @@ function App({ Component, pageProps }: AppProps) {
       <AuthProvider>
         <DirectionProvider dir={dir}>
           <ErrorBoundary>
-            <div className="flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-grow">
-                <Component {...pageProps} />
-              </main>
-              <Footer />
-            </div>
+            {isDashboardPage ? (
+              <Component {...pageProps} />
+            ) : (
+              <div className="flex flex-col min-h-screen">
+                <Navbar />
+                <main className="flex-grow">
+                  <Component {...pageProps} />
+                </main>
+                <Footer />
+              </div>
+            )}
           </ErrorBoundary>
         </DirectionProvider>
       </AuthProvider>

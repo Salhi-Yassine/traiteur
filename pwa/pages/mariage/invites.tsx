@@ -32,6 +32,17 @@ interface WeddingProfile {
     slug: string;
 }
 
+const MOCK_GUESTS: Guest[] = [
+    { id: 1, fullName: "Fatima Zahra", rsvpStatus: "confirmed", side: "bride", mealPreference: "standard" },
+    { id: 2, fullName: "Hassan B.", rsvpStatus: "confirmed", side: "groom", mealPreference: "halal" },
+    { id: 3, fullName: "Amina & Karim", rsvpStatus: "pending", side: "bride", mealPreference: "standard" },
+    { id: 4, fullName: "Youssef T.", rsvpStatus: "declined", side: "groom", mealPreference: "standard" },
+    { id: 5, fullName: "Khadija El M.", rsvpStatus: "confirmed", side: "bride", mealPreference: "vegetarian" },
+    { id: 6, fullName: "Omar R.", rsvpStatus: "pending", side: "groom", mealPreference: "standard" },
+    { id: 7, fullName: "Sara & Famille", rsvpStatus: "confirmed", side: "bride", mealPreference: "halal" },
+    { id: 8, fullName: "Mehdi W.", rsvpStatus: "pending", side: "groom", mealPreference: "standard" },
+];
+
 export default function InvitesPage() {
     const { t } = useTranslation("common");
     const queryClient = useQueryClient();
@@ -52,7 +63,7 @@ export default function InvitesPage() {
     const [statusFilter, setStatusFilter] = useState("all");
     const [sideFilter, setSideFilter] = useState("all");
 
-    const { data: profileData } = useQuery<any>({
+    const { data: profileData, isLoading: profileLoading } = useQuery<any>({
         queryKey: ["weddingProfile"],
         queryFn: () => apiClient.get("/api/wedding_profiles?itemsPerPage=1"),
     });
@@ -60,13 +71,16 @@ export default function InvitesPage() {
     const profile: WeddingProfile | null = profileData?.["hydra:member"]?.[0] ?? null;
     const profileId = profile?.id ?? null;
 
+    const isDemo = !profileLoading && !profile;
+
     const { data: guestData } = useQuery<any>({
         queryKey: ["guests", profileId],
         queryFn: () => apiClient.get(`/api/guests?weddingProfile=${profileId}`),
         enabled: profileId !== null,
     });
 
-    const guests: Guest[] = guestData?.["hydra:member"] ?? [];
+    const apiGuests: Guest[] = guestData?.["hydra:member"] ?? [];
+    const guests: Guest[] = isDemo ? MOCK_GUESTS : apiGuests;
 
     const filteredGuests = guests.filter((guest) => {
         const matchesSearch = guest.fullName.toLowerCase().includes(searchTerm.toLowerCase());
@@ -227,23 +241,31 @@ export default function InvitesPage() {
                 <title>{t("nav.guests")} — Farah.ma</title>
             </Head>
 
+            {/* Demo banner */}
+            {isDemo && (
+                <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold px-4 py-2 rounded-full mb-6 w-fit">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+                    {t("dashboard.couple.view_mode.demo_banner")}
+                </div>
+            )}
+
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-                <div className="bg-white p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
+                <div className="bg-white p-6 lg:p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
                     <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">{t("invites.total_guests")}</p>
                     <div className="flex items-end gap-2 text-[var(--color-primary)]">
                         <span className="text-3xl font-black">{guests.length}</span>
                         <span className="text-sm font-bold mb-1.5 opacity-60">{t("dashboard.guests_unit")}</span>
                     </div>
                 </div>
-                <div className="bg-white p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
+                <div className="bg-white p-6 lg:p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
                     <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">{t("invites.confirmed")}</p>
                     <div className="flex items-end gap-2 text-[var(--color-accent)]">
                         <span className="text-3xl font-black">{guests.filter((g) => g.rsvpStatus === "confirmed").length}</span>
                         <span className="text-sm font-bold mb-1.5 opacity-60">{t("dashboard.guests_unit")}</span>
                     </div>
                 </div>
-                <div className="bg-white p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
+                <div className="bg-white p-6 lg:p-8 rounded-[2.5rem] border border-[var(--color-charcoal-100)] shadow-sm">
                     <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] mb-2">{t("invites.pending")}</p>
                     <div className="flex items-end gap-2 text-[var(--color-charcoal-400)]">
                         <span className="text-3xl font-black">{guests.filter((g) => g.rsvpStatus === "pending").length}</span>
@@ -261,7 +283,7 @@ export default function InvitesPage() {
 
             {/* Guest List */}
             <div className="bg-white rounded-[2.5rem] border border-[var(--color-charcoal-100)] overflow-hidden shadow-sm">
-                <div className="px-10 py-8 border-b border-[var(--color-background)] flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="px-6 lg:px-10 py-6 lg:py-8 border-b border-[var(--color-background)] flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <h3 className="font-display font-black text-2xl text-[var(--color-primary)]">{t("invites.list_title")}</h3>
                     <div className="flex flex-wrap items-center gap-3">
                         <input
@@ -282,22 +304,25 @@ export default function InvitesPage() {
                         <Button
                             variant="outline"
                             onClick={handleImportClick}
-                            disabled={isImporting}
-                            className="border-[var(--color-charcoal-100)] text-[var(--color-primary)] px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[var(--color-background)] h-auto transition-all"
+                            disabled={isImporting || isDemo}
+                            title={isDemo ? "Mode démo — connectez-vous pour importer" : undefined}
+                            className="border-[var(--color-charcoal-100)] text-[var(--color-primary)] px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[var(--color-background)] h-auto transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isImporting ? <Loader2 className="w-3.5 h-3.5 me-2 animate-spin" /> : <Upload className="w-3.5 h-3.5 me-2" />}
                             {t("invites.import_csv", "Importer")}
                         </Button>
                         <Button
-                            onClick={() => setIsAdding(true)}
-                            className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-lg shadow-[var(--color-accent)]/20 h-auto"
+                            onClick={() => !isDemo && setIsAdding(true)}
+                            disabled={isDemo}
+                            title={isDemo ? "Mode démo — connectez-vous pour ajouter" : undefined}
+                            className="bg-[var(--color-accent)] text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[var(--color-accent-light)] transition-all shadow-lg shadow-[var(--color-accent)]/20 h-auto disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             + {t("invites.new_guest")}
                         </Button>
                     </div>
                 </div>
 
-                <div className="px-10 py-6 bg-[var(--color-background)]/30 border-b border-[var(--color-background)] flex flex-wrap items-center gap-4">
+                <div className="px-6 lg:px-10 py-6 bg-[var(--color-background)]/30 border-b border-[var(--color-background)] flex flex-wrap items-center gap-4">
                     <div className="relative flex-1 min-w-[200px]">
                         <Input
                             placeholder={t("common.search")}
@@ -333,12 +358,12 @@ export default function InvitesPage() {
                     <table className="w-full text-start border-collapse">
                         <thead>
                             <tr className="bg-[var(--color-background)]/50 text-start">
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.full_name")}</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.side")}</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.rsvp")}</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.meal")}</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.share", "Partager")}</th>
-                                <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-end">{t("invites.actions")}</th>
+                                <th className="px-6 lg:px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.full_name")}</th>
+                                <th className="px-6 lg:px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.side")}</th>
+                                <th className="px-6 lg:px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.rsvp")}</th>
+                                <th className="px-6 lg:px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.meal")}</th>
+                                <th className="px-6 lg:px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)]">{t("invites.share", "Partager")}</th>
+                                <th className="px-6 lg:px-10 py-5 text-[10px] font-black uppercase tracking-widest text-[var(--color-charcoal-400)] text-end">{t("invites.actions")}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[var(--color-background)]">
@@ -346,34 +371,34 @@ export default function InvitesPage() {
                                 <>
                                     {[...Array(5)].map((_, i) => (
                                         <tr key={i} className="animate-pulse">
-                                            <td className="px-10 py-6"><Skeleton className="h-4 w-32" /></td>
-                                            <td className="px-10 py-6"><Skeleton className="h-6 w-20 rounded-full" /></td>
-                                            <td className="px-10 py-6"><Skeleton className="h-6 w-16 rounded-lg" /></td>
-                                            <td className="px-10 py-6"><Skeleton className="h-4 w-24" /></td>
-                                            <td className="px-10 py-6"><Skeleton className="h-8 w-16 rounded-lg" /></td>
-                                            <td className="px-10 py-6 text-end"><Skeleton className="h-8 w-8 rounded-xl ms-auto" /></td>
+                                            <td className="px-6 lg:px-10 py-6"><Skeleton className="h-4 w-32" /></td>
+                                            <td className="px-6 lg:px-10 py-6"><Skeleton className="h-6 w-20 rounded-full" /></td>
+                                            <td className="px-6 lg:px-10 py-6"><Skeleton className="h-6 w-16 rounded-lg" /></td>
+                                            <td className="px-6 lg:px-10 py-6"><Skeleton className="h-4 w-24" /></td>
+                                            <td className="px-6 lg:px-10 py-6"><Skeleton className="h-8 w-16 rounded-lg" /></td>
+                                            <td className="px-6 lg:px-10 py-6 text-end"><Skeleton className="h-8 w-8 rounded-xl ms-auto" /></td>
                                         </tr>
                                     ))}
                                 </>
                             )}
                             {guestData && filteredGuests.length === 0 && (
                                 <tr>
-                                    <td colSpan={6} className="px-10 py-20 text-center text-[var(--color-charcoal-400)] italic font-medium">
+                                    <td colSpan={6} className="px-6 lg:px-10 py-20 text-center text-[var(--color-charcoal-400)] italic font-medium">
                                         {searchTerm || statusFilter !== "all" || sideFilter !== "all" ? t("common.no_results") : t("invites.empty")}
                                     </td>
                                 </tr>
                             )}
                             {guestData && filteredGuests.map((guest) => (
                                 <tr key={guest.id} className="hover:bg-[var(--color-background)]/30 transition-colors group">
-                                    <td className="px-10 py-6 font-bold text-[var(--color-primary)]">{guest.fullName}</td>
-                                    <td className="px-10 py-6">
+                                    <td className="px-6 lg:px-10 py-6 font-bold text-[var(--color-primary)]">{guest.fullName}</td>
+                                    <td className="px-6 lg:px-10 py-6">
                                         <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
                                             guest.side === "bride" ? "bg-[var(--color-accent-light)]/10 text-[var(--color-accent)]" : "bg-[var(--color-primary)]/10 text-[var(--color-primary)]"
                                         }`}>
                                             {t(`invites.sides.${guest.side}`)}
                                         </span>
                                     </td>
-                                    <td className="px-10 py-6">
+                                    <td className="px-6 lg:px-10 py-6">
                                         <span className={`px-3 py-1 rounded-lg text-[10px] font-bold ${
                                             guest.rsvpStatus === "confirmed" ? "bg-green-100 text-green-700" :
                                             guest.rsvpStatus === "declined" ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-700"
@@ -381,10 +406,10 @@ export default function InvitesPage() {
                                             {t(`invites.rsvp_status.${guest.rsvpStatus}`)}
                                         </span>
                                     </td>
-                                    <td className="px-10 py-6 text-sm font-medium text-[var(--color-charcoal-500)] capitalize">
+                                    <td className="px-6 lg:px-10 py-6 text-sm font-medium text-[var(--color-charcoal-500)] capitalize">
                                         {t(`invites.meals.${guest.mealPreference}`)}
                                     </td>
-                                    <td className="px-10 py-6">
+                                    <td className="px-6 lg:px-10 py-6">
                                         <div className="flex items-center gap-2">
                                             <Button
                                                 variant="outline"
@@ -406,12 +431,13 @@ export default function InvitesPage() {
                                             </Button>
                                         </div>
                                     </td>
-                                    <td className="px-10 py-6 text-end">
+                                    <td className="px-6 lg:px-10 py-6 text-end">
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            onClick={() => handleDeleteGuest(guest.id)}
-                                            className="text-[var(--color-charcoal-300)] hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                                            onClick={() => !isDemo && handleDeleteGuest(guest.id)}
+                                            disabled={isDemo}
+                                            className="text-[var(--color-charcoal-300)] hover:text-red-500 hover:bg-red-50 rounded-xl transition-all disabled:hover:bg-transparent disabled:hover:text-[var(--color-charcoal-300)] disabled:cursor-not-allowed"
                                         >
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

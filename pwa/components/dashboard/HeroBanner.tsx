@@ -36,7 +36,7 @@ export function HeroBanner({ brideName, groomName, weddingDate, coverImageUrl, e
       )}>
         {/* Text column */}
         <div className={cn(
-          'flex flex-col justify-center p-10 md:p-14 space-y-6',
+          'flex flex-col justify-center p-8 md:p-14 space-y-6',
           elderMode && 'items-center text-center'
         )}>
           <span className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">
@@ -79,8 +79,8 @@ export function HeroBanner({ brideName, groomName, weddingDate, coverImageUrl, e
               sizes="(max-width: 768px) 100vw, 50vw"
               priority
             />
-            {/* Subtle gradient on left edge to blend with text column */}
-            <div className="absolute inset-y-0 start-0 w-16 bg-gradient-to-e from-[--color-primary-light] to-transparent" />
+            {/* Subtle gradient to blend with text column */}
+            <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-[--color-primary-light] to-transparent md:inset-y-0 md:start-0 md:h-auto md:w-16 md:bg-gradient-to-r md:from-[--color-primary-light] md:to-transparent" />
           </div>
         )}
       </div>

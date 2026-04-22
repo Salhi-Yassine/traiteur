@@ -23,6 +23,17 @@ interface ChecklistTask {
     isCompleted: boolean;
 }
 
+const MOCK_TASKS: (ChecklistTask & { phase?: string })[] = [
+    { id: 1, title: "Choisir la Negafa", category: "tenues", isCompleted: true, phase: "foundations" },
+    { id: 2, title: "Réservation de la Salle/Riad", category: "salles", isCompleted: true, phase: "foundations" },
+    { id: 3, title: "Dégustation Traiteur (Pastilla & Méchoui)", category: "traiteur", isCompleted: true, phase: "details", dueDate: "2026-03-15" },
+    { id: 4, title: "Sélection de l'Ammariya", category: "tenues", isCompleted: false, phase: "details", dueDate: "2026-05-10" },
+    { id: 5, title: "Choisir le photographe", category: "photo", isCompleted: false, phase: "details", dueDate: "2026-05-15" },
+    { id: 6, title: "Envoyer les faire-parts", category: "papeterie", isCompleted: true, phase: "details", dueDate: "2026-04-01" },
+    { id: 7, title: "Organisation de la Nuit du Henné", category: "autre", isCompleted: false, phase: "final", dueDate: "2026-06-01" },
+    { id: 8, title: "Confirmation des prestataires", category: "autre", isCompleted: false, phase: "final", dueDate: "2026-06-15" },
+];
+
 interface WeddingProfile {
     id: number;
 }
@@ -40,7 +51,7 @@ export default function ChecklistPage() {
         isCompleted: false,
     });
 
-    const { data: profileData } = useQuery({
+    const { data: profileData, isLoading: profileLoading } = useQuery({
         queryKey: ["weddingProfile"],
         queryFn: () => apiClient.get("/api/wedding_profiles?itemsPerPage=1"),
     });
@@ -48,13 +59,16 @@ export default function ChecklistPage() {
     const profile: WeddingProfile | null = (profileData as any)?.["hydra:member"]?.[0] ?? null;
     const profileId = profile?.id ?? null;
 
+    const isDemo = !profileLoading && !profile;
+
     const { data: taskData } = useQuery({
         queryKey: ["checklistTasks", profileId],
         queryFn: () => apiClient.get(`/api/checklist_tasks?weddingProfile=${profileId}`),
         enabled: profileId !== null,
     });
 
-    const tasks: ChecklistTask[] = (taskData as any)?.["hydra:member"] ?? [];
+    const apiTasks: ChecklistTask[] = (taskData as any)?.["hydra:member"] ?? [];
+    const tasks = isDemo ? MOCK_TASKS : apiTasks;
 
     const addMutation = useMutation({
         mutationFn: (data: typeof newTask & { weddingProfile: string }) =>
@@ -124,8 +138,16 @@ export default function ChecklistPage() {
                 <title>{t("nav.checklist")} — Farah.ma</title>
             </Head>
 
+            {/* Demo banner */}
+            {isDemo && (
+                <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold px-4 py-2 rounded-full mb-6 w-fit">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+                    {t("dashboard.couple.view_mode.demo_banner")}
+                </div>
+            )}
+
             {/* Progress Journey Header */}
-            <div className="bg-neutral-900 p-12 md:p-16 rounded-[3rem] text-white shadow-3 mb-12 relative overflow-hidden">
+            <div className="bg-neutral-900 p-6 md:p-12 lg:p-16 rounded-[2rem] md:rounded-[3rem] text-white shadow-3 mb-12 relative overflow-hidden">
                 <div className="absolute top-0 end-0 w-96 h-96 bg-primary/20 rounded-full -me-32 -mt-32 blur-3xl opacity-50" />
                 
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
@@ -164,15 +186,17 @@ export default function ChecklistPage() {
             <div className="space-y-12">
                 {tasksByPhase.map((phase, phaseIdx) => (
                     <div key={phase.id} className="space-y-6">
-                        <div className="flex items-end justify-between px-4">
+                        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-0 px-4">
                             <div>
                                 <h4 className="font-display text-3xl text-neutral-900">{phase.label}</h4>
                                 <p className="text-[#717171] text-xs font-bold uppercase tracking-widest mt-1">{phase.months}</p>
                             </div>
                             {phaseIdx === 0 && (
                                 <Button
-                                    onClick={() => setIsAdding(true)}
-                                    className="rounded-full px-8 h-12 font-black text-[12px] uppercase shadow-xl shadow-primary/20"
+                                    onClick={() => !isDemo && setIsAdding(true)}
+                                    disabled={isDemo}
+                                    title={isDemo ? "Mode démo — connectez-vous pour ajouter" : undefined}
+                                    className="rounded-full px-8 h-12 font-black text-[12px] uppercase shadow-xl shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <Plus size={16} className="me-2" />
                                     {t("checklist.add_task")}
@@ -193,7 +217,7 @@ export default function ChecklistPage() {
                                     <motion.div
                                         key={task.id}
                                         layout
-                                        className="flex items-center justify-between px-8 py-6 hover:bg-[#F7F7F7]/50 transition-all group"
+                                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0 px-6 sm:px-8 py-6 hover:bg-[#F7F7F7]/50 transition-all group"
                                     >
                                         <div className="flex items-center gap-6">
                                             <button
@@ -230,8 +254,9 @@ export default function ChecklistPage() {
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            onClick={() => handleDeleteTask(task.id)}
-                                            className="w-12 h-12 rounded-2xl text-[#B0B0B0] hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                                            onClick={() => !isDemo && handleDeleteTask(task.id)}
+                                            disabled={isDemo}
+                                            className="w-12 h-12 rounded-2xl text-[#B0B0B0] hover:text-red-500 hover:bg-red-50 transition-all self-end sm:self-auto opacity-100 sm:opacity-0 group-hover:opacity-100 disabled:hover:bg-transparent disabled:hover:text-[#B0B0B0] disabled:cursor-not-allowed"
                                         >
                                             <Trash2 size={20} />
                                         </Button>

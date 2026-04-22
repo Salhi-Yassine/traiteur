@@ -58,7 +58,7 @@ export default function PlanningLayout({ children, title, description }: Plannin
                     <div className="flex flex-col lg:flex-row gap-12">
                         {/* Sidebar Navigation */}
                         <aside className="lg:w-80 shrink-0">
-                            <div className="sticky top-32 space-y-4">
+                            <div className="sticky top-24 lg:top-32 space-y-4">
                                 <div className="px-6 py-2 mb-2">
                                     <h2 className="font-display font-black text-3xl text-neutral-900 leading-tight">
                                         {t("nav.my_wedding")}
@@ -67,14 +67,14 @@ export default function PlanningLayout({ children, title, description }: Plannin
                                         {t("nav.mgmt_desc")}
                                     </p>
                                 </div>
-                                <nav className="space-y-2">
+                                <nav className="flex overflow-x-auto pb-4 -mx-6 px-6 space-x-3 lg:flex-col lg:space-y-2 lg:space-x-0 lg:overflow-visible lg:p-0 lg:mx-0 no-scrollbar">
                                     {NAV_LINKS.map((link) => {
                                         const isActive = router.pathname === link.href;
                                         return (
                                             <Link
                                                 key={link.href}
                                                 href={link.href}
-                                                className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all duration-300 group ${
+                                                className={`flex items-center gap-3 lg:gap-4 px-5 py-3 lg:px-6 lg:py-4 rounded-xl lg:rounded-2xl font-bold transition-all duration-300 group whitespace-nowrap shrink-0 lg:w-full ${
                                                     isActive 
                                                     ? "bg-white text-neutral-900 shadow-2 border border-neutral-100" 
                                                     : "text-[#717171] hover:bg-white/50 hover:text-neutral-900 hover:translate-x-1"
@@ -93,7 +93,7 @@ export default function PlanningLayout({ children, title, description }: Plannin
                                 </nav>
 
                                 {/* Expert Help Center Card */}
-                                <div className="mt-8 p-10 rounded-[2.5rem] bg-neutral-900 text-white relative overflow-hidden group shadow-3">
+                                <div className="hidden lg:block mt-8 p-10 rounded-[2.5rem] bg-neutral-900 text-white relative overflow-hidden group shadow-3">
                                     <div className="absolute top-0 end-0 w-32 h-32 bg-primary/20 rounded-full -me-16 -mt-16 blur-3xl group-hover:scale-150 transition-transform duration-1000" />
                                     <h4 className="font-display font-bold text-2xl mb-4 relative z-10">{t("nav.need_help")}</h4>
                                     <p className="text-white/60 text-[14px] leading-relaxed mb-8 font-medium relative z-10">
