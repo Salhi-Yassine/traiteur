@@ -1,12 +1,18 @@
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { formatMADK, formatMAD } from "@/lib/utils";
+import { formatMAD } from "@/lib/utils";
 
 const COLORS = ["#E8472A", "#C43A20", "#A0522D", "#8B4513", "#CD853F", "#D2691E", "#F4A460", "#DAA520", "#B8860B", "#A0522D"];
 const UNALLOCATED_COLOR = "rgba(255,255,255,0.08)";
 
+interface BudgetItem {
+    category: string;
+    estimatedAmount: number;
+    quotedAmount?: number;
+}
+
 interface HorizontalStackedBarProps {
-    items: { category: string; estimatedAmount: number; spentAmount: number }[];
+    items: BudgetItem[];
     totalBudget: number;
     totalSpent: number;
 }
@@ -16,13 +22,16 @@ export default function HorizontalStackedBar({ items, totalBudget, totalSpent }:
     const { locale } = useRouter();
 
     const isOverBudget = totalBudget > 0 && totalSpent > totalBudget;
-    
-    // Group by category, calculating contracted amounts (spentAmount)
+
+    // Helper: get committed amount (quoted or estimated)
+    const getCommitted = (item: BudgetItem) => item.quotedAmount ?? item.estimatedAmount;
+
+    // Group by category, calculating committed amounts
     const categoryMap = new Map<string, number>();
     for (const item of items) {
-        categoryMap.set(item.category, (categoryMap.get(item.category) || 0) + item.spentAmount);
+        categoryMap.set(item.category, (categoryMap.get(item.category) || 0) + getCommitted(item));
     }
-    
+
     // Sort categories by amount descending
     const categoryData = Array.from(categoryMap.entries())
         .map(([name, value]) => ({ name, value }))
