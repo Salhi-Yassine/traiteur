@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, Plus } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import VendorCard from '@/components/vendors/VendorCard';
 import apiClient from '@/utils/apiClient';
 import { cn } from '@/lib/utils';
-import type { VendorProfile } from '@/types/api';
+import type { VendorProfile, HydraCollection } from '@/types/api';
+import { MOCK_VENDORS } from './mock';
 
 function isValidUrl(url?: string): boolean {
   if (!url) return false;
@@ -22,13 +23,15 @@ export function VendorDiscovery({ className }: VendorDiscoveryProps) {
 
   const { data, isLoading } = useQuery({
     queryKey: ['featuredVendors'],
-    queryFn: () => apiClient.get<{ 'hydra:member': VendorProfile[] }>(
-      '/api/vendor_profiles?isVerified=true&order[averageRating]=desc&itemsPerPage=4'
-    ),
+    queryFn: () =>
+      apiClient.get<HydraCollection<VendorProfile>>(
+        '/api/vendor_profiles?isVerified=true&order[averageRating]=desc&itemsPerPage=4'
+      ),
     staleTime: 10 * 60 * 1000,
   });
 
-  const vendors: VendorProfile[] = (data as any)?.['hydra:member'] ?? [];
+  const apiVendors: VendorProfile[] = (data as HydraCollection<VendorProfile> | undefined)?.['hydra:member'] ?? [];
+  const vendors = apiVendors.length > 0 ? apiVendors : MOCK_VENDORS;
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -55,7 +58,7 @@ export function VendorDiscovery({ className }: VendorDiscoveryProps) {
           Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="min-w-[260px] h-[360px] rounded-[--radius-xl] shrink-0 snap-start" />
           ))
-        ) : vendors.length > 0 ? (
+        ) : (
           vendors.map((vendor) => (
             <div key={vendor.id} className="min-w-[260px] shrink-0 snap-start">
               <VendorCard
@@ -64,30 +67,23 @@ export function VendorDiscovery({ className }: VendorDiscoveryProps) {
                 businessName={vendor.businessName}
                 tagline={vendor.tagline}
                 cities={vendor.cities?.map((c) => ({ name: c.name, slug: c.slug }))}
-                category={vendor.category ? { name: vendor.category.name, slug: vendor.category.slug } : { name: '', slug: '' }}
+                category={
+                  vendor.category
+                    ? { name: vendor.category.name, slug: vendor.category.slug }
+                    : { name: '', slug: '' }
+                }
                 priceRange={vendor.priceRange}
                 startingPrice={vendor.startingPrice}
                 coverImageUrl={isValidUrl(vendor.coverImageUrl) ? vendor.coverImageUrl : undefined}
-                averageRating={vendor.averageRating ? parseFloat(String(vendor.averageRating)) : undefined}
+                averageRating={
+                  vendor.averageRating ? parseFloat(String(vendor.averageRating)) : undefined
+                }
                 reviewCount={vendor.reviewCount}
                 isVerified={vendor.isVerified}
                 variant="card"
               />
             </div>
           ))
-        ) : (
-          /* Empty state CTA card */
-          <Link
-            href="/vendors"
-            className="min-w-[260px] h-[360px] shrink-0 snap-start flex flex-col items-center justify-center gap-4 rounded-[--radius-xl] border-2 border-dashed border-neutral-200 bg-neutral-50 hover:border-primary hover:bg-[--color-primary-light] transition-colors group"
-          >
-            <div className="w-14 h-14 rounded-full bg-white shadow-1 flex items-center justify-center text-neutral-400 group-hover:text-primary transition-colors">
-              <Plus className="w-6 h-6" />
-            </div>
-            <span className="text-sm font-bold text-neutral-500 group-hover:text-primary transition-colors text-center px-6">
-              {t('dashboard.couple.vendors_section.explore')}
-            </span>
-          </Link>
         )}
       </div>
     </div>
