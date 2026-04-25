@@ -54,8 +54,8 @@ export default function PlanningLayout({ children, title, description }: Plannin
             <Navbar />
             
             <div className="pt-24 lg:pt-32">
-                <div className="container mx-auto px-6 max-w-7xl">
-                    <div className="flex flex-col lg:flex-row gap-12">
+                <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
+                    <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
                         {/* Sidebar Navigation */}
                         <aside className="lg:w-80 shrink-0">
                             <div className="sticky top-24 lg:top-32 space-y-4">
@@ -115,10 +115,10 @@ export default function PlanningLayout({ children, title, description }: Plannin
                         {/* Main Content Area */}
                         <main className="flex-1 min-w-0">
                             {/* Content Header */}
-                            <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+                            <div className="mb-6 sm:mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
                                 <div>
                                     <div className="w-12 h-1.5 bg-primary rounded-full mb-6" />
-                                    <h1 className="font-display text-4xl md:text-5xl font-black text-neutral-900 leading-tight mb-2">
+                                    <h1 className="font-display text-2xl sm:text-4xl md:text-5xl font-black text-neutral-900 leading-tight mb-2">
                                         {title}
                                     </h1>
                                     <p className="text-neutral-500 text-lg font-medium leading-relaxed max-w-xl">

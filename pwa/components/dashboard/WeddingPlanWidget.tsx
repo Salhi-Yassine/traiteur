@@ -40,7 +40,7 @@ export function WeddingPlanWidget({ tasks, isLoading, elderMode, className }: We
   const percent = total > 0 ? Math.round((totalDone / total) * 100) : 0;
 
   return (
-    <div className={cn('bg-white rounded-[--radius-2xl] shadow-1 p-8 space-y-6', className)}>
+    <div className={cn('bg-white rounded-3xl shadow-1 p-6 space-y-5 border border-neutral-100/50', className)}>
       <div className="space-y-3">
         <h3 className="font-display text-xl text-neutral-900">{t('dashboard.couple.plan_widget.title')}</h3>
 

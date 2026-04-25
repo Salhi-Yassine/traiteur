@@ -36,31 +36,31 @@ export function HeroBanner({ brideName, groomName, weddingDate, coverImageUrl, e
       )}>
         {/* Text column */}
         <div className={cn(
-          'flex flex-col justify-center p-8 md:p-14 space-y-6',
+          'flex flex-col justify-center p-6 sm:p-8 md:p-10 lg:p-12 space-y-3 sm:space-y-4',
           elderMode && 'items-center text-center'
         )}>
           <span className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">
             {t('dashboard.couple.hero.eyebrow')}
           </span>
 
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl text-neutral-900 leading-[1.1]">
+          <h1 className="font-display text-2xl sm:text-4xl md:text-5xl text-neutral-900 leading-[1.1] tracking-tight">
             {brideName && groomName
               ? `${brideName} & ${groomName}`
               : brideName || groomName || '—'}
           </h1>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-5 py-3 rounded-full shadow-1">
-              <CalendarHeart className="w-5 h-5 text-primary shrink-0" />
+            <div className="flex items-center gap-2 bg-white/90 backdrop-blur-md px-3 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-1 border border-white/20">
+              <CalendarHeart className="w-4 h-4 text-primary shrink-0" />
               {daysLeft !== null ? (
-                <span className="text-lg font-black text-neutral-900">
+                <span className="text-sm font-black text-neutral-900">
                   {daysLeft}{' '}
-                  <span className="text-base font-semibold text-neutral-500">
+                  <span className="text-xs font-semibold text-neutral-500">
                     {t('dashboard.couple.hero.days_to_go')}
                   </span>
                 </span>
               ) : (
-                <span className="text-base font-semibold text-neutral-400">
+                <span className="text-xs font-semibold text-neutral-400">
                   {t('dashboard.couple.hero.no_date_set')}
                 </span>
               )}
@@ -70,7 +70,7 @@ export function HeroBanner({ brideName, groomName, weddingDate, coverImageUrl, e
 
         {/* Image column — hidden in elder mode */}
         {!elderMode && (
-          <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[280px]">
+          <div className="relative aspect-[16/9] md:aspect-auto md:min-h-[280px]">
             <Image
               src={resolvedImage}
               alt={`${brideName} & ${groomName}`}

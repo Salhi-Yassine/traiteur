@@ -139,7 +139,7 @@ export default function Navbar() {
             {/* Backdrop */}
             <div
                 className={cn(
-                    "fixed inset-0 z-[60] bg-black/40 lg:hidden transition-opacity duration-300",
+                    "fixed inset-0 z-[9998] bg-black/40 lg:hidden transition-opacity duration-300",
                     mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
                 )}
                 onClick={() => setMobileOpen(false)}
@@ -152,7 +152,7 @@ export default function Navbar() {
                 aria-modal="true"
                 aria-label={t('nav.drawer')}
                 className={cn(
-                    "fixed top-0 end-0 bottom-0 z-[70] w-[300px] bg-white shadow-[0_8px_28px_rgba(0,0,0,0.12)] flex flex-col lg:hidden transition-transform duration-300 ease-out",
+                    "fixed top-0 end-0 bottom-0 z-[9999] w-[300px] bg-white shadow-[0_8px_28px_rgba(0,0,0,0.12)] flex flex-col lg:hidden transition-transform duration-300 ease-out",
                     mobileOpen ? "translate-x-0" : "translate-x-full rtl:-translate-x-full"
                 )}
             >

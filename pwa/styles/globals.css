@@ -78,10 +78,10 @@
   --font-body:      "Plus Jakarta Sans", system-ui, sans-serif;
   --font-body-ar:   "Cairo", sans-serif;
 
-  /* Elevation — Airbnb-inspired soft & deep shadows */
-  --shadow-1:  0 1px 2px rgba(0,0,0,0.04), 0 4px 6px rgba(0,0,0,0.02);
-  --shadow-2:  0 6px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-  --shadow-3:  0 12px 32px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08);
+  /* Elevation — Airbnb-inspired soft & realistic shadows */
+  --shadow-1: 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-2: 0 8px 16px rgba(0,0,0,0.06);
+  --shadow-3: 0 16px 40px rgba(0,0,0,0.1);
 
   /* Border Radius */
   --radius-xs:   4px;

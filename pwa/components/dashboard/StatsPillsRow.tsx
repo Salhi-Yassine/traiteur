@@ -18,13 +18,13 @@ interface PillProps {
 
 function Pill({ icon, value, label }: PillProps) {
   return (
-    <div className="flex items-center gap-3 min-w-[150px] snap-start bg-white rounded-2xl shadow-1 px-5 py-4 shrink-0">
-      <div className="w-10 h-10 rounded-xl bg-[--color-primary-light] flex items-center justify-center text-primary shrink-0">
+    <div className="flex items-center gap-2.5 min-w-[120px] sm:min-w-[140px] snap-start bg-white rounded-xl shadow-1 px-3 py-2 sm:px-4 sm:py-3 shrink-0 border border-neutral-100/50">
+      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[--color-primary-light] flex items-center justify-center text-primary shrink-0">
         {icon}
       </div>
-      <div>
-        <p className="text-xl font-black text-neutral-900 leading-none">{value}</p>
-        <p className="text-[11px] font-semibold text-neutral-400 mt-1">{label}</p>
+      <div className="min-w-0">
+        <p className="text-sm sm:text-base font-black text-neutral-900 leading-none truncate">{value}</p>
+        <p className="text-[10px] font-bold text-neutral-400 mt-0.5 truncate uppercase tracking-wider">{label}</p>
       </div>
     </div>
   );
@@ -38,24 +38,24 @@ export function StatsPillsRow({ daysLeft, budgetTotal, tasksLeft, guestsCount, c
     : '—';
 
   return (
-    <div className={cn('flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-1', className)}>
+    <div className={cn('flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-1 after:content-[\'\'] after:w-4 after:shrink-0', className)}>
       <Pill
-        icon={<CalendarDays className="w-5 h-5" />}
+        icon={<CalendarDays className="w-4 h-4" />}
         value={daysLeft !== null ? String(daysLeft) : '—'}
         label={t('dashboard.couple.stats.days')}
       />
       <Pill
-        icon={<Banknote className="w-5 h-5" />}
+        icon={<Banknote className="w-4 h-4" />}
         value={budgetFormatted}
         label={t('dashboard.couple.stats.budget')}
       />
       <Pill
-        icon={<CheckSquare2 className="w-5 h-5" />}
+        icon={<CheckSquare2 className="w-4 h-4" />}
         value={String(tasksLeft)}
         label={t('dashboard.couple.stats.tasks_left')}
       />
       <Pill
-        icon={<Users className="w-5 h-5" />}
+        icon={<Users className="w-4 h-4" />}
         value={String(guestsCount)}
         label={t('dashboard.couple.stats.guests')}
       />
