@@ -351,7 +351,17 @@
       "photo": "Photo",
       "papeterie": "Stationery",
       "autre": "Other"
-    }
+    },
+    "phases": {
+      "foundations": "The Foundations",
+      "details": "Detailed Planning",
+      "final": "Final Sprint",
+      "day_of": "Wedding Day"
+    },
+    "planning_journey": "Planning Journey",
+    "overall_progress": "Overall Progress",
+    "no_tasks_phase": "No tasks for this phase yet.",
+    "drag_handle": "Reorder"
   },
   "invites": {
     "title": "Guest List",
@@ -498,7 +508,8 @@
         "full": "Full",
         "planning": "Planning",
         "senior": "Senior",
-        "demo_banner": "Demo preview — log in to see your real data"
+        "demo_banner": "Demo preview — log in to see your real data",
+        "login_cta": "Log in →"
       },
       "hero": {
         "eyebrow": "Your big day",
@@ -593,14 +604,6 @@
         "quiz_cta_desc": "Answer 5 questions to get personalized inspiration.",
         "quiz_cta_btn": "Take the quiz →",
         "view_all": "All inspirations"
-      },
-      "view_mode": {
-        "label": "View",
-        "full": "Full",
-        "planning": "Planning",
-        "senior": "Senior",
-        "demo_banner": "Demo preview — log in to see your real data",
-        "login_cta": "Log in →"
       }
     }
   },

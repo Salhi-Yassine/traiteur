@@ -343,7 +343,17 @@
       "photo": "تصوير",
       "papeterie": "ورقيات",
       "autre": "أخرى"
-    }
+    },
+    "phases": {
+      "foundations": "الأسس",
+      "details": "التخطيط التفصيلي",
+      "final": "السباق النهائي",
+      "day_of": "يوم الزفاف"
+    },
+    "planning_journey": "رحلة التخطيط",
+    "overall_progress": "التقدم الإجمالي",
+    "no_tasks_phase": "لا توجد مهام لهذه المرحلة.",
+    "drag_handle": "إعادة ترتيب"
   },
   "invites": {
     "title": "قائمة الضيوف",

@@ -1,6 +1,6 @@
 # Farah.ma — Claude Code Guide
 
-Morocco's first wedding planning platform. Next.js 15 PWA + Symfony 7.2 API, ~38% complete.
+Morocco's first wedding planning platform. Next.js 15 PWA + Symfony 7.2 API, ~50% complete.
 
 > Full PRD, skills, and workflows → `.agent/`
 
@@ -10,20 +10,45 @@ Morocco's first wedding planning platform. Next.js 15 PWA + Symfony 7.2 API, ~38
 
 | Layer | Tech |
 |-------|------|
-| Frontend | Next.js 15 (Pages Router), React 19, Tailwind CSS v4, shadcn/ui, TanStack Query v5, Formik + Yup, Storybook 10 |
+| Frontend | Next.js 15 (Pages Router), React 19, Tailwind CSS v4, shadcn/ui, TanStack Query v5, React Hook Form + Zod, Storybook 10 |
 | Backend | Symfony 7.2, API Platform 4, Doctrine ORM, FrankenPHP, PostgreSQL 16, JWT (lexik), Mercure |
 | Infra | Docker Compose, Makefile, Helm (k8s) |
 | i18n | fr (default), ar, ary (Darija), en → `pwa/public/locales/[locale]/common.json` |
+| Notable packages | `framer-motion` (animations), `lenis` (smooth scroll), `sonner` (toast), `recharts` (charts), `papaparse` (CSV), `@dnd-kit` (drag-drop), `react-masonry-css` (gallery) |
 
 ---
 
-## Before starting any task
+## GitHub Workflow
 
-1. Find the matching GitHub issue: `gh issue list --repo Salhi-Yassine/traiteur --state open`
-2. If none exists, create one before coding
-3. Reference the issue number in commit messages (`Closes #N`)
+1. Find the matching issue: `gh issue list --repo Salhi-Yassine/traiteur --state open`
+2. If none exists: `gh issue create --title "feat: ..." --label "phase:2,frontend"`
+3. Reference in every commit: `git commit -m "feat: checklist drag-drop (Closes #30)"`
+4. Never push to `main` directly — open a PR
 
-Full workflow → `.agent/workflows/github-projects.md`
+Full process → `.agent/workflows/github-projects.md`
+
+---
+
+## Definition of Done
+
+Run before every commit or PR:
+
+```bash
+make pnpm c="lint"             # Zero ESLint errors
+make pnpm c="test"             # All Vitest tests pass
+make pnpm c="build-storybook"  # Only if a new component was added
+make cs                         # Backend only: PHP-CS-Fixer + PHPStan
+```
+
+Checklist:
+- [ ] Issue number in commit message (`Closes #N`)
+- [ ] Zero hardcoded strings — every user-visible string goes through `t()`
+- [ ] Translation keys added to **all 4 locales** (`fr`, `ar`, `ary`, `en`)
+- [ ] RTL grep passes: `grep -r "left-\|right-\|ml-\|mr-" pwa/components pwa/pages --include="*.tsx" | grep -v "rtl:\|//"`
+- [ ] `.stories.tsx` co-located for every new component
+- [ ] No `any` TypeScript types (`@typescript-eslint/no-explicit-any: error` is enforced)
+- [ ] Errors use `toast.error()` — never `alert()`
+- [ ] Routes use `PATHS.*` — never hardcoded URL strings
 
 ---
 
@@ -46,18 +71,45 @@ Full instructions → `.agent/workflows/progress-tracking.md`
 - Fix file permissions with `make chown` if files were created as root
 
 ### Frontend (`pwa/`)
-- All strings via `useTranslation('common')` — zero hardcoded text
+- All strings via `useTranslation('common')` — zero hardcoded text (including `aria-label`, `placeholder`, `alt`, `title`)
 - TanStack Query for all data fetching — **never** `useEffect + fetch`
-- Tailwind utilities only — no inline styles
+- Tailwind utilities only — no inline styles (exception: runtime-computed values like progress bar widths)
 - Every new component → co-located `.stories.tsx` file
 - RTL: use logical properties (`ps-*`, `pe-*`, `ms-*`, `me-*`, `start-*`, `end-*`) — **never** `left-*` / `right-*`
+- Icons that point directionally (arrows, chevrons) need `rtl:-scale-x-100`
+- No barrel imports: always import directly from the file, never from an `index.ts`
+  ```tsx
+  ✅ import VendorCard from '@/components/vendors/VendorCard';
+  ❌ import { VendorCard } from '@/components/vendors';
+  ```
 - Run `pnpm lint` before committing
 
 ### Backend (`api/`)
 - Entity changes → `make full-migrat` (never `doctrine:schema:update --force`)
+- Commit both the entity file AND the generated migration file
 - Run `make cs` before committing (PHP-CS-Fixer + PHPStan)
 - All public methods need return types + PHPDoc
 - Business logic in `api/src/Service/` — keep controllers thin
+
+### Naming conventions
+- **Translation keys:** `section.element.qualifier` — snake_case (e.g. `vendor_profile.gallery.title`, `invites.rsvp_status.pending`)
+- **Serialization groups:** `entity:read` / `entity:write` (e.g. `checklist:read`, `guest:public:write`)
+- **Voter attributes:** `noun:action` (e.g. `profile:edit`, `quote:view`)
+- **Component files:** PascalCase (`VendorCard.tsx`)
+- **Hooks:** camelCase with `use` prefix (`useVendorFilters.ts`)
+- **Utilities / clients:** camelCase (`apiClient.ts`, `fetchServerSide.ts`)
+
+### Storybook
+- Every new component → co-located `ComponentName.stories.tsx` in same directory
+- Access at `http://localhost:6006` via `make storybook`
+- Run `make pnpm c="build-storybook"` before committing to catch build errors
+- Stories must cover all meaningful variants: sizes, states (loading, error, empty), RTL
+
+### Testing
+- Run: `make pnpm c="test"` (watch: `make pnpm c="test:watch"`)
+- Test files co-located beside the component they test (`VendorCard.test.tsx` beside `VendorCard.tsx`)
+- Focus on: `apiClient` auth/refresh branches, Zod schema validation, TanStack Query error paths
+- No `any` in test assertions
 
 ---
 
@@ -70,6 +122,7 @@ Full instructions → `.agent/workflows/progress-tracking.md`
 - **Card hover:** `.card-hover` utility (shadow lift + -2px translate)
 - **WhatsApp green:** `#25D366`
 - Design tokens defined in `pwa/styles/globals.css`
+- **Layout shells:** `PlanningLayout` (planning pages sidebar), `Navbar`, `Footer`, `LenisProvider` (smooth scroll root) — all in `components/layout/`
 
 ---
 
@@ -86,8 +139,27 @@ make sf c="<cmd>"    # Symfony console command
 make full-migrat     # Doctrine: create migration → run → cleanup
 make cs              # PHP-CS-Fixer + PHPStan
 make storybook       # Storybook on :6006
-make chown           # Fix file permissions
+make chown           # Fix file permissions (WSL / root-created files)
+# Shortcuts via make pnpm:
+make pnpm c="lint"              # ESLint
+make pnpm c="test"              # Vitest
+make pnpm c="build-storybook"   # Storybook build check
 ```
+
+---
+
+## Environment Variables
+
+Required in `pwa/.env.local` for local development:
+
+| Variable | Example | Purpose |
+|----------|---------|---------|
+| `NEXT_PUBLIC_API_URL` | `http://localhost:80` | Symfony API base (from host browser) |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | `abc.apps.googleusercontent.com` | Google OAuth client ID |
+| `NEXT_PUBLIC_APP_URL` | `http://localhost:3000` | Next.js base URL (OG tags, share links) |
+
+Inside the Docker network, use `http://api:80` for server-to-server calls (e.g. in `fetchServerSide`).
+See `pwa/.env.example` for the full list.
 
 ---
 
@@ -95,23 +167,43 @@ make chown           # Fix file permissions
 
 ```
 traiteur/
-├── api/              # Symfony backend
-│   └── src/
-│       ├── Entity/       # Doctrine entities
-│       ├── Service/      # Business logic
-│       ├── State/        # API Platform processors/providers
-│       └── Voter/        # Security voters
-├── pwa/              # Next.js frontend
-│   ├── pages/            # File-based routing (Pages Router)
+├── api/src/
+│   ├── Entity/       # Doctrine entities
+│   ├── Service/      # Business logic (never in controllers)
+│   ├── State/        # API Platform processors/providers
+│   ├── Voter/        # Security voters
+│   └── Repository/   # Doctrine repositories
+├── pwa/
+│   ├── pages/
+│   │   ├── auth/         # login, register, forgot-password, reset-password, callback
+│   │   ├── onboarding/   # couple, vendor (multi-step RHF wizard)
+│   │   ├── vendors/      # index (directory), [slug] (profile)
+│   │   ├── mariage/      # index, budget, invites, checklist, site, templates
+│   │   ├── dashboard/    # vendor
+│   │   ├── admin/        # admin panel
+│   │   ├── rsvp/         # [token] (public RSVP — no auth required)
+│   │   ├── invitation/   # [slug] (couple's shared event page)
+│   │   ├── magazine/     # [slug]
+│   │   ├── categories/   # index
+│   │   └── account/      # profile
 │   ├── components/
 │   │   ├── ui/           # shadcn/ui primitives + .stories.tsx
-│   │   └── vendors/      # Vendor-specific components
+│   │   ├── layout/       # Navbar, Footer, PlanningLayout, LenisProvider, LanguageSwitcher
+│   │   ├── auth/         # AuthCard, ProtectedRoute
+│   │   ├── vendors/      # VendorCard, SearchBar, FilterSidebar, ReservationWidget
+│   │   ├── budget/       # BudgetDonutChart, HorizontalStackedBar, BudgetAssistant
+│   │   ├── guest/        # RSVPFlow, RSVPSearchWidget
+│   │   ├── dashboard/    # WeddingHeroCard, QuickStatCards, MilestoneCategories, etc.
+│   │   ├── onboarding/   # VendorOnboardingWizard (multi-step)
+│   │   ├── quotes/       # QuoteRequestModal
+│   │   └── common/       # shared primitives not in shadcn
 │   ├── context/          # AuthContext, MeProvider, DirectionProvider
-│   ├── utils/            # apiClient.ts (HTTP client), utils.ts
-│   ├── lib/              # hooks.ts, shared utilities
+│   ├── constants/        # paths.ts → PATHS object (use for all route strings)
+│   ├── utils/            # apiClient.ts (HTTP client), fetchServerSide.ts (SSR), utils.ts
+│   ├── lib/              # hooks.ts, useVendorFilters.ts, utils.ts (cn helper)
 │   ├── styles/           # globals.css (design tokens)
-│   └── public/locales/   # i18n translation files
-├── .agent/           # PRD, skills, workflows, rules (read this for deep context)
+│   └── public/locales/   # i18n: fr/ ar/ ary/ en/ — each has common.json
+├── .agent/           # PRD, skills, workflows, rules (read for deep context)
 ├── compose.yaml
 └── Makefile
 ```
@@ -121,57 +213,115 @@ traiteur/
 ## Frontend patterns
 
 ```tsx
-// Data fetching — always TanStack Query
-import { apiClient } from '@/utils/apiClient';
-const { data } = useQuery({ queryKey: ['vendors'], queryFn: () => apiClient.get('/api/vendor_profiles') });
+// ── Imports ───────────────────────────────────────────────────────────────────
 
-// API responses are Hydra JSON-LD collections:
-// { "hydra:member": [...], "hydra:totalItems": 42 }
-// Single resources have "@id", "@type", "id" fields
+// apiClient is a default export — no braces
+import apiClient from '@/utils/apiClient';            // ✅
+import { apiClient } from '@/utils/apiClient';        // ❌ wrong
 
-// i18n — always
+// PATHS for all route strings — never hardcode
+import { PATHS } from '@/constants/paths';
+router.push(PATHS.AUTH_LOGIN);       // ✅
+router.push('/auth/login');           // ❌
+
+// ── Data fetching (client-side) ───────────────────────────────────────────────
+
+// Always TanStack Query — never useEffect + fetch
+const { data: vendors } = useQuery({
+  queryKey: ['vendors', filters],
+  queryFn: () => apiClient.get('/api/vendor_profiles', { locale }),
+  select: (d: any) => d['hydra:member'] as VendorProfile[],  // always unwrap hydra:member
+});
+
+// ── Data fetching (server-side: getServerSideProps / getStaticProps) ──────────
+
+// Never use apiClient in SSR — no localStorage in Node.js
+import { fetchServerSide } from '@/utils/fetchServerSide';
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+  try {
+    const data = await fetchServerSide('/api/vendor_profiles', { locale });
+    return {
+      props: {
+        items: data['hydra:member'] ?? [],
+        ...(await serverSideTranslations(locale || 'fr', ['common'])),
+      },
+    };
+  } catch {
+    // Always spread serverSideTranslations in EVERY return branch
+    return { props: { items: [], ...(await serverSideTranslations(locale || 'fr', ['common'])) } };
+  }
+};
+
+// ── Mutations & error handling ────────────────────────────────────────────────
+
+import { toast } from 'sonner';
+import { ApiError } from '@/utils/apiClient';
+
+const mutation = useMutation({
+  mutationFn: (data: GuestPayload) => apiClient.post('/api/guests', data),
+  onSuccess: () => toast.success(t('invites.guest_added_success')),
+  onError: (err: ApiError) => toast.error(err.message),  // ApiError.message = hydra:description
+});
+// Never: alert(), console.error to user, raw hydra:description in UI
+
+// ── i18n — always ─────────────────────────────────────────────────────────────
+
 const { t } = useTranslation('common');
-<span>{t('vendor_profile.some_key')}</span>
+<span>{t('vendor_profile.gallery.title')}</span>
+// Key format: section.element.qualifier (snake_case)
 
-// Auth guard
-const { user } = useAuth(); // from context/AuthContext
+// ── Auth guard ────────────────────────────────────────────────────────────────
+
+const { user, isLoading } = useAuth(); // from context/AuthContext
 // user.userType: "couple" | "vendor" | "admin"
+// Wrap protected pages with <ProtectedRoute> — don't re-implement the check
 
-// getStaticProps → public SEO pages
-// getServerSideProps → authenticated or dynamic pages
+// ── API response shapes ───────────────────────────────────────────────────────
 
-// API filter params (vendor directory pattern):
+// Collection: { "hydra:member": [...], "hydra:totalItems": 42 }
+// Single resource: { "@id": "/api/vendor_profiles/1", "@type": "VendorProfile", "id": 1, ... }
+// Dates: always ISO-8601 strings — parse with new Date()
+// 422 error: { "hydra:description": "email: not valid", "violations": [...] }
+
+// ── API filter params (vendor directory pattern) ──────────────────────────────
 // cities.slug, category.slug, averageRating[gte], priceRange[], isVerified, order[field]=asc|desc
 ```
 
 ---
 
-## Current project state (2026-04-17)
+## Current project state (2026-05-04)
 
 | Phase | Status |
 |-------|--------|
-| Phase 1 — Foundation | ~80% |
-| Phase 2 — Planning Tools | ~35% |
-| Overall | ~38% |
+| Phase 1 — Foundation | ~90% |
+| Phase 2 — Planning Tools | ~50% |
+| Overall | ~48% |
 
 ### What's done
 - Symfony + Next.js scaffolded, Docker/Makefile/CI wired
 - Design system tokens, shadcn/ui primitives, Moroccan patterns
-- Entities: User, VendorProfile, Category, City, Review, MenuItem, WeddingProfile, BudgetItem, ChecklistTask, Guest, QuoteRequest, TimelineItem, Role, Permission
-- Auth: JWT, registration, login, Google OAuth (`GoogleAuthController` + `/auth/callback`), password reset (backend + frontend), AuthContext, ProtectedRoute
-- Vendor directory page — fully functional (filters, sort, pagination, grid/list toggle, mobile drawer)
-- Vendor profile page — full layout, gallery, calendar, widget, i18n, RTL
-- Vendor onboarding wizard — 5-step Formik wizard (`/onboarding/vendor`)
-- Planning tools: budget, guests, checklist, dashboard (pages exist with TanStack Query, core CRUD works)
+- Entities: User, VendorProfile, Category, City, Review, MenuItem, WeddingProfile, BudgetItem, ChecklistTask, Guest, QuoteRequest, TimelineItem, Role, Permission, InspirationPhoto, SavedPhoto, RefreshToken
+- Auth: JWT + silent refresh (gesdinet, `apiClient` 401 interceptor, `auth:logout` event), Google OAuth, password reset, AuthContext, ProtectedRoute
+- Forms: all 7 forms migrated from Formik → React Hook Form + Zod (`login`, `register`, `forgot-password`, `reset-password`, `profile`, `onboarding/couple`, `QuoteRequestModal`)
+- Vendor directory — fully functional (filters, sort, pagination, grid/list toggle, mobile drawer)
+- Vendor profile — full layout, gallery, calendar, widget, i18n, RTL
+- Vendor onboarding wizard — 5-step RHF wizard (`/onboarding/vendor`); photo upload step uses file inputs only (Cloudinary pending)
+- Budget page — hero with editable total, stats, payment schedule, donut chart (Recharts), horizontal stacked bar, per-category item table, reallocation suggestions
+- Guest list — full CRUD, CSV import (Papa.parse), RSVP link copy + WhatsApp share per guest
+- Checklist — CRUD, drag-and-drop reordering (`@dnd-kit`), `displayOrder` persisted via PATCH, phase grouping
 - RSVP page (`/rsvp/[token]`) — full 3-step public flow, wired to API
+- RTL: full logical-property audit complete (`ps-*`, `pe-*`, `start-*`, `end-*`, icon flip classes)
 - i18n: real translations in all 4 locales (fr/ar/ary/en)
+- Tests: Vitest setup, 16 unit tests for `apiClient` (token helpers, silent refresh branches)
+- `fetchServerSide` SSR wrapper, `ErrorBoundary`, `PATHS` constants, `useVendorFilters` hook
 
 ### Missing backend entities
-`InspirationPhoto`, `SavedVendor`, `SavedPhoto`, `Subscription`, `RsvpLink`
+`SavedVendor`, `Subscription`, `RsvpLink`
 
 ### Top priorities
-1. Silent JWT refresh (no refresh token interceptor yet)
-2. Budget donut chart (Recharts)
-3. RSVP link generation UI (guestToken field exists, frontend not wired)
-4. Checklist drag-drop reordering
-5. Cloudinary upload in onboarding wizard (Step 4 uses file inputs only)
+1. Cloudinary upload in vendor onboarding wizard (Step 2 — `#22`)
+2. Vendor inquiry inbox — inbox page + WhatsApp CTA (`#32`)
+3. `SavedVendor` entity + `/plan/saved` moodboard page (`#33`)
+4. Budget: over-budget row highlighting, default categories pre-populated (`#27`)
+5. Missing Storybook stories: `command`, `popover`, `SuccessAnimation`, `ProtectedRoute`, `Layout`

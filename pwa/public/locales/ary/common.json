@@ -351,7 +351,17 @@
       "photo": "تصوير",
       "papeterie": "ورقيات",
       "autre": "حاجة أخرى"
-    }
+    },
+    "phases": {
+      "foundations": "الأساسيات",
+      "details": "تخطيط مفصل",
+      "final": "الاسبرينت الأخير",
+      "day_of": "نهار الفرح"
+    },
+    "planning_journey": "Planning Journey",
+    "overall_progress": "التقدم الكلي",
+    "no_tasks_phase": "ماكاين حتا تاسك لهاد المرحلة.",
+    "drag_handle": "عاود رتب"
   },
   "invites": {
     "title": "ليستة د المعروضين",

@@ -372,7 +372,17 @@
       "photo": "Photo",
       "papeterie": "Papeterie",
       "autre": "Autre"
-    }
+    },
+    "phases": {
+      "foundations": "Les Fondamentaux",
+      "details": "Le Planning Détaillé",
+      "final": "Le Sprint Final",
+      "day_of": "Jour J"
+    },
+    "planning_journey": "Planning Journey",
+    "overall_progress": "Progression globale",
+    "no_tasks_phase": "Aucune tâche pour cette phase.",
+    "drag_handle": "Réorganiser"
   },
   "invites": {
     "title": "Liste d'Invités",

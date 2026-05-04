@@ -259,3 +259,13 @@
 - Vendor profile page (partial — see 2026-04-10 for completions)
 - Budget page (partial), Guest list page (partial), Checklist page (partial), Dashboard (partial)
 - Locale files exist for fr, ar, ary, en
+
+## 2026-05-04
+
+### Budget donut chart wired (issue #27 — partial)
+- [2026-05-04] `pwa/pages/mariage/budget.tsx` — imported `BudgetDonutChart`; wired into hero section between payment schedule and stacked bar; maps items to `{ category (translated), estimatedAmount, spentAmount: itemPaid(i) }`; `progressPercent` = `(totalPaid / totalBudget) * 100`
+
+### Checklist drag-and-drop reordering (issue #30)
+- [2026-05-04] Installed `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`
+- [2026-05-04] `pwa/pages/mariage/checklist.tsx` — full rewrite: fixed `ChecklistTask` interface to match entity (`name`/`status`/`displayOrder` instead of `title`/`isCompleted`); fixed toggle mutation (PATCH `status: 'todo'|'done'`); fixed add mutation (POST `name` not `title`); added `DndContext` + `SortableContext` + `SortableTaskRow` with `useSortable` drag handle; optimistic reorder with PATCH `displayOrder` per moved task; phase grouping based on `monthsBefore`; demo mode works client-side only
+- [2026-05-04] Added 5 i18n keys to all 4 locales: `checklist.phases.*`, `planning_journey`, `overall_progress`, `no_tasks_phase`, `drag_handle`
