@@ -13,6 +13,7 @@ import { Label } from "../../components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 import HorizontalStackedBar from "../../components/budget/HorizontalStackedBar";
 import BudgetAssistant from "../../components/budget/BudgetAssistant";
+import BudgetDonutChart from "../../components/budget/BudgetDonutChart";
 import { formatMAD, formatMADK } from "../../lib/utils";
 
 const CATEGORY_KEYS = [
@@ -542,6 +543,19 @@ export default function BudgetPage() {
                                 </div>
                             </div>
                         )}
+                    </div>
+
+                    {/* Donut chart */}
+                    <div className="mb-8">
+                        <BudgetDonutChart
+                            items={items.map(i => ({
+                                category: catName(i.category, t),
+                                estimatedAmount: i.estimatedAmount,
+                                spentAmount: itemPaid(i),
+                            }))}
+                            totalBudget={totalBudget}
+                            progressPercent={totalBudget > 0 ? (totalPaid / totalBudget) * 100 : 0}
+                        />
                     </div>
 
                     {/* Horizontal stacked bar */}
