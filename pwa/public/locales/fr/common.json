@@ -483,7 +483,11 @@
         "pulse": "Envoyer un Pulse",
         "pulse_sent": "Pulse envoyé !",
         "no_greetings": "Pas encore de messages. Partagez votre site pour en recevoir !",
-        "anonymous": "Invité anonyme"
+        "anonymous": "Invité anonyme",
+        "stats": "{{total}} messages · {{unread}} non lus",
+        "empty_title": "Vos invités n'ont pas encore envoyé de messages",
+        "empty_desc": "Partagez votre page RSVP pour recevoir leurs vœux.",
+        "share_rsvp": "Partager votre lien RSVP →"
       },
       "consensus_match": {
         "title": "Consensus Match",
@@ -504,12 +508,50 @@
         "full": "Complet",
         "planning": "Planning",
         "senior": "Senior",
-        "demo_banner": "Aperçu démo — connectez-vous pour voir vos vraies données"
+        "demo_banner": "Aperçu démo — connectez-vous pour voir vos vraies données",
+        "login_cta": "Se connecter →"
       },
       "hero": {
         "eyebrow": "Votre grand jour",
         "days_to_go": "jours restants",
-        "no_date_set": "Date non définie"
+        "no_date_set": "Date non définie",
+        "days_label": "jours",
+        "days_left": "{{count}} jours avant votre mariage",
+        "meta_guests": "{{count}} invités",
+        "planning_progress": "{{percent}}% planifié",
+        "setup_cta_title": "Configurez votre mariage",
+        "setup_cta_desc": "Ajoutez votre date et vos infos pour débloquer tous les outils.",
+        "setup_cta_btn": "Commencer →"
+      },
+      "planning_overview": {
+        "title": "Vue d'ensemble",
+        "next_task": "Prochaine étape",
+        "no_next": "Toutes les tâches sont complètes 🎉",
+        "metric_days": "Jours",
+        "metric_guests": "Invités",
+        "metric_budget": "Budget utilisé"
+      },
+      "quick_actions": {
+        "add_guest": "Ajouter un invité",
+        "update_budget": "Mettre à jour le budget",
+        "view_site": "Voir le site"
+      },
+      "timeline": {
+        "title": "Prochaines échéances",
+        "overdue": "En retard",
+        "this_week": "Cette semaine",
+        "upcoming": "À venir",
+        "done": "Complété"
+      },
+      "zghr": {
+        "eyebrow": "Zghrouta Score",
+        "greeting": "Courage, {{name}} !",
+        "msg_starting": "Le voyage commence ✨",
+        "msg_momentum": "Vous prenez de l'élan 🚀",
+        "msg_cruising": "Magnifique progression 💪",
+        "msg_final": "Presque là ! 🎊",
+        "msg_ready": "Vous êtes prêts ! 🎉",
+        "celebrate_link": "Voir les célébrations →"
       },
       "stats": {
         "days": "Jours restants",
@@ -530,7 +572,9 @@
         "title": "Trouvez et sauvegardez vos prestataires",
         "subtitle": "Les mieux notés du Maroc, sélectionnés pour vous",
         "see_all": "Voir tous les prestataires",
-        "explore": "Explorer les prestataires"
+        "explore": "Explorer les prestataires",
+        "recommended_title": "Recommandés pour vous",
+        "filter_all": "Tous"
       },
       "milestones": {
         "title": "Pour chaque moment de votre préparation",
@@ -543,9 +587,27 @@
       },
       "plan_widget": {
         "title": "Mon planning",
+        "title_new": "Prochaines étapes",
         "progress": "{{done}} / {{total}} tâches",
         "see_all": "Voir la checklist complète",
-        "no_tasks": "Aucune tâche en cours"
+        "no_tasks": "Aucune tâche en cours",
+        "summary": "{{left}} tâches · {{overdue}} en retard",
+        "overdue_label": "En retard",
+        "this_week_label": "Cette semaine",
+        "upcoming_label": "À venir",
+        "mark_done": "Marquer comme fait"
+      },
+      "style_board": {
+        "title": "Mon Style",
+        "title_with_persona": "Mon Style · {{persona}}",
+        "quiz_cta_title": "Découvrez votre style de mariage",
+        "quiz_cta_desc": "Répondez à 5 questions pour obtenir des inspirations personnalisées.",
+        "quiz_cta_btn": "Faire le quiz →",
+        "view_all": "Toutes les inspirations"
+      },
+      "vendors_section_ext": {
+        "recommended_title": "Recommandés pour vous",
+        "filter_all": "Tous"
       }
     }
   },

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
 import { cn } from '@/lib/utils';
+import type { ChecklistTaskSummary } from './types';
 
 // ─── Shared sub-components ────────────────────────────────────────────────────
 
@@ -98,7 +99,7 @@ export function BudgetCard({ spent, total, elderMode }: BudgetCardProps) {
           )}>
             {spent.toLocaleString('fr-MA')}
           </span>
-          <span className="text-sm font-semibold text-[#717171]">
+          <span className="text-sm font-semibold text-neutral-500">
             / {total.toLocaleString('fr-MA')} MAD
           </span>
         </div>
@@ -146,7 +147,7 @@ export function GuestsCard({ count, elderMode }: GuestsCardProps) {
           )}>
             {count}
           </span>
-          <span className="text-sm font-semibold text-[#717171]">
+          <span className="text-sm font-semibold text-neutral-500">
             {t('dashboard.couple.guests_unit')}
           </span>
         </div>
@@ -195,7 +196,7 @@ export function ChecklistCard({ done, total, elderMode }: ChecklistCardProps) {
           )}>
             {done}
           </span>
-          <span className="text-sm font-semibold text-[#717171]">
+          <span className="text-sm font-semibold text-neutral-500">
             {t('dashboard.couple.tasks_done', { count: total })}
           </span>
         </div>
@@ -210,87 +211,143 @@ export function ChecklistCard({ done, total, elderMode }: ChecklistCardProps) {
   );
 }
 
-// ─── Website Card ─────────────────────────────────────────────────────────────
+// ─── Planning Overview Card ───────────────────────────────────────────────────
 
-interface WebsiteCardProps {
+const DONUT_R = 36;
+const DONUT_STROKE = 6;
+const DONUT_CIRC = 2 * Math.PI * DONUT_R;
+
+interface PlanningOverviewCardProps {
+  tasksDone: number;
+  tasksTotal: number;
+  daysLeft: number | null;
+  guestsCount: number;
+  budgetSpent: number;
+  budgetTotal: number;
+  nextTask?: ChecklistTaskSummary;
   elderMode?: boolean;
-  className?: string;
 }
 
-export function WebsiteCard({ elderMode, className }: WebsiteCardProps) {
+export function PlanningOverviewCard({
+  tasksDone,
+  tasksTotal,
+  daysLeft,
+  guestsCount,
+  budgetSpent,
+  budgetTotal,
+  nextTask,
+  elderMode = false,
+}: PlanningOverviewCardProps) {
   const { t } = useTranslation('common');
+  const percent = tasksTotal > 0 ? Math.round((tasksDone / tasksTotal) * 100) : 0;
+  const dashOffset = DONUT_CIRC * (1 - percent / 100);
 
   return (
-    <Link
-      href="/mariage/site"
-      className={cn(
-        'group card-hover bg-neutral-900 text-white rounded-3xl border border-neutral-800 p-6 lg:p-8 relative overflow-hidden',
-        className
-      )}
-    >
-      {/* Decorative glow */}
-      <div className="absolute top-0 end-0 w-48 h-48 bg-primary/15 rounded-full -me-16 -mt-16 blur-3xl group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
+    <div className="bg-white rounded-[--radius-2xl] p-6 sm:p-8 border border-neutral-100 shadow-1">
+      <p className="text-sm font-black text-neutral-900 mb-5">
+        {t('dashboard.couple.planning_overview.title')}
+      </p>
 
-      <div className="relative z-10 flex items-center justify-between">
-        <div className="space-y-2 max-w-lg">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/30 shrink-0">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.18em] text-primary">
-              {t('dashboard.couple.website')}
+      <div className="flex items-start gap-6">
+        {/* Donut ring */}
+        <svg
+          width="80"
+          height="80"
+          viewBox="0 0 80 80"
+          className="shrink-0 -rotate-90"
+          aria-hidden="true"
+        >
+          <circle
+            cx="40" cy="40" r={DONUT_R}
+            fill="none" stroke="currentColor" strokeWidth={DONUT_STROKE}
+            className="text-neutral-100"
+          />
+          <circle
+            cx="40" cy="40" r={DONUT_R}
+            fill="none" stroke="currentColor" strokeWidth={DONUT_STROKE}
+            strokeLinecap="round"
+            strokeDasharray={DONUT_CIRC}
+            strokeDashoffset={dashOffset}
+            className="text-primary transition-all duration-700"
+          />
+          <text
+            x="40" y="40"
+            textAnchor="middle"
+            dominantBaseline="central"
+            style={{ transform: 'rotate(90deg)', transformOrigin: '40px 40px' }}
+          >
+            <tspan fontSize="15" fontWeight="900" fill="#E8472A" x="40" y="39">{percent}%</tspan>
+          </text>
+        </svg>
+
+        {/* Metric pills */}
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold bg-neutral-100 text-neutral-700 px-3 py-1.5 rounded-full">
+              {daysLeft !== null ? daysLeft : '—'}
+              <span className="font-normal">{t('dashboard.couple.planning_overview.metric_days')}</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold bg-neutral-100 text-neutral-700 px-3 py-1.5 rounded-full">
+              {guestsCount}
+              <span className="font-normal">{t('dashboard.couple.planning_overview.metric_guests')}</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold bg-neutral-100 text-neutral-700 px-3 py-1.5 rounded-full">
+              {budgetSpent.toLocaleString('fr-MA')}
+              <span className="font-normal">/ {budgetTotal.toLocaleString('fr-MA')} MAD</span>
             </span>
           </div>
-          <p className={cn(
-            'font-display font-bold leading-tight',
-            elderMode ? 'text-2xl' : 'text-xl sm:text-2xl'
-          )}>
-            {t('dashboard.couple.my_website')}
-          </p>
-          <p className="text-neutral-400 text-sm leading-relaxed">
-            {t('dashboard.couple.website_desc')}
-          </p>
+
+          {/* Next task */}
+          {nextTask ? (
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-1">
+                {t('dashboard.couple.planning_overview.next_task')}
+              </p>
+              <p className={cn('font-semibold text-neutral-800 truncate', elderMode ? 'text-base' : 'text-sm')}>
+                {nextTask.name}
+              </p>
+              {nextTask.dueDate && (
+                <span className="mt-1 inline-block text-[10px] font-bold text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full">
+                  {new Date(nextTask.dueDate).toLocaleDateString('fr-MA', { month: 'short', day: 'numeric' })}
+                </span>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-neutral-500 italic">
+              {t('dashboard.couple.planning_overview.no_next')}
+            </p>
+          )}
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
-// ─── Composite grid ───────────────────────────────────────────────────────────
+// ─── Quick Action Row ─────────────────────────────────────────────────────────
 
-interface QuickStatGridProps {
-  budgetSpent: number;
-  budgetTotal: number;
-  guestsCount: number;
-  tasksDone: number;
-  tasksTotal: number;
-  elderMode?: boolean;
-}
+export function QuickActionRow() {
+  const { t } = useTranslation('common');
 
-export function QuickStatGrid({
-  budgetSpent,
-  budgetTotal,
-  guestsCount,
-  tasksDone,
-  tasksTotal,
-  elderMode = false,
-}: QuickStatGridProps) {
+  const actions = [
+    { href: '/mariage/budget', label: t('nav.budget'), icon: '💰' },
+    { href: '/mariage/invites', label: t('nav.guests'), icon: '👥' },
+    { href: '/mariage/checklist', label: t('nav.checklist'), icon: '✅' },
+  ] as const;
+
   return (
-    <div className={cn(
-      'grid gap-4',
-      elderMode
-        ? 'grid-cols-1 sm:grid-cols-2'
-        : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-    )}>
-      <BudgetCard spent={budgetSpent} total={budgetTotal} elderMode={elderMode} />
-      <GuestsCard count={guestsCount} elderMode={elderMode} />
-      <ChecklistCard done={tasksDone} total={tasksTotal} elderMode={elderMode} />
-      <WebsiteCard
-        elderMode={elderMode}
-        className={elderMode ? 'sm:col-span-2' : 'sm:col-span-2 lg:col-span-3'}
-      />
+    <div className="grid grid-cols-3 gap-4">
+      {actions.map((action) => (
+        <Link
+          key={action.href}
+          href={action.href}
+          className="group card-hover bg-white rounded-[--radius-2xl] p-5 border border-neutral-100 flex flex-col items-center gap-2 text-center"
+        >
+          <span className="text-2xl">{action.icon}</span>
+          <span className="text-xs font-bold text-neutral-700 group-hover:text-neutral-900 transition-colors">
+            {action.label}
+          </span>
+        </Link>
+      ))}
     </div>
   );
 }

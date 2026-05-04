@@ -1,16 +1,26 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Heart, Share2 } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { useTranslation } from 'next-i18next';
 import { cn } from '@/lib/utils';
 import type { GreetingSummary } from './types';
 
 interface WallOfLoveProps {
   greetings: GreetingSummary[];
+  totalCount?: number;
+  unreadCount?: number;
+  rsvpLink?: string;
   onPulse?: (id: number) => void;
 }
 
-export const WallOfLove: React.FC<WallOfLoveProps> = ({ greetings, onPulse }) => {
+export const WallOfLove: React.FC<WallOfLoveProps> = ({
+  greetings,
+  totalCount,
+  unreadCount,
+  rsvpLink,
+  onPulse,
+}) => {
   const { t } = useTranslation('common');
   const [pulsing, setPulsing] = useState<number | null>(null);
 
@@ -22,19 +32,28 @@ export const WallOfLove: React.FC<WallOfLoveProps> = ({ greetings, onPulse }) =>
 
   if (greetings.length === 0) {
     return (
-      <div className="p-10 sm:p-14 bg-neutral-50 rounded-2xl border border-neutral-100 flex flex-col items-center justify-center text-center">
-        <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 shadow-1">
-          <Heart className="w-10 h-10 text-neutral-300" />
+      <div className="py-16 flex flex-col items-center justify-center text-center">
+        <div className="w-20 h-20 bg-[--color-primary-light] rounded-full flex items-center justify-center mb-6">
+          <Heart className="w-10 h-10 text-primary" />
         </div>
         <h3 className="font-display text-lg sm:text-xl text-neutral-900 mb-2">
-          {t('dashboard.couple.wall_of_love.title')}
+          {t('dashboard.couple.wall_of_love.empty_title')}
         </h3>
-        <p className="text-sm text-neutral-500 max-w-[260px]">
-          {t('dashboard.couple.wall_of_love.no_greetings')}
+        <p className="text-sm text-neutral-500 max-w-[260px] mb-6">
+          {t('dashboard.couple.wall_of_love.empty_desc')}
         </p>
+        <Link
+          href={rsvpLink ?? '/mariage/site'}
+          className="inline-flex items-center gap-2 bg-primary text-white font-black text-sm px-6 py-3 rounded-full hover:bg-primary-dark transition-colors"
+        >
+          {t('dashboard.couple.wall_of_love.share_rsvp')}
+        </Link>
       </div>
     );
   }
+
+  const displayTotal = totalCount ?? greetings.length;
+  const displayUnread = unreadCount ?? greetings.filter((g) => !g.isAcknowledged).length;
 
   return (
     <div className="space-y-5">
@@ -44,24 +63,21 @@ export const WallOfLove: React.FC<WallOfLoveProps> = ({ greetings, onPulse }) =>
             {t('dashboard.couple.wall_of_love.title')}
           </h2>
           <p className="text-sm text-neutral-500 mt-0.5">
-            {t('dashboard.couple.wall_of_love.subtitle')}
+            {t('dashboard.couple.wall_of_love.stats', {
+              total: displayTotal,
+              unread: displayUnread,
+            })}
           </p>
         </div>
-        <button
-          className="p-2 hover:bg-neutral-100 rounded-full transition-colors text-neutral-400 hover:text-neutral-700"
-          aria-label="Share"
-        >
-          <Share2 className="w-5 h-5" />
-        </button>
       </div>
 
-      <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {greetings.map((greeting) => (
           <motion.div
             key={greeting.id}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="snap-start shrink-0 w-[280px] p-5 glass-card rounded-2xl flex flex-col justify-between"
+            className="p-5 glass-card rounded-2xl flex flex-col justify-between"
           >
             <div className="space-y-4">
               {/* Author row */}
@@ -83,7 +99,7 @@ export const WallOfLove: React.FC<WallOfLoveProps> = ({ greetings, onPulse }) =>
               </div>
 
               {/* Message */}
-              <p className="text-[15px] text-neutral-700 italic leading-relaxed line-clamp-4">
+              <p className="text-[15px] text-neutral-700 italic leading-relaxed">
                 &ldquo;{greeting.message}&rdquo;
               </p>
             </div>

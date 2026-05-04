@@ -462,7 +462,11 @@
         "pulse": "بعث نبضة",
         "pulse_sent": "تبعثت!",
         "no_greetings": "ماكاين والو. شارك الموقع ديالك باش تجي التهاني!",
-        "anonymous": "ضيف مجهول"
+        "anonymous": "ضيف مجهول",
+        "stats": "{{total}} رسالة · {{unread}} ماقريناهاش",
+        "empty_title": "الضيوف ديالك ماعقبوكش بعد",
+        "empty_desc": "شارك رابط RSVP ديالك باش تجيك التهاني.",
+        "share_rsvp": "شارك رابط RSVP →"
       },
       "consensus_match": {
         "title": "توافق الرؤية",
@@ -483,12 +487,50 @@
         "full": "كامل",
         "planning": "تخطيط",
         "senior": "كبار",
-        "demo_banner": "معاينة تجريبية — دخل باش تشوف معلوماتك الحقيقية"
+        "demo_banner": "معاينة تجريبية — دخل باش تشوف معلوماتك الحقيقية",
+        "login_cta": "دخل →"
       },
       "hero": {
         "eyebrow": "النهار الكبير ديالك",
         "days_to_go": "يوم باقيين",
-        "no_date_set": "التاريخ ماحددش"
+        "no_date_set": "التاريخ ماحددش",
+        "days_label": "يوم",
+        "days_left": "{{count}} يوم قبل عرسك",
+        "meta_guests": "{{count}} ضيف",
+        "planning_progress": "{{percent}}% مخطط",
+        "setup_cta_title": "هيي العرس ديالك",
+        "setup_cta_desc": "زيد التاريخ والمعلومات ديالك باش تفتح كاع الأدوات.",
+        "setup_cta_btn": "ابدا →"
+      },
+      "planning_overview": {
+        "title": "نظرة عامة",
+        "next_task": "الخطوة الجاية",
+        "no_next": "كاع المهمات مكملة 🎉",
+        "metric_days": "أيام",
+        "metric_guests": "ضيوف",
+        "metric_budget": "البودجي المستعمل"
+      },
+      "quick_actions": {
+        "add_guest": "زيد ضيف",
+        "update_budget": "حدث البودجي",
+        "view_site": "شوف الموقع"
+      },
+      "timeline": {
+        "title": "المواعيد الجايين",
+        "overdue": "متأخر",
+        "this_week": "هاد الأسبوع",
+        "upcoming": "جاي",
+        "done": "مكمل"
+      },
+      "zghr": {
+        "eyebrow": "نقاط الزغروتة",
+        "greeting": "زيد، {{name}}!",
+        "msg_starting": "البداية ✨",
+        "msg_momentum": "راك تاخد الزخم 🚀",
+        "msg_cruising": "تقدم رائع 💪",
+        "msg_final": "قريب من النهاية! 🎊",
+        "msg_ready": "راكم مستعدين! 🎉",
+        "celebrate_link": "شوف الاحتفالات →"
       },
       "stats": {
         "days": "الأيام الباقية",
@@ -509,7 +551,9 @@
         "title": "لقا وحفظ الخدامة ديالك",
         "subtitle": "الأحسن تقييم فالمغرب، مختارين ليك",
         "see_all": "شوف كاع الخدامة",
-        "explore": "استكشف الخدامة"
+        "explore": "استكشف الخدامة",
+        "recommended_title": "مقترحين ليك",
+        "filter_all": "الكل"
       },
       "milestones": {
         "title": "لكل لحظة من التحضيرات ديالك",
@@ -522,9 +566,23 @@
       },
       "plan_widget": {
         "title": "التخطيط ديالي",
+        "title_new": "الخطوات الجايين",
         "progress": "{{done}} / {{total}} مهمات",
         "see_all": "شوف الليستة الكاملة",
-        "no_tasks": "ماكاين حتى مهمة دابا"
+        "no_tasks": "ماكاين حتى مهمة دابا",
+        "summary": "{{left}} مهمات · {{overdue}} متأخرة",
+        "overdue_label": "متأخر",
+        "this_week_label": "هاد الأسبوع",
+        "upcoming_label": "جاي",
+        "mark_done": "علم ككاملة"
+      },
+      "style_board": {
+        "title": "ستيلي",
+        "title_with_persona": "ستيلي · {{persona}}",
+        "quiz_cta_title": "اكتشف ستيل عرسك",
+        "quiz_cta_desc": "جاوب على 5 أسئلة باش تحصل على إلهام خاص بيك.",
+        "quiz_cta_btn": "ابدا الاختبار →",
+        "view_all": "كاع الإلهام"
       }
     }
   },

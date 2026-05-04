@@ -317,6 +317,35 @@
     color: var(--color-neutral-700) !important; /* Force higher contrast */
   }
 
+  /* ─── Hero gradient (fallback when no cover image) ─── */
+  .hero-gradient-fallback {
+    background: linear-gradient(
+      135deg,
+      var(--color-primary-light) 0%,
+      #FFFFFF 50%,
+      var(--color-neutral-100) 100%
+    );
+  }
+
+  /* ─── Timeline horizontal scroll container ─── */
+  .timeline-scroll {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-block-end: 0.5rem;
+  }
+  .timeline-scroll::-webkit-scrollbar { display: none; }
+
+  /* ─── Elder mode 48px minimum touch targets ─── */
+  .elder-mode button,
+  .elder-mode a,
+  .elder-mode [role="button"] {
+    min-height: 48px;
+  }
+
   /* ─── Respect prefers-reduced-motion ─── */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {

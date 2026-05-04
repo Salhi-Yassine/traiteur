@@ -1,22 +1,54 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { QuickStatGrid, BudgetCard, GuestsCard, ChecklistCard, WebsiteCard } from './QuickStatCards';
+import { PlanningOverviewCard, BudgetCard, GuestsCard, ChecklistCard } from './QuickStatCards';
 
-const meta: Meta<typeof QuickStatGrid> = {
+const meta: Meta<typeof PlanningOverviewCard> = {
   title: 'Dashboard/QuickStatCards',
-  component: QuickStatGrid,
+  component: PlanningOverviewCard,
   parameters: { layout: 'padded' },
+  decorators: [
+    (Story) => (
+      <div style={{ maxWidth: 700, padding: 24 }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 export default meta;
-type Story = StoryObj<typeof QuickStatGrid>;
+type Story = StoryObj<typeof PlanningOverviewCard>;
+
+const nextTask = { id: 3, name: 'Envoyer les faire-parts', status: 'in_progress' as const, dueDate: '2026-05-01' };
 
 export const Default: Story = {
   args: {
-    budgetSpent: 60_500,
-    budgetTotal: 120_000,
-    guestsCount: 48,
     tasksDone: 2,
     tasksTotal: 7,
-    elderMode: false,
+    daysLeft: 87,
+    guestsCount: 48,
+    budgetSpent: 60_500,
+    budgetTotal: 120_000,
+    nextTask,
+  },
+};
+
+export const AllDone: Story = {
+  args: {
+    tasksDone: 7,
+    tasksTotal: 7,
+    daysLeft: 12,
+    guestsCount: 48,
+    budgetSpent: 115_000,
+    budgetTotal: 120_000,
+  },
+};
+
+export const NoNextTask: Story = {
+  args: {
+    tasksDone: 7,
+    tasksTotal: 7,
+    daysLeft: null,
+    guestsCount: 0,
+    budgetSpent: 0,
+    budgetTotal: 0,
   },
 };
 
@@ -24,13 +56,6 @@ export const ElderMode: Story = {
   args: {
     ...Default.args,
     elderMode: true,
-  },
-};
-
-export const BudgetFull: Story = {
-  args: {
-    ...Default.args,
-    budgetSpent: 120_000,
   },
 };
 
@@ -44,8 +69,4 @@ export const GuestsCardOnly: StoryObj<typeof GuestsCard> = {
 
 export const ChecklistCardOnly: StoryObj<typeof ChecklistCard> = {
   render: () => <ChecklistCard done={2} total={7} />,
-};
-
-export const WebsiteCardOnly: StoryObj<typeof WebsiteCard> = {
-  render: () => <WebsiteCard className="max-w-xl" />,
 };

@@ -473,7 +473,11 @@
         "pulse": "Send a Pulse",
         "pulse_sent": "Pulse sent!",
         "no_greetings": "No messages yet. Share your site to receive some!",
-        "anonymous": "Anonymous guest"
+        "anonymous": "Anonymous guest",
+        "stats": "{{total}} messages · {{unread}} unread",
+        "empty_title": "Your guests haven't sent messages yet",
+        "empty_desc": "Share your RSVP page to receive their wishes.",
+        "share_rsvp": "Share your RSVP link →"
       },
       "consensus_match": {
         "title": "Consensus Match",
@@ -499,7 +503,44 @@
       "hero": {
         "eyebrow": "Your big day",
         "days_to_go": "days remaining",
-        "no_date_set": "Date not set"
+        "no_date_set": "Date not set",
+        "days_label": "days",
+        "days_left": "{{count}} days until your wedding",
+        "meta_guests": "{{count}} guests",
+        "planning_progress": "{{percent}}% planned",
+        "setup_cta_title": "Set up your wedding",
+        "setup_cta_desc": "Add your date and details to unlock all the tools.",
+        "setup_cta_btn": "Get started →"
+      },
+      "planning_overview": {
+        "title": "Overview",
+        "next_task": "Next step",
+        "no_next": "All tasks are complete 🎉",
+        "metric_days": "Days",
+        "metric_guests": "Guests",
+        "metric_budget": "Budget used"
+      },
+      "quick_actions": {
+        "add_guest": "Add a guest",
+        "update_budget": "Update budget",
+        "view_site": "View site"
+      },
+      "timeline": {
+        "title": "Upcoming deadlines",
+        "overdue": "Overdue",
+        "this_week": "This week",
+        "upcoming": "Upcoming",
+        "done": "Done"
+      },
+      "zghr": {
+        "eyebrow": "Zghrouta Score",
+        "greeting": "Keep going, {{name}}!",
+        "msg_starting": "The journey begins ✨",
+        "msg_momentum": "You're gaining momentum 🚀",
+        "msg_cruising": "Magnificent progress 💪",
+        "msg_final": "Almost there! 🎊",
+        "msg_ready": "You're ready! 🎉",
+        "celebrate_link": "View celebrations →"
       },
       "stats": {
         "days": "Days remaining",
@@ -520,7 +561,9 @@
         "title": "Find and save your vendors",
         "subtitle": "Morocco's top-rated, curated for you",
         "see_all": "View all vendors",
-        "explore": "Explore vendors"
+        "explore": "Explore vendors",
+        "recommended_title": "Recommended for you",
+        "filter_all": "All"
       },
       "milestones": {
         "title": "For every moment of your preparation",
@@ -533,9 +576,31 @@
       },
       "plan_widget": {
         "title": "My planning",
+        "title_new": "Next steps",
         "progress": "{{done}} / {{total}} tasks",
         "see_all": "View full checklist",
-        "no_tasks": "No tasks in progress"
+        "no_tasks": "No tasks in progress",
+        "summary": "{{left}} tasks · {{overdue}} overdue",
+        "overdue_label": "Overdue",
+        "this_week_label": "This week",
+        "upcoming_label": "Upcoming",
+        "mark_done": "Mark as done"
+      },
+      "style_board": {
+        "title": "My Style",
+        "title_with_persona": "My Style · {{persona}}",
+        "quiz_cta_title": "Discover your wedding style",
+        "quiz_cta_desc": "Answer 5 questions to get personalized inspiration.",
+        "quiz_cta_btn": "Take the quiz →",
+        "view_all": "All inspirations"
+      },
+      "view_mode": {
+        "label": "View",
+        "full": "Full",
+        "planning": "Planning",
+        "senior": "Senior",
+        "demo_banner": "Demo preview — log in to see your real data",
+        "login_cta": "Log in →"
       }
     }
   },

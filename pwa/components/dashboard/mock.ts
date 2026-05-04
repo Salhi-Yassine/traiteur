@@ -1,5 +1,11 @@
 import type { VendorProfile } from '@/types/api';
-import type { WeddingDashboardProfile, GreetingSummary, ConsensusData } from './types';
+import type {
+  WeddingDashboardProfile,
+  GreetingSummary,
+  ConsensusData,
+  TimelineMilestone,
+  InspirationPhoto,
+} from './types';
 
 function daysFromNow(days: number): string {
   return new Date(Date.now() + days * 86_400_000).toISOString().split('T')[0];
@@ -10,6 +16,7 @@ export const MOCK_PROFILE: WeddingDashboardProfile = {
   brideName: 'Yasmine',
   groomName: 'Yassine',
   weddingDate: daysFromNow(87),
+  weddingCity: 'Marrakech',
   totalBudgetMad: 120_000,
   stylePersona: 'Élégant',
   quizResults: null,
@@ -61,6 +68,53 @@ export const MOCK_CONSENSUS: ConsensusData = {
   score: 87,
   sharedStyles: ['Moderne', 'Élégant', 'Naturel', 'Minimaliste'],
 };
+
+// ─── Deadline timeline mock ──────────────────────────────────────────────────
+
+export const MOCK_MILESTONES: TimelineMilestone[] = [
+  { id: 3, title: 'Envoyer les faire-parts', dueDate: '2026-05-01', status: 'in_progress', isOverdue: false },
+  { id: 4, title: 'Confirmer le photographe', dueDate: '2026-05-10', status: 'todo', isOverdue: false },
+  { id: 5, title: 'Essayage de la robe', dueDate: '2026-06-01', status: 'todo', isOverdue: false },
+  { id: 6, title: 'Choisir le DJ', dueDate: '2026-06-15', status: 'todo', isOverdue: false },
+  { id: 7, title: 'Organiser le transport', dueDate: '2026-07-01', status: 'todo', isOverdue: false },
+];
+
+// ─── Persona photo map ───────────────────────────────────────────────────────
+
+export const PERSONA_PHOTO_MAP: Record<string, InspirationPhoto[]> = {
+  'Élégant': [
+    { id: 101, url: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_elegant_1' },
+    { id: 102, url: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_elegant_2' },
+    { id: 103, url: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_elegant_3' },
+    { id: 104, url: 'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_elegant_4' },
+  ],
+  'Traditionnel': [
+    { id: 111, url: 'https://images.unsplash.com/photo-1535266818359-e11da8b3a1bb?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_trad_1' },
+    { id: 112, url: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_trad_2' },
+    { id: 113, url: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_trad_3' },
+    { id: 114, url: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_trad_4' },
+  ],
+  'Bohème': [
+    { id: 121, url: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_boho_1' },
+    { id: 122, url: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_boho_2' },
+    { id: 123, url: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_boho_3' },
+    { id: 124, url: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_boho_4' },
+  ],
+  'Moderne': [
+    { id: 131, url: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_modern_1' },
+    { id: 132, url: 'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_modern_2' },
+    { id: 133, url: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_modern_3' },
+    { id: 134, url: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=800&q=80', labelKey: 'dashboard.couple.style_board.photo_modern_4' },
+  ],
+  default: [
+    { id: 1, url: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80', labelKey: 'dashboard.couple.inspiration.photo_1' },
+    { id: 2, url: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&q=80', labelKey: 'dashboard.couple.inspiration.photo_2' },
+    { id: 3, url: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=800&q=80', labelKey: 'dashboard.couple.inspiration.photo_3' },
+    { id: 4, url: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80', labelKey: 'dashboard.couple.inspiration.photo_4' },
+  ],
+};
+
+// ─── Vendors ─────────────────────────────────────────────────────────────────
 
 const BASE_VENDOR: Omit<VendorProfile, '@id' | 'id' | 'slug' | 'businessName' | 'tagline' | 'category' | 'cities' | 'priceRange' | 'startingPrice' | 'coverImageUrl' | 'averageRating' | 'reviewCount' | 'isVerified'> = {
   '@type': 'VendorProfile',

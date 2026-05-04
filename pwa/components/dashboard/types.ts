@@ -1,4 +1,4 @@
-export type ViewMode = 'full' | 'planning' | 'senior';
+export type ViewMode = 'full' | 'senior';
 
 export interface BudgetItemSummary {
   spentAmount: number;
@@ -25,6 +25,7 @@ export interface WeddingDashboardProfile {
   brideName?: string;
   groomName?: string;
   weddingDate?: string;
+  weddingCity?: string;
   coverImage?: string;
   totalBudgetMad?: number;
   stylePersona?: string;
@@ -37,4 +38,19 @@ export interface WeddingDashboardProfile {
 export interface ConsensusData {
   score: number;
   sharedStyles: string[];
+}
+
+export interface TimelineMilestone {
+  id: number;
+  title: string;
+  dueDate: string;
+  status: 'todo' | 'in_progress' | 'done';
+  isOverdue: boolean;
+}
+
+export interface InspirationPhoto {
+  id: number;
+  url: string;
+  labelKey: string;
+  persona?: string;
 }

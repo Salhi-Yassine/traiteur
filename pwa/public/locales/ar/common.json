@@ -454,7 +454,11 @@
         "pulse": "أرسل نبضة",
         "pulse_sent": "تم الإرسال!",
         "no_greetings": "لا رسائل بعد. شارك موقعك لتلقي التهاني!",
-        "anonymous": "ضيف مجهول"
+        "anonymous": "ضيف مجهول",
+        "stats": "{{total}} رسالة · {{unread}} غير مقروءة",
+        "empty_title": "لم يرسل ضيوفك رسائل بعد",
+        "empty_desc": "شارك صفحة RSVP الخاصة بك لتلقي تهانيهم.",
+        "share_rsvp": "شارك رابط RSVP →"
       },
       "consensus_match": {
         "title": "توافق الرؤية",
@@ -475,12 +479,50 @@
         "full": "كامل",
         "planning": "تخطيط",
         "senior": "كبار",
-        "demo_banner": "معاينة تجريبية — سجّل دخولك لرؤية بياناتك الحقيقية"
+        "demo_banner": "معاينة تجريبية — سجّل دخولك لرؤية بياناتك الحقيقية",
+        "login_cta": "تسجيل الدخول →"
       },
       "hero": {
         "eyebrow": "يومك الكبير",
         "days_to_go": "يوماً متبقياً",
-        "no_date_set": "التاريخ غير محدد"
+        "no_date_set": "التاريخ غير محدد",
+        "days_label": "يوم",
+        "days_left": "{{count}} يوم حتى زفافك",
+        "meta_guests": "{{count}} ضيف",
+        "planning_progress": "{{percent}}% مخطط",
+        "setup_cta_title": "أعدّ حفل زفافك",
+        "setup_cta_desc": "أضف تاريخك ومعلوماتك لفتح جميع الأدوات.",
+        "setup_cta_btn": "ابدأ الآن →"
+      },
+      "planning_overview": {
+        "title": "نظرة عامة",
+        "next_task": "الخطوة التالية",
+        "no_next": "جميع المهام مكتملة 🎉",
+        "metric_days": "أيام",
+        "metric_guests": "ضيوف",
+        "metric_budget": "الميزانية المستخدمة"
+      },
+      "quick_actions": {
+        "add_guest": "إضافة ضيف",
+        "update_budget": "تحديث الميزانية",
+        "view_site": "عرض الموقع"
+      },
+      "timeline": {
+        "title": "المواعيد النهائية القادمة",
+        "overdue": "متأخر",
+        "this_week": "هذا الأسبوع",
+        "upcoming": "قادم",
+        "done": "مكتمل"
+      },
+      "zghr": {
+        "eyebrow": "نقاط زغروتة",
+        "greeting": "استمر، {{name}}!",
+        "msg_starting": "الرحلة تبدأ ✨",
+        "msg_momentum": "أنت تكتسب زخماً 🚀",
+        "msg_cruising": "تقدم رائع 💪",
+        "msg_final": "على وشك الانتهاء! 🎊",
+        "msg_ready": "أنتما مستعدان! 🎉",
+        "celebrate_link": "عرض الاحتفالات →"
       },
       "stats": {
         "days": "أيام متبقية",
@@ -501,7 +543,9 @@
         "title": "اعثر على مزوديك واحفظهم",
         "subtitle": "الأعلى تقييماً في المغرب، مختارون لك",
         "see_all": "عرض جميع مزودي الخدمات",
-        "explore": "استكشف مزودي الخدمات"
+        "explore": "استكشف مزودي الخدمات",
+        "recommended_title": "موصى به لك",
+        "filter_all": "الكل"
       },
       "milestones": {
         "title": "لكل لحظة في تحضيراتك",
@@ -514,9 +558,23 @@
       },
       "plan_widget": {
         "title": "تخطيطي",
+        "title_new": "الخطوات التالية",
         "progress": "{{done}} / {{total}} مهام",
         "see_all": "عرض قائمة المهام الكاملة",
-        "no_tasks": "لا توجد مهام قيد التنفيذ"
+        "no_tasks": "لا توجد مهام قيد التنفيذ",
+        "summary": "{{left}} مهام · {{overdue}} متأخرة",
+        "overdue_label": "متأخر",
+        "this_week_label": "هذا الأسبوع",
+        "upcoming_label": "قادم",
+        "mark_done": "وضع علامة مكتمل"
+      },
+      "style_board": {
+        "title": "أسلوبي",
+        "title_with_persona": "أسلوبي · {{persona}}",
+        "quiz_cta_title": "اكتشف أسلوب زفافك",
+        "quiz_cta_desc": "أجب على 5 أسئلة للحصول على إلهام مخصص.",
+        "quiz_cta_btn": "ابدأ الاختبار →",
+        "view_all": "كل الإلهامات"
       }
     }
   },
