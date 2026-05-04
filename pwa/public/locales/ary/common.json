@@ -1070,5 +1070,33 @@
     "shop_the_look": {
       "title": "لقاهم على Farah.ma"
     }
+  },
+  "inquiries": {
+    "title": "طلبات العروض ديالي",
+    "subtitle": "{{count}} طلب(ات) واصلة بجوملة",
+    "tab_all": "كاملة",
+    "tab_pending": "في الانتظار",
+    "tab_accepted": "مقبولة",
+    "tab_declined": "مرفوضة",
+    "status_pending": "في الانتظار",
+    "status_accepted": "مقبولة",
+    "status_declined": "مرفوضة",
+    "status_expired": "منتهية",
+    "event_type": "نوع الحدث",
+    "event_date": "التاريخ المحدد",
+    "budget": "الميزانية",
+    "message": "الرسالة",
+    "guest_count": "{{count}} مدعوين",
+    "expand": "قرا الرسالة",
+    "collapse": "خبّي",
+    "accept": "قبل",
+    "decline": "ارفض",
+    "reply_whatsapp": "رد عبر الواتساب",
+    "accepted_toast": "تقبّل الطلب",
+    "declined_toast": "ترفض الطلب",
+    "empty_title": "ما كاين طلبات بعد",
+    "empty_sub": "شارك البروفيل ديالك باش تستقبل أول الطلبات.",
+    "empty_filtered": "ما كاين طلبات في هاد الفئة.",
+    "error_update": "وقع مشكل. عاود المحاولة."
   }
 }

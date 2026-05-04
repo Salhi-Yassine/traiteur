@@ -56,10 +56,7 @@
 - [ ] Overdue task highlighting
 - [ ] Progress bar (X of Y completed)
 
-### Vendor Inquiry Inbox (US-2.2)
-- [ ] Inbox page for vendors (New / Read / Replied badges)
-- [ ] Inquiry detail view
-- [ ] "Répondre via WhatsApp" CTA
+### Vendor Inquiry Inbox (US-2.2) — partial
 - [ ] Email notification to vendor on new inquiry (Resend)
 
 ### Save Vendors / Moodboard (US-1.3)

@@ -15,7 +15,8 @@ export const PATHS = {
     DASHBOARD_COUPLE:    "/mariage",
 
     // Vendor dashboard
-    DASHBOARD_VENDOR:    "/dashboard/vendor",
+    DASHBOARD_VENDOR:      "/dashboard/vendor",
+    DASHBOARD_INQUIRIES:   "/dashboard/inquiries",
 
     // Public
     VENDORS:             "/vendors",

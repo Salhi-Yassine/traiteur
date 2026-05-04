@@ -1062,5 +1062,33 @@
     "shop_the_look": {
       "title": "ابحث عنهم على Farah.ma"
     }
+  },
+  "inquiries": {
+    "title": "طلبات العروض",
+    "subtitle": "إجمالي {{count}} طلب(ات) مستلمة",
+    "tab_all": "الكل",
+    "tab_pending": "قيد الانتظار",
+    "tab_accepted": "مقبولة",
+    "tab_declined": "مرفوضة",
+    "status_pending": "قيد الانتظار",
+    "status_accepted": "مقبولة",
+    "status_declined": "مرفوضة",
+    "status_expired": "منتهية الصلاحية",
+    "event_type": "نوع الحدث",
+    "event_date": "التاريخ المتوقع",
+    "budget": "الميزانية",
+    "message": "الرسالة",
+    "guest_count": "{{count}} مدعو",
+    "expand": "قراءة الرسالة",
+    "collapse": "إخفاء",
+    "accept": "قبول",
+    "decline": "رفض",
+    "reply_whatsapp": "الرد عبر واتساب",
+    "accepted_toast": "تم قبول الطلب",
+    "declined_toast": "تم رفض الطلب",
+    "empty_title": "لا توجد طلبات بعد",
+    "empty_sub": "شارك ملفك لتلقي أول طلبات العروض.",
+    "empty_filtered": "لا توجد طلبات في هذه الفئة.",
+    "error_update": "حدث خطأ. يرجى المحاولة مرة أخرى."
   }
 }

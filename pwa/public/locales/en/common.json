@@ -1022,5 +1022,33 @@
     "shop_the_look": {
       "title": "Find them on Farah.ma"
     }
+  },
+  "inquiries": {
+    "title": "My quote requests",
+    "subtitle": "{{count}} request(s) received in total",
+    "tab_all": "All",
+    "tab_pending": "Pending",
+    "tab_accepted": "Accepted",
+    "tab_declined": "Declined",
+    "status_pending": "Pending",
+    "status_accepted": "Accepted",
+    "status_declined": "Declined",
+    "status_expired": "Expired",
+    "event_type": "Event type",
+    "event_date": "Planned date",
+    "budget": "Budget",
+    "message": "Message",
+    "guest_count": "{{count}} guests",
+    "expand": "Read message",
+    "collapse": "Hide",
+    "accept": "Accept",
+    "decline": "Decline",
+    "reply_whatsapp": "Reply via WhatsApp",
+    "accepted_toast": "Request accepted",
+    "declined_toast": "Request declined",
+    "empty_title": "No requests yet",
+    "empty_sub": "Share your profile to receive your first quote requests.",
+    "empty_filtered": "No requests in this category.",
+    "error_update": "An error occurred. Please try again."
   }
 }

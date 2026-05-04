@@ -266,7 +266,7 @@ export default function VendorDashboardPage() {
                             {profileSlug && (
                                 <SidebarLink href={`/vendors/${profileSlug}`} icon={<User className="w-5 h-5" />} label={t("dashboard.vendor.nav_profile")} />
                             )}
-                            <SidebarLink href="#" icon={<MessageSquare className="w-5 h-5" />} label={t("dashboard.vendor.nav_inquiries")} />
+                            <SidebarLink href={PATHS.DASHBOARD_INQUIRIES} icon={<MessageSquare className="w-5 h-5" />} label={t("dashboard.vendor.nav_inquiries")} />
                             <SidebarLink href="/account/profile" icon={<Settings className="w-5 h-5" />} label={t("dashboard.vendor.nav_account")} />
                         </aside>
 
@@ -431,7 +431,7 @@ export default function VendorDashboardPage() {
                                         {t("dashboard.vendor.recent_inquiries")}
                                     </h2>
                                     <Link
-                                        href="#"
+                                        href={PATHS.DASHBOARD_INQUIRIES}
                                         className="text-[13px] text-primary font-semibold hover:text-primary-dark flex items-center gap-1"
                                     >
                                         {t("dashboard.vendor.view_all_inquiries")}

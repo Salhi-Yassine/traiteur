@@ -269,3 +269,9 @@
 - [2026-05-04] Installed `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`
 - [2026-05-04] `pwa/pages/mariage/checklist.tsx` — full rewrite: fixed `ChecklistTask` interface to match entity (`name`/`status`/`displayOrder` instead of `title`/`isCompleted`); fixed toggle mutation (PATCH `status: 'todo'|'done'`); fixed add mutation (POST `name` not `title`); added `DndContext` + `SortableContext` + `SortableTaskRow` with `useSortable` drag handle; optimistic reorder with PATCH `displayOrder` per moved task; phase grouping based on `monthsBefore`; demo mode works client-side only
 - [2026-05-04] Added 5 i18n keys to all 4 locales: `checklist.phases.*`, `planning_journey`, `overall_progress`, `no_tasks_phase`, `drag_handle`
+
+### Vendor inquiry inbox (issue #32)
+- [2026-05-04] Created `pwa/pages/dashboard/inquiries.tsx` — full inbox: status filter tabs (All/Pending/Accepted/Declined) with counts; expandable `InquiryCard` components showing client name, event date, guest count, budget, event type, message; `useMutation` for PATCH `{ status }` accept/decline with sonner toasts; WhatsApp CTA pre-composing reply message via `https://wa.me/?text=...`; sidebar mirroring vendor dashboard; i18n for all 4 locales
+- [2026-05-04] Fixed `pwa/pages/dashboard/vendor.tsx` — replaced two dead `href="#"` links (sidebar nav + "View all" link) with `PATHS.DASHBOARD_INQUIRIES`
+- [2026-05-04] Added `DASHBOARD_INQUIRIES` constant to `pwa/constants/paths.ts`
+- [2026-05-04] Added `inquiries.*` i18n keys (32 keys) to all 4 locales (fr/ar/ary/en)

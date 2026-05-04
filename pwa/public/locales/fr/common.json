@@ -1157,5 +1157,33 @@
       "placeholder": "Votre adresse email...",
       "button": "S'abonner"
     }
+  },
+  "inquiries": {
+    "title": "Mes demandes de devis",
+    "subtitle": "{{count}} demande(s) reçue(s) au total",
+    "tab_all": "Toutes",
+    "tab_pending": "En attente",
+    "tab_accepted": "Acceptées",
+    "tab_declined": "Déclinées",
+    "status_pending": "En attente",
+    "status_accepted": "Acceptée",
+    "status_declined": "Déclinée",
+    "status_expired": "Expirée",
+    "event_type": "Type d'événement",
+    "event_date": "Date prévue",
+    "budget": "Budget",
+    "message": "Message",
+    "guest_count": "{{count}} invités",
+    "expand": "Voir le message",
+    "collapse": "Masquer",
+    "accept": "Accepter",
+    "decline": "Décliner",
+    "reply_whatsapp": "Répondre via WhatsApp",
+    "accepted_toast": "Demande acceptée",
+    "declined_toast": "Demande déclinée",
+    "empty_title": "Aucune demande pour l'instant",
+    "empty_sub": "Partagez votre profil pour recevoir vos premières demandes de devis.",
+    "empty_filtered": "Aucune demande dans cette catégorie.",
+    "error_update": "Une erreur est survenue. Veuillez réessayer."
   }
 }
