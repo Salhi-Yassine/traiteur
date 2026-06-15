@@ -9,7 +9,6 @@ interface WeddingPlanWidgetProps {
   tasks: ChecklistTaskSummary[];
   isLoading: boolean;
   onToggleTask?: (id: number) => void;
-  elderMode?: boolean;
   className?: string;
 }
 
@@ -37,7 +36,7 @@ const CHIP_COLOR: Record<UrgencyLevel, string> = {
   upcoming: 'bg-neutral-100 text-neutral-500',
 };
 
-export function WeddingPlanWidget({ tasks, isLoading, onToggleTask, elderMode, className }: WeddingPlanWidgetProps) {
+export function WeddingPlanWidget({ tasks, isLoading, onToggleTask, className }: WeddingPlanWidgetProps) {
   const { t } = useTranslation('common');
 
   const incomplete = tasks
@@ -92,13 +91,13 @@ export function WeddingPlanWidget({ tasks, isLoading, onToggleTask, elderMode, c
                     aria-label={t('dashboard.couple.plan_widget.mark_done')}
                     className="shrink-0 mt-0.5 text-neutral-300 hover:text-primary transition-colors"
                   >
-                    <Square className={cn('w-5 h-5', elderMode && 'w-6 h-6')} />
+                    <Square className="w-5 h-5" />
                   </button>
                 ) : (
-                  <CheckSquare2 className={cn('w-5 h-5 text-neutral-300 shrink-0 mt-0.5', elderMode && 'w-6 h-6')} />
+                  <CheckSquare2 className="w-5 h-5 text-neutral-300 shrink-0 mt-0.5" />
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className={cn('font-semibold text-neutral-800 line-clamp-1', elderMode ? 'text-base' : 'text-sm')}>
+                  <p className="font-semibold text-neutral-800 line-clamp-1 text-sm">
                     {task.name}
                   </p>
                   {task.dueDate && (

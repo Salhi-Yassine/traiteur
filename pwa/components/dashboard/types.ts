@@ -1,4 +1,3 @@
-export type ViewMode = 'full' | 'senior';
 
 export interface BudgetItemSummary {
   spentAmount: number;
@@ -9,16 +8,9 @@ export interface ChecklistTaskSummary {
   name: string;
   status: 'todo' | 'in_progress' | 'done';
   dueDate?: string;
+  relatedVendorCategory?: string;
 }
 
-export interface GreetingSummary {
-  id: number;
-  author: string;
-  message: string;
-  avatar?: string;
-  isAcknowledged: boolean;
-  timeAgo: string;
-}
 
 export interface WeddingDashboardProfile {
   id?: number;
@@ -35,17 +27,13 @@ export interface WeddingDashboardProfile {
   checklistTasks?: ChecklistTaskSummary[];
 }
 
-export interface ConsensusData {
-  score: number;
-  sharedStyles: string[];
-}
-
 export interface TimelineMilestone {
   id: number;
   title: string;
   dueDate: string;
   status: 'todo' | 'in_progress' | 'done';
   isOverdue: boolean;
+  relatedVendorCategory?: string;
 }
 
 export interface InspirationPhoto {

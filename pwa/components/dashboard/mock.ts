@@ -1,9 +1,6 @@
 import type { VendorProfile } from '@/types/api';
 import type {
   WeddingDashboardProfile,
-  GreetingSummary,
-  ConsensusData,
-  TimelineMilestone,
   InspirationPhoto,
 } from './types';
 
@@ -23,62 +20,16 @@ export const MOCK_PROFILE: WeddingDashboardProfile = {
   budgetItems: [{ spentAmount: 42_000 }, { spentAmount: 18_500 }],
   guests: Array.from({ length: 48 }),
   checklistTasks: [
-    { id: 1, name: 'Réserver la salle de réception', status: 'done', dueDate: '2026-03-01' },
-    { id: 2, name: 'Choisir le traiteur', status: 'done', dueDate: '2026-03-15' },
-    { id: 3, name: 'Envoyer les faire-parts', status: 'in_progress', dueDate: '2026-05-01' },
-    { id: 4, name: 'Confirmer le photographe', status: 'todo', dueDate: '2026-05-10' },
-    { id: 5, name: 'Essayage de la robe', status: 'todo', dueDate: '2026-06-01' },
-    { id: 6, name: 'Choisir le DJ', status: 'todo', dueDate: '2026-06-15' },
-    { id: 7, name: 'Organiser le transport', status: 'todo', dueDate: '2026-07-01' },
+    { id: 1, name: 'Réserver la salle de réception', status: 'done', dueDate: daysFromNow(-30), relatedVendorCategory: 'salle' },
+    { id: 2, name: 'Choisir le traiteur', status: 'done', dueDate: daysFromNow(-15), relatedVendorCategory: 'traiteur' },
+    { id: 3, name: 'Envoyer les faire-parts', status: 'in_progress', dueDate: daysFromNow(5), relatedVendorCategory: 'faire-part' },
+    { id: 4, name: 'Confirmer le photographe', status: 'todo', dueDate: daysFromNow(12), relatedVendorCategory: 'photographe' },
+    { id: 5, name: 'Acheter la robe de mariée', status: 'todo', dueDate: daysFromNow(20), relatedVendorCategory: 'robe' },
+    { id: 6, name: 'Choisir le DJ ou orchestre', status: 'todo', dueDate: daysFromNow(25), relatedVendorCategory: 'musique' },
+    { id: 7, name: 'Planifier la décoration', status: 'todo', dueDate: daysFromNow(40), relatedVendorCategory: 'decoration' },
+    { id: 8, name: 'Louer la voiture', status: 'todo', dueDate: daysFromNow(50), relatedVendorCategory: 'transport' },
   ],
 };
-
-export const MOCK_GREETINGS: GreetingSummary[] = [
-  {
-    id: 1,
-    author: 'Fatima Zahra',
-    message: 'Toutes nos félicitations ! Que votre union soit bénie et pleine de bonheur. 🤍',
-    isAcknowledged: false,
-    timeAgo: '2h',
-  },
-  {
-    id: 2,
-    author: 'Hassan & Khadija',
-    message: 'Vous allez former un couple magnifique. On est tellement heureux pour vous !',
-    isAcknowledged: true,
-    timeAgo: '1j',
-  },
-  {
-    id: 3,
-    author: 'Sofia M.',
-    message: 'Bonne chance pour la préparation ! On sera là pour vous soutenir le grand jour.',
-    isAcknowledged: false,
-    timeAgo: '3j',
-  },
-  {
-    id: 4,
-    author: 'Leila B.',
-    message: 'Vous méritez le plus beau des mariages. Je suis si heureuse pour vous deux !',
-    isAcknowledged: false,
-    timeAgo: '5j',
-  },
-];
-
-export const MOCK_CONSENSUS: ConsensusData = {
-  score: 87,
-  sharedStyles: ['Moderne', 'Élégant', 'Naturel', 'Minimaliste'],
-};
-
-// ─── Deadline timeline mock ──────────────────────────────────────────────────
-
-export const MOCK_MILESTONES: TimelineMilestone[] = [
-  { id: 3, title: 'Envoyer les faire-parts', dueDate: '2026-05-01', status: 'in_progress', isOverdue: false },
-  { id: 4, title: 'Confirmer le photographe', dueDate: '2026-05-10', status: 'todo', isOverdue: false },
-  { id: 5, title: 'Essayage de la robe', dueDate: '2026-06-01', status: 'todo', isOverdue: false },
-  { id: 6, title: 'Choisir le DJ', dueDate: '2026-06-15', status: 'todo', isOverdue: false },
-  { id: 7, title: 'Organiser le transport', dueDate: '2026-07-01', status: 'todo', isOverdue: false },
-];
-
 // ─── Persona photo map ───────────────────────────────────────────────────────
 
 export const PERSONA_PHOTO_MAP: Record<string, InspirationPhoto[]> = {

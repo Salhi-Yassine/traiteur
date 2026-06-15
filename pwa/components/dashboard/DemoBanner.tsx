@@ -1,18 +1,13 @@
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
 import { cn } from '@/lib/utils';
-import type { ViewMode } from './types';
 
 interface DemoBannerProps {
   isDemo: boolean;
-  viewMode: ViewMode;
-  onViewModeChange: (mode: ViewMode) => void;
   className?: string;
 }
 
-const MODES: ViewMode[] = ['full', 'senior'];
-
-export function DemoBanner({ isDemo, viewMode, onViewModeChange, className }: DemoBannerProps) {
+export function DemoBanner({ isDemo, className }: DemoBannerProps) {
   const { t } = useTranslation('common');
 
   return (
@@ -31,28 +26,7 @@ export function DemoBanner({ isDemo, viewMode, onViewModeChange, className }: De
             {t('dashboard.couple.view_mode.login_cta')}
           </Link>
         </div>
-      ) : (
-        <div />
-      )}
-
-      {/* Right: view mode toggle (full / senior only) */}
-      <div className="flex bg-neutral-100 rounded-full p-1 gap-1">
-        {MODES.map((mode) => (
-          <button
-            key={mode}
-            onClick={() => onViewModeChange(mode)}
-            className={cn(
-              'px-4 py-1.5 rounded-full text-sm font-bold transition-all duration-200',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1',
-              viewMode === mode
-                ? 'bg-white text-neutral-900 shadow-sm'
-                : 'text-neutral-500 hover:text-neutral-700'
-            )}
-          >
-            {t(`dashboard.couple.view_mode.${mode}`)}
-          </button>
-        ))}
-      </div>
+      ) : null}
     </div>
   );
 }

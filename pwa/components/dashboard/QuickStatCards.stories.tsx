@@ -52,12 +52,6 @@ export const NoNextTask: Story = {
   },
 };
 
-export const ElderMode: Story = {
-  args: {
-    ...Default.args,
-    elderMode: true,
-  },
-};
 
 export const BudgetCardOnly: StoryObj<typeof BudgetCard> = {
   render: () => <BudgetCard spent={60_500} total={120_000} />,

@@ -61,9 +61,6 @@ export const Loading: Story = {
   args: { tasks: [], isLoading: true },
 };
 
-export const ElderMode: Story = {
-  args: { tasks: mockTasks, isLoading: false, elderMode: true },
-};
 
 export const WithToggle: Story = {
   args: {

@@ -10,56 +10,39 @@ import apiClient from '@/utils/apiClient';
 import PlanningLayout from '@/components/layout/PlanningLayout';
 import { WeddingHeroCard } from '@/components/dashboard/WeddingHeroCard';
 import { QuickActionsBar } from '@/components/dashboard/QuickActionsBar';
-import { DeadlineTimeline } from '@/components/dashboard/DeadlineTimeline';
-import { PlanningOverviewCard } from '@/components/dashboard/QuickStatCards';
-import { WallOfLove } from '@/components/dashboard/WallOfLove';
+import { ProgressTimeline } from '@/components/dashboard/ProgressTimeline';
+import { BudgetCard, GuestsCard, ChecklistCard } from '@/components/dashboard/QuickStatCards';
 import { InspirationGallery } from '@/components/dashboard/InspirationGallery';
 import { VendorDiscovery } from '@/components/dashboard/VendorDiscovery';
 import { MilestoneCategories } from '@/components/dashboard/MilestoneCategories';
 import { WeddingPlanWidget } from '@/components/dashboard/WeddingPlanWidget';
-import { ConsensusMatch } from '@/components/dashboard/ConsensusMatch';
-import { ZghRoutaScore } from '@/components/dashboard/ZghRoutaScore';
 import { DemoBanner } from '@/components/dashboard/DemoBanner';
-import { MOCK_PROFILE, MOCK_GREETINGS, MOCK_CONSENSUS, MOCK_MILESTONES } from '@/components/dashboard/mock';
+import { MOCK_PROFILE } from '@/components/dashboard/mock';
 import type {
-  ViewMode,
   WeddingDashboardProfile,
-  GreetingSummary,
   TimelineMilestone,
 } from '@/components/dashboard/types';
 import type { HydraCollection } from '@/types/api';
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-
-const VIEW_MODE_KEY = 'farah_dashboard_view_mode';
-const VALID_MODES: ViewMode[] = ['full', 'senior'];
-
-// ─── API-specific type (not exported) ────────────────────────────────────────
-
-interface GreetingRaw {
-  id: number;
-  message: string;
-  photoUrl?: string;
-  isAcknowledged: boolean;
-  guest?: { fullName: string } | null;
-  createdAt: string;
-}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function formatTimeAgo(isoDate: string): string {
-  const diffMs = Date.now() - new Date(isoDate).getTime();
-  const diffH = Math.floor(diffMs / 3_600_000);
-  if (diffH < 1) return '< 1h';
-  if (diffH < 24) return `${diffH}h`;
-  const diffD = Math.floor(diffH / 24);
-  if (diffD < 7) return `${diffD}j`;
-  return `${Math.floor(diffD / 7)} sem.`;
-}
 
 function computeDaysLeft(weddingDate?: string): number | null {
   if (!weddingDate) return null;
   return Math.max(0, Math.ceil((new Date(weddingDate).getTime() - Date.now()) / 86_400_000));
+}
+
+function inferVendorCategory(taskName: string): string | undefined {
+  const n = taskName.toLowerCase();
+  if (n.includes('salle') || n.includes('lieu')) return 'salle';
+  if (n.includes('traiteur')) return 'traiteur';
+  if (n.includes('photo') || n.includes('vidéo') || n.includes('video')) return 'photographe';
+  if (n.includes('robe') || n.includes('costume') || n.includes('essayage')) return 'robe';
+  if (n.includes('musique') || n.includes('dj') || n.includes('orchestre')) return 'musique';
+  if (n.includes('déco') || n.includes('deco')) return 'decoration';
+  if (n.includes('transport') || n.includes('voiture')) return 'transport';
+  if (n.includes('faire-part') || n.includes('invitation')) return 'faire-part';
+  return undefined;
 }
 
 function buildMilestones(tasks: WeddingDashboardProfile['checklistTasks']): TimelineMilestone[] {
@@ -76,6 +59,7 @@ function buildMilestones(tasks: WeddingDashboardProfile['checklistTasks']): Time
       dueDate: t.dueDate ?? '',
       status: t.status,
       isOverdue: !!t.dueDate && new Date(t.dueDate) < new Date(),
+      relatedVendorCategory: t.relatedVendorCategory ?? inferVendorCategory(t.name),
     }));
 }
 
@@ -85,21 +69,6 @@ export default function WeddingDashboard() {
   const { t } = useTranslation('common');
   const { user } = useAuth();
   const queryClient = useQueryClient();
-
-  // ── View mode — persisted in localStorage ──────────────────────────────────
-  const [viewMode, setViewMode] = useState<ViewMode>('full');
-
-  useEffect(() => {
-    const saved = localStorage.getItem(VIEW_MODE_KEY) as ViewMode | null;
-    if (saved && VALID_MODES.includes(saved)) setViewMode(saved);
-  }, []);
-
-  const handleViewModeChange = (mode: ViewMode) => {
-    setViewMode(mode);
-    localStorage.setItem(VIEW_MODE_KEY, mode);
-  };
-
-  const isSenior = viewMode === 'senior';
 
   // ── Wedding profile ────────────────────────────────────────────────────────
   const { data: profileData, isLoading: profileLoading } = useQuery({
@@ -115,40 +84,6 @@ export default function WeddingDashboard() {
 
   const dp = wp ?? MOCK_PROFILE;
   const isDemo = !profileLoading && !wp;
-
-  // ── Greetings ──────────────────────────────────────────────────────────────
-  const { data: greetingsData } = useQuery({
-    queryKey: ['greetings', wp?.id],
-    queryFn: () =>
-      apiClient.get<HydraCollection<GreetingRaw>>(
-        `/api/greetings?weddingProfile=${wp!.id}&order[createdAt]=desc&itemsPerPage=8`
-      ),
-    enabled: !!wp?.id,
-  });
-
-  const apiGreetings: GreetingSummary[] = (
-    (greetingsData as HydraCollection<GreetingRaw> | undefined)?.['hydra:member'] ?? []
-  ).map((g: GreetingRaw) => ({
-    id: g.id,
-    author: g.guest?.fullName ?? t('dashboard.couple.wall_of_love.anonymous'),
-    message: g.message,
-    avatar: g.photoUrl,
-    isAcknowledged: g.isAcknowledged,
-    timeAgo: formatTimeAgo(g.createdAt),
-  }));
-
-  const greetings: GreetingSummary[] = isDemo ? MOCK_GREETINGS : apiGreetings;
-  const greetingsTotal = (greetingsData as HydraCollection<GreetingRaw> | undefined)?.['hydra:totalItems'] ?? greetings.length;
-  const greetingsUnread = greetings.filter((g) => !g.isAcknowledged).length;
-
-  // ── Pulse mutation ─────────────────────────────────────────────────────────
-  const pulseMutation = useMutation({
-    mutationFn: (id: number) =>
-      apiClient.patch(`/api/greetings/${id}`, { isAcknowledged: true }),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ['greetings', wp?.id] }),
-  });
-  const handlePulse = (id: number) => { if (!isDemo) pulseMutation.mutate(id); };
 
   // ── Toggle task mutation ───────────────────────────────────────────────────
   const toggleTaskMutation = useMutation({
@@ -168,18 +103,9 @@ export default function WeddingDashboard() {
   const daysLeft = computeDaysLeft(dp.weddingDate);
   const completionPercent = tasksTotal > 0 ? Math.round((tasksDone / tasksTotal) * 100) : 0;
 
-  const milestones = isDemo
-    ? MOCK_MILESTONES
-    : buildMilestones(dp.checklistTasks);
+  const milestones = buildMilestones(dp.checklistTasks);
 
-  const nextTask = (dp.checklistTasks ?? []).find(
-    (task) => task.status !== 'done' && task.dueDate === milestones[0]?.dueDate
-  );
 
-  const rsvpLink =
-    dp.brideName && dp.groomName
-      ? `/invitation/${dp.brideName.toLowerCase()}-${dp.groomName.toLowerCase()}`
-      : '/mariage/site';
 
   // ─────────────────────────────────────────────────────────────────────────
 
@@ -192,10 +118,10 @@ export default function WeddingDashboard() {
         <title>{t('nav.dashboard')} — Farah.ma</title>
       </Head>
 
-      <div className={cn('space-y-6 transition-all duration-500', isSenior && 'elder-mode')}>
+      <div className="space-y-6 transition-all duration-500">
 
         {/* Top bar — DemoBanner owns mode toggle */}
-        <DemoBanner isDemo={isDemo} viewMode={viewMode} onViewModeChange={handleViewModeChange} />
+        <DemoBanner isDemo={isDemo} />
 
         {/* 1 — Hero */}
         <WeddingHeroCard
@@ -208,88 +134,42 @@ export default function WeddingDashboard() {
           guestsCount={guestsCount}
           completionPercent={completionPercent}
           isDemo={isDemo}
-          elderMode={isSenior}
         />
 
-        {/* 2 — Quick actions (non-senior) */}
-        {!isSenior && <QuickActionsBar />}
+        {/* 2 — Quick actions */}
+        <QuickActionsBar />
 
-        {/* 3 — Deadline timeline (non-senior, only when tasks exist) */}
-        {!isSenior && milestones.length > 0 && (
-          <DeadlineTimeline milestones={milestones} />
+        {/* 3 — Progress timeline (only when tasks exist) */}
+        {milestones.length > 0 && (
+          <ProgressTimeline milestones={milestones} completionPercent={completionPercent} />
         )}
 
-        {/* 4 — Planning overview */}
-        <PlanningOverviewCard
-          tasksDone={tasksDone}
-          tasksTotal={tasksTotal}
-          daysLeft={daysLeft}
-          guestsCount={guestsCount}
-          budgetSpent={budgetSpent}
-          budgetTotal={budgetTotal}
-          nextTask={nextTask}
-          elderMode={isSenior}
-        />
+        {/* 4 — Summary Hub (Bento Box) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <BudgetCard spent={budgetSpent} total={budgetTotal} />
+          <GuestsCard count={guestsCount} />
+          <ChecklistCard done={tasksDone} total={tasksTotal} />
+        </div>
 
-        {/* 5 — Magazine grid (non-senior) */}
-        {!isSenior && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-            {/* Left — discovery content */}
-            <div className="lg:col-span-2 space-y-12">
-              <InspirationGallery stylePersona={dp.stylePersona} isDemo={isDemo} />
-              <VendorDiscovery weddingCity={dp.weddingCity} stylePersona={dp.stylePersona} />
-              <MilestoneCategories />
-              <div className="p-6 sm:p-8 bg-white rounded-3xl border border-neutral-100 shadow-1">
-                <WallOfLove
-                  greetings={greetings}
-                  totalCount={greetingsTotal}
-                  unreadCount={greetingsUnread}
-                  rsvpLink={rsvpLink}
-                  onPulse={handlePulse}
-                />
-              </div>
-            </div>
-
-            {/* Right — widgets */}
-            <div className="lg:col-span-1 space-y-6">
-              <WeddingPlanWidget
-                tasks={dp.checklistTasks ?? []}
-                isLoading={profileLoading}
-                onToggleTask={handleToggleTask}
-                elderMode={false}
-              />
-              <ConsensusMatch
-                score={MOCK_CONSENSUS.score}
-                sharedStyles={MOCK_CONSENSUS.sharedStyles}
-              />
-              <ZghRoutaScore
-                completionPercent={completionPercent}
-                brideName={dp.brideName ?? ''}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Senior mode */}
-        {isSenior && (
-          <div className="space-y-6">
-            <div className="p-8 bg-white rounded-3xl border border-neutral-100 shadow-1">
-              <WallOfLove
-                greetings={greetings}
-                totalCount={greetingsTotal}
-                unreadCount={greetingsUnread}
-                onPulse={handlePulse}
-              />
-            </div>
+        {/* 5 — Planning & Discovery Grid */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          
+          {/* Left — Main Focus: Task management & Categories */}
+          <div className="xl:col-span-2 space-y-8">
             <WeddingPlanWidget
-              tasks={(dp.checklistTasks ?? []).slice(0, 2)}
+              tasks={dp.checklistTasks ?? []}
               isLoading={profileLoading}
               onToggleTask={handleToggleTask}
-              elderMode
             />
+            <MilestoneCategories />
           </div>
-        )}
+
+          {/* Right — Discovery & Inspiration */}
+          <div className="xl:col-span-1 space-y-8">
+            <InspirationGallery stylePersona={dp.stylePersona} isDemo={isDemo} />
+            <VendorDiscovery weddingCity={dp.weddingCity} stylePersona={dp.stylePersona} />
+          </div>
+        </div>
 
       </div>
     </PlanningLayout>

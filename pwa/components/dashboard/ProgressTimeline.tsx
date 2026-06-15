@@ -1,9 +1,12 @@
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { PATHS } from '@/constants/paths';
 import type { TimelineMilestone } from './types';
 
-interface DeadlineTimelineProps {
+interface ProgressTimelineProps {
   milestones: TimelineMilestone[];
+  completionPercent?: number;
   className?: string;
 }
 
@@ -37,17 +40,32 @@ function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('fr-MA', { month: 'short', day: 'numeric' });
 }
 
-export function DeadlineTimeline({ milestones, className }: DeadlineTimelineProps) {
+export function ProgressTimeline({ milestones, completionPercent, className }: ProgressTimelineProps) {
   const { t } = useTranslation('common');
 
   if (milestones.length === 0) return null;
 
   return (
-    <div className={cn('space-y-3', className)}>
-      <h2 className="text-sm font-black uppercase tracking-widest text-neutral-400">
-        {t('dashboard.couple.timeline.title')}
-      </h2>
-      <div className="timeline-scroll">
+    <div className={cn('space-y-4', className)}>
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-black uppercase tracking-widest text-neutral-400">
+          {t('dashboard.couple.timeline.title', 'Progrès & Prochaines Étapes')}
+        </h2>
+        {completionPercent !== undefined && (
+          <span className="text-sm font-bold text-neutral-700">{completionPercent}%</span>
+        )}
+      </div>
+      
+      {completionPercent !== undefined && (
+        <div className="h-2 w-full bg-neutral-100 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-[--color-primary] transition-all duration-1000 ease-out" 
+            style={{ width: `${completionPercent}%` }} 
+          />
+        </div>
+      )}
+
+      <div className="timeline-scroll pt-2">
         {milestones.map((milestone) => {
           const urgency = getUrgency(milestone);
           const urgencyLabel = t(`dashboard.couple.timeline.${urgency === 'this_week' ? 'this_week' : urgency}`);
@@ -66,7 +84,7 @@ export function DeadlineTimeline({ milestones, className }: DeadlineTimelineProp
               <p className="text-sm font-semibold text-neutral-800 mt-1 line-clamp-2 ps-2">
                 {milestone.title}
               </p>
-              <div className="mt-3 ps-2">
+              <div className="mt-3 ps-2 flex items-center justify-between">
                 <span
                   className={cn(
                     'text-[10px] font-bold px-2 py-0.5 rounded-full',
@@ -75,6 +93,15 @@ export function DeadlineTimeline({ milestones, className }: DeadlineTimelineProp
                 >
                   {urgencyLabel}
                 </span>
+                
+                {milestone.relatedVendorCategory && urgency !== 'done' && (
+                  <Link
+                    href={`${PATHS.VENDORS}?category=${milestone.relatedVendorCategory}`}
+                    className="text-[10px] font-bold text-[--color-primary] hover:underline"
+                  >
+                    {t('dashboard.couple.timeline.find_vendors', 'Trouver >')}
+                  </Link>
+                )}
               </div>
             </div>
           );

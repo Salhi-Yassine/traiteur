@@ -57,18 +57,6 @@ export const Demo: Story = {
   },
 };
 
-export const SeniorMode: Story = {
-  args: {
-    brideName: 'Yasmine',
-    groomName: 'Yassine',
-    weddingDate: new Date(Date.now() + 87 * 86_400_000).toISOString().split('T')[0],
-    weddingCity: 'Rabat',
-    budgetTotal: 60_000,
-    guestsCount: 80,
-    completionPercent: 30,
-    elderMode: true,
-  },
-};
 
 export const NearWeddingDate: Story = {
   args: {

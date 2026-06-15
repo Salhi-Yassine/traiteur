@@ -225,7 +225,6 @@ interface PlanningOverviewCardProps {
   budgetSpent: number;
   budgetTotal: number;
   nextTask?: ChecklistTaskSummary;
-  elderMode?: boolean;
 }
 
 export function PlanningOverviewCard({
@@ -236,7 +235,6 @@ export function PlanningOverviewCard({
   budgetSpent,
   budgetTotal,
   nextTask,
-  elderMode = false,
 }: PlanningOverviewCardProps) {
   const { t } = useTranslation('common');
   const percent = tasksTotal > 0 ? Math.round((tasksDone / tasksTotal) * 100) : 0;
@@ -303,7 +301,7 @@ export function PlanningOverviewCard({
               <p className="text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-1">
                 {t('dashboard.couple.planning_overview.next_task')}
               </p>
-              <p className={cn('font-semibold text-neutral-800 truncate', elderMode ? 'text-base' : 'text-sm')}>
+              <p className={cn('font-semibold text-neutral-800 truncate', 'text-sm')}>
                 {nextTask.name}
               </p>
               {nextTask.dueDate && (
