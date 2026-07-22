@@ -12,6 +12,7 @@ import PriceRange from "@/components/ui/PriceRange";
 import ReservationWidget from "@/components/vendors/ReservationWidget";
 import AvailabilityCalendar from "@/components/vendors/AvailabilityCalendar";
 import { cn } from "@/lib/utils";
+import { useSavedVendors } from "@/lib/useSavedVendors";
 import { fetchServerSide } from "@/utils/fetchServerSide";
 
 // Modular Components
@@ -38,7 +39,8 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
     const [dateRange, setDateRange] = useState<{ from: string | null; to: string | null }>({ from: null, to: null });
     const [galleryIndex, setGalleryIndex] = useState<number | null>(null);
     const [activeSection, setActiveSection] = useState('photos');
-    const [isSaved, setIsSaved] = useState(false);
+    const { isSaved: isVendorSaved, toggleSave } = useSavedVendors();
+    const isSaved = isVendorSaved(vendor.id);
     const [isHeartAnimating, setIsHeartAnimating] = useState(false);
     const [isNavigating, setIsNavigating] = useState(false);
 
@@ -51,14 +53,6 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
     ];
 
     const gridMedia = allMedia.slice(0, 5);
-
-    // Initial Load & Wishlist Check
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const saved = JSON.parse(localStorage.getItem('wishlist') || '[]');
-            setIsSaved(saved.includes(vendor.slug));
-        }
-    }, [vendor.slug]);
 
     // Navigation Events
     useEffect(() => {
@@ -113,15 +107,8 @@ export default function VendorProfilePage({ vendor, reviews }: VendorProfilePage
     };
 
     const handleSave = () => {
-        const saved = JSON.parse(localStorage.getItem('wishlist') || '[]');
-        if (isSaved) {
-            const newSaved = saved.filter((s: string) => s !== vendor.slug);
-            localStorage.setItem('wishlist', JSON.stringify(newSaved));
-            setIsSaved(false);
-        } else {
-            saved.push(vendor.slug);
-            localStorage.setItem('wishlist', JSON.stringify(saved));
-            setIsSaved(true);
+        toggleSave(vendor.id);
+        if (!isSaved) {
             setIsHeartAnimating(true);
             setTimeout(() => setIsHeartAnimating(false), 300);
         }

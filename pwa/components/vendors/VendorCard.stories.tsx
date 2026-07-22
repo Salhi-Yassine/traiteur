@@ -71,6 +71,28 @@ export const ListVariant: Story = {
   ],
 };
 
+export const Favorited: Story = {
+  args: {
+    ...Default.args,
+    isFavorite: true,
+  },
+};
+
+export const FavoritedListVariant: Story = {
+  args: {
+    ...Default.args,
+    variant: "list",
+    isFavorite: true,
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ width: "640px" }}>
+        <Story />
+      </div>
+    ),
+  ],
+};
+
 export const ListStack: Story = {
   args: Default.args,
   render: () => {

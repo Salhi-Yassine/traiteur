@@ -10,6 +10,7 @@
     "budget": "Budget",
     "guests": "Invités",
     "checklist": "Checklist",
+    "saved_vendors": "Prestataires favoris",
     "my_wedding": "Mon Mariage",
     "mgmt_desc": "Gestion de l'événement",
     "logout": "Déconnexion",
@@ -1185,5 +1186,17 @@
     "empty_sub": "Partagez votre profil pour recevoir vos premières demandes de devis.",
     "empty_filtered": "Aucune demande dans cette catégorie.",
     "error_update": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "saved_vendors": {
+    "title": "Mes prestataires favoris",
+    "description": "Votre moodboard de prestataires sauvegardés pour votre mariage",
+    "empty_title": "Aucun prestataire sauvegardé",
+    "empty_description": "Explorez l'annuaire et touchez le cœur pour ajouter des prestataires à votre moodboard.",
+    "empty_cta": "Découvrir les prestataires",
+    "saved_toast": "Prestataire ajouté à vos favoris",
+    "removed_toast": "Prestataire retiré de vos favoris",
+    "login_required": "Connectez-vous pour sauvegarder des prestataires",
+    "save_aria": "Sauvegarder ce prestataire",
+    "remove_aria": "Retirer ce prestataire des favoris"
   }
 }
