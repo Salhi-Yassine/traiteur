@@ -86,7 +86,7 @@ const ALLOC_TEMPLATES: Record<string, Record<string, number>> = {
 
 // ─── Mock data ──────────────────────────────────────────────────────────
 
-let MOCK_BUDGET_ITEMS: BudgetItem[] = [
+const MOCK_BUDGET_ITEMS: BudgetItem[] = [
     {
         id: 1,
         title: "Palais Zahia — Réception",
