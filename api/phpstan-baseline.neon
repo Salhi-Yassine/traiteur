@@ -1,6 +1,24 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Property App\\Entity\\Article\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/Article.php
+
+		-
+			message: '#^Property App\\Entity\\Article\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Article.php
+
+		-
+			message: '#^Property App\\Entity\\ArticleCategory\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/ArticleCategory.php
+
+		-
 			message: '#^Property App\\Entity\\BudgetItem\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
 			identifier: property.unusedType
 			count: 1
@@ -31,6 +49,24 @@ parameters:
 			path: src/Entity/City.php
 
 		-
+			message: '#^Class App\\Repository\\GreetingRepository not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Entity/Greeting.php
+
+		-
+			message: '#^Property App\\Entity\\Greeting\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/Greeting.php
+
+		-
+			message: '#^Property App\\Entity\\Greeting\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Greeting.php
+
+		-
 			message: '#^Property App\\Entity\\Guest\:\:\$createdAt is never written, only read\.$#'
 			identifier: property.onlyRead
 			count: 1
@@ -41,6 +77,18 @@ parameters:
 			identifier: property.unusedType
 			count: 1
 			path: src/Entity/Guest.php
+
+		-
+			message: '#^Property App\\Entity\\InspirationPhoto\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/InspirationPhoto.php
+
+		-
+			message: '#^Property App\\Entity\\InspirationPhoto\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/InspirationPhoto.php
 
 		-
 			message: '#^Property App\\Entity\\MenuItem\:\:\$createdAt is never written, only read\.$#'
@@ -121,6 +169,36 @@ parameters:
 			path: src/Entity/Role.php
 
 		-
+			message: '#^Property App\\Entity\\SavedPhoto\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/SavedPhoto.php
+
+		-
+			message: '#^Property App\\Entity\\SavedPhoto\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/SavedPhoto.php
+
+		-
+			message: '#^Property App\\Entity\\SavedVendor\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/SavedVendor.php
+
+		-
+			message: '#^Property App\\Entity\\SavedVendor\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/SavedVendor.php
+
+		-
+			message: '#^Property App\\Entity\\TimelineItem\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/TimelineItem.php
+
+		-
 			message: '#^Property App\\Entity\\User\:\:\$createdAt is never written, only read\.$#'
 			identifier: property.onlyRead
 			count: 1
@@ -175,6 +253,18 @@ parameters:
 			path: src/Entity/WeddingProfile.php
 
 		-
+			message: '#^Property App\\Entity\\WeddingStory\:\:\$createdAt is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/WeddingStory.php
+
+		-
+			message: '#^Property App\\Entity\\WeddingStory\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/WeddingStory.php
+
+		-
 			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
@@ -185,6 +275,18 @@ parameters:
 			identifier: property.onlyWritten
 			count: 1
 			path: src/State/AppStatsProvider.php
+
+		-
+			message: '#^Instanceof between App\\Entity\\QuoteRequest and App\\Entity\\QuoteRequest will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/State/QuoteRequestProcessor.php
+
+		-
+			message: '#^Instanceof between App\\Entity\\Review and App\\Entity\\Review will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/State/ReviewProcessor.php
 
 		-
 			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectRepository\<App\\Entity\\Translation\>\:\:translate\(\)\.$#'
