@@ -8,7 +8,16 @@ export default defineConfig({
         environment: "jsdom",
         setupFiles: ["./tests/setup.ts"],
         globals: true,
-        include: ["tests/**/*.{test,spec}.{ts,tsx}", "**/__tests__/**/*.{ts,tsx}"],
+        include: [
+            "tests/**/*.{test,spec}.{ts,tsx}",
+            "**/__tests__/**/*.{ts,tsx}",
+            "components/**/*.{test,spec}.{ts,tsx}",
+            "pages/**/*.{test,spec}.{ts,tsx}",
+            "lib/**/*.{test,spec}.{ts,tsx}",
+            "utils/**/*.{test,spec}.{ts,tsx}",
+            "context/**/*.{test,spec}.{ts,tsx}",
+        ],
+        exclude: ["node_modules", ".next"],
     },
     resolve: {
         alias: {

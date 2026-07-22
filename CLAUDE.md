@@ -35,9 +35,10 @@ Run before every commit or PR:
 
 ```bash
 make pnpm c="lint"             # Zero ESLint errors
-make pnpm c="test"             # All Vitest tests pass
+make pnpm c="test"             # All Vitest tests pass (never --passWithNoTests)
 make pnpm c="build-storybook"  # Only if a new component was added
-make cs                         # Backend only: PHP-CS-Fixer + PHPStan
+make cs                         # Backend: PHP-CS-Fixer + PHPStan
+make test                       # Backend: PHPUnit (run when touching api/)
 ```
 
 Checklist:
@@ -46,6 +47,10 @@ Checklist:
 - [ ] Translation keys added to **all 4 locales** (`fr`, `ar`, `ary`, `en`)
 - [ ] RTL grep passes: `grep -r "left-\|right-\|ml-\|mr-" pwa/components pwa/pages --include="*.tsx" | grep -v "rtl:\|//"`
 - [ ] `.stories.tsx` co-located for every new component
+- [ ] `.test.tsx` / `.test.ts` co-located for every component with logic or new custom hook
+- [ ] New Zod schema → schema validation test covering valid + invalid payloads
+- [ ] New backend Service or Voter → PHPUnit unit test in `api/tests/`
+- [ ] New API endpoint or security rule → PHPUnit `ApiTestCase` covering 200/201/403/404
 - [ ] No `any` TypeScript types (`@typescript-eslint/no-explicit-any: error` is enforced)
 - [ ] Errors use `toast.error()` — never `alert()`
 - [ ] Routes use `PATHS.*` — never hardcoded URL strings
@@ -107,9 +112,18 @@ Full instructions → `.agent/workflows/progress-tracking.md`
 
 ### Testing
 - Run: `make pnpm c="test"` (watch: `make pnpm c="test:watch"`)
-- Test files co-located beside the component they test (`VendorCard.test.tsx` beside `VendorCard.tsx`)
-- Focus on: `apiClient` auth/refresh branches, Zod schema validation, TanStack Query error paths
+- **Frontend (Vitest + RTL)** — 3 types:
+  - *Unit* — Zod schemas, utility functions, custom hooks (`renderHook`)
+  - *Component* — render + interaction for components with logic or multi-step flows; skip pure display components (Storybook covers those)
+  - *Schema* — every Zod form schema gets a dedicated test asserting error paths and messages
+- **Backend (PHPUnit)** — 2 types:
+  - *API integration* (`ApiTestCase`) — one class per entity covering CRUD + security (200/201/403/404)
+  - *Unit* (`TestCase`) — Services and Voters in isolation
+- Test files co-located beside the source file (`VendorCard.test.tsx` beside `VendorCard.tsx`); `pwa/tests/` used only for cross-cutting utils like `apiClient`
+- A new component with logic or a new custom hook **requires** a test file in the same commit
 - No `any` in test assertions
+- Mock at the boundary only (`vi.stubGlobal('fetch', ...)`) — never mock internal modules
+- Full standard → `.agent/workflows/test.md`
 
 ---
 

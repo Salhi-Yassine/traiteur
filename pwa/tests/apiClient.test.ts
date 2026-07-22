@@ -135,6 +135,7 @@ describe("silent refresh on 401", () => {
     });
 
     it("dispatches auth:logout when no refresh token on 401", async () => {
+        setAuthToken("expired-token");
         const logoutSpy = vi.fn();
         window.addEventListener("auth:logout", logoutSpy);
 
@@ -169,6 +170,7 @@ describe("silent refresh on 401", () => {
     });
 
     it("dispatches auth:logout when refresh endpoint returns 401", async () => {
+        setAuthToken("expired-token");
         setRefreshToken("invalid-refresh");
         const logoutSpy = vi.fn();
         window.addEventListener("auth:logout", logoutSpy);
