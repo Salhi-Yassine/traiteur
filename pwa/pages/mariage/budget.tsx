@@ -86,7 +86,7 @@ const ALLOC_TEMPLATES: Record<string, Record<string, number>> = {
 
 // ─── Mock data ──────────────────────────────────────────────────────────
 
-let MOCK_BUDGET_ITEMS: BudgetItem[] = [
+const MOCK_BUDGET_ITEMS: BudgetItem[] = [
     {
         id: 1,
         title: "Palais Zahia — Réception",
@@ -228,7 +228,7 @@ function catName(key: string, t: any): string {
     return t(`budget.categories.${key}`, { defaultValue: key });
 }
 
-function formatDueDate(iso: string, locale: string, eastern: boolean = false): string {
+function formatDueDate(iso: string, locale = "fr", eastern: boolean = false): string {
     const d = new Date(iso);
     const fmt = new Intl.DateTimeFormat(
         locale === "ar" ? "ar-MA" : locale === "en" ? "en-US" : "fr-FR",
@@ -598,7 +598,6 @@ export default function BudgetPage() {
             <div className="flex items-center gap-3 mb-8 overflow-x-auto pb-2">
                 {CATEGORY_KEYS.filter(c => c === "salle" || catCounts.has(c)).map(c => {
                     const count = catCounts.get(c) ?? 0;
-                    const isAll = false;
                     return (
                         <button
                             key={c}
@@ -609,9 +608,7 @@ export default function BudgetPage() {
                                     : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
                             }`}
                         >
-                            {c !== "all" && (
-                                <span className="w-2.5 h-2.5 rounded-full" style={{ background: CATEGORY_COLORS[c] }} />
-                            )}
+                            <span className="w-2.5 h-2.5 rounded-full" style={{ background: CATEGORY_COLORS[c] }} />
                             {catName(c, t)}
                             <span className="text-[11px] font-bold opacity-70 ms-1">({count})</span>
                         </button>
