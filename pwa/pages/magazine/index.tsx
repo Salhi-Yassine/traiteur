@@ -20,6 +20,7 @@ import NewsletterBlock from "@/components/magazine/NewsletterBlock";
 
 // Types
 import { Article, HydraCollection } from "@/types/magazine";
+import { unwrapCollection, getTotalItems } from "@/utils/hydra";
 import { mockArticles, mockMagazinePageProps } from "@/lib/mockMagazineData";
 
 // Hooks
@@ -54,7 +55,7 @@ export default function MagazinePage({ featuredArticle, initialArticles }: Magaz
                 const res = await apiClient.get<HydraCollection<Article>>(`/api/articles?${params}`);
                 
                 // Fallback to mocks if API returns empty but we have mock matches for this category
-                if (res["hydra:totalItems"] === 0 && activeCategory) {
+                if (getTotalItems(res) === 0 && activeCategory) {
                     const mockMatches = mockArticles.filter((a: Article) => a.category.slug === activeCategory);
                     if (mockMatches.length > 0) {
                         return { "hydra:member": mockMatches, "hydra:totalItems": mockMatches.length };
@@ -78,7 +79,7 @@ export default function MagazinePage({ featuredArticle, initialArticles }: Magaz
         staleTime: 1000 * 60 * 5,
     });
 
-    const articles = filteredData?.["hydra:member"] ?? [];
+    const articles = unwrapCollection<Article>(filteredData);
     
     // Logic for modular grid
     const mainFeatured = activeCategory ? null : featuredArticle;
@@ -244,7 +245,7 @@ export default function MagazinePage({ featuredArticle, initialArticles }: Magaz
                                     {articles[0]?.category.name || t('magazine.no_articles')}
                                 </h2>
                                 <span className="text-neutral-400 font-bold uppercase tracking-widest text-12">
-                                    {filteredData?.["hydra:totalItems"] || 0} {t('magazine.articles_found')}
+                                    {getTotalItems(filteredData)} {t('magazine.articles_found')}
                                 </span>
                             </div>
 
@@ -282,9 +283,10 @@ export const getStaticProps: GetStaticProps<MagazinePageProps> = async ({ locale
             ),
         ]);
 
-        const featuredArticle = featuredRes["hydra:member"][0] || mockMagazinePageProps.featuredArticle;
-        const initialArticles = allRes["hydra:member"].length > 0 
-            ? allRes["hydra:member"] 
+        const featuredArticle = unwrapCollection<Article>(featuredRes)[0] || mockMagazinePageProps.featuredArticle;
+        const allArticles = unwrapCollection<Article>(allRes);
+        const initialArticles = allArticles.length > 0
+            ? allArticles
             : mockMagazinePageProps.initialArticles;
 
         return {

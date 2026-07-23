@@ -6,6 +6,7 @@ import { useState } from "react";
 import { ChevronLeft, Search } from "lucide-react";
 import Link from "next/link";
 import { fetchServerSide } from "@/utils/fetchServerSide";
+import { unwrapCollection } from "@/utils/hydra";
 import ArticleCard from "@/components/inspiration/ArticleCard";
 import InspirationCategoryPills from "@/components/inspiration/InspirationCategoryPills";
 
@@ -77,12 +78,12 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
         const [articles, categories] = await Promise.all([
             fetchServerSide("/api/articles", { locale: locale || "fr" }),
             fetchServerSide("/api/article_categories", { locale: locale || "fr" }),
-        ]) as [any, any];
+        ]);
 
         return {
             props: {
-                articles: articles?.['member'] || [],
-                categories: categories?.['member'] || [],
+                articles: unwrapCollection(articles),
+                categories: unwrapCollection(categories),
                 ...(await serverSideTranslations(locale || "fr", ["common"])),
             },
         };

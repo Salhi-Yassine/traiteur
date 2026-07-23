@@ -23,6 +23,7 @@ import type {
   TimelineMilestone,
 } from '@/components/dashboard/types';
 import type { HydraCollection } from '@/types/api';
+import { unwrapCollection } from '@/utils/hydra';
 
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -80,7 +81,7 @@ export default function WeddingDashboard() {
   });
 
   const wp: WeddingDashboardProfile | null =
-    (profileData as HydraCollection<WeddingDashboardProfile> | undefined)?.['hydra:member']?.[0] ?? null;
+    unwrapCollection<WeddingDashboardProfile>(profileData)[0] ?? null;
 
   const dp = wp ?? MOCK_PROFILE;
   const isDemo = !profileLoading && !wp;

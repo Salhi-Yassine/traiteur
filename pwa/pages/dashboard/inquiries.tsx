@@ -26,6 +26,7 @@ import { useAuth } from "../../context/AuthContext";
 import apiClient from "../../utils/apiClient";
 import { PATHS } from "../../constants/paths";
 import type { QuoteRequest, VendorProfile as VendorProfileType, HydraCollection } from "../../types/api";
+import { unwrapCollection } from "../../utils/hydra";
 import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import Navbar from "../../components/layout/Navbar";
@@ -299,7 +300,7 @@ export default function InquiriesPage() {
         );
     }
 
-    const allInquiries: QuoteRequest[] = inquiriesData?.["hydra:member"] ?? [];
+    const allInquiries: QuoteRequest[] = unwrapCollection<QuoteRequest>(inquiriesData);
 
     const counts: Record<StatusFilter, number> = {
         all: allInquiries.length,

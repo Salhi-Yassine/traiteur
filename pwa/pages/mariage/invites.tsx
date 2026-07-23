@@ -13,6 +13,7 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 import apiClient from "../../utils/apiClient";
+import { unwrapCollection } from "../../utils/hydra";
 import PlanningLayout from "../../components/layout/PlanningLayout";
 import { Skeleton } from "../../components/ui/skeleton";
 
@@ -68,7 +69,8 @@ export default function InvitesPage() {
         queryFn: () => apiClient.get("/api/wedding_profiles?itemsPerPage=1"),
     });
 
-    const profile: WeddingProfile | null = profileData?.["hydra:member"]?.[0] ?? null;
+    const profile: WeddingProfile | null =
+        unwrapCollection<WeddingProfile>(profileData)[0] ?? null;
     const profileId = profile?.id ?? null;
 
     const isDemo = !profileLoading && !profile;
@@ -79,7 +81,7 @@ export default function InvitesPage() {
         enabled: profileId !== null,
     });
 
-    const apiGuests: Guest[] = guestData?.["hydra:member"] ?? [];
+    const apiGuests: Guest[] = unwrapCollection<Guest>(guestData);
     const guests: Guest[] = isDemo ? MOCK_GUESTS : apiGuests;
 
     const filteredGuests = guests.filter((guest) => {
