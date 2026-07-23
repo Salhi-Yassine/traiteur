@@ -128,4 +128,47 @@ class GuestPublicRsvpTest extends ApiTestCase
 
         $this->assertResponseStatusCodeSame(401);
     }
+
+    /**
+     * Cross-tenant isolation: a freshly-registered couple (no wedding of their
+     * own) must NOT see the seeded couple's guests. Before owner-scoping was
+     * added, GET /api/guests returned every tenant's rows.
+     */
+    public function testGuestCollectionIsScopedToOwner(): void
+    {
+        $client = static::createClient();
+
+        // The seeded couple has guests → their own collection is non-empty.
+        $seededCount = $client->request('GET', '/api/guests', [
+            'auth_bearer' => $this->coupleToken($client),
+            'headers' => ['Accept' => 'application/ld+json'],
+        ])->toArray()['totalItems'];
+        $this->assertGreaterThan(0, $seededCount);
+
+        // A brand-new couple owns no wedding → must see zero guests, not the
+        // seeded couple's.
+        $email = 'tenant'.uniqid().'@example.com';
+        $client->request('POST', '/api/users', [
+            'headers' => ['Accept' => 'application/ld+json', 'Content-Type' => 'application/ld+json'],
+            'json' => [
+                'email' => $email,
+                'firstName' => 'New',
+                'lastName' => 'Tenant',
+                'plainPassword' => 'password123',
+                'userType' => 'couple',
+            ],
+        ]);
+        $this->assertResponseStatusCodeSame(201);
+
+        $token = $client->request('POST', '/auth', [
+            'json' => ['email' => $email, 'password' => 'password123'],
+        ])->toArray()['token'];
+
+        $response = $client->request('GET', '/api/guests', [
+            'auth_bearer' => $token,
+            'headers' => ['Accept' => 'application/ld+json'],
+        ]);
+        $this->assertResponseIsSuccessful();
+        $this->assertSame(0, $response->toArray()['totalItems']);
+    }
 }
