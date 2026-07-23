@@ -57,7 +57,10 @@ class QuoteRequest
     #[Groups(['quote:read', 'quote:write'])]
     private string $eventType = 'Other';
 
-    #[ORM\Column(type: 'date')]
+    // date_immutable (not date): the property is DateTimeImmutable, and Doctrine's
+    // mutable `date` type throws on persist for immutable values. Same SQL DATE
+    // column, so no migration is required.
+    #[ORM\Column(type: 'date_immutable')]
     #[Assert\NotNull]
     #[Assert\GreaterThan('today')]
     #[Groups(['quote:read', 'quote:write'])]
