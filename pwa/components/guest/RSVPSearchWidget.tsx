@@ -7,6 +7,7 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Dialog, DialogContent } from "../../components/ui/dialog";
 import apiClient from "../../utils/apiClient";
+import { unwrapCollection } from "../../utils/hydra";
 import RSVPFlow, { GuestData } from "./RSVPFlow";
 
 interface RSVPSearchWidgetProps {
@@ -31,7 +32,7 @@ export default function RSVPSearchWidget({ slug, initialGuest }: RSVPSearchWidge
         try {
             // In a real app, we fetch the search results from /api/public/guests/search?wedding=...
             const response = await apiClient.get<any>(`/api/public/guests?weddingProfile.slug=${slug}`);
-            const allGuests = response["hydra:member"] || [];
+            const allGuests = unwrapCollection<GuestData>(response);
             
             if (allGuests.length === 0) {
                 // Fallback for mock/demo

@@ -26,6 +26,7 @@ import SponsoredBlock from "@/components/magazine/SponsoredBlock";
 
 // Types & Mocks
 import { Article, HydraCollection } from "@/types/magazine";
+import { unwrapCollection } from "@/utils/hydra";
 import { mockArticles } from "@/lib/mockMagazineData";
 
 // Hooks
@@ -346,7 +347,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
             "/api/articles?isPublished=true&itemsPerPage=20"
         );
         
-        const realPaths = res["hydra:member"].map((article) => ({
+        const realPaths = unwrapCollection<Article>(res).map((article) => ({
             params: { slug: article.slug },
         }));
         
@@ -378,7 +379,7 @@ export const getStaticProps: GetStaticProps<ArticlePageProps> = async ({ params,
             { locale: locale ?? "fr" }
         );
 
-        let article: Article | null = res["hydra:member"][0] || null;
+        let article: Article | null = unwrapCollection<Article>(res)[0] || null;
         
         if (!article) {
             article = mockArticles.find(a => a.slug === slug) || null;
@@ -393,7 +394,7 @@ export const getStaticProps: GetStaticProps<ArticlePageProps> = async ({ params,
             { locale: locale ?? "fr" }
         );
 
-        let relatedArticles = relatedRes["hydra:member"];
+        let relatedArticles = unwrapCollection<Article>(relatedRes);
         if (relatedArticles.length === 0) {
             relatedArticles = mockArticles.filter(a => a.slug !== slug).slice(0, 3);
         }

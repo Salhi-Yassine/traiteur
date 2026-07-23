@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, BookOpen, PenTool, CheckCircle2, Star, Wand2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { fetchServerSide } from "@/utils/fetchServerSide";
+import { unwrapCollection } from "@/utils/hydra";
 import InspirationHero from "@/components/inspiration/InspirationHero";
 import InspirationCategoryPills from "@/components/inspiration/InspirationCategoryPills";
 import ArticleCard from "@/components/inspiration/ArticleCard";
@@ -369,12 +370,15 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
             fetchServerSide("/api/articles", { locale: locale || "fr" }),
             fetchServerSide("/api/article_categories", { locale: locale || "fr" }),
             fetchServerSide("/api/inspiration_photos", { locale: locale || "fr" }),
-        ]) as [any, any, any];
+        ]);
 
         // Use API data if available, otherwise fall back to mock data for UI/UX testing
-        const articlesData = articles?.['hydra:member']?.length > 0 ? articles['hydra:member'] : mockArticles;
-        const categoriesData = articleCategories?.['hydra:member']?.length > 0 ? articleCategories['hydra:member'] : mockArticleCategories;
-        const photosData = photos?.['hydra:member']?.length > 0 ? photos['hydra:member'] : mockInspirationPhotos;
+        const apiArticles = unwrapCollection(articles);
+        const apiCategories = unwrapCollection(articleCategories);
+        const apiPhotos = unwrapCollection(photos);
+        const articlesData = apiArticles.length > 0 ? apiArticles : mockArticles;
+        const categoriesData = apiCategories.length > 0 ? apiCategories : mockArticleCategories;
+        const photosData = apiPhotos.length > 0 ? apiPhotos : mockInspirationPhotos;
 
         return {
             props: {

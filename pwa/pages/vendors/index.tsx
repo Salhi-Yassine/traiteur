@@ -13,6 +13,7 @@ import SearchBar from "../../components/vendors/SearchBar";
 import { Button } from "../../components/ui/button";
 import { useVendorFilters } from "../../lib/useVendorFilters";
 import { fetchServerSide } from "../../utils/fetchServerSide";
+import { unwrapCollection, getTotalItems } from "../../utils/hydra";
 import type { SortKey } from "../../lib/useVendorFilters";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -548,12 +549,12 @@ export const getServerSideProps: GetServerSideProps<VendorsPageProps> = async ({
 
         Object.entries(sortToApiParams(sort)).forEach(([k, v]) => params.set(k, v));
 
-        const data = await fetchServerSide<{ "hydra:member": Record<string, unknown>[]; "hydra:totalItems": number }>(
+        const data = await fetchServerSide(
             `/api/vendor_profiles?${params}`,
             { locale: locale || "fr" },
         );
-        const members: Record<string, unknown>[] = data["hydra:member"] ?? [];
-        const total: number = data["hydra:totalItems"] ?? 0;
+        const members = unwrapCollection<Record<string, unknown>>(data);
+        const total = getTotalItems(data);
 
         const vendors: VendorCardProps[] = members.map(v => ({
             id:            (v.id as number) ?? 0,

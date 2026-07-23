@@ -12,6 +12,7 @@ import type { HydraCollection } from "@/types/api";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import apiClient, { ApiError } from "@/utils/apiClient";
+import { unwrapCollection } from "@/utils/hydra";
 import { PATHS } from "@/constants/paths";
 import type { VendorProfilePayload } from "@/types/api";
 import { Button } from "@/components/ui/button";
@@ -74,8 +75,8 @@ export default function VendorOnboardingPage() {
         enabled:  !!user,
     });
 
-    const categories: Category[] = categoriesData?.["hydra:member"] ?? [];
-    const cities:     City[]     = citiesData?.["hydra:member"] ?? [];
+    const categories: Category[] = unwrapCollection<Category>(categoriesData);
+    const cities:     City[]     = unwrapCollection<City>(citiesData);
 
     const mutation = useMutation({
         mutationFn: (payload: VendorProfilePayload) => apiClient.post("/api/vendor_profiles", payload),

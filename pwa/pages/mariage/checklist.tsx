@@ -26,6 +26,7 @@ import { Calendar, CheckCircle2, Clock, Plus, Trash2, Zap, GripVertical } from "
 import { cn } from "@/lib/utils";
 import PlanningLayout from "../../components/layout/PlanningLayout";
 import apiClient from "../../utils/apiClient";
+import { unwrapCollection } from "../../utils/hydra";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
@@ -192,7 +193,8 @@ export default function ChecklistPage() {
         queryFn: () => apiClient.get("/api/wedding_profiles?itemsPerPage=1"),
     });
 
-    const profile: WeddingProfile | null = (profileData as any)?.["hydra:member"]?.[0] ?? null;
+    const profile: WeddingProfile | null =
+        unwrapCollection<WeddingProfile>(profileData as { member?: WeddingProfile[] })[0] ?? null;
     const profileId = profile?.id ?? null;
     const isDemo = !profileLoading && !profile;
 
@@ -201,7 +203,7 @@ export default function ChecklistPage() {
         queryFn: () => apiClient.get(`/api/checklist_tasks?weddingProfile=${profileId}&order[displayOrder]=asc`),
         enabled: profileId !== null,
         select: (data: any) => {
-            const apiTasks: ChecklistTask[] = data?.["hydra:member"] ?? [];
+            const apiTasks: ChecklistTask[] = unwrapCollection<ChecklistTask>(data);
             setOrderedTasks(apiTasks);
             return apiTasks;
         },
