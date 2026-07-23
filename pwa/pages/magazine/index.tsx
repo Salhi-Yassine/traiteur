@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { GetStaticProps } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -164,9 +165,9 @@ export default function MagazinePage({ featuredArticle, initialArticles }: Magaz
                                             <p className="text-primary text-[11px] font-black uppercase tracking-widest mb-2">♥ Vrais Mariages</p>
                                             <h2 className="font-display text-4xl md:text-5xl text-neutral-900">Ils ont dit oui sur Farah</h2>
                                         </div>
-                                        <a href="/real-weddings" className="text-primary font-black uppercase tracking-widest text-[13px] hover:underline shrink-0">
+                                        <Link href="/real-weddings" className="text-primary font-black uppercase tracking-widest text-[13px] hover:underline shrink-0">
                                             Voir tous →
-                                        </a>
+                                        </Link>
                                     </div>
                                     {/* Teaser row — 3 visual cards */}
                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -175,7 +176,7 @@ export default function MagazinePage({ featuredArticle, initialArticles }: Magaz
                                             { couple: "Nadia &amp; Youssef", city: "Casablanca", img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=600", vibe: "Moderne" },
                                             { couple: "Amina &amp; Rachid", city: "Fès", img: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&q=80&w=600", vibe: "Traditionnel" },
                                         ].map((story, i) => (
-                                            <a key={i} href="/real-weddings" className="group relative block aspect-[3/4] rounded-[2rem] overflow-hidden cursor-pointer">
+                                            <Link key={i} href="/real-weddings" className="group relative block aspect-[3/4] rounded-[2rem] overflow-hidden cursor-pointer">
                                                 <img src={story.img} alt={story.couple} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                                                 <div className="absolute bottom-0 inset-x-0 p-6 space-y-1">
@@ -185,7 +186,7 @@ export default function MagazinePage({ featuredArticle, initialArticles }: Magaz
                                                 <div className="absolute top-4 end-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border border-white/30">
                                                     {story.vibe}
                                                 </div>
-                                            </a>
+                                            </Link>
                                         ))}
                                     </div>
                                 </section>
