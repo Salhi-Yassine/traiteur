@@ -6,6 +6,7 @@ interface InspirationPhoto {
     imagePath: string;
     caption: string;
     style: string;
+    "@id": string; // API Platform IRI — required by InspirationCard's save action
     category?: { name: string };
     city?: { name: string };
 }

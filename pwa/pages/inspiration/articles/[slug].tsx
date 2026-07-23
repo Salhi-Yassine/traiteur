@@ -7,6 +7,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { ChevronLeft, Clock, Calendar, User, Share2 } from "lucide-react";
 import { format } from "date-fns";
 import { fetchServerSide } from "@/utils/fetchServerSide";
+import { unwrapCollection } from "@/utils/hydra";
 import { Button } from "@/components/ui/button";
 import { getInspirationImageUrl } from "@/lib/utils";
 
@@ -159,8 +160,8 @@ export default function ArticleDetail({ article }: ArticleDetailProps) {
 export const getServerSideProps: GetServerSideProps = async ({ params, locale }) => {
     try {
         const slug = params?.slug as string;
-        const articles = await fetchServerSide(`/api/articles?slug=${slug}`, { locale: locale || "fr" }) as any;
-        const article = articles?.['member']?.[0];
+        const articles = await fetchServerSide(`/api/articles?slug=${slug}`, { locale: locale || "fr" });
+        const article = unwrapCollection(articles)[0];
 
         if (!article) {
             return { notFound: true };

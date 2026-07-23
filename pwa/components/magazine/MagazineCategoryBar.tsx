@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import apiClient from "@/utils/apiClient";
 import { mockArticleCategories } from "@/lib/mockMagazineData";
 import { ArticleCategory, HydraCollection } from "@/types/magazine";
+import { unwrapCollection } from "@/utils/hydra";
 
 interface MagazineCategoryBarProps {
     activeSlug: string | null;
@@ -30,7 +31,7 @@ export default function MagazineCategoryBar({ activeSlug, onChange }: MagazineCa
         staleTime: 1000 * 60 * 10,
     });
 
-    const categories = data?.["hydra:member"] ?? [];
+    const categories = unwrapCollection<ArticleCategory>(data);
     const isLoading = !data && categories.length === 0;
 
     function updateFades() {

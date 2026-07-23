@@ -212,6 +212,12 @@ export interface QuoteRequest extends HydraResource {
   updatedAt?: string;
 }
 
+export interface SavedVendor extends HydraResource {
+  '@type': 'SavedVendor';
+  vendorProfile: VendorProfile;
+  createdAt: string;
+}
+
 /** Payload sent to POST /api/vendor_profiles */
 export interface VendorProfilePayload {
   businessName: string;

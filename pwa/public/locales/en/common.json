@@ -10,6 +10,7 @@
     "budget": "Budget",
     "guests": "Guests",
     "checklist": "Checklist",
+    "saved_vendors": "Saved vendors",
     "my_wedding": "My Wedding",
     "mgmt_desc": "Event Management",
     "logout": "Logout",
@@ -1050,5 +1051,17 @@
     "empty_sub": "Share your profile to receive your first quote requests.",
     "empty_filtered": "No requests in this category.",
     "error_update": "An error occurred. Please try again."
+  },
+  "saved_vendors": {
+    "title": "My saved vendors",
+    "description": "Your moodboard of vendors saved for your wedding",
+    "empty_title": "No saved vendors yet",
+    "empty_description": "Browse the directory and tap the heart to add vendors to your moodboard.",
+    "empty_cta": "Discover vendors",
+    "saved_toast": "Vendor added to your favorites",
+    "removed_toast": "Vendor removed from your favorites",
+    "login_required": "Log in to save vendors",
+    "save_aria": "Save this vendor",
+    "remove_aria": "Remove this vendor from favorites"
   }
 }

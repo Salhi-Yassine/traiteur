@@ -9,14 +9,14 @@ class AuthTest extends ApiTestCase
     public function testRegister(): void
     {
         $email = 'test'.uniqid().'@example.com';
-        $response = static::createClient()->request('POST', '/users', [
+        $response = static::createClient()->request('POST', '/api/users', [
             'headers' => ['Accept' => 'application/ld+json', 'Content-Type' => 'application/ld+json'],
             'json' => [
                 'email' => $email,
                 'firstName' => 'Test',
                 'lastName' => 'User',
                 'plainPassword' => 'password123',
-                'userType' => 'client',
+                'userType' => 'couple',
             ],
         ]);
 
@@ -34,14 +34,14 @@ class AuthTest extends ApiTestCase
         $client = static::createClient();
         $email = 'login'.uniqid().'@example.com';
 
-        $client->request('POST', '/users', [
+        $client->request('POST', '/api/users', [
             'headers' => ['Accept' => 'application/ld+json', 'Content-Type' => 'application/ld+json'],
             'json' => [
                 'email' => $email,
                 'firstName' => 'Login',
                 'lastName' => 'User',
                 'plainPassword' => 'password123',
-                'userType' => 'client',
+                'userType' => 'couple',
             ],
         ]);
 
@@ -56,7 +56,7 @@ class AuthTest extends ApiTestCase
         $this->assertArrayHasKey('token', $response->toArray());
         $token = $response->toArray()['token'];
 
-        $response = $client->request('GET', '/me', [
+        $response = $client->request('GET', '/api/me', [
             'auth_bearer' => $token,
             'headers' => ['Accept' => 'application/ld+json'],
         ]);

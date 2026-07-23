@@ -8,6 +8,7 @@ import VendorCard from '@/components/vendors/VendorCard';
 import apiClient from '@/utils/apiClient';
 import { cn } from '@/lib/utils';
 import type { VendorProfile, HydraCollection } from '@/types/api';
+import { unwrapCollection } from '@/utils/hydra';
 import { MOCK_VENDORS } from './mock';
 
 function isValidUrl(url?: string): boolean {
@@ -53,7 +54,7 @@ export function VendorDiscovery({ weddingCity, stylePersona: _stylePersona, clas
     staleTime: 10 * 60 * 1000,
   });
 
-  const apiVendors: VendorProfile[] = (data as HydraCollection<VendorProfile> | undefined)?.['hydra:member'] ?? [];
+  const apiVendors: VendorProfile[] = unwrapCollection<VendorProfile>(data);
   const vendors = apiVendors.length > 0 ? apiVendors : MOCK_VENDORS;
 
   const sectionTitle = weddingCity

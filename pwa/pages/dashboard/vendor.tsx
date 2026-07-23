@@ -30,6 +30,7 @@ import { useAuth } from "../../context/AuthContext";
 import apiClient from "../../utils/apiClient";
 import { PATHS } from "../../constants/paths";
 import type { QuoteRequest, VendorProfile as VendorProfileType, HydraCollection } from "../../types/api";
+import { unwrapCollection, getTotalItems } from "../../utils/hydra";
 import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import Navbar from "../../components/layout/Navbar";
@@ -198,7 +199,8 @@ export default function VendorDashboardPage() {
         enabled: !!vendorProfile?.["@id"],
     });
 
-    const inquiries: QuoteRequest[] = inquiriesData?.["hydra:member"] ?? [];
+    const inquiries: QuoteRequest[] = unwrapCollection<QuoteRequest>(inquiriesData);
+    const inquiriesTotal = getTotalItems(inquiriesData);
 
     if (authLoading || !user || user.userType !== "vendor") {
         return (
@@ -374,9 +376,9 @@ export default function VendorDashboardPage() {
                                 <StatCard
                                     icon={<MessageSquare className="w-5 h-5" />}
                                     label={t("dashboard.vendor.stats_inquiries")}
-                                    value={String(inquiriesData?.["hydra:totalItems"] ?? "—")}
-                                    empty={!inquiriesData?.["hydra:totalItems"]}
-                                    emptyHint={!inquiriesData?.["hydra:totalItems"] ? t("dashboard.vendor.stats_empty_hint") : undefined}
+                                    value={inquiriesTotal ? String(inquiriesTotal) : "—"}
+                                    empty={!inquiriesTotal}
+                                    emptyHint={!inquiriesTotal ? t("dashboard.vendor.stats_empty_hint") : undefined}
                                     sub={t("dashboard.vendor.stats_period")}
                                 />
                                 <StatCard

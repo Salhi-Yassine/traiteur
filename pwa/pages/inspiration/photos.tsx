@@ -6,6 +6,7 @@ import { useState } from "react";
 import { ChevronLeft, Filter, Search } from "lucide-react";
 import Link from "next/link";
 import { fetchServerSide } from "@/utils/fetchServerSide";
+import { unwrapCollection } from "@/utils/hydra";
 import InspirationGrid from "@/components/inspiration/InspirationGrid";
 import InspirationCategoryPills from "@/components/inspiration/InspirationCategoryPills";
 import InspirationPhotoModal, { InspirationPhoto } from "@/components/inspiration/InspirationPhotoModal";
@@ -109,12 +110,12 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
         const [photos, categories] = await Promise.all([
             fetchServerSide("/api/inspiration_photos", { locale: locale || "fr" }),
             fetchServerSide("/api/categories", { locale: locale || "fr" }),
-        ]) as [any, any];
+        ]);
 
         return {
             props: {
-                photos: photos?.['member'] || [],
-                categories: categories?.['member'] || [],
+                photos: unwrapCollection(photos),
+                categories: unwrapCollection(categories),
                 ...(await serverSideTranslations(locale || "fr", ["common"])),
             },
         };

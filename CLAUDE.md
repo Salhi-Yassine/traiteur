@@ -35,6 +35,7 @@ Run before every commit or PR:
 
 ```bash
 make pnpm c="lint"             # Zero ESLint errors
+make pnpm c="typecheck"        # Zero tsc errors (CI-enforced)
 make pnpm c="test"             # All Vitest tests pass (never --passWithNoTests)
 make pnpm c="build-storybook"  # Only if a new component was added
 make cs                         # Backend: PHP-CS-Fixer + PHPStan
@@ -156,6 +157,7 @@ make storybook       # Storybook on :6006
 make chown           # Fix file permissions (WSL / root-created files)
 # Shortcuts via make pnpm:
 make pnpm c="lint"              # ESLint
+make pnpm c="typecheck"         # tsc --noEmit
 make pnpm c="test"              # Vitest
 make pnpm c="build-storybook"   # Storybook build check
 ```

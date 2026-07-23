@@ -7,6 +7,7 @@ import {
   searchPhotos,
   MOCK_CONFIG,
   getABTestVariant,
+  simulateUserInteraction,
   trackApiCall,
   getPerformanceReport,
 } from '@/lib/mockInspirationData';
@@ -121,10 +122,10 @@ export const MOCK_DATA_TESTS: MockDataTestSuite[] = [
       const variant2 = getABTestVariant('hero_layout', 'user123');
       const variant3 = getABTestVariant('hero_layout', 'user456');
 
-      // Same user should get same variant
-      const consistent = variant1.layout === variant2.layout;
+      // Same user should get same variant (variant shape differs per test; compare structurally)
+      const consistent = JSON.stringify(variant1) === JSON.stringify(variant2);
       // Different users can get different variants
-      const hasVariants = variant1 && variant3;
+      const hasVariants = Boolean(variant1 && variant3);
 
       return consistent && hasVariants;
     },
@@ -140,7 +141,7 @@ export const MOCK_DATA_TESTS: MockDataTestSuite[] = [
 
       const hasLikeData = likeInteraction.type === 'like' && likeInteraction.photoId === 1;
       const hasCommentData = commentInteraction.type === 'comment' && commentInteraction.articleId === 2;
-      const hasTimestamps = likeInteraction.createdAt && commentInteraction.createdAt;
+      const hasTimestamps = Boolean(likeInteraction.createdAt && commentInteraction.createdAt);
 
       return hasLikeData && hasCommentData && hasTimestamps;
     },

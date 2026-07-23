@@ -46,7 +46,7 @@ jobs:
         run: curl -v --fail-with-body http://localhost
       -
         name: Check API reachability
-        run: curl -vk --fail-with-body https://localhost
+        run: curl -vk --fail-with-body https://localhost/api
       -
         name: Check PWA reachability
         run: "curl -vk --fail-with-body -H 'Accept: text/html' https://localhost"
@@ -60,11 +60,51 @@ jobs:
         name: Run migrations
         run: docker compose exec -T php bin/console -e test doctrine:migrations:migrate --no-interaction
       -
+        name: Generate JWT keypair
+        run: docker compose exec -T php bin/console lexik:jwt:generate-keypair --skip-if-exists
+      -
+        name: Load fixtures
+        run: docker compose exec -T php bin/console -e test doctrine:fixtures:load --no-interaction
+      -
         name: Run PHPUnit
         run: docker compose exec -T php bin/phpunit
       -
         name: Doctrine Schema Validator
         run: docker compose exec -T php bin/console -e test doctrine:schema:validate
+  frontend:
+    name: Frontend (lint · typecheck · test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: pwa
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.1.3
+      -
+        name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pwa/pnpm-lock.yaml
+      -
+        name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      -
+        name: Lint
+        run: pnpm lint
+      -
+        name: Typecheck
+        run: pnpm typecheck
+      -
+        name: Test
+        run: pnpm test
   lint:
     name: Docker Lint
     runs-on: ubuntu-latest

@@ -107,9 +107,6 @@ export default function BudgetDonutChart({
                         ? UNALLOCATED_COLOR
                         : COLORS[i % COLORS.length]
                     }
-                    outerRadius={
-                      !entry.isUnallocated && activeIndex === i ? 80 : 72
-                    }
                     opacity={
                       activeIndex !== null && activeIndex !== i && !entry.isUnallocated
                         ? 0.45

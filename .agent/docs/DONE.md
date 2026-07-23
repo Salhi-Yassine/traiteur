@@ -275,3 +275,25 @@
 - [2026-05-04] Fixed `pwa/pages/dashboard/vendor.tsx` — replaced two dead `href="#"` links (sidebar nav + "View all" link) with `PATHS.DASHBOARD_INQUIRIES`
 - [2026-05-04] Added `DASHBOARD_INQUIRIES` constant to `pwa/constants/paths.ts`
 - [2026-05-04] Added `inquiries.*` i18n keys (32 keys) to all 4 locales (fr/ar/ary/en)
+
+## 2026-07-23
+
+### SavedVendor moodboard — issue #33 (PR #44)
+- [2026-07-23] `api/src/Entity/SavedVendor.php` — user × vendorProfile, unique constraint, Gedmo createdAt; GetCollection/Get/Post/Delete with owner security
+- [2026-07-23] `api/src/State/SavedVendorProcessor.php` — forces owner to authenticated user; duplicate save → 422 (checked pre-persist, DB constraint would 500)
+- [2026-07-23] `api/src/State/SavedVendorCollectionProvider.php` — collection scoped to authenticated user (improves on SavedPhoto, which leaks all users' rows)
+- [2026-07-23] `api/tests/Api/SavedVendorTest.php` — security matrix: 401 unauth, 403 cross-user GET/DELETE, collection leak check, duplicate 422, delete 204
+- [2026-07-23] `pwa/lib/useSavedVendors.ts` + 5 Vitest tests — optimistic save/unsave with rollback, guest → login redirect, member/hydra:member tolerant unwrap
+- [2026-07-23] `pwa/components/vendors/VendorCard.tsx` — controlled isFavorite/onFavoriteToggle props, aria-labels; wired in directory; 2 new Storybook stories
+- [2026-07-23] `pwa/pages/vendors/[slug].tsx` — heart migrated from localStorage wishlist to API
+- [2026-07-23] `pwa/pages/mariage/saved.tsx` — moodboard grid, empty state, skeletons; PlanningLayout sidebar entry; PATHS.SAVED_VENDORS
+- [2026-07-23] i18n: `nav.saved_vendors` + 10 `saved_vendors.*` keys in fr/ar/ary/en
+
+### Quality-gate repairs (PRs #44, #45)
+- [2026-07-23] Rebuilt drifted test database; fixed AuthTest (routes `/api/users`, `/api/me`; userType couple) — backend suite was fully red
+- [2026-07-23] Regenerated PHPStan baseline (15 unbaselined false positives) — `make cs` green again
+- [2026-07-23] Fixed 3 ESLint errors on main (magazine `<a>`→`<Link>`, budget prefer-const) — `lint` green again
+- [2026-07-23] PR #45: pinned pnpm@9.1.3 in pwa/Dockerfile (pnpm 10 broke image build → CI red since May); squashed unreplayable migration chain to a metadata baseline; CI now loads fixtures before PHPUnit
+
+### Takeover audit
+- [2026-07-23] Wrote `.agent/docs/AUDIT-2026-07-23.md` — full handover review: P0 (CI, tests, hydra:member vs member mismatch, unenforced tsc with 21 errors), P1 (mock data + hardcoded clock in budget, committed secrets, test coverage, DoD violations, stale tracking), P2 pre-prod workstream

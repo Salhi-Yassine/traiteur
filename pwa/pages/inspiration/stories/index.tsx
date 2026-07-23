@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import WeddingStoryModal from "@/components/inspiration/WeddingStoryModal";
 import WeddingStoryCard from "@/components/inspiration/WeddingStoryCard";
 import { fetchServerSide } from "@/utils/fetchServerSide";
+import { unwrapCollection } from "@/utils/hydra";
 
 interface InspirationStoriesProps {
     stories: any[];
@@ -84,11 +85,11 @@ export default function InspirationStories({ stories = [] }: InspirationStoriesP
 
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
     try {
-        const stories = await fetchServerSide("/api/wedding_stories", { locale: locale || "fr" }) as any;
+        const stories = await fetchServerSide("/api/wedding_stories", { locale: locale || "fr" });
 
         return {
             props: {
-                stories: stories?.['member'] || [],
+                stories: unwrapCollection(stories),
                 ...(await serverSideTranslations(locale || "fr", ["common"])),
             },
         };
