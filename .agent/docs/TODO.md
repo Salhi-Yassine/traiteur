@@ -6,6 +6,21 @@
 
 ---
 
+## 🚨 P0 — Takeover stabilization (see `.agent/docs/AUDIT-2026-07-23.md`)
+
+- [ ] Merge PR #45 (CI repair) and PR #44 (SavedVendor #33 + test-suite repairs); confirm CI green on main
+- [ ] Fix `member` vs `hydra:member` mismatch app-wide — shared `unwrapCollection()` helper; verify each planning page shows real API data (several silently fall back to mocks today)
+- [ ] Fix the 21 `tsc --noEmit` errors; add `typecheck` script to package.json, CI, and the CLAUDE.md DoD
+- [ ] Makefile `full-migrat`: stop pruning old migrations (this is what broke the replay chain)
+- [ ] Verify E2E workflow passes after #45; fix or disable until real E2E tests exist
+- [ ] Triage stale GitHub issues (#11 #12 #14 #17 #18 #19 #21 #28 #29 #31 describe shipped work) — verify in code, then close
+- [ ] Remove hardcoded clock (`TODAY = new Date("2026-04-22")`) and mock seed data from `pages/mariage/budget.tsx`; make demo mode explicit everywhere
+- [ ] Secrets hygiene: rotate JWT keypair/passphrase out of `api/.env`, set APP_SECRET, replace `!ChangeMe!` defaults for any shared environment
+- [ ] Replace 3 `alert()` calls with `toast.*`; translate hardcoded French strings in `pages/magazine/index.tsx`
+- [ ] Backfill `ApiTestCase` coverage for security-critical endpoints: public RSVP token, QuoteRequest, WeddingProfile voters, VendorProfile ownership
+
+---
+
 ## 🔴 Phase 1 — Foundation (in progress)
 
 ### Vendor Directory (US-1.1)
@@ -59,11 +74,8 @@
 ### Vendor Inquiry Inbox (US-2.2) — partial
 - [ ] Email notification to vendor on new inquiry (Resend)
 
-### Save Vendors / Moodboard (US-1.3)
-- [ ] `SavedVendor` entity (backend)
-- [ ] `/plan/saved` page
-- [ ] Heart icon with optimistic UI
-- [ ] Persist across sessions (API, not just localStorage)
+### Save Vendors / Moodboard (US-1.3) — done in PR #44 (`/mariage/saved`)
+- [ ] Empty-state illustration polish + saved-count badge in navbar (nice-to-have)
 
 ---
 

@@ -12,6 +12,7 @@ import FilterModal from "../../components/vendors/FilterModal";
 import SearchBar from "../../components/vendors/SearchBar";
 import { Button } from "../../components/ui/button";
 import { useVendorFilters } from "../../lib/useVendorFilters";
+import { useSavedVendors } from "../../lib/useSavedVendors";
 import { fetchServerSide } from "../../utils/fetchServerSide";
 import type { SortKey } from "../../lib/useVendorFilters";
 
@@ -123,6 +124,7 @@ export default function VendorsPage({
     const [view, setView] = useState<ViewMode>("grid");
     const [isNavigating, setIsNavigating] = useState(false);
     const [filterModalOpen, setFilterModalOpen] = useState(false);
+    const { isSaved, toggleSave } = useSavedVendors();
 
     const {
         activeCategory,
@@ -350,7 +352,13 @@ export default function VendorsPage({
                             : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                     )}>
                         {displayVendors.map(vendor => (
-                            <VendorCard key={vendor.id} {...vendor} variant={view === "grid" ? "card" : "list"} />
+                            <VendorCard
+                                key={vendor.id}
+                                {...vendor}
+                                variant={view === "grid" ? "card" : "list"}
+                                isFavorite={isSaved(vendor.id)}
+                                onFavoriteToggle={() => toggleSave(vendor.id)}
+                            />
                         ))}
                     </div>
                 )}
