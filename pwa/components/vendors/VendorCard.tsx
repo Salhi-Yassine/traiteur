@@ -25,6 +25,9 @@ export interface VendorCardProps {
     isVerified?: boolean;
     /** "card" = vertical grid card (default) · "list" = horizontal row */
     variant?: "card" | "list";
+    /** Controlled favorite state (from useSavedVendors) — falls back to local state when omitted */
+    isFavorite?: boolean;
+    onFavoriteToggle?: () => void;
 }
 
 const FALLBACK_IMG = `https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80`;
@@ -44,6 +47,8 @@ export default function VendorCard({
     reviewCount,
     isVerified,
     variant = "card",
+    isFavorite: controlledFavorite,
+    onFavoriteToggle,
 }: VendorCardProps) {
     const { t } = useTranslation("common");
     const { locale } = useRouter();
@@ -56,7 +61,21 @@ export default function VendorCard({
         ? new Intl.NumberFormat(locale === "ar" ? "ar-MA" : "fr-MA").format(startingPrice)
         : null;
 
-    const [isFavorite, setIsFavorite] = useState(false);
+    const [localFavorite, setLocalFavorite] = useState(false);
+    const isFavorite = controlledFavorite ?? localFavorite;
+
+    const handleFavoriteClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (onFavoriteToggle) {
+            onFavoriteToggle();
+        } else {
+            setLocalFavorite(!localFavorite);
+        }
+    };
+
+    const favoriteLabel = isFavorite
+        ? t("saved_vendors.remove_aria")
+        : t("saved_vendors.save_aria");
 
     // ─── List variant ──────────────────────────────────────────────────────────
     if (variant === "list") {
@@ -134,7 +153,8 @@ export default function VendorCard({
                 </Link>
                 {/* Heart Button for List */}
                 <button
-                    onClick={(e) => { e.preventDefault(); setIsFavorite(!isFavorite); }}
+                    onClick={handleFavoriteClick}
+                    aria-label={favoriteLabel}
                     className="absolute top-6 end-6 z-10 p-2 rounded-full hover:bg-neutral-100/10 transition-colors"
                 >
                     <Heart className={cn("w-5 h-5 transition-all duration-300", isFavorite ? "fill-red-500 text-red-500 scale-110" : "text-white fill-black/10")} />
@@ -227,7 +247,8 @@ export default function VendorCard({
 
             {/* Floating Heart Button */}
             <button
-                onClick={(e) => { e.preventDefault(); setIsFavorite(!isFavorite); }}
+                onClick={handleFavoriteClick}
+                aria-label={favoriteLabel}
                 className="absolute top-4 end-4 z-10 p-2 rounded-full hover:scale-110 active:scale-95 transition-all duration-200"
             >
                 <Heart 

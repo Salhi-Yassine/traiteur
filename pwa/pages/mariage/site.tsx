@@ -11,6 +11,7 @@ import type { HydraCollection } from "@/types/api";
 import { cn } from "@/lib/utils";
 import PlanningLayout from "../../components/layout/PlanningLayout";
 import apiClient from "../../utils/apiClient";
+import { unwrapCollection } from "../../utils/hydra";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { Label } from "../../components/ui/label";
@@ -46,7 +47,8 @@ export default function WeddingWebsiteBuilder() {
         queryFn: () => apiClient.get<HydraCollection<WeddingProfile>>("/api/wedding_profiles?itemsPerPage=1"),
     });
 
-    const initialProfile: WeddingProfile | null = profileData?.["hydra:member"]?.[0] ?? null;
+    const initialProfile: WeddingProfile | null =
+        unwrapCollection<WeddingProfile>(profileData)[0] ?? null;
     const [formData, setFormData] = useState<Partial<WeddingProfile>>({});
 
     useEffect(() => {

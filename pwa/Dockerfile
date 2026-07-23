@@ -10,9 +10,11 @@ FROM node_upstream AS base
 
 WORKDIR /srv/app
 
+# pnpm version must match the "packageManager" pin in package.json —
+# pnpm@latest (10.x) breaks `pnpm config -g set` in this image (bin dir not in PATH)
 RUN npm install -g corepack@latest && \
     corepack enable && \
-	corepack prepare --activate pnpm@latest && \
+	corepack prepare --activate pnpm@9.1.3 && \
 	pnpm config -g set store-dir /.pnpm-store
 
 # Next.js collects completely anonymous telemetry data about general usage.

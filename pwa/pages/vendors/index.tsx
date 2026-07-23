@@ -12,7 +12,9 @@ import FilterModal from "../../components/vendors/FilterModal";
 import SearchBar from "../../components/vendors/SearchBar";
 import { Button } from "../../components/ui/button";
 import { useVendorFilters } from "../../lib/useVendorFilters";
+import { useSavedVendors } from "../../lib/useSavedVendors";
 import { fetchServerSide } from "../../utils/fetchServerSide";
+import { unwrapCollection, getTotalItems } from "../../utils/hydra";
 import type { SortKey } from "../../lib/useVendorFilters";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -123,6 +125,7 @@ export default function VendorsPage({
     const [view, setView] = useState<ViewMode>("grid");
     const [isNavigating, setIsNavigating] = useState(false);
     const [filterModalOpen, setFilterModalOpen] = useState(false);
+    const { isSaved, toggleSave } = useSavedVendors();
 
     const {
         activeCategory,
@@ -350,7 +353,13 @@ export default function VendorsPage({
                             : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                     )}>
                         {displayVendors.map(vendor => (
-                            <VendorCard key={vendor.id} {...vendor} variant={view === "grid" ? "card" : "list"} />
+                            <VendorCard
+                                key={vendor.id}
+                                {...vendor}
+                                variant={view === "grid" ? "card" : "list"}
+                                isFavorite={isSaved(vendor.id)}
+                                onFavoriteToggle={() => toggleSave(vendor.id)}
+                            />
                         ))}
                     </div>
                 )}
@@ -548,12 +557,12 @@ export const getServerSideProps: GetServerSideProps<VendorsPageProps> = async ({
 
         Object.entries(sortToApiParams(sort)).forEach(([k, v]) => params.set(k, v));
 
-        const data = await fetchServerSide<{ "hydra:member": Record<string, unknown>[]; "hydra:totalItems": number }>(
+        const data = await fetchServerSide(
             `/api/vendor_profiles?${params}`,
             { locale: locale || "fr" },
         );
-        const members: Record<string, unknown>[] = data["hydra:member"] ?? [];
-        const total: number = data["hydra:totalItems"] ?? 0;
+        const members = unwrapCollection<Record<string, unknown>>(data);
+        const total = getTotalItems(data);
 
         const vendors: VendorCardProps[] = members.map(v => ({
             id:            (v.id as number) ?? 0,

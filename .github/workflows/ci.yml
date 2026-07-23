@@ -46,7 +46,7 @@ jobs:
         run: curl -v --fail-with-body http://localhost
       -
         name: Check API reachability
-        run: curl -vk --fail-with-body https://localhost
+        run: curl -vk --fail-with-body https://localhost/api
       -
         name: Check PWA reachability
         run: "curl -vk --fail-with-body -H 'Accept: text/html' https://localhost"
@@ -59,6 +59,12 @@ jobs:
       -
         name: Run migrations
         run: docker compose exec -T php bin/console -e test doctrine:migrations:migrate --no-interaction
+      -
+        name: Generate JWT keypair
+        run: docker compose exec -T php bin/console lexik:jwt:generate-keypair --skip-if-exists
+      -
+        name: Load fixtures
+        run: docker compose exec -T php bin/console -e test doctrine:fixtures:load --no-interaction
       -
         name: Run PHPUnit
         run: docker compose exec -T php bin/phpunit

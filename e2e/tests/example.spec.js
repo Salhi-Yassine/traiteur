@@ -1,28 +1,31 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
-test('homepage', async ({ page }) => {
-  await page.goto('https://localhost/');
-  await expect(page).toHaveTitle('Welcome to API Platform!');
+// Smoke tests — verify the stack boots and serves the real app.
+// Deeper user-journey specs (directory search, RSVP flow, onboarding)
+// are tracked in .agent/docs/TODO.md.
+
+test('homepage serves the PWA', async ({ page }) => {
+  // First hit compiles the page in the Next.js dev server — allow extra time
+  test.setTimeout(120_000);
+  await page.goto('https://localhost/', { timeout: 90_000 });
+  await expect(page).toHaveTitle(/Farah\.ma/);
 });
 
-test('swagger', async ({ page }) => {
-  await page.goto('https://localhost/docs');
-  await expect(page).toHaveTitle('Hello API Platform - API Platform');
-  await expect(page.locator('.operation-tag-content > span')).toHaveCount(5);
+test('API entrypoint responds', async ({ request }) => {
+  const res = await request.get('https://localhost/api', {
+    headers: { Accept: 'application/ld+json' },
+  });
+  expect(res.ok()).toBeTruthy();
+  const body = await res.json();
+  expect(body['@context']).toBeDefined();
 });
 
-test('admin', async ({ page, browserName }) => {
-  await page.goto('https://localhost/admin');
-  await page.getByLabel('Create').click();
-  await page.getByLabel('Name').fill('foo' + browserName);
-  await page.getByLabel('Save').click();
-  await expect(page).toHaveURL(/admin#\/greetings$/);
-  await page.getByText('foo' + browserName).first().click();
-  await expect(page).toHaveURL(/show$/);
-  await page.getByLabel('Edit').first().click();
-  await page.getByLabel('Name').fill('bar' + browserName);
-  await page.getByLabel('Save').click();
-  await expect(page).toHaveURL(/admin#\/greetings$/);
-  await page.getByText('bar' + browserName).first().click();
+test('vendor directory lists vendors from the API', async ({ request }) => {
+  const res = await request.get('https://localhost/api/vendor_profiles', {
+    headers: { Accept: 'application/ld+json' },
+  });
+  expect(res.ok()).toBeTruthy();
+  const body = await res.json();
+  expect(Array.isArray(body['member'] ?? body['hydra:member'])).toBeTruthy();
 });
